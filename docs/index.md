@@ -1,4 +1,4 @@
-y# Links 
+# Links 
 
 * Source Repo: <https://github.com/ucsb-cs156/proj-happycows>
 
