@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,22 +20,22 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
 // The unit under test relies on property values
 // For hints on testing, see: https://www.baeldung.com/spring-boot-testing-configurationproperties
 
-
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = SystemInfoServiceImpl.class)
 @TestPropertySource("classpath:application-development.properties")
-class SystemInfoServiceImplTests  {
-  
-  @Autowired
-  private SystemInfoService systemInfoService;
+class SystemInfoServiceImplTests {
 
-  @Test
-  void test_getSystemInfo() {
-    String expected = System.getenv("SOURCE_REPO:");
-    SystemInfo si = systemInfoService.getSystemInfo();
-    assertEquals(expected, si.getSourceRepo());
-    assertTrue(si.getSpringH2ConsoleEnabled());
-    assertTrue(si.getShowSwaggerUILink());
-  }
+	@Value("${SOURCE_REPO:${env.SOURCE_REPO:https://github.com/ucsb-cs156/proj-happycows}}")
+	private String sourceRepo;
+	@Autowired
+	private SystemInfoService systemInfoService;
+
+	@Test
+	void test_getSystemInfo() {
+		SystemInfo si = systemInfoService.getSystemInfo();
+		assertEquals(this.sourceRepo, si.getSourceRepo());
+		assertTrue(si.getSpringH2ConsoleEnabled());
+		assertTrue(si.getShowSwaggerUILink());
+	}
 
 }
