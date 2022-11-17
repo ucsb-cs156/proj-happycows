@@ -20,9 +20,9 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
 // The unit under test relies on property values
 // For hints on testing, see: https://www.baeldung.com/spring-boot-testing-configurationproperties
 
-
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = SystemInfoServiceImpl.class)
+
 @TestPropertySource(locations = {"classpath:application.properties", "classpath:application-development.properties"})
 class SystemInfoServiceImplTests  {
   
@@ -39,5 +39,4 @@ class SystemInfoServiceImplTests  {
     assertTrue(si.getSpringH2ConsoleEnabled());
     assertTrue(si.getShowSwaggerUILink());
   }
-
 }
