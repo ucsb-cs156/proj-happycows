@@ -22,8 +22,8 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.showSwaggerUILink:false}")
   private boolean showSwaggerUILink;
 
-  @Value("${SOURCE_REPO:${env.SOURCE_REPO:https://github.com/ucsb-cs156/proj-happycows}}")
-  private String sourceRepo;  
+  @Value("${app.sourcerepo:https://github.com/ucsb-cs156/proj-happycows}")
+  private String sourceRepo; 
 
   public SystemInfo getSystemInfo() {
     SystemInfo si = SystemInfo.builder()

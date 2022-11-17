@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -22,15 +23,17 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
 
 @ExtendWith(SpringExtension.class)
 @EnableConfigurationProperties(value = SystemInfoServiceImpl.class)
-@TestPropertySource("classpath:application-development.properties")
+@TestPropertySource(locations = {"classpath:application.properties", "classpath:application-development.properties"})
 class SystemInfoServiceImplTests  {
   
   @Autowired
   private SystemInfoService systemInfoService;
 
+  @Value("${app.sourcerepo:https://github.com/ucsb-cs156/proj-happycows}}")
+  private String expected;
+
   @Test
   void test_getSystemInfo() {
-    String expected = System.getenv("SOURCE_REPO:");
     SystemInfo si = systemInfoService.getSystemInfo();
     assertEquals(expected, si.getSourceRepo());
     assertTrue(si.getSpringH2ConsoleEnabled());
