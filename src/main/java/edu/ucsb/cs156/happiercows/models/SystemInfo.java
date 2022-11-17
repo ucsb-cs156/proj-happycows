@@ -12,7 +12,7 @@ import lombok.AccessLevel;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class SystemInfo {
-	String sourceRepo;
+	private String sourceRepo;
 	private Boolean springH2ConsoleEnabled;
 	private Boolean showSwaggerUILink;
 }

@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.happiercows.services;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -29,7 +30,9 @@ class SystemInfoServiceImplTests  {
 
   @Test
   void test_getSystemInfo() {
+    String expected = System.getenv("SOURCE_REPO:");
     SystemInfo si = systemInfoService.getSystemInfo();
+    assertEquals(expected, si.getSourceRepo());
     assertTrue(si.getSpringH2ConsoleEnabled());
     assertTrue(si.getShowSwaggerUILink());
   }
