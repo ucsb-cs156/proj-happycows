@@ -64,4 +64,15 @@ public class JobsController extends ApiController {
           });
     }
 
+    @ApiOperation(value = "Launch Job to Milk the Cows (click fail if you want to test exception handling)")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/launch/testjob")
+    public Job launchTestJob(
+    ) {
+        return jobService.runAsJob(ctx -> {
+            ctx.log("Starting to milk the cows");
+            ctx.log("This is where the code to milk the cows will go.");
+            ctx.log("Cows have been milked!");
+        });
+    }
 }
