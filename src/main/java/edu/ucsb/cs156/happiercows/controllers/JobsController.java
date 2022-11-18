@@ -88,7 +88,7 @@ public class JobsController extends ApiController {
     @ApiOperation(value = "Launch Instructor Report Job (click fail if you want to test exception handling)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/testjob")
-    public Job launchInstructorHealthJob(
+    public Job launchInstructorReportJob(
     ) {
 
         return jobService.runAsJob(ctx -> {
