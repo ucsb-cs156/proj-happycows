@@ -64,4 +64,28 @@ public class JobsController extends ApiController {
           });
     }
 
+    @ApiOperation(value = "Launch Job to Update Cow Health")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/updatecowhealth")
+    public Job launchJobToUpdateCowHealth() {
+
+        return jobService.runAsJob(ctx -> {
+            ctx.log("Updating cow health...");
+            ctx.log("This is where the code to update cow health will go.");
+            ctx.log("Cow health has been updated!");
+          });
+    }
+
+    @ApiOperation(value = "Launch Job for Instructor Report")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/instructorreport")
+    public Job launchJobInstructorReport() {
+
+        return jobService.runAsJob(ctx -> {
+            ctx.log("Generating instructor report...");
+            ctx.log("This is where the code to produce instructor report will go.");
+            ctx.log("Instructor report has been produced!");
+          });
+    }
+
 }
