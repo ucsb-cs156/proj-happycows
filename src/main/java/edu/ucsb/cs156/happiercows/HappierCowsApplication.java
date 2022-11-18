@@ -6,6 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.context.annotation.Bean;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
 @SpringBootApplication
 @EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 @EnableAsync
