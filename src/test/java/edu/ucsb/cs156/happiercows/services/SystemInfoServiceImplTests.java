@@ -29,7 +29,7 @@ class SystemInfoServiceImplTests  {
   @Autowired
   private SystemInfoService systemInfoService;
 
-  @Value("${app.sourcerepo:https://github.com/ucsb-cs156/proj-happycows}}")
+  @Value("${app.sourcerepo:https://github.com/ucsb-cs156/proj-happycows}")
   private String expected;
 
   @Test
