@@ -35,8 +35,6 @@ public class JobService {
     return job;
   }
 
-  
-
   @Async
   public void runJobAsync(Job job, JobContextConsumer jobFunction, SecurityContext securityContext) {
     JobContext context = new JobContext(jobsRepository, job);

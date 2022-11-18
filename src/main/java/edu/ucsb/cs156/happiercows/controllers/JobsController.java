@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
+import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
+import edu.ucsb.cs156.happiercows.jobs.TestJob;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
@@ -54,14 +56,12 @@ public class JobsController extends ApiController {
         @ApiParam("sleepMs") @RequestParam Integer sleepMs
     ) {
 
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Hello World! from test job!");
-            Thread.sleep(sleepMs);
-            if (fail) {
-                throw new Exception("Fail!");
-            }
-            ctx.log("Goodbye from test job!");
-          });
+        TestJob testJob = TestJob.builder()
+        .fail(fail)
+        .sleepMs(sleepMs)
+        .build();
+
+        return jobService.runAsJob(testJob);
     }
 
     @ApiOperation(value = "Launch Job to Milk the Cows (click fail if you want to test exception handling)")
@@ -69,10 +69,7 @@ public class JobsController extends ApiController {
     @GetMapping("/launch/milkthecowjob")
     public Job launchTestJob(
     ) {
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Starting to milk the cows");
-            ctx.log("This is where the code to milk the cows will go.");
-            ctx.log("Cows have been milked!");
-        });
+        MilkTheCowsJob milkTheCowsJob = MilkTheCowsJob.builder().build();
+        return jobService.runAsJob(milkTheCowsJob);
     }
 }

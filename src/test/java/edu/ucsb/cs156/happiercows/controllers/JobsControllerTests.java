@@ -207,7 +207,7 @@ public class JobsControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         Job jobReturned = objectMapper.readValue(responseString, Job.class);
 
-        await().atMost(5, SECONDS)
+        await().atMost(10, SECONDS)
         .untilAsserted(() -> verify(jobsRepository, times(5)).save(eq(jobCompleted)));
 
         assertEquals("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!", jobReturned.getLog());

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Builder
 @Entity(name = "jobs")
 @EntityListeners(AuditingEntityListener.class)
-
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
