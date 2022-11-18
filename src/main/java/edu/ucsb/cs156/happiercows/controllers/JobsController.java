@@ -66,7 +66,7 @@ public class JobsController extends ApiController {
 
     @ApiOperation(value = "Launch Job to Milk the Cows")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/launch/milkjob")
+    @PostMapping("/launch/milkjob")
     public Job launchMilkJob(
     ) {
 
