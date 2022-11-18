@@ -197,7 +197,7 @@ public class JobsControllerTests extends ControllerTestCase {
             .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
             .build();
 
-        // when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
+        when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
 
         // act
         MvcResult response = mockMvc.perform(get("/api/jobs/launch/milkthecowjob").with(csrf()))
