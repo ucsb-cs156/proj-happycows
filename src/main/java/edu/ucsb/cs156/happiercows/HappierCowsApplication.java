@@ -7,12 +7,20 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 @EnableAsync
 public class HappierCowsApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(HappierCowsApplication.class, args);
+  }
+
+  @Bean
+  public DateTimeProvider utcDateTimeProvider() {
+      return () -> {
+        ZonedDateTime now = ZonedDateTime.now();
+        return Optional.of(now);
+      };
   }
 
 }
