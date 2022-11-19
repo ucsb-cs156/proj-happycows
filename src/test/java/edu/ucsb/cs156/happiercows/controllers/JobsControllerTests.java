@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -97,7 +98,7 @@ public class JobsControllerTests extends ControllerTestCase {
         .createdAt(null)
         .updatedAt(null)
         .status("running")
-        .log("Hello World! from test job!")
+        .log("Hello World! from test job!\nauthentication is not null")
         .build();
 
     Job jobCompleted = Job.builder()
@@ -106,7 +107,7 @@ public class JobsControllerTests extends ControllerTestCase {
         .createdAt(null)
         .updatedAt(null)
         .status("complete")
-        .log("Hello World! from test job!\nGoodbye from test job!")
+        .log("Hello World! from test job!\nauthentication is not null\nGoodbye from test job!")
         .build();
 
     when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
@@ -122,9 +123,9 @@ public class JobsControllerTests extends ControllerTestCase {
     assertEquals("running", jobReturned.getStatus());
 
     await().atMost(1, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(2)).save(eq(jobStarted)));
+        .untilAsserted(() -> verify(jobsRepository, times(3)).save(eq(jobStarted)));
     await().atMost(10, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(4)).save(eq(jobCompleted)));
+        .untilAsserted(() -> verify(jobsRepository, times(5)).save(eq(jobCompleted)));
   }
 
   @WithMockUser(roles = { "ADMIN" })
@@ -141,7 +142,7 @@ public class JobsControllerTests extends ControllerTestCase {
         .createdAt(null)
         .updatedAt(null)
         .status("running")
-        .log("Hello World! from test job!")
+        .log("Hello World! from test job!\nauthentication is not null")
         .build();
 
     Job jobFailed = Job.builder()
@@ -150,7 +151,7 @@ public class JobsControllerTests extends ControllerTestCase {
         .createdAt(null)
         .updatedAt(null)
         .status("error")
-        .log("Hello World! from test job!\nFail!")
+        .log("Hello World! from test job!\nauthentication is not null\nFail!")
         .build();
 
     when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobFailed);
@@ -165,39 +166,39 @@ public class JobsControllerTests extends ControllerTestCase {
     assertEquals("running", jobReturned.getStatus());
 
     await().atMost(1, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(2)).save(eq(jobStarted)));
+        .untilAsserted(() -> verify(jobsRepository, times(3)).save(eq(jobStarted)));
 
     await().atMost(10, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(3)).save(eq(jobFailed)));
+        .untilAsserted(() -> verify(jobsRepository, times(4)).save(eq(jobFailed)));
   }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void admin_can_launch_milk_the_cows_job() throws Exception {
 
-        // arrange
+        // // arrange
 
-        User user = currentUserService.getUser();
+        // User user = currentUserService.getUser();
 
-        Job jobStarted = Job.builder()
-            .id(0L)
-            .createdBy(user)
-            .createdAt(null)
-            .updatedAt(null)
-            .status("running")
-            .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
-            .build();
+        // Job jobStarted = Job.builder()
+        //     .id(0L)
+        //     .createdBy(user)
+        //     .createdAt(null)
+        //     .updatedAt(null)
+        //     .status("running")
+        //     .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
+        //     .build();
 
-        Job jobCompleted = Job.builder()
-            .id(0L)
-            .createdBy(user)
-            .createdAt(null)
-            .updatedAt(null)
-            .status("complete")
-            .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
-            .build();
+        // Job jobCompleted = Job.builder()
+        //     .id(0L)
+        //     .createdBy(user)
+        //     .createdAt(null)
+        //     .updatedAt(null)
+        //     .status("complete")
+        //     .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
+        //     .build();
 
-        when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
+       // when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
 
         // act
         MvcResult response = mockMvc.perform(get("/api/jobs/launch/milkthecowjob").with(csrf()))
@@ -206,10 +207,9 @@ public class JobsControllerTests extends ControllerTestCase {
         // assert
         String responseString = response.getResponse().getContentAsString();
         Job jobReturned = objectMapper.readValue(responseString, Job.class);
+       
+        await().atMost(3, SECONDS)
+                .untilAsserted(() -> assertTrue(jobReturned.getLog().contains("Cows have been milked!")));
 
-        await().atMost(10, SECONDS)
-        .untilAsserted(() -> verify(jobsRepository, times(5)).save(eq(jobCompleted)));
-
-        assertEquals("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!", jobReturned.getLog());
     }
 }

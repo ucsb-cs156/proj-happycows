@@ -55,7 +55,6 @@ public class JobsController extends ApiController {
         @ApiParam("fail") @RequestParam Boolean fail, 
         @ApiParam("sleepMs") @RequestParam Integer sleepMs
     ) {
-
         TestJob testJob = TestJob.builder()
         .fail(fail)
         .sleepMs(sleepMs)
