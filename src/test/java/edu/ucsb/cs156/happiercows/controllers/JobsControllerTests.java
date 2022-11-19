@@ -174,32 +174,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void admin_can_launch_milk_the_cows_job() throws Exception {
-
-        // // arrange
-
-        // User user = currentUserService.getUser();
-
-        // Job jobStarted = Job.builder()
-        //     .id(0L)
-        //     .createdBy(user)
-        //     .createdAt(null)
-        //     .updatedAt(null)
-        //     .status("running")
-        //     .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
-        //     .build();
-
-        // Job jobCompleted = Job.builder()
-        //     .id(0L)
-        //     .createdBy(user)
-        //     .createdAt(null)
-        //     .updatedAt(null)
-        //     .status("complete")
-        //     .log("Starting to milk the cows\nThis is where the code to milk the cows will go.\nCows have been milked!")
-        //     .build();
-
-       // when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
-
+    public void admin_can_launch_milk_the_cows_job() throws Exception {    
         // act
         MvcResult response = mockMvc.perform(get("/api/jobs/launch/milkthecowjob").with(csrf()))
             .andExpect(status().isOk()).andReturn();
