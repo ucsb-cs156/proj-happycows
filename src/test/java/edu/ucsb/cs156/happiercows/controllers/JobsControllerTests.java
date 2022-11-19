@@ -181,6 +181,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
         // assert
         String responseString = response.getResponse().getContentAsString();
+        log.info("responseString={}", responseString);
         Job jobReturned = objectMapper.readValue(responseString, Job.class);
        
         await().atMost(5, SECONDS)
