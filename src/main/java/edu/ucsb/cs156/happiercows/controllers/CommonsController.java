@@ -76,14 +76,21 @@ public class CommonsController extends ApiController {
     commonsListIter.forEach(commonsList::add);
 
     List<CommonsPlus> commonsPlusList1 = commonsList.stream()
-      .filter(c -> (commonsRepository.getNumCows(c.getId())).isPresent())
-      .filter(c -> (commonsRepository.getNumUsers(c.getId())).isPresent())
-      .map(c -> new CommonsPlus(c, (commonsRepository.getNumCows(c.getId())).get(), (commonsRepository.getNumUsers(c.getId())).get()))
+      // .filter(c -> (commonsRepository.getNumCows(c.getId())).isPresent())
+      // .filter(c -> (commonsRepository.getNumUsers(c.getId())).isPresent())
+      .map(c->toCommonsPlus(c))
       .collect(Collectors.toList());
+
+    log.info("commonsPlusList1=" + commonsPlusList1);
 
     ArrayList<CommonsPlus> commonsPlusList = new ArrayList<CommonsPlus>(commonsPlusList1);
 
+    log.info("commonsPlusList=" + commonsPlusList);
+
+
     String body = mapper.writeValueAsString(commonsPlusList);
+
+    log.info("body=" + body);
     return ResponseEntity.ok().body(body);
   }
 
@@ -227,5 +234,16 @@ public class CommonsController extends ApiController {
 
     userCommonsRepository.deleteById(userCommons.getId());
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  public CommonsPlus toCommonsPlus(Commons c) {
+    Optional<Integer> numCows = commonsRepository.getNumCows(c.getId());
+    Optional<Integer> numUsers = commonsRepository.getNumUsers(c.getId());
+    
+    return CommonsPlus.builder()
+    .commons(c)
+    .totalCows(numCows.orElse(0))
+    .totalUsers(numUsers.orElse(0))
+    .build();
   }
 }
