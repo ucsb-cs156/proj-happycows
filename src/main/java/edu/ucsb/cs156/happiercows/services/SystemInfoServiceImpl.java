@@ -22,8 +22,12 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.showSwaggerUILink:false}")
   private boolean showSwaggerUILink;
 
+  @Value("${app.sourcerepo:https://github.com/ucsb-cs156/proj-happycows}")
+  private String sourceRepo; 
+
   public SystemInfo getSystemInfo() {
     SystemInfo si = SystemInfo.builder()
+    .sourceRepo(this.sourceRepo)
     .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
     .showSwaggerUILink(this.showSwaggerUILink)
     .build();
