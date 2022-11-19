@@ -76,8 +76,6 @@ public class CommonsController extends ApiController {
     commonsListIter.forEach(commonsList::add);
 
     List<CommonsPlus> commonsPlusList1 = commonsList.stream()
-      // .filter(c -> (commonsRepository.getNumCows(c.getId())).isPresent())
-      // .filter(c -> (commonsRepository.getNumUsers(c.getId())).isPresent())
       .map(c->toCommonsPlus(c))
       .collect(Collectors.toList());
 
