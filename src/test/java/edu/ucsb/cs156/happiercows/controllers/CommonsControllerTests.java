@@ -267,7 +267,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     commons.setDegradationRate(parameters.getDegradationRate());
 
     parameters.setShowLeaderboard(false);
-    commons.setDegradationRate(parameters.getDegradationRate());
+    commons.setShowLeaderboard(parameters.getShowLeaderboard());
 
     requestBody = objectMapper.writeValueAsString(parameters);
 
