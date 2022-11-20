@@ -105,6 +105,12 @@
             <version>4.2.0</version>
           </dependency>
 
+        <!-- to manage security context in async threads; see: https://www.baeldung.com/spring-security-async-principal-propagation -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
