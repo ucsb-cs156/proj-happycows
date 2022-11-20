@@ -233,7 +233,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         .startingDate(someTime)
         .endingDate(someOtherTime)
         .degradationRate(50.0)
-        .showLeaderboard(false)
+        .showLeaderboard(true)
         .build();
 
     Commons commons = Commons.builder()
@@ -244,7 +244,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         .startingDate(someTime)
         .endingDate(someOtherTime)
         .degradationRate(50.0)
-        .showLeaderboard(false)
+        .showLeaderboard(true)
         .build();
 
     String requestBody = objectMapper.writeValueAsString(parameters);
@@ -265,6 +265,9 @@ public class CommonsControllerTests extends ControllerTestCase {
     commons.setMilkPrice(parameters.getMilkPrice());
     parameters.setDegradationRate(parameters.getDegradationRate() + 1.00);
     commons.setDegradationRate(parameters.getDegradationRate());
+
+    parameters.setShowLeaderboard(parameters.getShowLeaderboard());
+    commons.setShowLeaderboard(parameters.getShowLeaderboard());
 
     requestBody = objectMapper.writeValueAsString(parameters);
 
@@ -644,13 +647,9 @@ public class CommonsControllerTests extends ControllerTestCase {
               .andExpect(status().is(404)).andReturn();
       verify(commonsRepository, times(1)).findById(2L);
 
-
-
-      String responseString = response.getResponse().getContentAsString();
-
       String expectedString = "{\"message\":\"Commons with id 2 not found\",\"type\":\"EntityNotFoundException\"}";
 
-      Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+      Map<String, Object> expectedJson = mapper.readValue(expectedString, new TypeReference<Map<String,Object>>() {} );
       Map<String, Object> jsonResponse = responseToJson(response);
       assertEquals(expectedJson, jsonResponse);
   }
@@ -721,7 +720,6 @@ public class CommonsControllerTests extends ControllerTestCase {
     expectedCommons.add(Commons1);
 
     List<CommonsPlus> expectedCommonsPlus = new ArrayList<CommonsPlus>();
-    List<CommonsPlus> dummy = new ArrayList<CommonsPlus>();
     CommonsPlus CommonsPlus1 = CommonsPlus.builder()
         .commons(Commons1)
         .totalCows(50)
