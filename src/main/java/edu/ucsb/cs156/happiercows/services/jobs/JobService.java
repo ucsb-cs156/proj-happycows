@@ -3,6 +3,8 @@ package edu.ucsb.cs156.happiercows.services.jobs;
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.CurrentUserService;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class JobService {
   @Autowired
   private JobsRepository jobsRepository;
@@ -22,26 +25,22 @@ public class JobService {
   @Autowired
   private JobService self;
 
-
   public Job runAsJob(JobContextConsumer jobFunction) {
+
     Job job = Job.builder()
       .createdBy(currentUserService.getUser())
       .status("running")
       .build();
 
     jobsRepository.save(job);
-    self.runJobAsync(job, jobFunction, SecurityContextHolder.getContext());
+    self.runJobAsync(job, jobFunction);
 
     return job;
   }
 
-  
-
   @Async
-  public void runJobAsync(Job job, JobContextConsumer jobFunction, SecurityContext securityContext) {
+  public void runJobAsync(Job job, JobContextConsumer jobFunction) {
     JobContext context = new JobContext(jobsRepository, job);
-
-    SecurityContextHolder.setContext(securityContext);
 
     try {
       jobFunction.accept(context);

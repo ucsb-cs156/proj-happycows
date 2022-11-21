@@ -181,7 +181,6 @@ public class CommonsControllerTests extends ControllerTestCase {
         .build();
 
     String requestBody = objectMapper.writeValueAsString(parameters);
-    String expectedResponse = objectMapper.writeValueAsString(commons);
 
     when(commonsRepository.save(commons))
         .thenReturn(commons);
@@ -233,7 +232,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         .startingDate(someTime)
         .endingDate(someOtherTime)
         .degradationRate(50.0)
-        .showLeaderboard(false)
+        .showLeaderboard(true)
         .build();
 
     Commons commons = Commons.builder()
@@ -244,7 +243,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         .startingDate(someTime)
         .endingDate(someOtherTime)
         .degradationRate(50.0)
-        .showLeaderboard(false)
+        .showLeaderboard(true)
         .build();
 
     String requestBody = objectMapper.writeValueAsString(parameters);
@@ -263,8 +262,12 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     parameters.setMilkPrice(parameters.getMilkPrice() + 3.00);
     commons.setMilkPrice(parameters.getMilkPrice());
+
     parameters.setDegradationRate(parameters.getDegradationRate() + 1.00);
     commons.setDegradationRate(parameters.getDegradationRate());
+
+    parameters.setShowLeaderboard(false);
+    commons.setShowLeaderboard(parameters.getShowLeaderboard());
 
     requestBody = objectMapper.writeValueAsString(parameters);
 
@@ -644,10 +647,6 @@ public class CommonsControllerTests extends ControllerTestCase {
               .andExpect(status().is(404)).andReturn();
       verify(commonsRepository, times(1)).findById(2L);
 
-
-
-      String responseString = response.getResponse().getContentAsString();
-
       String expectedString = "{\"message\":\"Commons with id 2 not found\",\"type\":\"EntityNotFoundException\"}";
 
       Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
@@ -698,9 +697,8 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.empty());
 
-    MvcResult response;
     try {
-      response = mockMvc
+      mockMvc
           .perform(delete("/api/commons/2/users/1").with(csrf()).contentType(MediaType.APPLICATION_JSON)
               .characterEncoding("utf-8").content(requestBody))
           .andExpect(status().is(204)).andReturn();
@@ -718,20 +716,44 @@ public class CommonsControllerTests extends ControllerTestCase {
   public void getCommonsPlusTest() throws Exception {
     List<Commons> expectedCommons = new ArrayList<Commons>();
     Commons Commons1 = Commons.builder().name("TestCommons1").id(1L).build();
-    expectedCommons.add(Commons1);
+    Commons Commons2 = Commons.builder().name("TestCommons2").id(2L).build();
+    Commons Commons3 = Commons.builder().name("TestCommons3").id(3L).build();
 
-    List<CommonsPlus> expectedCommonsPlus = new ArrayList<CommonsPlus>();
-    List<CommonsPlus> dummy = new ArrayList<CommonsPlus>();
-    CommonsPlus CommonsPlus1 = CommonsPlus.builder()
+    expectedCommons.add(Commons1);
+    expectedCommons.add(Commons2);
+    expectedCommons.add(Commons3);
+
+    List<CommonsPlus> expectedCommonsPlusList = new ArrayList<CommonsPlus>();
+    CommonsPlus commonsPlus1 = CommonsPlus.builder()
         .commons(Commons1)
         .totalCows(50)
         .totalUsers(20)
         .build();
 
-    expectedCommonsPlus.add(CommonsPlus1);
+    CommonsPlus commonsPlus2 = CommonsPlus.builder()
+        .commons(Commons2)
+        .totalCows(0)
+        .totalUsers(0)
+        .build();
+
+
+    CommonsPlus commonsPlus3 = CommonsPlus.builder()
+        .commons(Commons3)
+        .totalCows(60)
+        .totalUsers(30)
+        .build();
+
+    expectedCommonsPlusList.add(commonsPlus1);
+    expectedCommonsPlusList.add(commonsPlus2);
+    expectedCommonsPlusList.add(commonsPlus3);
+
     when(commonsRepository.findAll()).thenReturn(expectedCommons);
-    when(commonsRepository.getNumCows(1L)).thenReturn(Optional.of(50));
-    when(commonsRepository.getNumUsers(1L)).thenReturn(Optional.of(20));
+    when(commonsRepository.getNumCows(eq(1L))).thenReturn(Optional.of(50));
+    when(commonsRepository.getNumUsers(eq(1L))).thenReturn(Optional.of(20));
+    when(commonsRepository.getNumCows(eq(2L))).thenReturn(Optional.empty());
+    when(commonsRepository.getNumUsers(eq(2L))).thenReturn(Optional.empty());
+    when(commonsRepository.getNumCows(eq(3L))).thenReturn(Optional.of(60));
+    when(commonsRepository.getNumUsers(eq(3L))).thenReturn(Optional.of(30));
 
     MvcResult response = mockMvc.perform(get("/api/commons/allplus").contentType("application/json"))
         .andExpect(status().isOk()).andReturn();
@@ -742,7 +764,8 @@ public class CommonsControllerTests extends ControllerTestCase {
     List<CommonsPlus> actualCommonsPlus = objectMapper.readValue(responseString,
         new TypeReference<List<CommonsPlus>>() {
         });
-    assertEquals(actualCommonsPlus, expectedCommonsPlus);
-  }
 
+    assertEquals(expectedCommonsPlusList, actualCommonsPlus);
+  
+    }
 }
