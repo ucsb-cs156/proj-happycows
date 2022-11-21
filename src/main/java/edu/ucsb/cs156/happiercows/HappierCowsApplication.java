@@ -29,7 +29,8 @@ public class HappierCowsApplication {
         ZonedDateTime now = ZonedDateTime.now();
         return Optional.of(now);
       };
-
+  }
+  
   // See: https://www.baeldung.com/spring-security-async-principal-propagation
   @Bean
   public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(ThreadPoolTaskExecutor delegate) {
