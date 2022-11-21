@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReport;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
+import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealth;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
@@ -71,28 +73,21 @@ public class JobsController extends ApiController {
         MilkTheCowsJob milkTheCowsJob = MilkTheCowsJob.builder().build();
         return jobService.runAsJob(milkTheCowsJob);
     }
+
     @ApiOperation(value = "Launch Job to Update Cow Health")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updatecowhealth")
     public Job launchJobToUpdateCowHealth() {
-
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Updating cow health...");
-            ctx.log("This is where the code to update cow health will go.");
-            ctx.log("Cow health has been updated!");
-          });
+        UpdateCowHealth updateCowHealth = UpdateCowHealth.builder().build();
+        return jobService.runAsJob(updateCowHealth);
     }
 
     @ApiOperation(value = "Launch Job for Instructor Report")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/instructorreport")
     public Job launchJobInstructorReport() {
-
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Generating instructor report...");
-            ctx.log("This is where the code to produce instructor report will go.");
-            ctx.log("Instructor report has been produced!");
-          });
+        InstructorReport instructorReport = InstructorReport.builder().build();
+        return jobService.runAsJob(instructorReport);
     }
 
 }
