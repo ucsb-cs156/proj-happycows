@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
+import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJob;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJob;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
@@ -78,11 +80,8 @@ public class JobsController extends ApiController {
     public Job launchUpdateHealthJob(
     ) {
 
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Starting to update cow health.");
-            ctx.log("This is where the code to update the cow's health will go");
-            ctx.log("Cows Health has been updated!");
-          });
+        UpdateCowHealthJob updateCowHealthJob = UpdateCowHealthJob.builder().build();
+        return jobService.runAsJob(updateCowHealthJob);
     }
 
     @ApiOperation(value = "Launch Instructor Report Job (click fail if you want to test exception handling)")
@@ -91,11 +90,8 @@ public class JobsController extends ApiController {
     public Job launchInstructorReportJob(
     ) {
 
-        return jobService.runAsJob(ctx -> {
-            ctx.log("Starting insrtuctor report");
-            ctx.log("This is where the code for the instructor report will go");
-            ctx.log("Instructor report job completed");
-          });
+        InstructorReportJob instructorReportJob = InstructorReportJob.builder().build();
+        return jobService.runAsJob(instructorReportJob);
     }
 
 }
