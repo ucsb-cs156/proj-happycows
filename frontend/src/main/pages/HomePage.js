@@ -50,9 +50,6 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
-
-      {console.log('commons', commons, 'commonsjoined', commonsJoined, '\n\n\n', commons.filter(unjoinedFilter(commonsJoined)))}
-
       <BasicLayout>
         <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">Howdy Farmer</h1>
         <Container>
