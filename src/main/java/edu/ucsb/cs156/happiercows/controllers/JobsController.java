@@ -76,7 +76,7 @@ public class JobsController extends ApiController {
 
     @ApiOperation(value = "Launch Update Cow Health Job (click fail if you want to test exception handling)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/launch/updatehealthjob")
+    @PostMapping("/launch/updatecowhealthjob")
     public Job launchUpdateHealthJob(
     ) {
 

@@ -192,7 +192,7 @@ public class JobsControllerTests extends ControllerTestCase {
     public void admin_can_launch_update_cow_health_job() throws Exception {
         // act
         MvcResult response = mockMvc.perform(post("/api/jobs/launch/updatecowhealthjob").with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+        .andExpect(status().isOk()).andReturn();
 
         // assert
         String responseString = response.getResponse().getContentAsString();
