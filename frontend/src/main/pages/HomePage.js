@@ -50,15 +50,23 @@ export default function HomePage() {
 
   return (
     <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
+
+      {console.log('commons', commons, 'commonsjoined', commonsJoined, '\n\n\n', commons.filter(unjoinedFilter(commonsJoined)))}
+
       <BasicLayout>
         <h1 data-testid="homePage-title" style={{ fontSize: "75px", borderRadius: "7px", backgroundColor: "white", opacity: ".9" }} className="text-center border-0 my-3">Howdy Farmer</h1>
         <Container>
           <Row>
             <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
-            <Col sm><CommonsList commonList={commons} title="Join A Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
+            <Col sm><CommonsList commonList={commons.filter(unjoinedFilter(commonsJoined))} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>
       </BasicLayout>
     </div>
   )
+}
+
+function unjoinedFilter(commonsJoined) {
+  const ids = commonsJoined.map(commons => commons.id);
+  return el => !ids.includes(el.id);
 }
