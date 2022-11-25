@@ -4,6 +4,9 @@ import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
 import Accordion from 'react-bootstrap/Accordion';
 import TestJobForm from "main/components/Jobs/TestJobForm";
+import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobForm";
+import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
+
 import JobComingSoon from "main/components/Jobs/JobComingSoon";
 
 import { useBackendMutation } from "main/utils/useBackend";
@@ -43,24 +46,6 @@ const AdminJobsPage = () => {
             [],
             { refetchInterval: refreshJobsIntervalMilliseconds }
         );
-    // Stryker enable  all 
-
-    const jobLaunchers = [
-        {
-            name: "Update Cow Health",
-            form: <JobComingSoon />
-        },
-        {
-            name: "Milk The Cows",
-            form: <JobComingSoon />
-        },
-        {
-            name: "Instructor Report",
-            form: <JobComingSoon />
-        },
-    ]
-
-
     return (
         <BasicLayout>
             <h2 className="p-3">Launch Jobs</h2>
@@ -71,16 +56,24 @@ const AdminJobsPage = () => {
                         <TestJobForm submitAction={submitTestJob} />
                     </Accordion.Body>
                 </Accordion.Item>
-                {
-                    jobLaunchers.map((jobLauncher, index) => (
-                        <Accordion.Item eventKey={index + 1}>
-                            <Accordion.Header>{jobLauncher.name}</Accordion.Header>
-                            <Accordion.Body>
-                                {jobLauncher.form}
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    ))
-                }
+               <Accordion.Item eventKey="1">
+                   <Accordion.Header>Milk the Cows</Accordion.Header>
+                   <Accordion.Body>
+                       <JobComingSoon/>
+                   </Accordion.Body>
+               </Accordion.Item>
+               <Accordion.Item eventKey="2">
+                   <Accordion.Header>Instructor Report</Accordion.Header>
+                   <Accordion.Body>
+                       <InstructorReportJobForm submitAction={submitTestJob} />
+                   </Accordion.Body>
+               </Accordion.Item>
+               <Accordion.Item eventKey="3">
+                   <Accordion.Header>Update Cow Health</Accordion.Header>
+                   <Accordion.Body>
+                       <UpdateCowHealthJobForm submitAction={submitTestJob} />
+                   </Accordion.Body>
+               </Accordion.Item>
             </Accordion>
 
             <h2 className="p-3">Job Status</h2>
