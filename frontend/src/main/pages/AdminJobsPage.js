@@ -7,7 +7,7 @@ import TestJobForm from "main/components/Jobs/TestJobForm";
 import JobComingSoon from "main/components/Jobs/JobComingSoon";
 import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobForm";
 import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
-import MilkTheCowsJobForm from "main/components/Jobs/MilkTheCowsJobForm";
+//import MilkTheCowsJobForm from "main/components/Jobs/MilkTheCowsJobForm";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const AdminJobsPage = () => {
