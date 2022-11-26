@@ -8,8 +8,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
+import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.context.annotation.Bean;
+import java.time.ZonedDateTime;
+import java.util.Optional;
+
 @SpringBootApplication
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 @EnableAsync
 public class HappierCowsApplication {
 
@@ -17,6 +22,15 @@ public class HappierCowsApplication {
     SpringApplication.run(HappierCowsApplication.class, args);
   }
 
+
+  @Bean
+  public DateTimeProvider utcDateTimeProvider() {
+      return () -> {
+        ZonedDateTime now = ZonedDateTime.now();
+        return Optional.of(now);
+      };
+  }
+  
   // See: https://www.baeldung.com/spring-security-async-principal-propagation
   @Bean
   public DelegatingSecurityContextAsyncTaskExecutor taskExecutor(ThreadPoolTaskExecutor delegate) {
@@ -33,6 +47,7 @@ public class HappierCowsApplication {
     executor.setThreadNamePrefix("HappierCows-");
     executor.initialize();
     return executor;
+
   }
 
 }
