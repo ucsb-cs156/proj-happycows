@@ -58,7 +58,7 @@ const AdminJobsPage = () => {
                     </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
-                   <Accordion.Header>Milk the Cows</Accordion.Header>
+                   <Accordion.Header>Milk The Cows</Accordion.Header>
                    <Accordion.Body>
                        <JobComingSoon/>
                    </Accordion.Body>
