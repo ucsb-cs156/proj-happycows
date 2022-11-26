@@ -16,6 +16,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -187,4 +188,62 @@ public class JobsControllerTests extends ControllerTestCase {
 
         assertNotNull(jobReturned.getStatus());
     }
+
+  @WithMockUser(roles = { "ADMIN" })
+  @Test
+  public void admin_can_launch_update_cow_health() throws Exception {
+
+    // arrange
+
+    User user = currentUserService.getUser();
+
+    Job jobStarted = Job.builder()
+        .id(0L)
+        .createdBy(user)
+        .createdAt(null)
+        .updatedAt(null)
+        .status("running")
+        .log("Updating cow health...")
+        .build();
+
+    Job jobCompleted = Job.builder()
+        .id(0L)
+        .createdBy(user)
+        .createdAt(null)
+        .updatedAt(null)
+        .status("complete")
+        .log("Updating cow health...\nThis is where the code to update cow health will go.\nCow health has been updated!")
+        .build();
+
+    when(jobsRepository.save(any(Job.class))).thenReturn(jobStarted).thenReturn(jobCompleted);
+
+    // act
+    MvcResult response = mockMvc.perform(post("/api/jobs/launch/updatecowhealth").with(csrf()))
+        .andExpect(status().isOk()).andReturn();
+
+    // assert
+    String responseString = response.getResponse().getContentAsString();
+    Job jobReturned = objectMapper.readValue(responseString, Job.class);
+
+    assertNotNull(jobReturned.getStatus());
+
+    
+  }
+
+  @WithMockUser(roles = { "ADMIN" })
+  @Test
+  public void admin_can_launch_instructor_report() throws Exception {
+
+    // act
+    MvcResult response = mockMvc.perform(post("/api/jobs/launch/instructorreport").with(csrf()))
+        .andExpect(status().isOk()).andReturn();
+
+    // assert
+    String responseString = response.getResponse().getContentAsString();
+    Job jobReturned = objectMapper.readValue(responseString, Job.class);
+
+    assertNotNull(jobReturned.getStatus());
+
+    
+  }
 }

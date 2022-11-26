@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReport;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
+import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealth;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
@@ -71,4 +73,21 @@ public class JobsController extends ApiController {
         MilkTheCowsJob milkTheCowsJob = MilkTheCowsJob.builder().build();
         return jobService.runAsJob(milkTheCowsJob);
     }
+
+    @ApiOperation(value = "Launch Job to Update Cow Health")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/updatecowhealth")
+    public Job launchJobToUpdateCowHealth() {
+        UpdateCowHealth updateCowHealth = UpdateCowHealth.builder().build();
+        return jobService.runAsJob(updateCowHealth);
+    }
+
+    @ApiOperation(value = "Launch Job for Instructor Report")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/launch/instructorreport")
+    public Job launchJobInstructorReport() {
+        InstructorReport instructorReport = InstructorReport.builder().build();
+        return jobService.runAsJob(instructorReport);
+    }
+
 }
