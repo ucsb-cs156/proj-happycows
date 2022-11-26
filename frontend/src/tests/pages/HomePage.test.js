@@ -85,8 +85,13 @@ describe("HomePage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId("commonsCard-button-Join-1")).toBeInTheDocument();
-        const joinButton = screen.getByTestId("commonsCard-button-Join-1");
+        expect(await screen.findByTestId("commonsCard-button-Visit-1")).toBeInTheDocument();
+        const visit1Button = screen.getByTestId("commonsCard-button-Visit-1");
+        fireEvent.click(visit1Button);
+
+        expect(await screen.findByTestId("commonsCard-button-Join-4")).toBeInTheDocument();
+        const joinButton = screen.getByTestId("commonsCard-button-Join-4");
         fireEvent.click(joinButton);
+
     });
 });
