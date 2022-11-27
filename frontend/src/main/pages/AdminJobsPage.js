@@ -19,10 +19,25 @@ const AdminJobsPage = () => {
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
         method: "POST"
     });
+    const objectToAxiosParamsInstructorReportJob = (data) => ({
 
+    });
+    const objectToAxiosParamsUpdateCowHealthJob = (data) => ({
+
+    });
     // Stryker disable all
     const testJobMutation = useBackendMutation(
         objectToAxiosParamsTestJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+    const instructorReportJobMutation = useBackendMutation(
+        objectToAxiosParamsInstructorReportJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+    const updateCowHealthJobMutation = useBackendMutation(
+        objectToAxiosParamsUpdateCowHealthJob,
         {  },
         ["/api/jobs/all"]
     );
@@ -33,11 +48,13 @@ const AdminJobsPage = () => {
         testJobMutation.mutate(data);
     }
 
-    const submitIntructorReportJob = async (data) => {
-        console.log("submitIntructorReportJob", data);
+    const submitInstructorReportJob = async (data) => {
+        console.log("submitInstructorReportJob", data);
+        instructorReportJobMutation.mutate(data);
     }
     const submitUpdateCowHealthJob = async (data) => {
         console.log("submitUpdateCowHealthJob", data);
+        updateCowHealthJobMutation.mutate(data);
     }
     // Stryker disable all 
     const { data: jobs, error: _error, status: _status } =
@@ -63,7 +80,7 @@ const AdminJobsPage = () => {
         },
         {
             name: "Instructor Report",
-            form: <InstructorReportJobForm submitAction={submitIntructorReportJob}/>
+            form: <InstructorReportJobForm submitAction={submitInstructorReportJob}/>
         },
         {
             name: "Test Job",
