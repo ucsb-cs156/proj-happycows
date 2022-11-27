@@ -4,10 +4,10 @@ import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
 import Accordion from 'react-bootstrap/Accordion';
 import TestJobForm from "main/components/Jobs/TestJobForm";
-import JobComingSoon from "main/components/Jobs/JobComingSoon";
+//import JobComingSoon from "main/components/Jobs/JobComingSoon";
 import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobForm";
 import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
-//import MilkTheCowsJobForm from "main/components/Jobs/MilkTheCowsJobForm";
+import MilkTheCowsJobForm from "main/components/Jobs/MilkTheCowsJobForm";
 import { useBackendMutation } from "main/utils/useBackend";
 
 const AdminJobsPage = () => {
@@ -34,6 +34,12 @@ const AdminJobsPage = () => {
         testJobMutation.mutate(data);
     }
 
+    const submitIntructorReportJob = async (data) => {
+        console.log("submitIntructorReportJob", data);
+    }
+    const submitUpdateCowHealthJob = async (data) => {
+        console.log("submitUpdateCowHealthJob", data);
+    }
     // Stryker disable all 
     const { data: jobs, error: _error, status: _status } =
         useBackend(
@@ -47,34 +53,39 @@ const AdminJobsPage = () => {
         );
     // Stryker enable  all 
 
+    const jobLaunchers = [
+        {
+            name: "Update Cow Health",
+            form: <UpdateCowHealthJobForm submitAction={submitUpdateCowHealthJob}/>
+        },
+        {
+            name: "Milk The Cows",
+            form: <MilkTheCowsJobForm/>
+        },
+        {
+            name: "Instructor Report",
+            form: <InstructorReportJobForm submitAction={submitIntructorReportJob}/>
+        },
+        {
+            name: "Test Job",
+            form: <TestJobForm submitAction={submitTestJob} />
+        },
+    ]
+
     return (
         <BasicLayout>
             <h2 className="p-3">Launch Jobs</h2>
             <Accordion>
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Test Job</Accordion.Header>
-                    <Accordion.Body>
-                        <TestJobForm submitAction={submitTestJob} />
-                    </Accordion.Body>
-                </Accordion.Item>
-                <Accordion.Item eventKey="1">
-                   <Accordion.Header>Milk The Cows</Accordion.Header>
-                   <Accordion.Body>
-                       <JobComingSoon/>
-                   </Accordion.Body>
-               </Accordion.Item>
-               <Accordion.Item eventKey="2">
-                   <Accordion.Header>Instructor Report</Accordion.Header>
-                   <Accordion.Body>
-                       <InstructorReportJobForm submitAction={submitTestJob} />
-                   </Accordion.Body>
-               </Accordion.Item>
-               <Accordion.Item eventKey="3">
-                   <Accordion.Header>Update Cow Health</Accordion.Header>
-                   <Accordion.Body>
-                       <UpdateCowHealthJobForm submitAction={submitTestJob} />
-                   </Accordion.Body>
-               </Accordion.Item>
+                {
+                    jobLaunchers.map((jobLauncher, index) => (
+                        <Accordion.Item eventKey={index + 1}>
+                            <Accordion.Header>{jobLauncher.name}</Accordion.Header>
+                            <Accordion.Body>
+                                {jobLauncher.form}
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    ))
+                }
             </Accordion>
 
             <h2 className="p-3">Job Status</h2>
