@@ -18,6 +18,7 @@ import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
+import edu.ucsb.cs156.happiercows.errors.NotEnoughCowException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -101,7 +102,7 @@ public class UserCommonsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @PutMapping("/sell")
   public ResponseEntity<String> putUserCommonsByIdSell(
-          @ApiParam("commonsId") @RequestParam Long commonsId) throws JsonProcessingException {
+          @ApiParam("commonsId") @RequestParam Long commonsId) throws JsonProcessingException, NotEnoughCowException {
         User u = getCurrentUser().getUser();
         Long userId = u.getId();
 
@@ -115,7 +116,9 @@ public class UserCommonsController extends ApiController {
         if(userCommons.getNumOfCows() >= 1 ){
           userCommons.setTotalWealth(userCommons.getTotalWealth() + commons.getCowPrice());
           userCommons.setNumOfCows(userCommons.getNumOfCows() - 1);
-        }
+        } else {
+          throw new NotEnoughCowException("You don't have any cow left to sell!");
+      }
         userCommonsRepository.save(userCommons);
 
         String body = mapper.writeValueAsString(userCommons);
