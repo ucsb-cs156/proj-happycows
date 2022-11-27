@@ -19,12 +19,14 @@ const AdminJobsPage = () => {
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
         method: "POST"
     });
+    /*
     const objectToAxiosParamsInstructorReportJob = (data) => ({
 
     });
     const objectToAxiosParamsUpdateCowHealthJob = (data) => ({
 
     });
+    */
     // Stryker disable all
     const testJobMutation = useBackendMutation(
         objectToAxiosParamsTestJob,
@@ -32,12 +34,12 @@ const AdminJobsPage = () => {
         ["/api/jobs/all"]
     );
     const instructorReportJobMutation = useBackendMutation(
-        objectToAxiosParamsInstructorReportJob,
+        //objectToAxiosParamsInstructorReportJob,
         {  },
         ["/api/jobs/all"]
     );
     const updateCowHealthJobMutation = useBackendMutation(
-        objectToAxiosParamsUpdateCowHealthJob,
+        //objectToAxiosParamsUpdateCowHealthJob,
         {  },
         ["/api/jobs/all"]
     );
