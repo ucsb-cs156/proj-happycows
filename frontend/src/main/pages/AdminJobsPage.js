@@ -4,7 +4,6 @@ import JobsTable from "main/components/Jobs/JobsTable";
 import { useBackend } from "main/utils/useBackend";
 import Accordion from 'react-bootstrap/Accordion';
 import TestJobForm from "main/components/Jobs/TestJobForm";
-//import JobComingSoon from "main/components/Jobs/JobComingSoon";
 import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobForm";
 import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
 import MilkTheCowsJobForm from "main/components/Jobs/MilkTheCowsJobForm";

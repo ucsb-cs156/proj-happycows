@@ -12,8 +12,6 @@ const {
   { defaultValues: defaultValues }
 );
 // Stryker enable all
-//const testid = "UpdateCowHealthJobForm";
-
 return (
   <Form onSubmit={handleSubmit(submitAction)}>
 

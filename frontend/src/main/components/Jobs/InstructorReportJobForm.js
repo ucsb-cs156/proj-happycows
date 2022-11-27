@@ -12,8 +12,6 @@ const {
   { defaultValues: defaultValues }
 );
 // Stryker enable all
-//const testid = "InstructorReportJobForm";
-
 return (
   <Form onSubmit={handleSubmit(submitAction)}>
 
