@@ -60,13 +60,8 @@ export default function PlayPage() {
       }
     );
   // Stryker enable all 
-
   const onSuccessBuy = () => {
-    if (userCommons.totalWealth >= commons.cowPrice) {
-      toast(`Cow bought!`);
-    } else {
-      toast('Need more money to buy a cow');
-    }
+    toast(`Cow bought!`);
   }
 
   const objectToAxiosParamsBuy = (newUserCommons) => ({
