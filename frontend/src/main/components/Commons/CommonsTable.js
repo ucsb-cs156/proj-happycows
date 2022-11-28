@@ -10,7 +10,7 @@ export default function CommonsTable({ commons, currentUser }) {
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/admin/editcommons/${cell.row.values.id}`)
+        navigate(`/admin/editcommons/${cell.row.values["commons.id"]}`)
     }
 
     // Stryker disable all : hard to test for query caching
@@ -22,10 +22,13 @@ export default function CommonsTable({ commons, currentUser }) {
     // Stryker enable all
 
     // Stryker disable next-line all : TODO try to make a good test for this
-    const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
+    const deleteCallback = async (cell) => { 
+        console.log("deleteCallback cell=", cell);
+        deleteMutation.mutate(cell); 
+    }
 
     const leaderboardCallback = (cell) => {
-        navigate(`/leaderboard/${cell.row.values.id}`)
+        navigate(`/leaderboard/${cell.row.values["commons.id"]}`)
     }
 
     const columns = [
@@ -41,7 +44,7 @@ export default function CommonsTable({ commons, currentUser }) {
         {
             Header:'Cow Price',
             accessor: row => row.commons.cowPrice,
-            id: 'cowPrice'
+            id: 'commons.cowPrice'
         },
         {
             Header:'Milk Price',
@@ -78,12 +81,16 @@ export default function CommonsTable({ commons, currentUser }) {
 
     const columnsIfAdmin = [
         ...columns,
-        ButtonColumn("Edit", "primary", editCallback, testid),
-        ButtonColumn("Delete", "danger", deleteCallback, testid),
-        ButtonColumn("Leaderboard", "secondary", leaderboardCallback, testid)
+        ButtonColumn("Edit",
+"primary", editCallback, testid),
+        ButtonColumn("Delete",
+"danger", deleteCallback, testid),
+        ButtonColumn("Leaderboard",
+"secondary", leaderboardCallback, testid)
     ];
 
-    const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN") ? columnsIfAdmin : columns;
+    const columnsToDisplay = hasRole(currentUser,
+"ROLE_ADMIN") ? columnsIfAdmin : columns;
 
     return <OurTable
         data={commons}
