@@ -15,6 +15,16 @@ jest.mock("react-router-dom", () => ({
     })
 }));
 
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
+
 describe("PlayPage tests", () => {
     const axiosMock = new AxiosMockAdapter(axios);
     const queryClient = new QueryClient();
@@ -28,8 +38,8 @@ describe("PlayPage tests", () => {
         };
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, userCommons);
         axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
             id: 1,
@@ -65,12 +75,26 @@ describe("PlayPage tests", () => {
             </QueryClientProvider>
         );
 
+				const axiosMock = new AxiosMockAdapter(axios);
+        axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
+            id: 1,
+						cowPrice: 10,
+            name: "Sample Commons"
+        });
+        axiosMock.onPut("/api/usercommons/buy").reply(200, {
+            commonsId: 1,
+            id: 1,
+            totalWealth: 100,
+            userId: 1
+        });
 				expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
         fireEvent.click(buyCowButton);
 
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
-				
+				console.log(axiosMock.history)
+
+				// expect(mockToast).toBeCalledWith("test")
         const sellCowButton = screen.getByTestId("sell-cow-button");
         fireEvent.click(sellCowButton);
 

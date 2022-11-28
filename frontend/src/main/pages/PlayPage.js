@@ -66,9 +66,8 @@ export default function PlayPage() {
 	// Thats why only need to compare the current totalWealth to the cowPrice, because this implies that 
 	// totalWealth - cowPrice aka current totalWealth will not be enough to buy a cow.
 		let response = "Cow Bought!"
-		/* istanbul ignore if */
 		if(userCommons.totalWealth < commons.cowPrice) response = `You can't buy a cow because you don't have enough money`
-		toast(response);
+		toast("wealth: " + userCommons.totalWealth + " cowPrice: " + commons.cowPrice);
 	}
 
   const objectToAxiosParamsBuy = (newUserCommons) => ({
