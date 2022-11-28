@@ -37,7 +37,7 @@ describe("PlayPage tests", () => {
     const COW_BUY_FAILURE_TOAST = "You can't buy a cow because you don't have enough money";
     // Expected toast strings for cow sale.
     const COW_SELL_TOAST = "Cow sold!";
-    const COW_SELL_FAILURE_TOAST = "You can't sell a cow because you don't have enough cows";
+    const COW_SELL_FAILURE_TOAST = "You have already sold all of your cows";
 
     // Spy on toasts and return all toasts displayed so far.
     function spyToasts() {
