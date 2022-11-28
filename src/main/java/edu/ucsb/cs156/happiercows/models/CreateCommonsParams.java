@@ -35,6 +35,7 @@ public class CreateCommonsParams {
   private LocalDateTime endingDate;
   @Builder.Default
   private Boolean showLeaderboard = false; 
+  @Builder.Default
   @NumberFormat
-  private Integer carryingCapacity;
+  private Integer carryingCapacity = 100;
 }
