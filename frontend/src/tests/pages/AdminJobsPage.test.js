@@ -20,7 +20,6 @@ describe("AdminJobsPage tests", () => {
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
-
     });
 
     test("renders without crashing", async () => {
@@ -60,7 +59,6 @@ describe("AdminJobsPage tests", () => {
         );
 
         expect(await screen.findByText("Test Job")).toBeInTheDocument();
-
         const testJobButton = screen.getByText("Test Job");
         expect(testJobButton).toBeInTheDocument();
         testJobButton.click();
@@ -79,6 +77,35 @@ describe("AdminJobsPage tests", () => {
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
         expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/testjob?fail=false&sleepMs=0");
+
+        expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
+        const chb = screen.getByText("Update Cow Health");
+        expect(chb).toBeInTheDocument();
+        chb.click();
+        const submitButton2 = screen.getByTestId("UpdateCowHealthJobForm-Submit-Button");
+        submitButton2.click();
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(2));
+        expect(axiosMock.history.post[1].url).toBe("/api/jobs/launch/updatecowhealthjob");
+
+        expect(await screen.findByText("Instructor Report")).toBeInTheDocument();
+        const irb = screen.getByText("Instructor Report");
+        expect(irb).toBeInTheDocument();
+        irb.click();
+        const submitButton4 = screen.getByTestId("InstructorReportJobForm-Submit-Button");
+        submitButton4.click();
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(3));
+        expect(axiosMock.history.post[2].url).toBe("/api/jobs/launch/instructorreportjob");
+
+        expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
+        const mcb = screen.getByText("Milk The Cows");
+        expect(mcb).toBeInTheDocument();
+        mcb.click();
+        const submitButton3 = screen.getByTestId("MilkCowsForm-Submit-Button");
+        submitButton3.click();
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(4));
+        expect(axiosMock.history.post[3].url).toBe("/api/jobs/launch/milkcows");
+
+
 });
 
 
