@@ -118,7 +118,7 @@ export default function PlayPage() {
     { onSuccess: onSuccessSell },
     [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`]
   );
-  // Stryker enable all
+  // Stryker enable all 
 
 
   const onSell = (userCommons) => {
