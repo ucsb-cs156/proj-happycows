@@ -15,6 +15,16 @@ jest.mock("react-router-dom", () => ({
     })
 }));
 
+const mockToast = jest.fn();
+jest.mock('react-toastify', () => {
+    const originalModule = jest.requireActual('react-toastify');
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x)
+    };
+});
+
 describe("PlayPage tests", () => {
     const axiosMock = new AxiosMockAdapter(axios);
     const queryClient = new QueryClient();
@@ -65,12 +75,12 @@ describe("PlayPage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
+				expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
         fireEvent.click(buyCowButton);
 
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
-
+				
         const sellCowButton = screen.getByTestId("sell-cow-button");
         fireEvent.click(sellCowButton);
 
