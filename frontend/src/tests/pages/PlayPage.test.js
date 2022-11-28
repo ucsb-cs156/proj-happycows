@@ -43,13 +43,9 @@ describe("PlayPage tests", () => {
         return () => toasts;
     }
 
-    const startingWealth = userCommons.totalWealth;
-
     beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
-
-        userCommons.totalWealth = startingWealth;
 
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
@@ -61,14 +57,7 @@ describe("PlayPage tests", () => {
         axiosMock.onGet("/api/profits/all/commons").reply(200, []);
 
         axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
-        axiosMock.onPut("/api/usercommons/buy").reply(_config => {
-            // Basic mock of cow purchase semantics.
-            if (userCommons.totalWealth >= sampleCommons.cowPrice) {
-                userCommons.totalWealth -= sampleCommons.cowPrice;
-                userCommons.numOfCows += 1;
-            }
-            return [200];
-        }, userCommons);
+        axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
     });
 
     test("renders without crashing", () => {
@@ -102,7 +91,7 @@ describe("PlayPage tests", () => {
         await waitFor(() => expect(axiosMock.history.put.length).toBe(2));
     });
 
-    test("buying cows produces correct toast depending on funds on hand", async () => {
+    test("buying cows produces correct toast with sufficient funds", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -121,23 +110,38 @@ describe("PlayPage tests", () => {
 
         expect(toasts().length).toBe(0);
 
-        // We expect to see the cow bought toast until the wealth on hand drops beneath the cow price.
-        let puts = 0;
-        while (wealth >= cowPrice) {
-            console.log('cow buy', puts)
-            fireEvent.click(buyCowButton);
-            // Wait for the cow to be bought. (Using ++ in toBe will not work.)
-            puts += 1;
-            await waitFor(() => expect(axiosMock.history.put.length).toBe(puts));
-            // Check the latest toast.
-            expect(toasts().slice(-1)[0][0]).toBe(expectedCowBoughtToast);
-            wealth -= cowPrice;
-        }
-        // We should no longer have enough funds to buy any further cows.
+        // Buying a cow with sufficient funds.
         fireEvent.click(buyCowButton);
+        await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+        expect(toasts()[0][0]).toBe(expectedCowBoughtToast);
+    });
+
+    test("buying cows produces correct toast with insufficient funds", async () => {
+        axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, {
+            ...userCommons,
+            totalWealth: 0
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        // Start spying toast messages.
+        const toasts = spyToasts();
+
+        const cowPrice = sampleCommons.cowPrice;
+        let wealth = userCommons.totalWealth;
+
+        expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
+        const buyCowButton = screen.getByTestId("buy-cow-button");
+
+        expect(toasts().length).toBe(0);
+
         fireEvent.click(buyCowButton);
-        // Check that the right message was displayed for a cow buy failure.
-        expect(toasts().slice(-1)[0][0]).toBe(expectedCowBuyFailureToast);
+        await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+        expect(toasts()[0][0]).toBe(expectedCowBuyFailureToast);
     });
 
     test("Make sure that both the Announcements and Welcome Farmer components show up", async () => {
