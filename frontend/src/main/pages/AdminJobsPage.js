@@ -8,6 +8,7 @@ import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobFor
 import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
 
 import JobComingSoon from "main/components/Jobs/JobComingSoon";
+import MilkCowsJobForm from "main/components/Jobs/MilkCowsJobForm";
 
 import { useBackendMutation } from "main/utils/useBackend";
 
@@ -16,6 +17,26 @@ const AdminJobsPage = () => {
     const refreshJobsIntervalMilliseconds = 5000;
 
     // test job 
+     // milking the cows job 
+
+     const objectToAxiosParamsMilkCowsJob = (_data) => ({
+        url: `/api/jobs/launch/milkcows`,
+        method: "POST"
+    });
+
+    // Stryker disable all
+    const milkCowsJobMutation = useBackendMutation(
+        objectToAxiosParamsMilkCowsJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+    // Stryker enable all
+
+    const submitMilkCowsJob = async (data) => {
+        console.log("submitMilkCowsJob, data=", data);
+        milkCowsJobMutation.mutate(data);
+    }
+
 
     const objectToAxiosParamsTestJob = (data) => ({
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
@@ -84,7 +105,7 @@ const AdminJobsPage = () => {
         },
         {
             name: "Milk The Cows",
-            form: <JobComingSoon/>
+            form:<MilkCowsJobForm submitAction={submitMilkCowsJob} />
         },
         {
             name: "Instructor Report",

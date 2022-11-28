@@ -51,6 +51,7 @@ public class SystemInfoControllerTests extends ControllerTestCase {
         .builder()
         .showSwaggerUILink(true)
         .springH2ConsoleEnabled(true)
+        .sourceRepo("String")
         .build();
     when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
     String expectedJson = mapper.writeValueAsString(systemInfo);

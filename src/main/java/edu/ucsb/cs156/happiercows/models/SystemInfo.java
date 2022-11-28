@@ -14,4 +14,5 @@ import lombok.AccessLevel;
 public class SystemInfo {
   private Boolean springH2ConsoleEnabled;
   private Boolean showSwaggerUILink;
+  private String sourceRepo;
 }
