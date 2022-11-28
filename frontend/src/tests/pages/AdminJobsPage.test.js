@@ -79,7 +79,83 @@ describe("AdminJobsPage tests", () => {
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
         expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/testjob?fail=false&sleepMs=0");
-});
+    });
 
+    test("user can submit a instructor report job", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminJobsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
 
+        expect(await screen.findByText("Instructor Report")).toBeInTheDocument();
+
+        const testJobButton = screen.getByText("Instructor Report");
+        expect(testJobButton).toBeInTheDocument();
+        testJobButton.click();
+
+        const submitButton = screen.getByTestId("InstructorReportJobForm-Submit-Button");
+
+        expect(submitButton).toBeInTheDocument();
+
+        submitButton.click();
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/instructorreport");
+    });
+
+    test("user can submit a update cow health job", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminJobsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
+
+        const testJobButton = screen.getByText("Update Cow Health");
+        expect(testJobButton).toBeInTheDocument();
+        testJobButton.click();
+
+        const submitButton = screen.getByTestId("UpdateCowHealthJobForm-Submit-Button");
+
+        expect(submitButton).toBeInTheDocument();
+
+        submitButton.click();
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+            
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/updatecowhealth");
+    });
+
+    test("user can submit a milk the cow job", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminJobsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
+
+        const testJobButton = screen.getByText("Milk The Cows");
+        expect(testJobButton).toBeInTheDocument();
+        testJobButton.click();
+
+        const submitButton = screen.getByTestId("MilkTheCowsJobForm-Submit-Button");
+
+        expect(submitButton).toBeInTheDocument();
+
+        submitButton.click();
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+            
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/milkthecowjob");
+    });
 });
