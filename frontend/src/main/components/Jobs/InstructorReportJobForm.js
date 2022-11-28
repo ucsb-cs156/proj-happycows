@@ -5,7 +5,6 @@ function InstructorReportJobForm({ submitAction }) {
 
   // Stryker disable all
   const {
-    formState: {},
     handleSubmit,
   } = useForm(
   );
