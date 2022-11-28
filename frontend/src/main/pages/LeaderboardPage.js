@@ -48,17 +48,20 @@ export default function LeaderboardPage() {
 
   const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commons.showLeaderboard );
   return (
-    <div style={{ backgroundSize: 'cover', background: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), backgroundImage: `url(${Background})`, 
-}}>
+    <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
         <BasicLayout>
-            <div className="pt-2">
-                <h1>Leaderboard</h1>
-                {
-                  showLeaderboard?
-                  (<LeaderboardTable leaderboardUsers={userCommons} currentUser={currentUser}/>) :
-                  (<p>You're not authorized to see the leaderboard.</p>)
-                }
-            </div>
+          <Container>
+            <Card>
+              <div className="pt-2">
+                  <h1>Leaderboard</h1>
+                  {
+                    showLeaderboard?
+                    (<LeaderboardTable leaderboardUsers={userCommons} currentUser={currentUser}/>) :
+                    (<p>You're not authorized to see the leaderboard.</p>)
+                  }
+              </div>
+            </Card>
+          </Container>
         </BasicLayout>
     </div>
   )
