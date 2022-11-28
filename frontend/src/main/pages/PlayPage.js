@@ -97,7 +97,7 @@ export default function PlayPage() {
   const onSuccessSell = () => {
     toast(userCommons.numOfCows >= 1 ?
       `Cow sold!` :
-      `You can't sell a cow because you don't have enough cows`);
+      `You have already sold all of your cows`);
   }
 
   // Stryker disable all 
