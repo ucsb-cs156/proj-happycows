@@ -22,17 +22,47 @@ const AdminJobsPage = () => {
         method: "POST"
     });
 
+    const objectToAxiosParamsInstructorJob = () => ({
+        url: `/api/jobs/launch/instructorreportjob`,
+        method: "POST"
+    });
+
+
+    const objectToAxiosParamsCowHealthJob = () => ({
+        url: `/api/jobs/launch/updatecowhealthjob`,
+        method: "POST"
+    });
+
     // Stryker disable all
     const testJobMutation = useBackendMutation(
         objectToAxiosParamsTestJob,
         {  },
         ["/api/jobs/all"]
     );
-    // Stryker enable all
+
+    const UpdateCowHealthJobMutation = useBackendMutation(
+        objectToAxiosParamsCowHealthJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+
+    const InstructorReportJobMutation = useBackendMutation(
+        objectToAxiosParamsInstructorJob,
+        {  },
+        ["/api/jobs/all"]
+    );
 
     const submitTestJob = async (data) => {
         console.log("submitTestJob, data=", data);
         testJobMutation.mutate(data);
+    }
+    const submitUpdateCowHealthJob = async (data) => {
+        console.log("submitUpdateCowHealthJob, data=", data);
+        UpdateCowHealthJobMutation.mutate(data);
+    }
+    const submitInstructorReportJob = async (data) => {
+        console.log("submitInstructorReportJob, data=", data);
+        InstructorReportJobMutation.mutate(data);
     }
 
     // Stryker disable all 
@@ -46,6 +76,23 @@ const AdminJobsPage = () => {
             [],
             { refetchInterval: refreshJobsIntervalMilliseconds }
         );
+
+ const jobLaunchers = [
+        {
+            name: "Update Cow Health",
+            form: <UpdateCowHealthJobForm submitAction={submitUpdateCowHealthJob}/>
+        },
+        {
+            name: "Milk The Cows",
+            form: <JobComingSoon/>
+        },
+        {
+            name: "Instructor Report",
+            form:<InstructorReportJobForm submitAction={submitInstructorReportJob} />
+        },
+    ]
+
+
     return (
         <BasicLayout>
             <h2 className="p-3">Launch Jobs</h2>
@@ -56,24 +103,16 @@ const AdminJobsPage = () => {
                         <TestJobForm submitAction={submitTestJob} />
                     </Accordion.Body>
                 </Accordion.Item>
-               <Accordion.Item eventKey="1">
-                   <Accordion.Header>Milk the Cows</Accordion.Header>
-                   <Accordion.Body>
-                       <JobComingSoon/>
-                   </Accordion.Body>
-               </Accordion.Item>
-               <Accordion.Item eventKey="2">
-                   <Accordion.Header>Instructor Report</Accordion.Header>
-                   <Accordion.Body>
-                       <InstructorReportJobForm submitAction={submitTestJob} />
-                   </Accordion.Body>
-               </Accordion.Item>
-               <Accordion.Item eventKey="3">
-                   <Accordion.Header>Update Cow Health</Accordion.Header>
-                   <Accordion.Body>
-                       <UpdateCowHealthJobForm submitAction={submitTestJob} />
-                   </Accordion.Body>
-               </Accordion.Item>
+                {
+                    jobLaunchers.map((jobLauncher, index) => (
+                        <Accordion.Item eventKey={index + 1}>
+                            <Accordion.Header>{jobLauncher.name}</Accordion.Header>
+                            <Accordion.Body>
+                                {jobLauncher.form}
+                            </Accordion.Body>
+                        </Accordion.Item>
+                    ))
+                }
             </Accordion>
 
             <h2 className="p-3">Job Status</h2>
