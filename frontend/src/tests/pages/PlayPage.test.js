@@ -29,6 +29,8 @@ describe("PlayPage tests", () => {
 
     // Commons fixtures.
     const userCommons = userCommonsFixtures.oneUserCommons[0];
+    expect(userCommons.totalWealth).toBeGreaterThan(0);
+    expect(userCommons.numOfCows).toBeGreaterThan(0);
     const sampleCommons = commonsFixtures.oneCommons[0];
     // Expected toast strings for cow purchase.
     const COW_BUY_TOAST = "Cow bought!";
