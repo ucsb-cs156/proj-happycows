@@ -51,11 +51,11 @@ const AdminJobsPage = () => {
     }
 
     const submitInstructorReportJob = async (data) => {
-        console.log("submitInstructorReportJob", data);
+        console.log("submitInstructorReportJob, data=", data);
         instructorReportJobMutation.mutate(data);
     }
     const submitUpdateCowHealthJob = async (data) => {
-        console.log("submitUpdateCowHealthJob", data);
+        console.log("submitUpdateCowHealthJob, data=", data);
         updateCowHealthJobMutation.mutate(data);
     }
     // Stryker disable all 
