@@ -19,14 +19,20 @@ const AdminJobsPage = () => {
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
         method: "POST"
     });
-    /*
-    const objectToAxiosParamsInstructorReportJob = (data) => ({
-
+    
+    const objectToAxiosParamsInstructorReportJob = (_data) => ({
+        url: '/api/jobs/launch/instructorreport',
+        method: "POST"
     });
-    const objectToAxiosParamsUpdateCowHealthJob = (data) => ({
-
+    const objectToAxiosParamsUpdateCowHealthJob = (_data) => ({
+        url: '/api/jobs/launch/updatecowhealth',
+        method: "POST"
     });
-    */
+    const objectToAxiosParamsMilkTheCowsJob = (_data) => ({
+        url: '/api/jobs/launch/milkthecowjob',
+        method: "GET"
+    });
+    
     // Stryker disable all
     const testJobMutation = useBackendMutation(
         objectToAxiosParamsTestJob,
@@ -34,12 +40,17 @@ const AdminJobsPage = () => {
         ["/api/jobs/all"]
     );
     const instructorReportJobMutation = useBackendMutation(
-        //objectToAxiosParamsInstructorReportJob,
+        objectToAxiosParamsInstructorReportJob,
         {  },
         ["/api/jobs/all"]
     );
     const updateCowHealthJobMutation = useBackendMutation(
-        //objectToAxiosParamsUpdateCowHealthJob,
+        objectToAxiosParamsUpdateCowHealthJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+    const milkTheCowsJobMutation = useBackendMutation(
+        objectToAxiosParamsMilkTheCowsJob,
         {  },
         ["/api/jobs/all"]
     );
@@ -57,6 +68,10 @@ const AdminJobsPage = () => {
     const submitUpdateCowHealthJob = async (data) => {
         console.log("submitUpdateCowHealthJob, data=", data);
         updateCowHealthJobMutation.mutate(data);
+    }
+    const submitMilkTheCowsJob = async (data) => {
+        console.log("submitMilkTheCowsJob, data=", data);
+        milkTheCowsJobMutation.mutate(data);
     }
     // Stryker disable all 
     const { data: jobs, error: _error, status: _status } =
@@ -78,7 +93,7 @@ const AdminJobsPage = () => {
         },
         {
             name: "Milk The Cows",
-            form: <MilkTheCowsJobForm/>
+            form: <MilkTheCowsJobForm submitAction ={submitMilkTheCowsJob}/>
         },
         {
             name: "Instructor Report",
