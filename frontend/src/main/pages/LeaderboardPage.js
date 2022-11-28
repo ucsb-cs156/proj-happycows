@@ -49,7 +49,7 @@ export default function LeaderboardPage() {
   const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commons.showLeaderboard );
   return (
     <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})`, position: 'relative', 
-    '&::before': {
+    '&::after': {
       content: "",
       position: "absolute",
       left: 0,
