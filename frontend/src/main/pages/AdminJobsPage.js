@@ -6,8 +6,6 @@ import Accordion from 'react-bootstrap/Accordion';
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import InstructorReportJobForm from "main/components/Jobs/InstructorReportJobForm";
 import UpdateCowHealthJobForm from "main/components/Jobs/UpdateCowHealthJobForm";
-
-import JobComingSoon from "main/components/Jobs/JobComingSoon";
 import MilkCowsJobForm from "main/components/Jobs/MilkCowsJobForm";
 
 import { useBackendMutation } from "main/utils/useBackend";
@@ -16,27 +14,11 @@ const AdminJobsPage = () => {
 
     const refreshJobsIntervalMilliseconds = 5000;
 
-    // test job 
-     // milking the cows job 
-
-     const objectToAxiosParamsMilkCowsJob = (_data) => ({
+    // Stryker disable all
+    const objectToAxiosParamsMilkCowsJob = (_data) => ({
         url: `/api/jobs/launch/milkcows`,
         method: "POST"
     });
-
-    // Stryker disable all
-    const milkCowsJobMutation = useBackendMutation(
-        objectToAxiosParamsMilkCowsJob,
-        {  },
-        ["/api/jobs/all"]
-    );
-    // Stryker enable all
-
-    const submitMilkCowsJob = async (data) => {
-        console.log("submitMilkCowsJob, data=", data);
-        milkCowsJobMutation.mutate(data);
-    }
-
 
     const objectToAxiosParamsTestJob = (data) => ({
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
@@ -48,11 +30,23 @@ const AdminJobsPage = () => {
         method: "POST"
     });
 
-
+    // Stryker disable all
     const objectToAxiosParamsCowHealthJob = () => ({
         url: `/api/jobs/launch/updatecowhealthjob`,
         method: "POST"
     });
+
+    // Stryker disable all
+    const milkCowsJobMutation = useBackendMutation(
+        objectToAxiosParamsMilkCowsJob,
+        {  },
+        ["/api/jobs/all"]
+    );
+    // Stryker disable all
+    const submitMilkCowsJob = async (data) => {
+        console.log("submitMilkCowsJob, data=", data);
+        milkCowsJobMutation.mutate(data);
+    }
 
     // Stryker disable all
     const testJobMutation = useBackendMutation(
