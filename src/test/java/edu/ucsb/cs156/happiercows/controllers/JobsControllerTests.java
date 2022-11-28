@@ -178,7 +178,7 @@ public class JobsControllerTests extends ControllerTestCase {
     @Test
     public void admin_can_launch_milk_the_cows_job() throws Exception {
         // act
-        MvcResult response = mockMvc.perform(get("/api/jobs/launch/milkthecowjob").with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/jobs/launch/milkthecowjob").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert

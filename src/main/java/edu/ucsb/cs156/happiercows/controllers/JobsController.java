@@ -65,9 +65,9 @@ public class JobsController extends ApiController {
         return jobService.runAsJob(testJob);
     }
 
-    @ApiOperation(value = "Launch Job to Milk the Cows (click fail if you want to test exception handling)")
+    @ApiOperation(value = "Launch Job to Milk the Cows")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/launch/milkthecowjob")
+    @PostMapping("/launch/milkthecowjob")
     public Job launchTestJob(
     ) {
         MilkTheCowsJob milkTheCowsJob = MilkTheCowsJob.builder().build();
