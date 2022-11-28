@@ -154,8 +154,8 @@ describe("AdminJobsPage tests", () => {
 
         submitButton.click();
 
-        await waitFor(() => expect(axiosMock.history.get.length).toBe(5));
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
             
-        expect(axiosMock.history.get[3].url).toBe("/api/jobs/launch/milkthecowjob");
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/milkthecowjob");
     });
 });
