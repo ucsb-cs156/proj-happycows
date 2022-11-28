@@ -1,17 +1,15 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import { toast } from "react-toastify";
 
 import PlayPage from "main/pages/PlayPage";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
-
-
 
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
@@ -125,9 +123,6 @@ describe("PlayPage tests", () => {
         );
         // Start spying toast messages.
         const toasts = spyToasts();
-
-        const cowPrice = sampleCommons.cowPrice;
-        let wealth = userCommons.totalWealth;
 
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
