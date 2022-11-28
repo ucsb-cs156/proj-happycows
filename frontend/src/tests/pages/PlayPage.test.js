@@ -128,9 +128,6 @@ describe("PlayPage tests", () => {
         // Start spying toast messages.
         const toasts = spyToasts();
 
-        const cowPrice = sampleCommons.cowPrice;
-        let wealth = userCommons.totalWealth;
-
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
 
