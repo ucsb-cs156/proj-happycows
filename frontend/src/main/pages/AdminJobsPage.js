@@ -20,11 +20,13 @@ const AdminJobsPage = () => {
         method: "POST"
     });
 
+    // Stryker disable all
     const objectToAxiosParamsTestJob = (data) => ({
         url: `/api/jobs/launch/testjob?fail=${data.fail}&sleepMs=${data.sleepMs}`,
         method: "POST"
     });
 
+    // Stryker disable all
     const objectToAxiosParamsInstructorJob = () => ({
         url: `/api/jobs/launch/instructorreportjob`,
         method: "POST"
