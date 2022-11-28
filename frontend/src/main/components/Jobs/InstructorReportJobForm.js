@@ -3,21 +3,12 @@ import { useForm } from "react-hook-form";
 
 function InstructorReportJobForm({ submitAction }) {
 
- const defaultValues = {
-    // Stryker disable next-line all
-};
-
   // Stryker disable all
   const {
-    register,
-    formState: { errors },
+    formState: {},
     handleSubmit,
   } = useForm(
-    { defaultValues: defaultValues }
   );
-  // Stryker enable all
-
-  const testid = "InstructorReportJobForm";
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>

@@ -3,21 +3,13 @@ import { useForm } from "react-hook-form";
 
 function UpdateCowHealthJobForm({ submitAction }) {
 
- const defaultValues = {
-    // Stryker disable next-line all
-};
 
   // Stryker disable all
   const {
-    register,
-    formState: { errors },
+    formState: {},
     handleSubmit,
   } = useForm(
-    { defaultValues: defaultValues }
   );
-  // Stryker enable all
-
-  const testid = "UpdateCowHealthJobForm";
 
   return (
     <Form onSubmit={handleSubmit(submitAction)}>
