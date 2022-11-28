@@ -55,10 +55,15 @@ export default function HomePage() {
         <Container>
           <Row>
             <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
-            <Col sm><CommonsList commonList={commons} title="Join A Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
+            <Col sm><CommonsList commonList={commons.filter(unjoinedFilter(commonsJoined))} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>
       </BasicLayout>
     </div>
   )
+}
+
+function unjoinedFilter(commonsJoined) {
+  const ids = commonsJoined.map(commons => commons.id);
+  return el => !ids.includes(el.id);
 }
