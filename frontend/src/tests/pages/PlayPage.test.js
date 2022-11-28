@@ -15,16 +15,6 @@ jest.mock("react-router-dom", () => ({
     })
 }));
 
-const mockToast = jest.fn();
-jest.mock('react-toastify', () => {
-    const originalModule = jest.requireActual('react-toastify');
-    return {
-        __esModule: true,
-        ...originalModule,
-        toast: (x) => mockToast(x)
-    };
-});
-
 describe("PlayPage tests", () => {
     const axiosMock = new AxiosMockAdapter(axios);
     const queryClient = new QueryClient();
