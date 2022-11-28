@@ -95,7 +95,9 @@ export default function PlayPage() {
 
 
   const onSuccessSell = () => {
-    toast(`Cow sold!`);
+    toast(userCommons.numOfCows >= 1 ?
+      `Cow sold!` :
+      `You can't sell a cow because you don't have enough cows`);
   }
 
   // Stryker disable all 
@@ -110,13 +112,13 @@ export default function PlayPage() {
   // Stryker enable all 
 
 
-  // Stryker disable all 
+  // Stryker disable all
   const mutationsell = useBackendMutation(
     objectToAxiosParamsSell,
     { onSuccess: onSuccessSell },
     [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`]
   );
-  // Stryker enable all 
+  // Stryker enable all
 
 
   const onSell = (userCommons) => {
