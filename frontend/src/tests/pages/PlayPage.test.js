@@ -43,9 +43,14 @@ describe("PlayPage tests", () => {
         return () => toasts;
     }
 
+    const startingWealth = userCommons.totalWealth;
+
     beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
+
+        userCommons.totalWealth = startingWealth;
+
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
         axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, userCommons);
@@ -54,8 +59,16 @@ describe("PlayPage tests", () => {
             sampleCommons
         ]);
         axiosMock.onGet("/api/profits/all/commons").reply(200, []);
+
         axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
-        axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
+        axiosMock.onPut("/api/usercommons/buy").reply(_config => {
+            // Basic mock of cow purchase semantics.
+            if (userCommons.totalWealth >= sampleCommons.cowPrice) {
+                userCommons.totalWealth -= sampleCommons.cowPrice;
+                userCommons.numOfCows += 1;
+            }
+            return [200];
+        }, userCommons);
     });
 
     test("renders without crashing", () => {
@@ -106,11 +119,12 @@ describe("PlayPage tests", () => {
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
 
-        expect(toasts().slice(-1).length).toBe(0);
+        expect(toasts().length).toBe(0);
 
         // We expect to see the cow bought toast until the wealth on hand drops beneath the cow price.
         let puts = 0;
         while (wealth >= cowPrice) {
+            console.log('cow buy', puts)
             fireEvent.click(buyCowButton);
             // Wait for the cow to be bought. (Using ++ in toBe will not work.)
             puts += 1;
@@ -120,6 +134,7 @@ describe("PlayPage tests", () => {
             wealth -= cowPrice;
         }
         // We should no longer have enough funds to buy any further cows.
+        fireEvent.click(buyCowButton);
         fireEvent.click(buyCowButton);
         // Check that the right message was displayed for a cow buy failure.
         expect(toasts().slice(-1)[0][0]).toBe(expectedCowBuyFailureToast);

@@ -68,11 +68,6 @@ export default function PlayPage() {
     if(!(userCommons.totalWealth < commons.cowPrice)) toast(`Cow bought!`);
     else toast(`You can't buy a cow because you don't have enough money`)
   }
-	// 	let response = "Cow Bought!"
-	// 	/* istanbul ignore if */
-	// 	if(userCommons.totalWealth < commons.cowPrice) response = `You can't buy a cow because you don't have enough money`
-	// 	toast(response);
-	// }
 
   const objectToAxiosParamsBuy = (newUserCommons) => ({
     url: "/api/usercommons/buy",
