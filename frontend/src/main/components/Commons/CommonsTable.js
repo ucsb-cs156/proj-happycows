@@ -31,42 +31,42 @@ export default function CommonsTable({ commons, currentUser }) {
     const columns = [
         {
             Header: 'id',
-            accessor: 'id', // accessor is the "key" in the data
+            accessor: 'commons.id', // accessor is the "key" in the data
 
         },
         {
             Header:'Name',
-            accessor: 'name',
+            accessor: 'commons.name',
         },
         {
             Header:'Cow Price',
-            accessor: row => row.cowPrice,
+            accessor: row => row.commons.cowPrice,
             id: 'cowPrice'
         },
         {
             Header:'Milk Price',
-            accessor: row => row.milkPrice,
-            id: 'milkPrice'
+            accessor: row => row.commons.milkPrice,
+            id: 'commons.milkPrice'
         },
         {
             Header:'Starting Balance',
-            accessor: row => row.startingBalance,
-            id: 'startingBalance'
+            accessor: row => row.commons.startingBalance,
+            id: 'commons.startingBalance'
         },
         {
             Header:'Starting Date',
-            accessor: row => String(row.startingDate).slice(0,10),
-            id: 'startingDate'
+            accessor: row => String(row.commons.startingDate).slice(0,10),
+            id: 'commons.startingDate'
         },
         {
             Header:'Degradation Rate',
-            accessor: row => row.degradationRate,
-            id: 'degradationRate'
+            accessor: row => row.commons.degradationRate,
+            id: 'commons.degradationRate'
         },
         {
             Header:'Show Leaderboard?',
-            id: 'showLeaderboard', // needed for tests
-            accessor: (row, _rowIndex) => String(row.showLeaderboard) // hack needed for boolean values to show up
+            id: 'commons.showLeaderboard', // needed for tests
+            accessor: (row, _rowIndex) => String(row.commons.showLeaderboard) // hack needed for boolean values to show up
         },
         {
             Header: 'Cows',
