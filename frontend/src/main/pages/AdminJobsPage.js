@@ -16,7 +16,7 @@ const AdminJobsPage = () => {
 
     // Stryker disable all
     const objectToAxiosParamsMilkCowsJob = (_data) => ({
-        url: `/api/jobs/launch/milkcows`,
+        url: `/api/jobs/launch/milkjob`,
         method: "POST"
     });
 
