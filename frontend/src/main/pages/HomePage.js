@@ -47,6 +47,7 @@ export default function HomePage() {
 
   let navigate = useNavigate();
   const visitButtonClick = (id) => { navigate("/play/" + id) };
+  const list_diff = (a, b) => a.filter(c => !b.some((e, _i) => e.id === c.id ));
 
   return (
     <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
@@ -55,7 +56,7 @@ export default function HomePage() {
         <Container>
           <Row>
             <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
-            <Col sm><CommonsList commonList={commons} title="Join A Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
+            <Col sm><CommonsList commonList={list_diff(commons, commonsJoined)} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>
       </BasicLayout>
