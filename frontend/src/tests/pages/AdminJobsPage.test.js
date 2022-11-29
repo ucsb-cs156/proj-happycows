@@ -103,7 +103,7 @@ describe("AdminJobsPage tests", () => {
         const submitButton3 = screen.getByTestId("MilkCowsForm-Submit-Button");
         submitButton3.click();
         await waitFor(() => expect(axiosMock.history.post.length).toBe(4));
-        expect(axiosMock.history.post[3].url).toBe("/api/jobs/launch/milkcows");
+        expect(axiosMock.history.post[3].url).toBe("/api/jobs/launch/milkjob");
 
 
 });
