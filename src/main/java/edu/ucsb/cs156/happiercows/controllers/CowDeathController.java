@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +42,7 @@ public class CowDeathController extends ApiController {
     @PostMapping("/admin/post")
     public CowDeath postCowDeath_admin(
             @ApiParam("commonsId") @RequestParam long commonsId,
-            @ApiParam("ZonedDateTime") @RequestParam LocalDateTime ZonedDateTime,
+            @ApiParam("ZonedDateTime") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ZonedDateTime,
             @ApiParam("cowsKilled") @RequestParam Integer cowsKilled,
             @ApiParam("avgHealth") @RequestParam Long avgHealth) {
         
