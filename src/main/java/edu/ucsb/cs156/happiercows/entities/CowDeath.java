@@ -5,19 +5,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
-import java.time.LocalDateTime;
+import javax.persistence.EntityListeners;
+
+import java.time.ZonedDateTime;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity(name = "dow_death")
-
+@EntityListeners(AuditingEntityListener.class)
 public class CowDeath {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +33,8 @@ public class CowDeath {
     @Column(name="user_id")
     private long userId;  
 
-    private LocalDateTime ZonedDateTime;
+    @CreatedDate
+    private ZonedDateTime createdAt;
     private Integer cowsKilled;
     private long avgHealth;
 }
