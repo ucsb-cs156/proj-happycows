@@ -1,4 +1,5 @@
 import React from "react";
+import { Container, Card } from "react-bootstrap";
 
 import { useParams } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
@@ -50,14 +51,18 @@ export default function LeaderboardPage() {
   return (
     <div style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
         <BasicLayout>
-            <div className="pt-2">
-                <h1>Leaderboard</h1>
-                {
-                  showLeaderboard?
-                  (<LeaderboardTable leaderboardUsers={userCommons} currentUser={currentUser} />) :
-                  (<p>You're not authorized to see the leaderboard.</p>)
-                }
-            </div>
+          <Container>
+            <Card>
+              <div className="pt-2">
+                  <h1>Leaderboard</h1>
+                  {
+                    showLeaderboard?
+                    (<LeaderboardTable leaderboardUsers={userCommons} currentUser={currentUser}/>) :
+                    (<p>You're not authorized to see the leaderboard.</p>)
+                  }
+              </div>
+            </Card>
+          </Container>
         </BasicLayout>
     </div>
   )
