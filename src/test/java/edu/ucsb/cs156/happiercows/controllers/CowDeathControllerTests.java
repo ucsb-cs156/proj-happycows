@@ -1,7 +1,6 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
-import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
@@ -67,116 +66,92 @@ public class CowDeathControllerTests extends ControllerTestCase {
     @MockBean
     CommonsRepository commonsRepository;
 
-    /*
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void get_profits_admin() throws Exception {
+    public void post_cowdeaths_admin_post() throws Exception {
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-    List<CowDeath> testCowDeaths = new ArrayList<CowDeath>();
+        UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+        CowDeath expectedCowDeath = CowDeath.builder()
+            .id(0)
+            .commonsId(2)
+            .userId(1)
+            .ZonedDateTime(ldt1)
+            .cowsKilled(2)
+            .avgHealth(4)
+            .build();
 
-    UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(1).build();
-    UserCommons uc2 = UserCommons.builder().id(1).commonsId(2).userId(2).build();
+        when(cowDeathRepository.save(expectedCowDeath)).thenReturn(expectedCowDeath);
+        when(userCommonsRepository.findById(1L)).thenReturn(Optional.of(expectedUserCommons));
 
-    LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
-    LocalDateTime ldt2 = LocalDateTime.parse("2021-01-03T00:00:00");
+        MvcResult response = mockMvc.perform(post("/api/cowdeath/admin/post?commonsId=2&ZonedDateTime=2022-01-03T00:00:00&cowsKilled=2&avgHealth=4")
+            .with(csrf())).andExpect(status().isOk()).andReturn();
 
+        verify(cowDeathRepository, times(1)).save(expectedCowDeath);
 
-    CowDeath p1 = CowDeath.builder()
-        .id(42)
-        .commonsId(uc1.getCommonsId())
-        .userId(1)
-        .ZonedDateTime(ldt1)
-        .cowsKilled(2)
-        .avgHealth(4)
-        .build();
+        String expectedJson = mapper.writeValueAsString(expectedCowDeath);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
 
-    CowDeath p2 = CowDeath.builder()
-        .id(43)
-        .commonsId(uc2.getCommonsId())
-        .userId(1)
-        .ZonedDateTime(ldt2)
-        .cowsKilled(8)
-        .avgHealth(1)
-        .build();
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void get_cowdeaths_admin_all_commons() throws Exception {
+        List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
+        UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(1).build();
 
-    CowDeath p3 = CowDeath.builder()
-        .id(44)
-        .commonsId(uc2.getCommonsId())
-        .userId(2)
-        .ZonedDateTime(ldt2)
-        .cowsKilled(6)
-        .avgHealth(7)
-        .build();
-   
-    testCowDeaths.add(p1);
-    testCowDeaths.add(p2);
-    testCowDeaths.add(p3);
-    when(cowDeathRepository.findAll()).thenReturn(testCowDeaths);
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-    MvcResult response = mockMvc.perform(get("/api/cowdeaths/admin/all")).andExpect(status().isOk()).andReturn();
-    
-    verify(cowDeathRepository, times(1)).findAll();
-    
-    String responseString = response.getResponse().getContentAsString();
-    List<CowDeath> actualCowDeaths = objectMapper.readValue(responseString, new TypeReference<List<CowDeath>>() {});
-    assertEquals(actualCowDeaths, testCowDeaths);
-  }*/
+        CowDeath p1 = CowDeath.builder()
+            .id(42)
+            .commonsId(uc1.getCommonsId())
+            .userId(1)
+            .ZonedDateTime(ldt1)
+            .cowsKilled(2)
+            .avgHealth(4)
+            .build();
 
-  @WithMockUser(roles = { "ADMIN" })
-  @Test
-  public void post_cowdeaths_admin_post() throws Exception {
-    LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        expectedCowDeaths.add(p1);
+        when(cowDeathRepository.findAllByCommonsId(1L)).thenReturn(expectedCowDeaths);
 
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
-    CowDeath expectedCowDeath = CowDeath.builder()
-        .id(0)
-        .commonsId(2)
-        .userId(1)
-        .ZonedDateTime(ldt1)
-        .cowsKilled(2)
-        .avgHealth(4)
-        .build();
+        MvcResult response = mockMvc.perform(get("/api/cowdeath/admin/all/bycommons?commonsId=1").contentType("application/json")).andExpect(status().isOk()).andReturn();
 
-    when(cowDeathRepository.save(expectedCowDeath)).thenReturn(expectedCowDeath);
-    when(userCommonsRepository.findById(1L)).thenReturn(Optional.of(expectedUserCommons));
+        verify(cowDeathRepository, times(1)).findAllByCommonsId(1L);
 
-    MvcResult response = mockMvc.perform(post("/api/cowdeaths/admin/post?commonsId=2&ZonedDateTime=2022-01-03T00:00:00&cowsKilled=2&avgHealth=4")
-        .with(csrf())).andExpect(status().isOk()).andReturn();
+        String responseString = response.getResponse().getContentAsString();
+        List<CowDeath> actualCowDeaths = objectMapper.readValue(responseString, new TypeReference<List<CowDeath>>() {});
+        assertEquals(actualCowDeaths, expectedCowDeaths);
+    }
 
-    verify(cowDeathRepository, times(1)).save(expectedCowDeath);
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void get_cowdeaths_admin_all_by_user_commons() throws Exception {
+        List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
 
-    String expectedJson = mapper.writeValueAsString(expectedCowDeath);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
+        UserCommons uc1 = UserCommons.builder().id(1).commonsId(1).userId(2).build();
 
-  @WithMockUser(roles = { "ADMIN" })
-  @Test
-  public void get_profits_admin_all_commons() throws Exception {
-    List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
-    UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
 
-    LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        CowDeath p1 = CowDeath.builder()
+            .id(0)
+            .commonsId(uc1.getCommonsId())
+            .userId(2)
+            .ZonedDateTime(ldt1)
+            .cowsKilled(2)
+            .avgHealth(4)
+            .build();
 
-    CowDeath p1 = CowDeath.builder()
-        .id(42)
-        .commonsId(uc1.getCommonsId())
-        .userId(1)
-        .ZonedDateTime(ldt1)
-        .cowsKilled(2)
-        .avgHealth(4)
-        .build();
+        expectedCowDeaths.add(p1);
+        when(cowDeathRepository.findAllByCommonsId(1L)).thenReturn(expectedCowDeaths);
+        when(userCommonsRepository.findByCommonsIdAndUserId(1L, 2L)).thenReturn(Optional.of(uc1));
 
-    expectedCowDeaths.add(p1);
-    when(cowDeathRepository.findAllByCommonsId(1L)).thenReturn(expectedCowDeaths);
+        MvcResult response = mockMvc.perform(get("/api/cowdeath/all/byusercommons?commonsId=1&userId=2").contentType("application/json")).andExpect(status().isOk()).andReturn();
 
-    MvcResult response = mockMvc.perform(get("/api/cowdeaths/admin/all/commons?commonsId=1").contentType("application/json")).andExpect(status().isOk()).andReturn();
+        verify(cowDeathRepository, times(1)).findAllByCommonsId(1L);
 
-    verify(cowDeathRepository, times(1)).findAllByCommonsId(1L);
-
-    String responseString = response.getResponse().getContentAsString();
-    List<CowDeath> actualCowDeaths = objectMapper.readValue(responseString, new TypeReference<List<CowDeath>>() {});
-    assertEquals(actualCowDeaths, expectedCowDeaths);
-  }
-    
-}
+        String responseString = response.getResponse().getContentAsString();
+        List<CowDeath> actualCowDeaths = objectMapper.readValue(responseString, new TypeReference<List<CowDeath>>() {});
+        assertEquals(actualCowDeaths, expectedCowDeaths);
+    }
+        
+    }

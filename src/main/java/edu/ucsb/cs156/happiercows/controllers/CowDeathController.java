@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Api(description = "Cow Deaths")
-@RequestMapping("/api/cowdeaths")
+@RequestMapping("/api/cowdeath")
 @RestController
 @Slf4j
 
@@ -62,7 +62,7 @@ public class CowDeathController extends ApiController {
 
     @ApiOperation(value = "Get all cow deaths belonging to a commons as an admin")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/admin/all/commons")
+    @GetMapping("/admin/all/bycommons")
     public Iterable<CowDeath> allCowDeathsByCommonsId_admin(
             @ApiParam("commonsId") @RequestParam Long commonsId) {
         Iterable<CowDeath> cowDeaths = cowDeathRepository.findAllByCommonsId(commonsId);
@@ -72,10 +72,10 @@ public class CowDeathController extends ApiController {
     
     @ApiOperation(value = "Get all cow deaths belonging to a user commons as a user via CommonsID")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/all/commonsid")
+    @GetMapping("/all/byusercommons")
     public Iterable<CowDeath> allCowDeathsByCommonsId(
-            @ApiParam("commonsId") @RequestParam Long commonsId) {
-        Long userId = getCurrentUser().getUser().getId();
+            @ApiParam("commonsId") @RequestParam Long commonsId,
+            @ApiParam("userId") @RequestParam Long userId) {
 
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
             .orElseThrow(() -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
