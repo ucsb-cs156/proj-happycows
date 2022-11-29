@@ -96,12 +96,16 @@ const AdminJobsPage = () => {
 
  const jobLaunchers = [
         {
+            name: "Test Job",
+            form: <TestJobForm submitAction={submitTestJob} />
+        },
+        {
             name: "Update Cow Health",
             form: <UpdateCowHealthJobForm submitAction={submitUpdateCowHealthJob}/>
         },
         {
             name: "Milk The Cows",
-            form:<MilkCowsJobForm submitAction={submitMilkCowsJob} />
+            form: <MilkCowsJobForm submitAction={submitMilkCowsJob} />
         },
         {
             name: "Instructor Report",
@@ -114,15 +118,9 @@ const AdminJobsPage = () => {
         <BasicLayout>
             <h2 className="p-3">Launch Jobs</h2>
             <Accordion>
-                <Accordion.Item eventKey="0">
-                    <Accordion.Header>Test Job</Accordion.Header>
-                    <Accordion.Body>
-                        <TestJobForm submitAction={submitTestJob} />
-                    </Accordion.Body>
-                </Accordion.Item>
                 {
                     jobLaunchers.map((jobLauncher, index) => (
-                        <Accordion.Item eventKey={index + 1}>
+                        <Accordion.Item eventKey={index} key={index}>
                             <Accordion.Header>{jobLauncher.name}</Accordion.Header>
                             <Accordion.Body>
                                 {jobLauncher.form}

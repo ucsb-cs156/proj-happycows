@@ -50,6 +50,10 @@ describe("AdminJobsPage tests", () => {
     });
 
     test("user can submit a test job", async () => {
+
+        axiosMock.onPost("/api/jobs/launch/testjob?fail=false&sleepMs=0")
+            .reply(200, jobsFixtures.sixJobs[0]);
+    
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -106,7 +110,34 @@ describe("AdminJobsPage tests", () => {
         expect(axiosMock.history.post[3].url).toBe("/api/jobs/launch/milkjob");
 
 
-});
+    });
+
+    test("user can submit a milk the cows job", async () => {
+
+        axiosMock.onPost("/api/jobs/launch/milkcows").reply(200, jobsFixtures.sixJobs[0]);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminJobsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
+
+        const jobButton = screen.getByText("Milk The Cows");
+        expect(jobButton).toBeInTheDocument();
+        jobButton.click();
+
+        const submitButton = screen.getByTestId("MilkCowsForm-Submit-Button");
+        expect(submitButton).toBeInTheDocument();
+        submitButton.click();
+
+        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+
+        expect(axiosMock.history.post[0].url).toBe("/api/jobs/launch/milkjob");
+    });
 
 
 });
