@@ -77,7 +77,7 @@ export default function CommonsTable({ commons, currentUser }) {
         },
         {
             Header: 'Carrying Capacity',
-            accessor: 'carryingCapacity'
+            accessor: 'commons.carryingCapacity'
         }
     ];
 
