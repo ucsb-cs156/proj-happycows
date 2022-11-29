@@ -65,8 +65,8 @@ describe("CowDeathTable tests", () => {
 
     );
 
-    const expectedHeaders = ['(Admin) Id', 'Commons Id', 'User Id', 'Zone Date Time', 'Cows Killed', 'Average Health'];
-    const expectedFields = ['id', 'commonsId', 'userId', 'ZonedDateTime','cowsKilled', 'avgHealth'];
+    const expectedHeaders = ['(Admin) Id', 'Commons Id', 'User Id', 'ZonedDateTime', 'Cows Killed', 'Average Health'];
+    const expectedFields = ['id', 'commonsId', 'userId', 'createdAt','cowsKilled', 'avgHealth'];
     const testId = "CowDeathTable";
 
     expectedHeaders.forEach((headerText) => {

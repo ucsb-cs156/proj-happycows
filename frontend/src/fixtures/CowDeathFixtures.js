@@ -5,7 +5,7 @@ const cowDeathFixtures = {
             "id":1,
             "commonsId": 1,
             "userId": 1,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
 						"avgHealth": 20 
         }
@@ -16,7 +16,7 @@ const cowDeathFixtures = {
             "id":1,
             "commonsId": 1,
             "userId": 1,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 2,
 						"avgHealth": 30
         },
@@ -24,7 +24,7 @@ const cowDeathFixtures = {
             "id":2,
             "commonsId": 1,
             "userId": 2,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
 						"avgHealth": 10 
         },
@@ -32,7 +32,7 @@ const cowDeathFixtures = {
             "id":3,
             "commonsId": 1,
             "userId": 3,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 8,
 						"avgHealth": 3 
         }
@@ -43,7 +43,7 @@ const cowDeathFixtures = {
             "id":1,
             "commonsId": 1,
             "userId": 1,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
 						"avgHealth": 30
         },
@@ -51,7 +51,7 @@ const cowDeathFixtures = {
             "id":2,
             "commonsId": 1,
             "userId": 2,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
 						"avgHealth": 18 
         },
@@ -59,7 +59,7 @@ const cowDeathFixtures = {
             "id":3,
             "commonsId": 1,
             "userId": 3,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
 						"avgHealth": 50 
         },
@@ -67,7 +67,7 @@ const cowDeathFixtures = {
             "id":4,
             "commonsId": 1,
             "userId": 4,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 6,
 						"avgHealth": 26 
         },
@@ -75,7 +75,7 @@ const cowDeathFixtures = {
             "id":5,
             "commonsId": 1,
             "userId": 5,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
 						"avgHealth": 18
         },
@@ -86,7 +86,7 @@ const cowDeathFixtures = {
             "id":1,
             "commonsId": 1,
             "userId": 1,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 9,
 						"avgHealth": 18
         },
@@ -94,7 +94,7 @@ const cowDeathFixtures = {
             "id":2,
             "commonsId": 1,
             "userId": 2,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
 						"avgHealth": 35
         },
@@ -102,7 +102,7 @@ const cowDeathFixtures = {
             "id":3,
             "commonsId": 1,
             "userId": 3,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
 						"avgHealth": 22
         },
@@ -110,7 +110,7 @@ const cowDeathFixtures = {
             "id":4,
             "commonsId": 1,
             "userId": 4,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
 						"avgHealth": 22
         },
@@ -118,7 +118,7 @@ const cowDeathFixtures = {
             "id":5,
             "commonsId": 1,
             "userId": 5,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 6,
 						"avgHealth": 19
         },
@@ -126,7 +126,7 @@ const cowDeathFixtures = {
             "id":6,
             "commonsId": 1,
             "userId": 6,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 11,
 						"avgHealth": 18
         },
@@ -134,7 +134,7 @@ const cowDeathFixtures = {
             "id":7,
             "commonsId": 1,
             "userId": 7,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 2,
 						"avgHealth": 32
         },
@@ -142,7 +142,7 @@ const cowDeathFixtures = {
             "id":8,
             "commonsId": 1,
             "userId": 8,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 5,
 						"avgHealth": 24
         },
@@ -150,7 +150,7 @@ const cowDeathFixtures = {
             "id":9,
             "commonsId": 1,
             "userId": 9,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
 						"avgHealth": 18
         },
@@ -158,7 +158,7 @@ const cowDeathFixtures = {
             "id":10,
             "commonsId": 1,
             "userId": 10,
-            "ZonedDateTime" : "2022-11-13T19:50:16.810569-08:00",
+            "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 11,
 						"avgHealth": 19
         },

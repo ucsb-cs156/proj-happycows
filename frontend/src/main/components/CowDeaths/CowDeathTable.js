@@ -14,8 +14,8 @@ export default function CowDeathTable({ cowDeaths , currentUser }) {
             accessor: 'userId', 
         },
 				{
-            Header: 'Zone Date Time',
-            accessor: 'ZonedDateTime', 
+            Header: 'ZonedDateTime',
+            accessor: 'createdAt', 
         },
 				{
             Header: 'Cows Killed',
