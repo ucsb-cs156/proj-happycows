@@ -62,11 +62,11 @@ export default function PlayPage() {
   // Stryker enable all 
 
   const onSuccessBuy = () => {
-	// The value for totalWealth updates late, the current totalWealth is always the previous totalWealth.
-	// Thats why only need to compare the current totalWealth to the cowPrice, because this implies that 
-	// totalWealth - cowPrice aka current totalWealth will not be enough to buy a cow.
-	if(!(userCommons.totalWealth < commons.cowPrice)) toast(`Cow bought!`);
-	else toast(`You can't buy a cow because you don't have enough money`)
+    // The value for totalWealth updates late, the current totalWealth is always the previous totalWealth.
+    // Thats why only need to compare the current totalWealth to the cowPrice, because this implies that
+    // totalWealth - cowPrice aka current totalWealth will not be enough to buy a cow.
+    if(!(userCommons.totalWealth < commons.cowPrice)) toast(`Cow bought!`);
+    else toast(`You can't buy a cow because you don't have enough money`)
   }
 
   const objectToAxiosParamsBuy = (newUserCommons) => ({
