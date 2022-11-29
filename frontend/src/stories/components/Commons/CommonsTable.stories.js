@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CommonsTable from "main/components/Commons/CommonsTable";
-import commonsPlusFixtures from 'fixtures/commonsPlusFixtures';
+import commonsFixtures from 'fixtures/commonsFixtures';
 import { currentUserFixtures } from 'fixtures/currentUserFixtures';
 
 export default {
@@ -24,26 +24,26 @@ Empty.args = {
 export const ThreeCommons = Template.bind({});
 
 ThreeCommons.args = {
-    commons: commonsPlusFixtures.threeCommonsPlus
+    commons: commonsFixtures.threeCommons
 };
 
 export const OneCommons = Template.bind({});
 
 OneCommons.args = {
-    commons: commonsPlusFixtures.oneCommonsPlus
+    commons: commonsFixtures.oneCommons
 }
 
 export const ThreeCommonsAdmin = Template.bind({});
 
 ThreeCommonsAdmin.args = {
-    commons: commonsPlusFixtures.threeCommonsPlus,
+    commons: commonsFixtures.threeCommons,
     currentUser: currentUserFixtures.adminUser
 };
 
 export const OneCommonsAdmin = Template.bind({});
 
 OneCommonsAdmin.args = {
-    commons: commonsPlusFixtures.oneCommonsPlus,
+    commons: commonsFixtures.oneCommons,
     currentUser: currentUserFixtures.adminUser
 }
 

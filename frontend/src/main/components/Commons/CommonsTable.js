@@ -72,11 +72,6 @@ export default function CommonsTable({ commons, currentUser }) {
             accessor: (row, _rowIndex) => String(row.commons.showLeaderboard) // hack needed for boolean values to show up
         },
         {
-            Header:'Carrying Capacity',
-            accessor: row => row.commons.carryingCapacity,
-            id: 'commons.carryingCapacity'
-        },
-        {
             Header: 'Cows',
             accessor: 'totalCows'
         }
