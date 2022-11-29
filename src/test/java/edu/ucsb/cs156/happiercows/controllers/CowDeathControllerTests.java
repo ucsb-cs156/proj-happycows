@@ -148,10 +148,71 @@ public class CowDeathControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/cowdeath/all/byusercommons?commonsId=1&userId=2").contentType("application/json")).andExpect(status().isOk()).andReturn();
 
         verify(cowDeathRepository, times(1)).findAllByCommonsId(1L);
+        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(1L,2L);
 
         String responseString = response.getResponse().getContentAsString();
         List<CowDeath> actualCowDeaths = objectMapper.readValue(responseString, new TypeReference<List<CowDeath>>() {});
         assertEquals(actualCowDeaths, expectedCowDeaths);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void get_cowdeaths_admin_all_nonexistent_by_user_commons() throws Exception {
+        List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
+
+        UserCommons uc1 = UserCommons.builder().id(1).commonsId(1).userId(2).build();
+
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+
+        CowDeath p1 = CowDeath.builder()
+            .id(0)
+            .commonsId(uc1.getCommonsId())
+            .userId(2)
+            .ZonedDateTime(ldt1)
+            .cowsKilled(2)
+            .avgHealth(4)
+            .build();
+
+        expectedCowDeaths.add(p1);
+        when(cowDeathRepository.findAllByCommonsId(1L)).thenReturn(expectedCowDeaths);
+
+        MvcResult response = mockMvc.perform(get("/api/cowdeath/all/byusercommons?commonsId=1&userId=2").contentType("application/json")).andExpect(status().isNotFound()).andReturn();
+
+        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(1L,2L);
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("UserCommons with commonsId 1 and userId 2 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void get_cowdeaths_admin_all_incorrect_userid__by_user_commons() throws Exception {
+        List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
+
+        UserCommons uc1 = UserCommons.builder().id(1).commonsId(1).userId(2).build();
+
+        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+
+        CowDeath p1 = CowDeath.builder()
+            .id(0)
+            .commonsId(uc1.getCommonsId())
+            .userId(2)
+            .ZonedDateTime(ldt1)
+            .cowsKilled(2)
+            .avgHealth(4)
+            .build();
+
+        expectedCowDeaths.add(p1);
+        when(cowDeathRepository.findAllByCommonsId(1L)).thenReturn(expectedCowDeaths);
+
+        MvcResult response = mockMvc.perform(get("/api/cowdeath/all/byusercommons?commonsId=1&userId=3").contentType("application/json")).andExpect(status().isNotFound()).andReturn();
+
+        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(1L,3L);
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("UserCommons with commonsId 1 and userId 3 not found", json.get("message"));
     }
         
     }
