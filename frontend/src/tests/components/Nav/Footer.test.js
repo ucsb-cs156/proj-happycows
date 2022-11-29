@@ -16,4 +16,22 @@ describe("Footer tests", () => {
         const repo_link = screen.getByTestId("repo-link");
         expect(repo_link).toHaveAttribute("href", systemInfoFixtures.showingBoth.sourceRepo);
     });
+
+    test("repo-link renders correctly when systemInfo doesn't contain sourceRepo not available", async () => {
+        render(
+            <Footer systemInfo={{}} />
+        );
+      
+        const repo_link = screen.getByTestId("repo-link");
+        expect(repo_link).toHaveAttribute("href", "https://github.com/ucsb-cs156/proj-happycows");
+    });
+
+    test("repo-link renders correctly when systemInfo is null", async () => {
+        render(
+            <Footer systemInfo={null} />
+        );
+      
+        const repo_link = screen.getByTestId("repo-link");
+        expect(repo_link).toHaveAttribute("href", "https://github.com/ucsb-cs156/proj-happycows");
+    });
 });
