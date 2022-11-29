@@ -75,7 +75,7 @@ public class CowDeathController extends ApiController {
     
     @ApiOperation(value = "Get all cow deaths belonging to a user commons as a user via CommonsID")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/all/byusercommons")
+    @GetMapping("/all/byUser")
     public Iterable<CowDeath> allCowDeathsByCommonsId(
             @ApiParam("commonsId") @RequestParam Long commonsId) {
         
@@ -86,7 +86,7 @@ public class CowDeathController extends ApiController {
         if (userId != userCommons.getUserId())
             throw new EntityNotFoundException(UserCommons.class, userCommons.getId());
 
-        Iterable<CowDeath> cowDeaths = cowDeathRepository.findAllByCommonsId(userCommons.getId());
+        Iterable<CowDeath> cowDeaths = cowDeathRepository.findAllByCommonsIdAndUserId(commonsId, userId);
 
         return cowDeaths;
     }
