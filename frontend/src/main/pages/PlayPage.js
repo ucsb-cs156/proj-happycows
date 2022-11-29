@@ -79,7 +79,7 @@ export default function PlayPage() {
   });
 
 
-  // Stryker disable all
+  // Stryker disable all 
   const mutationbuy = useBackendMutation(
     objectToAxiosParamsBuy,
     { onSuccess: onSuccessBuy },
@@ -100,7 +100,7 @@ export default function PlayPage() {
       `You have already sold all of your cows`);
   }
 
-  // Stryker disable all
+  // Stryker disable all 
   const objectToAxiosParamsSell = (newUserCommons) => ({
     url: "/api/usercommons/sell",
     method: "PUT",
@@ -112,7 +112,7 @@ export default function PlayPage() {
   // Stryker enable all 
 
 
-  // Stryker disable all
+  // Stryker disable all 
   const mutationsell = useBackendMutation(
     objectToAxiosParamsSell,
     { onSuccess: onSuccessSell },

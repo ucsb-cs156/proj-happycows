@@ -99,7 +99,7 @@ describe("PlayPage tests", () => {
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
 
-        // Attempt to buy a cow
+        // We have enough wealth to afford a cow. Attempt to buy a cow.
         fireEvent.click(buyCowButton);
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
         expect(toast).toHaveBeenCalledTimes(1);
