@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
+import javax.persistence.EntityListeners;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import java.time.ZonedDateTime;
+
 import javax.persistence.*;
 
 @Data
@@ -19,6 +24,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity(name = "cow_death")
+@EntityListeners(AuditingEntityListener.class)
 
 public class CowDeath {
     @Id
@@ -31,7 +37,8 @@ public class CowDeath {
     @Column(name="user_id")
     private long userId;  
 
-    private LocalDateTime ZonedDateTime;
+    @CreatedDate
+    private ZonedDateTime createdAt;
     private Integer cowsKilled;
     private long avgHealth;
 }

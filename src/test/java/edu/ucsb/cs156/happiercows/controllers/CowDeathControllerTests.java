@@ -32,6 +32,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -69,14 +70,15 @@ public class CowDeathControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void post_cowdeaths_admin_post() throws Exception {
-        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+
+        ZonedDateTime ldt1 = ZonedDateTime.parse("2016-10-05T08:20:10+05:30[UTC]");
 
         UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
         CowDeath expectedCowDeath = CowDeath.builder()
             .id(0)
             .commonsId(2)
             .userId(1)
-            .ZonedDateTime(ldt1)
+            .createdAt(ldt1)
             .cowsKilled(2)
             .avgHealth(4)
             .build();
@@ -84,7 +86,7 @@ public class CowDeathControllerTests extends ControllerTestCase {
         when(cowDeathRepository.save(expectedCowDeath)).thenReturn(expectedCowDeath);
         when(userCommonsRepository.findById(1L)).thenReturn(Optional.of(expectedUserCommons));
 
-        MvcResult response = mockMvc.perform(post("/api/cowdeath/admin/post?commonsId=2&ZonedDateTime=2022-01-03T00:00:00&cowsKilled=2&avgHealth=4")
+        MvcResult response = mockMvc.perform(post("/api/cowdeath/admin/post?commonsId=2&createdAt=2016-10-05T08:20:10+05:30[UTC]&cowsKilled=2&avgHealth=4")
             .with(csrf())).andExpect(status().isOk()).andReturn();
 
         verify(cowDeathRepository, times(1)).save(expectedCowDeath);
@@ -100,13 +102,13 @@ public class CowDeathControllerTests extends ControllerTestCase {
         List<CowDeath> expectedCowDeaths = new ArrayList<CowDeath>();
         UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(1).build();
 
-        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        ZonedDateTime ldt1 = ZonedDateTime.parse("2016-10-05T08:20:10+05:30[UTC]");
 
         CowDeath p1 = CowDeath.builder()
             .id(42)
             .commonsId(uc1.getCommonsId())
             .userId(1)
-            .ZonedDateTime(ldt1)
+            .createdAt(ldt1)
             .cowsKilled(2)
             .avgHealth(4)
             .build();
@@ -130,13 +132,13 @@ public class CowDeathControllerTests extends ControllerTestCase {
 
         UserCommons uc1 = UserCommons.builder().id(1).commonsId(1).userId(1).build();
 
-        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        ZonedDateTime ldt1 = ZonedDateTime.parse("2016-10-05T08:20:10+05:30[UTC]");
 
         CowDeath p1 = CowDeath.builder()
             .id(0)
             .commonsId(uc1.getCommonsId())
             .userId(1)
-            .ZonedDateTime(ldt1)
+            .createdAt(ldt1)
             .cowsKilled(2)
             .avgHealth(4)
             .build();
@@ -174,13 +176,13 @@ public class CowDeathControllerTests extends ControllerTestCase {
 
         UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(2).build();
 
-        LocalDateTime ldt1 = LocalDateTime.parse("2022-01-03T00:00:00");
+        ZonedDateTime ldt1 = ZonedDateTime.parse("2016-10-05T08:20:10+05:30[UTC]");
 
         CowDeath p1 = CowDeath.builder()
             .id(0)
             .commonsId(uc1.getCommonsId())
             .userId(2)
-            .ZonedDateTime(ldt1)
+            .createdAt(ldt1)
             .cowsKilled(2)
             .avgHealth(4)
             .build();

@@ -3,6 +3,8 @@ package edu.ucsb.cs156.happiercows.controllers;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.entities.CowDeath;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Commons;
+
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
@@ -12,6 +14,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,8 +44,8 @@ public class CowDeathController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/admin/post")
     public CowDeath postCowDeath_admin(
-            @ApiParam("commonsId") @RequestParam long commonsId,
-            @ApiParam("ZonedDateTime") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime ZonedDateTime,
+            @ApiParam("commonsId") @RequestParam Long commonsId,
+            @ApiParam("createdAt") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime createdAt,
             @ApiParam("cowsKilled") @RequestParam Integer cowsKilled,
             @ApiParam("avgHealth") @RequestParam Long avgHealth) {
         
@@ -51,7 +54,7 @@ public class CowDeathController extends ApiController {
         CowDeath createdCowDeath = CowDeath.builder()
             .commonsId(commonsId)
             .userId(userId)
-            .ZonedDateTime(ZonedDateTime)
+            .createdAt(createdAt)
             .cowsKilled(cowsKilled)
             .avgHealth(avgHealth)
             .build();
