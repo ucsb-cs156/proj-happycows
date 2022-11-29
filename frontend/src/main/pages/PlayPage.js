@@ -62,7 +62,7 @@ export default function PlayPage() {
   // Stryker enable all 
   
   const onSuccessBuy = () => {
-    //toast(`Cow bought!`);
+
   }
 
   const objectToAxiosParamsBuy = (newUserCommons) => ({
@@ -90,7 +90,7 @@ export default function PlayPage() {
   };
 
   const onSuccessSell = () => {
-    //toast(`Cow sold!`);
+
   }
 
   // Stryker disable all 
