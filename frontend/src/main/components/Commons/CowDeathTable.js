@@ -6,12 +6,12 @@ export default function CowDeathTable({ cowDeaths, currentUser }) {
 
     const columns = [
         {
-            Header: "commons id",
-            accessor: "commonsId"
+            Header: 'id',
+            accessor: 'id'
         },
         {
-            Header: 'user id',
-            accessor: 'userId'
+            Header: "commons id",
+            accessor: "commonsId"
         },
         {
             Header:'Created At',
@@ -31,8 +31,8 @@ export default function CowDeathTable({ cowDeaths, currentUser }) {
 
     const columnsIfAdmin = [
         {
-            Header: '(admin) id',
-            accessor: 'id'
+            Header: '(admin) user id',
+            accessor: 'userId'
         },
         ...columns
     ];
