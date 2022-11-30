@@ -66,7 +66,7 @@ describe("CowDeathTable tests", () => {
     
         );
 
-        const expectedHeaders = ["id", "commons id", "user id", 'Created At', 'Cows Killed', 'Average Health'];
+        const expectedHeaders = ["id", "commons id", "(admin) user id", 'Created At', 'Cows Killed', 'Average Health'];
         const expectedFields = ["id", "commonsId", "userId", "createdAt", "cowsKilled", "avgHealth"];
         const testId = "CowDeathTable";
 
