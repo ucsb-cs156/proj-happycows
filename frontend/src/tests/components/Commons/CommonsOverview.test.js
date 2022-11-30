@@ -80,7 +80,7 @@ describe("CommonsOverview tests", () => {
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
     });
 
-    test("Test days elapsed is calculated correctly", async () => {
+    test("Days elapsed is calculated correctly", async () => {
         const ourCommons = {
             ...commonsFixtures.oneCommons,
             showLeaderboard : false
