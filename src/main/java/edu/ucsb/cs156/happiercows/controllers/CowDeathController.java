@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.entities.CowDeath;
+import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -39,6 +41,9 @@ public class CowDeathController extends ApiController {
     UserCommonsRepository userCommonsRepository;
 
     @Autowired
+    UserRepository userRepository;
+
+    @Autowired
     CowDeathRepository cowDeathRepository;
 
     @ApiOperation(value = "Create a new CowDeath as admin")
@@ -46,20 +51,22 @@ public class CowDeathController extends ApiController {
     @PostMapping("/admin/post")
     public CowDeath postCowDeath_admin(
             @ApiParam("commonsId") @RequestParam Long commonsId,
+            @ApiParam("userId") @RequestParam Long userId,
             @ApiParam("cowsKilled") @RequestParam Integer cowsKilled,
             @ApiParam("avgHealth") @RequestParam Long avgHealth) {
-        
-        Long userId = getCurrentUser().getUser().getId();
+
         commonsRepository.findById(commonsId)
-            .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+                .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+        userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, userId));
 
         CowDeath createdCowDeath = CowDeath.builder()
-            .commonsId(commonsId)
-            .userId(userId)
-            .cowsKilled(cowsKilled)
-            .avgHealth(avgHealth)
-            .build();
-        
+                .commonsId(commonsId)
+                .userId(userId)
+                .cowsKilled(cowsKilled)
+                .avgHealth(avgHealth)
+                .build();
+
         CowDeath savedCowDeath = cowDeathRepository.save(createdCowDeath);
         return savedCowDeath;
     }
@@ -73,16 +80,16 @@ public class CowDeathController extends ApiController {
         return cowDeaths;
     }
 
-    
     @ApiOperation(value = "Get all cow deaths belonging to a user commons as a user via CommonsID")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all/byUser")
     public Iterable<CowDeath> allCowDeathsByCommonsId(
             @ApiParam("commonsId") @RequestParam Long commonsId) {
-        
+
         Long userId = getCurrentUser().getUser().getId();
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
-            .orElseThrow(() -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
 
         if (userId != userCommons.getUserId())
             throw new EntityNotFoundException(UserCommons.class, userCommons.getId());
