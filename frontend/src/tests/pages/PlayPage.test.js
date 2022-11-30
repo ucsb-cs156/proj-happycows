@@ -30,16 +30,15 @@ describe("PlayPage tests", () => {
     // Commons fixtures.
     const userCommons = userCommonsFixtures.oneUserCommons[0];
     const sampleCommons = commonsFixtures.oneCommons[0];
-    // Expected toast strings for cow purchase.
-    const expectedCowBoughtToast = "Cow bought!";
-    const expectedCowBuyFailureToast = "You can't buy a cow because you don't have enough money";
 
-    // Spy on toasts and return all toasts displayed so far.
-    function spyToasts() {
-        const toasts = [];
-        toast.mockImplementation((...args) => toasts.push(args));
-        return () => toasts;
-    }
+    // Expected toast strings for cow purchase.
+    const COW_BUY_TOAST = "Cow bought!";
+    // Expected toast string for when a cow purchase fails.
+    const COW_BUY_FAILURE_TOAST = "You can't buy a cow because you don't have enough money";
+    // Expected toast strings for cow sale.
+    const COW_SELL_TOAST = "Cow sold!";
+    // Expected toast string for when a cow sale fails.
+    const COW_SELL_FAILURE_TOAST = "You have already sold all of your cows";
 
     beforeEach(() => {
         axiosMock.reset();
@@ -95,24 +94,23 @@ describe("PlayPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
-        // Start spying toast messages.
-        const toasts = spyToasts();
+        expect(userCommons.totalWealth).toBeGreaterThanOrEqual(sampleCommons.cowPrice);
 
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
 
-        expect(toasts().length).toBe(0);
-
-        // Buying a cow with sufficient funds.
+        // We have enough wealth to afford a cow. Attempt to buy a cow.
         fireEvent.click(buyCowButton);
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
-        expect(toasts()[0][0]).toBe(expectedCowBoughtToast);
+        expect(toast).toHaveBeenCalledTimes(1);
+        expect(toast).toHaveBeenCalledWith(COW_BUY_TOAST);
     });
 
     test("buying cows produces correct toast with insufficient funds", async () => {
+        // The user cannot afford a cow.
         axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, {
             ...userCommons,
-            totalWealth: 0
+            totalWealth: sampleCommons.cowPrice - 1
         });
         render(
             <QueryClientProvider client={queryClient}>
@@ -121,17 +119,59 @@ describe("PlayPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
-        // Start spying toast messages.
-        const toasts = spyToasts();
 
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
 
-        expect(toasts().length).toBe(0);
-
+        // Attempt to buy a cow without having sufficient wealth.
         fireEvent.click(buyCowButton);
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
-        expect(toasts()[0][0]).toBe(expectedCowBuyFailureToast);
+        expect(toast).toHaveBeenCalledTimes(1);
+        expect(toast).toHaveBeenCalledWith(COW_BUY_FAILURE_TOAST);
+    });
+
+    test("selling cows produces correct toast with sufficient cows", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        expect(userCommons.numOfCows).toBeGreaterThan(0);
+
+        expect(await screen.findByTestId("sell-cow-button")).toBeInTheDocument();
+        const sellCowButton = screen.getByTestId("sell-cow-button");
+
+        // We sell one of our non-zero cows.
+        fireEvent.click(sellCowButton);
+        await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+        expect(toast).toHaveBeenCalledTimes(1);
+        expect(toast).toHaveBeenCalledWith(COW_SELL_TOAST);
+    });
+
+    test("selling cows produces correct toast with insufficient cows", async () => {
+        // The user does not have any cows to sell.
+        axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, {
+            ...userCommons,
+            numOfCows: 0
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId("sell-cow-button")).toBeInTheDocument();
+        const sellCowButton = screen.getByTestId("sell-cow-button");
+
+        // We attempt to sell a nonexistent cow.
+        fireEvent.click(sellCowButton);
+        await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+        expect(toast).toHaveBeenCalledTimes(1);
+        expect(toast).toHaveBeenCalledWith(COW_SELL_FAILURE_TOAST);
     });
 
     test("Make sure that both the Announcements and Welcome Farmer components show up", async () => {
