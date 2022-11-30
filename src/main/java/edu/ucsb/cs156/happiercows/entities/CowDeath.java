@@ -20,7 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "dow_death")
+@Entity(name = "cow_death")
 @EntityListeners(AuditingEntityListener.class)
 public class CowDeath {
     @Id
