@@ -630,7 +630,6 @@ public class UserCommonsControllerTests extends ControllerTestCase {
       .build();
   
       String requestBody = mapper.writeValueAsString(userCommonsToSend);
-      String expectedReturn = mapper.writeValueAsString(correctuserCommons);
   
       when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
       when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
@@ -641,13 +640,13 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                       .characterEncoding("utf-8")
                       .content(requestBody)
                       .with(csrf()))
-              .andExpect(status().isOk()).andReturn();
+              .andExpect(status().isBadRequest()).andReturn();
   
       // assert
-      verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
-      verify(userCommonsRepository, times(1)).save(correctuserCommons);
-      String responseString = response.getResponse().getContentAsString();
-      assertEquals(expectedReturn, responseString);
+      String expectedString = "{\"message\":\"Need more money to buy a cow!\",\"type\":\"NotEnoughMoneyException\"}";
+      Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+      Map<String, Object> jsonResponse = responseToJson(response);
+      assertEquals(expectedJson, jsonResponse);
   }
   
   @WithMockUser(roles = { "USER" })
@@ -704,13 +703,13 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                       .characterEncoding("utf-8")
                       .content(requestBody)
                       .with(csrf()))
-              .andExpect(status().isOk()).andReturn();
+              .andExpect(status().isBadRequest()).andReturn();
   
       // assert
-      verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
-      verify(userCommonsRepository, times(1)).save(correctuserCommons);
-      String responseString = response.getResponse().getContentAsString();
-      assertEquals(expectedReturn, responseString);
+      String expectedString = "{\"message\":\"You don't have any cow left to sell!\",\"type\":\"NotEnoughCowException\"}";
+      Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+      Map<String, Object> jsonResponse = responseToJson(response);
+      assertEquals(expectedJson, jsonResponse);
     }
 
 
