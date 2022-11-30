@@ -81,7 +81,7 @@ public class CowDeathControllerTests extends ControllerTestCase {
             .id(0)
             .commonsId(2)
             .userId(1)
-            .createdAt(ldt1)
+            .createdAt(null)
             .cowsKilled(2)
             .avgHealth(4)
             .build();

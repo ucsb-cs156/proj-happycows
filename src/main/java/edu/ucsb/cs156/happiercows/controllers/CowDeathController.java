@@ -46,7 +46,6 @@ public class CowDeathController extends ApiController {
     @PostMapping("/admin/post")
     public CowDeath postCowDeath_admin(
             @ApiParam("commonsId") @RequestParam Long commonsId,
-            @ApiParam("createdAt") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime createdAt,
             @ApiParam("cowsKilled") @RequestParam Integer cowsKilled,
             @ApiParam("avgHealth") @RequestParam Long avgHealth) {
         
@@ -57,7 +56,6 @@ public class CowDeathController extends ApiController {
         CowDeath createdCowDeath = CowDeath.builder()
             .commonsId(commonsId)
             .userId(userId)
-            .createdAt(createdAt)
             .cowsKilled(cowsKilled)
             .avgHealth(avgHealth)
             .build();
