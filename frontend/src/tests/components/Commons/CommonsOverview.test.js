@@ -79,4 +79,29 @@ describe("CommonsOverview tests", () => {
         });
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
     });
+
+    test("Test days elapsed is calculated correctly", async () => {
+        const ourCommons = {
+            ...commonsFixtures.oneCommons,
+            showLeaderboard : false
+        };
+        apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons[0];
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        axiosMock.onGet("/api/commons", {params: {id:1}}).reply(200, ourCommons);
+        axiosMock.onGet("/api/leaderboard/all").reply(200, leaderboardFixtures.threeUserCommonsLB);
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview commons={commonsFixtures.oneCommons[0]} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const date1 = new Date(ourCommons[0].startingDate);
+        const date2 = new Date();
+        const Difference_In_Time = Math.abs(date2.getTime() - date1.getTime());
+        const days = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+
+        expect(await screen.findByText(`Today is day ${days}!`)).toBeInTheDocument();
+    });
 });
