@@ -70,7 +70,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     MvcResult response = mockMvc.perform(get("/api/usercommons/?userId=1&commonsId=1"))
         .andExpect(status().isOk()).andReturn();
 
-    //verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L),eq(1L));
+    verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L),eq(1L));
 
     String expectedJson = mapper.writeValueAsString(expectedUserCommons);
     String responseString = response.getResponse().getContentAsString();
