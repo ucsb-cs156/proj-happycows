@@ -69,8 +69,12 @@ public class ProfitsControllerTests extends ControllerTestCase {
 
     List<Profit> testProfits = new ArrayList<Profit>();
 
-    UserCommons uc1 = UserCommons.builder().id(1).commonsId(2).userId(1).build();
-    UserCommons uc2 = UserCommons.builder().id(1).commonsId(2).userId(2).build();
+    UserCommons uc1 = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
+    UserCommons uc2 = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(2).build();
 
     Profit p1 = Profit.builder().id(42).profit(100).timestamp(12).userCommons(uc1).build();
     Profit p2 = Profit.builder().id(43).profit(200).timestamp(12).userCommons(uc1).build();
@@ -93,7 +97,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void get_profits_admin2() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit expectedProfit = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
     when(profitRepository.findById(42L)).thenReturn(Optional.of(expectedProfit));
 
@@ -109,7 +115,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "USER" })
   @Test
   public void get_profits() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit expectedProfit = Profit.builder().id(36L).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
     when(profitRepository.findById(36L)).thenReturn(Optional.of(expectedProfit));
 
@@ -125,7 +133,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @Test
   public void get_profits_user() throws Exception {
 
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(100).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(100).build();
     Profit expectedProfit = Profit.builder().id(36L).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     when(profitRepository.findById(36L)).thenReturn(Optional.of(expectedProfit));
@@ -155,7 +165,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void get_profits_admin_user() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(100).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(100).build();
     Profit expectedProfit = Profit.builder().id(36).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
     when(profitRepository.findById(36L)).thenReturn(Optional.of(expectedProfit));
 
@@ -184,7 +196,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @Test
   public void get_profits_all_commons() throws Exception {
     List<Profit> expectedProfits = new ArrayList<Profit>();
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit p1 = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     expectedProfits.add(p1);
@@ -204,7 +218,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @Test
   public void get_profits_all_commons_other_user() throws Exception {
     List<Profit> expectedProfits = new ArrayList<Profit>();
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(2).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(2).build();
     Profit p1 = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     when(profitRepository.findAllByUserCommonsId(1L)).thenReturn(expectedProfits);
@@ -235,7 +251,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @Test
   public void get_profits_admin_all_commons() throws Exception {
     List<Profit> expectedProfits = new ArrayList<Profit>();
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit p1 = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     expectedProfits.add(p1);
@@ -254,7 +272,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @Test
   public void get_profits_admin_all_commons_other_user() throws Exception {
     List<Profit> expectedProfits = new ArrayList<Profit>();
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(2).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(2).build();
     Profit p1 = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     expectedProfits.add(p1);
@@ -273,7 +293,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void post_profits_admin_post() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit expectedProfit = Profit.builder().id(0).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     when(profitRepository.save(expectedProfit)).thenReturn(expectedProfit);
@@ -293,7 +315,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void delete_profits_admin() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit p = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     when(profitRepository.findById(42L)).thenReturn(Optional.of(p));
@@ -310,7 +334,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void delete_profits_admin_other_user() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(100).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(100).build();
     Profit p = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     when(profitRepository.findById(42L)).thenReturn(Optional.of(p));
@@ -327,7 +353,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void put_profits_admin() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
     Profit before = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
     Profit after = Profit.builder().id(42).profit(200).timestamp(14).userCommons(expectedUserCommons).build();
 
@@ -347,7 +375,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void put_profits_admin_other_user() throws Exception {
-    UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(100).build();
+    UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(100).build();
     Profit p = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
 
     String requestBody = mapper.writeValueAsString(p);
@@ -367,7 +397,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void put_profits_admin_not_found() throws Exception {
-    UserCommons expectedUC = UserCommons.builder().id(1).commonsId(2).userId(100).build();
+    UserCommons expectedUC = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(100).build();
     Profit profit = Profit.builder().id(42).profit(100).timestamp(12).userCommons(expectedUC).build();
 
     String requestBody = mapper.writeValueAsString(profit);
@@ -413,7 +445,9 @@ public class ProfitsControllerTests extends ControllerTestCase {
 @Test
 public void get_profits_all_commons_using_commons_id() throws Exception {
   List<Profit> expectedProfits = new ArrayList<Profit>();
-  UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(1).build();
+  UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(1).build();
   Profit p1 = Profit.builder().id(36).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
   expectedProfits.add(p1);
   when(profitRepository.findAllByUserCommonsId(1L)).thenReturn(expectedProfits);
@@ -432,7 +466,9 @@ public void get_profits_all_commons_using_commons_id() throws Exception {
 @Test
 public void get_profits_all_commons_other_user_using_commons_id() throws Exception {
   List<Profit> expectedProfits = new ArrayList<Profit>();
-  UserCommons expectedUserCommons = UserCommons.builder().id(1).commonsId(2).userId(2).build();
+  UserCommons expectedUserCommons = UserCommons.builder()
+.avgCowHealth(100.0)
+.avgCowHealth(100.0).id(1).commonsId(2).userId(2).build();
   Profit p1 = Profit.builder().id(36).profit(100).timestamp(12).userCommons(expectedUserCommons).build();
   when(profitRepository.findAllByUserCommonsId(1L)).thenReturn(expectedProfits);
   when(userCommonsRepository.findByCommonsIdAndUserId(2L,1L)).thenReturn(Optional.of(expectedUserCommons));
