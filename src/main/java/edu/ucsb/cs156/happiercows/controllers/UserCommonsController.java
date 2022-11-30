@@ -22,6 +22,7 @@ import edu.ucsb.cs156.happiercows.models.UserCommonsPlus;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
@@ -170,13 +171,10 @@ public class UserCommonsController extends ApiController {
 
   public UserCommonsPlus toUserCommonsPlus(UserCommons uc) {
 
-    Optional<User> optionalUser = userRepository.findById(uc.getUserId());
+    User user = userRepository.findById(uc.getUserId()).orElseThrow(
+      () -> new EntityNotFoundException(User.class, uc.getUserId()));
 
-    if (!optionalUser.isPresent()) {
-      throw new RuntimeException(String.format("User with id %d not found",uc.getUserId()));
-    }
-
-    String username = optionalUser.get().getFullName(); // WRITE CODE TO GET USERNAME
+    String username = user.getFullName(); // WRITE CODE TO GET USERNAME
 
     return UserCommonsPlus.builder()
         .userCommons(uc)

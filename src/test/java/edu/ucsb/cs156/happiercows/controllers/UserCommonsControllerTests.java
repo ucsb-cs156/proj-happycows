@@ -8,6 +8,7 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.UserCommonsPlus;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -60,6 +61,13 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     UserCommons userCommons = new UserCommons(id,1,1,1,1);
     return userCommons;
   }
+
+  public static User dummyUser(String username) {
+    List<Commons> commons = new ArrayList<>();
+    User user = new User(1,"","","",username,"","",true,"","",true,commons);
+    return user;
+  }
+
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void test_getUserCommonsById_exists_admin() throws Exception {
@@ -751,5 +759,116 @@ public class UserCommonsControllerTests extends ControllerTestCase {
       String responseString = response.getResponse().getContentAsString();
   
       assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void getUserCommonsPlusTest() throws Exception {
+      List<UserCommons> expectedUserCommons = new ArrayList<UserCommons>();
+      UserCommons userCommons1 = UserCommons.builder().id(1L).commonsId(1L).userId(1L).numOfCows(7).totalWealth(1000).build();
+      UserCommons userCommons2 = UserCommons.builder().id(2L).commonsId(1L).userId(2L).numOfCows(57).totalWealth(432).build();
+      UserCommons userCommons3 = UserCommons.builder().id(3L).commonsId(1L).userId(3L).numOfCows(72).totalWealth(5436).build();
+      User user1 = dummyUser("ry");
+      User user2 = dummyUser("ag");
+      User user3 = dummyUser("pc");
+  
+      expectedUserCommons.add(userCommons1);
+      expectedUserCommons.add(userCommons2);
+      expectedUserCommons.add(userCommons3);
+  
+      List<UserCommonsPlus> expectedUserCommonsPlusList = new ArrayList<UserCommonsPlus>();
+      UserCommonsPlus UserCommonsPlus1 = UserCommonsPlus.builder()
+          .userCommons(userCommons1)
+          .username("ry")
+          .build();
+  
+      UserCommonsPlus UserCommonsPlus2 = UserCommonsPlus.builder()
+          .userCommons(userCommons2)
+          .username("ag")
+          .build();
+  
+  
+      UserCommonsPlus UserCommonsPlus3 = UserCommonsPlus.builder()
+          .userCommons(userCommons3)
+          .username("pc")
+          .build();
+  
+      expectedUserCommonsPlusList.add(UserCommonsPlus1);
+      expectedUserCommonsPlusList.add(UserCommonsPlus2);
+      expectedUserCommonsPlusList.add(UserCommonsPlus3);
+  
+      when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(expectedUserCommons);
+      when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user1));
+      when(userRepository.findById(eq(2L))).thenReturn(Optional.of(user2));
+      when(userRepository.findById(eq(3L))).thenReturn(Optional.of(user3));
+  
+      MvcResult response = mockMvc.perform(get("/api/usercommons/commons/all/plus?commonsId=1").contentType("application/json"))
+          .andExpect(status().isOk()).andReturn();
+  
+        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+  
+      String responseString = response.getResponse().getContentAsString();
+      List<UserCommonsPlus> actualUserCommonsPlusList = objectMapper.readValue(responseString,
+          new TypeReference<List<UserCommonsPlus>>() {
+          });
+  
+      assertEquals(expectedUserCommonsPlusList, actualUserCommonsPlusList);
+    
+    }
+    
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void getUserCommonsPlus_NonExistUser_Test() throws Exception {
+        List<UserCommons> expectedUserCommons = new ArrayList<UserCommons>();
+        UserCommons userCommons1 = UserCommons.builder().id(1L).commonsId(1L).userId(1L).numOfCows(7).totalWealth(1000).build();
+        UserCommons userCommons2 = UserCommons.builder().id(2L).commonsId(1L).userId(2L).numOfCows(57).totalWealth(432).build();
+        UserCommons userCommons3 = UserCommons.builder().id(3L).commonsId(1L).userId(3L).numOfCows(72).totalWealth(5436).build();
+        User user1 = dummyUser("ry");
+        User user2 = dummyUser("ag");
+        // User user3 = dummyUser("pc");
+
+        expectedUserCommons.add(userCommons1);
+        expectedUserCommons.add(userCommons2);
+        expectedUserCommons.add(userCommons3);
+
+        List<UserCommonsPlus> expectedUserCommonsPlusList = new ArrayList<UserCommonsPlus>();
+        UserCommonsPlus UserCommonsPlus1 = UserCommonsPlus.builder()
+            .userCommons(userCommons1)
+            .username("ry")
+            .build();
+
+        UserCommonsPlus UserCommonsPlus2 = UserCommonsPlus.builder()
+            .userCommons(userCommons2)
+            .username("ag")
+            .build();
+
+
+        UserCommonsPlus UserCommonsPlus3 = UserCommonsPlus.builder()
+            .userCommons(userCommons3)
+            .username("pc")
+            .build();
+
+        expectedUserCommonsPlusList.add(UserCommonsPlus1);
+        expectedUserCommonsPlusList.add(UserCommonsPlus2);
+        expectedUserCommonsPlusList.add(UserCommonsPlus3);
+
+        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(expectedUserCommons);
+        when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user1));
+        when(userRepository.findById(eq(2L))).thenReturn(Optional.of(user2));
+        when(userRepository.findById(eq(3L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/usercommons/commons/all/plus?commonsId=1").contentType("application/json"))
+            .andExpect(status().is(404)).andReturn();
+
+        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+
+        String responseString = response.getResponse().getContentAsString();
+        String expectedString = "{\"message\":\"User with id 3 not found\",\"type\":\"EntityNotFoundException\"}";
+    
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+
+    
     }
 }
