@@ -45,8 +45,8 @@ describe("PlayPage tests", () => {
         axiosMock.reset();
         axiosMock.resetHistory();
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/usercommons/forcurrentuser", { params: { commonsId: 1 } }).reply(200, userCommons);
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, sampleCommons);
         axiosMock.onGet("/api/commons/all").reply(200, [
             sampleCommons
@@ -80,6 +80,7 @@ describe("PlayPage tests", () => {
         fireEvent.click(buyCowButton);
 
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+
         const sellCowButton = screen.getByTestId("sell-cow-button");
         fireEvent.click(sellCowButton);
 
