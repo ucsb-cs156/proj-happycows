@@ -1,25 +1,8 @@
 import React from "react";
-import OurTable, {ButtonColumn} from "main/components/OurTable";
-import { useBackendMutation } from "main/utils/useBackend";
-import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/commonsUtils"
-//import { useNavigate } from "react-router-dom";
+import OurTable from "main/components/OurTable";
 import { hasRole } from "main/utils/currentUser";
 
 export default function CowDeathTable({ cowDeaths, currentUser }) {
-
-    // Stryker disable all : hard to test for query caching
-    const deleteMutation = useBackendMutation(
-        cellToAxiosParamsDelete,
-        { onSuccess: onDeleteSuccess },
-        ["/api/cowdeath/all/bycommons"]
-    );
-    // Stryker enable all 
-
-    // Stryker disable next-line all : TODO try to make a good test for this
-    const deleteCallback = async (cell) => { 
-        console.log("deleteCallback cell=", cell);
-        deleteMutation.mutate(cell); 
-    }
 
     const columns = [
         {
@@ -51,8 +34,7 @@ export default function CowDeathTable({ cowDeaths, currentUser }) {
     const testid = "CowDeathTable";
 
     const columnsIfAdmin = [
-        ...columns,
-        ButtonColumn("Delete", "danger", deleteCallback, testid)
+        ...columns
     ];
 
     const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN") ? columnsIfAdmin : columns;
