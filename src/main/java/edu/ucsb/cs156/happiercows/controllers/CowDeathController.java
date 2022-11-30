@@ -4,6 +4,7 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.entities.CowDeath;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.entities.Commons;
+import java.util.Optional;
 
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
@@ -50,6 +51,8 @@ public class CowDeathController extends ApiController {
             @ApiParam("avgHealth") @RequestParam Long avgHealth) {
         
         Long userId = getCurrentUser().getUser().getId();
+        commonsRepository.findById(commonsId)
+            .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
 
         CowDeath createdCowDeath = CowDeath.builder()
             .commonsId(commonsId)
