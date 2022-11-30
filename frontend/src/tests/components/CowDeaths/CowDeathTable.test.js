@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import CowDeathTable from "main/components/CowDeaths/CowDeathTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import CowDeathFixtures from "fixtures/CowDeathFixtures";
+import CowDeathFixtures from "fixtures/cowDeathFixtures";
 
 const mockedNavigate = jest.fn();
 
@@ -65,7 +65,7 @@ describe("CowDeathTable tests", () => {
 
     );
 
-    const expectedHeaders = ['(Admin) Id', 'Commons Id', 'User Id', 'ZonedDateTime', 'Cows Killed', 'Average Health'];
+    const expectedHeaders = ['(Admin) Id', 'Commons Id', 'User Id', 'Created At', 'Cows Killed', 'Average Health'];
     const expectedFields = ['id', 'commonsId', 'userId', 'createdAt','cowsKilled', 'avgHealth'];
     const testId = "CowDeathTable";
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import CowDeathTable from "main/components/CowDeaths/CowDeathTable";
-import cowDeathFixtures from 'fixtures/CowDeathFixtures';
+import cowDeathFixtures from 'fixtures/cowDeathFixtures';
 import { currentUserFixtures } from 'fixtures/currentUserFixtures';
 
 export default {

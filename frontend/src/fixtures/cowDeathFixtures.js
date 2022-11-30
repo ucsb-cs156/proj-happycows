@@ -7,7 +7,7 @@ const cowDeathFixtures = {
             "userId": 1,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
-						"avgHealth": 20 
+            "avgHealth": 20 
         }
     ],
     threeUserCommonsCD:
@@ -18,7 +18,7 @@ const cowDeathFixtures = {
             "userId": 1,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 2,
-						"avgHealth": 30
+            "avgHealth": 30
         },
         {
             "id":2,
@@ -26,7 +26,7 @@ const cowDeathFixtures = {
             "userId": 2,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
-						"avgHealth": 10 
+            "avgHealth": 10 
         },
         {
             "id":3,
@@ -34,7 +34,7 @@ const cowDeathFixtures = {
             "userId": 3,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 8,
-						"avgHealth": 3 
+            "avgHealth": 3 
         }
     ],
     fiveUserCommonsCD: 
@@ -45,7 +45,7 @@ const cowDeathFixtures = {
             "userId": 1,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
-						"avgHealth": 30
+            "avgHealth": 30
         },
         {
             "id":2,
@@ -53,7 +53,7 @@ const cowDeathFixtures = {
             "userId": 2,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
-						"avgHealth": 18 
+            "avgHealth": 18 
         },
         {
             "id":3,
@@ -61,7 +61,7 @@ const cowDeathFixtures = {
             "userId": 3,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
-						"avgHealth": 50 
+            "avgHealth": 50 
         },
         {
             "id":4,
@@ -69,7 +69,7 @@ const cowDeathFixtures = {
             "userId": 4,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 6,
-						"avgHealth": 26 
+            "avgHealth": 26 
         },
         {
             "id":5,
@@ -77,7 +77,7 @@ const cowDeathFixtures = {
             "userId": 5,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 3,
-						"avgHealth": 18
+            "avgHealth": 18
         },
     ],
     tenUserCommonsCD: 
@@ -88,7 +88,7 @@ const cowDeathFixtures = {
             "userId": 1,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 9,
-						"avgHealth": 18
+            "avgHealth": 18
         },
         {
             "id":2,
@@ -96,7 +96,7 @@ const cowDeathFixtures = {
             "userId": 2,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
-						"avgHealth": 35
+            "avgHealth": 35
         },
         {
             "id":3,
@@ -104,7 +104,7 @@ const cowDeathFixtures = {
             "userId": 3,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 7,
-						"avgHealth": 22
+            "avgHealth": 22
         },
         {
             "id":4,
@@ -112,7 +112,7 @@ const cowDeathFixtures = {
             "userId": 4,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
-						"avgHealth": 22
+            "avgHealth": 22
         },
         {
             "id":5,
@@ -120,7 +120,7 @@ const cowDeathFixtures = {
             "userId": 5,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 6,
-						"avgHealth": 19
+            "avgHealth": 19
         },
         {
             "id":6,
@@ -128,7 +128,7 @@ const cowDeathFixtures = {
             "userId": 6,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 11,
-						"avgHealth": 18
+            "avgHealth": 18
         },
         {
             "id":7,
@@ -136,7 +136,7 @@ const cowDeathFixtures = {
             "userId": 7,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 2,
-						"avgHealth": 32
+            "avgHealth": 32
         },
         {
             "id":8,
@@ -144,7 +144,7 @@ const cowDeathFixtures = {
             "userId": 8,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 5,
-						"avgHealth": 24
+            "avgHealth": 24
         },
         {
             "id":9,
@@ -152,7 +152,7 @@ const cowDeathFixtures = {
             "userId": 9,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 4,
-						"avgHealth": 18
+            "avgHealth": 18
         },
         {
             "id":10,
@@ -160,7 +160,7 @@ const cowDeathFixtures = {
             "userId": 10,
             "createdAt" : "2022-11-13T19:50:16.810569-08:00",
             "cowsKilled": 11,
-						"avgHealth": 19
+            "avgHealth": 19
         },
     ]
 }
