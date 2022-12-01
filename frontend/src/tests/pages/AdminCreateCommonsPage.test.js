@@ -60,7 +60,8 @@ describe("AdminCreateCommonsPage tests", () => {
             "startingBalance": 500,
             "startingDate": "2022-03-05T00:00:00",
             "degradationRate": 30.4,
-            "showLeaderboard": false
+            "showLeaderboard": false,
+            "carryingCapacity":"150"
         });
 
         render(
@@ -74,6 +75,7 @@ describe("AdminCreateCommonsPage tests", () => {
         expect(await screen.findByText("Create Commons")).toBeInTheDocument();
 
         const commonsNameField = screen.getByLabelText("Commons Name");
+        const carryingCapacityField = screen.getByLabelText("Carrying Capacity");
         const startingBalanceField = screen.getByLabelText("Starting Balance");
         const cowPriceField = screen.getByLabelText("Cow Price");
         const milkPriceField = screen.getByLabelText("Milk Price");
@@ -82,7 +84,9 @@ describe("AdminCreateCommonsPage tests", () => {
         const showLeaderboardField = screen.getByLabelText("Show Leaderboard?");
         const button = screen.getByTestId("CommonsForm-Submit-Button");
 
+
         fireEvent.change(commonsNameField, { target: { value: 'My New Commons' } })
+        fireEvent.change(carryingCapacityField,{ target:{ value:'150'}})
         fireEvent.change(startingBalanceField, { target: { value: '500' } })
         fireEvent.change(cowPriceField, { target: { value: '10' } })
         fireEvent.change(milkPriceField, { target: { value: '5' } })
@@ -99,6 +103,7 @@ describe("AdminCreateCommonsPage tests", () => {
 
         const expectedCommons = {
             name: "My New Commons",
+            carryingCapacity:"150",
             startingBalance: 500,
             cowPrice: 10,
             milkPrice: 5,
@@ -114,6 +119,7 @@ describe("AdminCreateCommonsPage tests", () => {
             <br />name: My New Commons
             <br />startDate: 2022-03-05T00:00:00
             <br />cowPrice: 10
+            <br />carryingCapacity: 150
         </div>);
     });
 });
