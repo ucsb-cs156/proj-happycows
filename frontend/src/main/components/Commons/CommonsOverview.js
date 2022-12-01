@@ -20,7 +20,9 @@ export default function CommonsOverview({ commons, currentUser }) {
             <Card.Body>
                 <Row>
                     <Col>
+
                         <Card.Title>Today is day {days}!</Card.Title>
+
                         <Card.Text>Total Players: {commons.totalPlayers}</Card.Text>
                     </Col>
                     <Col>

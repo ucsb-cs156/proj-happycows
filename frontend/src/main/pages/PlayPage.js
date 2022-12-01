@@ -95,7 +95,9 @@ export default function PlayPage() {
 
 
   const onSuccessSell = () => {
-    toast(`Cow sold!`);
+    toast(userCommons.numOfCows >= 1 ?
+      `Cow sold!` :
+      `You have already sold all of your cows`);
   }
 
   // Stryker disable all 
