@@ -29,6 +29,7 @@ public class CreateCommonsParams {
   @NumberFormat
   private double startingBalance;
   @Builder.Default
+  @NumberFormat
   private long carryingCapacity = 100;
   @NumberFormat private double degradationRate;
   @DateTimeFormat
