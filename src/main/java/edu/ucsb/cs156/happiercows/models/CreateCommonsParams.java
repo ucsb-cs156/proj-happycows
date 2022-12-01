@@ -28,7 +28,8 @@ public class CreateCommonsParams {
   private double milkPrice;
   @NumberFormat
   private double startingBalance;
-  private long carryingCapacity;
+  @Builder.Default
+  private long carryingCapacity = 100;
   @NumberFormat private double degradationRate;
   @DateTimeFormat
   private LocalDateTime startingDate;
