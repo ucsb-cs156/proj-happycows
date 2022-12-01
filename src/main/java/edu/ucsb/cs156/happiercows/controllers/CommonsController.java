@@ -117,7 +117,7 @@ public class CommonsController extends ApiController {
     updated.setStartingBalance(params.getStartingBalance());
     updated.setStartingDate(params.getStartingDate());
     updated.setEndingDate(params.getEndingDate());
-    //updated.setCarryingCapacity(params.getCarryingCapacity());
+    updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setShowLeaderboard(params.getShowLeaderboard());
     updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setDegradationRate(params.getDegradationRate()); 
@@ -158,7 +158,7 @@ public class CommonsController extends ApiController {
       .startingDate(params.getStartingDate())
       .endingDate(params.getEndingDate())
       .degradationRate(params.getDegradationRate())
-      //.carryingCapacity(params.getCarryingCapacity())
+      .carryingCapacity(params.getCarryingCapacity())
       .showLeaderboard(params.getShowLeaderboard())
       .carryingCapacity(params.getCarryingCapacity())
       .build();
