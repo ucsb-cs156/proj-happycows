@@ -23,6 +23,9 @@ import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJob;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJob;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
@@ -38,6 +41,12 @@ public class JobsController extends ApiController {
 
     @Autowired
     private JobService jobService;
+
+    @Autowired
+    private CommonsRepository commonsRepository;
+
+    @Autowired
+    private UserCommonsRepository userCommonsRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -80,7 +89,10 @@ public class JobsController extends ApiController {
     public Job launchUpdateHealthJob(
     ) {
 
-        UpdateCowHealthJob updateCowHealthJob = UpdateCowHealthJob.builder().build();
+        UpdateCowHealthJob updateCowHealthJob = UpdateCowHealthJob.builder()
+                                .commonsRepository(commonsRepository)
+                                .userCommonsRepository(userCommonsRepository)
+                                .build();
         return jobService.runAsJob(updateCowHealthJob);
     }
 
