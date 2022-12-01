@@ -2,26 +2,23 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CowDeath;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.CowDeathRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
-@Slf4j
 @Builder
+@AllArgsConstructor
 public class UpdateCowHealthJob implements JobContextConsumer {
 
-    private CommonsRepository commonsRepository;
-    private UserCommonsRepository userCommonsRepository;
+    @Getter private CommonsRepository commonsRepository;
+    @Getter private UserCommonsRepository userCommonsRepository;
 
     @Override
     public void accept(JobContext ctx) throws Exception {
