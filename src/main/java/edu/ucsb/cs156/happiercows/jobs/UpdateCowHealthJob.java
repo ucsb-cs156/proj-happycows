@@ -42,13 +42,12 @@ public class UpdateCowHealthJob implements JobContextConsumer {
             for (int i = 0; i < commons.getUsers().size(); ++i){
                 User user = commons.getUsers().get(i);
                 Optional<UserCommons> userCommonsOptional = userCommonsRepository.findByCommonsIdAndUserId(commons.getId(), user.getId());
-                if(userCommonsOptional.isEmpty()){
-                    continue;
-                }
+                
                 UserCommons userCommons = userCommonsOptional.get();
                 double newAvgHealth = Math.min(userCommons.getAvgCowHealth() + adjHealthValue, 100);
                 userCommons.setAvgCowHealth(newAvgHealth);
                 userCommonsRepository.save(userCommons);
+                
             }
         }
 
