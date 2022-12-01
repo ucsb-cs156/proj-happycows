@@ -91,15 +91,17 @@ describe("OurTable tests", () => {
     });
 
 
+
     test("background color is white", async () => {
         render(
             <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
         );
 
+        const { container } = render(
+            <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
+        );
 
-        const col1Row0 = screen.getByTestId("sampleTestId-cell-row-0-col-col1");
-        expect(col1Row0).toHaveStyle("background: white");
-
+        expect(container.firstChild).toHaveStyle(`background: white`);
     });
 
 });
