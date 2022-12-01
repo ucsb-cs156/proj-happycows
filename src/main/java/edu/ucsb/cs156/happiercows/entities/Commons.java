@@ -31,6 +31,7 @@ public class Commons
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
   private double degradationRate;
+  private int carryingCapacity;
   private boolean showLeaderboard;
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
