@@ -31,7 +31,7 @@ public class Commons
   private LocalDateTime startingDate;
   private LocalDateTime endingDate;
   private double degradationRate;
-  private int carryingCapacity;
+  private long carryingCapacity;
   private boolean showLeaderboard;
   private int carryingCapacity;
 

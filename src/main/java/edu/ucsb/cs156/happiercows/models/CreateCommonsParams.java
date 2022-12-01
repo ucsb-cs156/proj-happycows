@@ -29,7 +29,7 @@ public class CreateCommonsParams {
   @NumberFormat
   private double startingBalance;
   @NumberFormat
-  private int carryingCapacity;
+  private long carryingCapacity;
   @NumberFormat private double degradationRate;
   @DateTimeFormat
   private LocalDateTime startingDate;
