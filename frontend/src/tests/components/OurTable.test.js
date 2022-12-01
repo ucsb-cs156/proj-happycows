@@ -101,6 +101,7 @@ describe("OurTable tests", () => {
             <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
         );
 
+        // eslint-disable-next-line testing-library/no-node-access
         expect(container.firstChild).toHaveStyle(`background: white`);
     });
 
