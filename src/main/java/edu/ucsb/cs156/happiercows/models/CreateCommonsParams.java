@@ -30,7 +30,7 @@ public class CreateCommonsParams {
   private double startingBalance;
   @Builder.Default
   @NumberFormat
-  private long carryingCapacity = 100;
+  private Integer carryingCapacity = 100;
   @NumberFormat private double degradationRate;
   @DateTimeFormat
   private LocalDateTime startingDate;
