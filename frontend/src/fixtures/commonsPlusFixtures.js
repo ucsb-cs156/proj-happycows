@@ -65,7 +65,7 @@ const commonsPlusFixtures = {
                 "endingDate": null,
                 "degradationRate": 3.0,
                 "showLeaderboard": false,
-                "carryingCapacity": 100,
+                "carryingCapacity": 100
             },
             "totalCows": 0,
             "totalUsers": 0
