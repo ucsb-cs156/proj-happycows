@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import OurTable, { ButtonColumn, DateColumn, PlaintextColumn} from "main/components/OurTable";
+import OurTable, { ButtonColumn, DateColumn, PlaintextColumn } from "main/components/OurTable";
 
 describe("OurTable tests", () => {
     const threeRows = [
@@ -89,4 +89,20 @@ describe("OurTable tests", () => {
         fireEvent.click(col1Header);
         expect(await screen.findByText("🔽")).toBeInTheDocument();
     });
+
+
+
+    test("background color is white", async () => {
+        render(
+            <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
+        );
+
+        const { container } = render(
+            <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
+        );
+
+        // eslint-disable-next-line testing-library/no-node-access
+        expect(container.firstChild).toHaveStyle(`background: white`);
+    });
+
 });
