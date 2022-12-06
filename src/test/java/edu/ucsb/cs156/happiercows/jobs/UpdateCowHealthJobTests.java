@@ -60,7 +60,6 @@ public class UpdateCowHealthJobTests {
         // Assert
 
         String expected = "Starting to update cow health.\n" +
-               // "This is where the code to update the cow's health will go.\n" +
                 "Cows Health has been updated!";
 
         assertEquals(expected, jobStarted.getLog());
