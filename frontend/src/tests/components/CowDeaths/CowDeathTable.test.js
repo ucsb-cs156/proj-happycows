@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
-import LeaderboardTable from "main/components/Leaderboard/LeaderboardTable";
+import CowDeathTable from "main/components/CowDeaths/CowDeathTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import leaderboardFixtures from "fixtures/leaderboardFixtures";
+import CowDeathFixtures from "fixtures/cowDeathFixtures";
 
 const mockedNavigate = jest.fn();
 
@@ -12,7 +12,7 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedNavigate
 }));
 
-describe("LeaderboardTable tests", () => {
+describe("CowDeathTable tests", () => {
   const queryClient = new QueryClient();
 
   test("renders without crashing for empty table with user not logged in", () => {
@@ -21,7 +21,7 @@ describe("LeaderboardTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <LeaderboardTable leaderboardUsers={[]} currentUser={currentUser} />
+          <CowDeathTable cowDeaths={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -33,7 +33,7 @@ describe("LeaderboardTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <LeaderboardTable leaderboardUsers={[]} currentUser={currentUser} />
+          <CowDeathTable cowDeaths={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -46,7 +46,7 @@ describe("LeaderboardTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <LeaderboardTable leaderboardUsers={[]} currentUser={currentUser} />
+          <CowDeathTable cowDeaths={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
@@ -59,15 +59,15 @@ describe("LeaderboardTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <LeaderboardTable leaderboardUsers={leaderboardFixtures.threeUserCommonsLB} currentUser={currentUser} />
+          <CowDeathTable cowDeaths={CowDeathFixtures.threeUserCommonsCD} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
 
     );
 
-    const expectedHeaders = ['(Admin) userCommons Id', 'User Id', 'Username', 'Total Wealth', 'Cows Owned'];
-    const expectedFields = ['userCommons.id', 'userCommons.userId', 'username', 'userCommons.totalWealth','userCommons.numOfCows'];
-    const testId = "LeaderboardTable";
+    const expectedHeaders = ['(Admin) Id', 'Commons Id', 'User Id', 'Created At', 'Cows Killed', 'Average Health'];
+    const expectedFields = ['id', 'commonsId', 'userId', 'createdAt','cowsKilled', 'avgHealth'];
+    const testId = "CowDeathTable";
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
@@ -79,14 +79,12 @@ describe("LeaderboardTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-userCommons.id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-userCommons.userId`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-username`)).toHaveTextContent("one");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-userCommons.totalWealth`)).toHaveTextContent("1000");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-userCommons.id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-userCommons.userId`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-username`)).toHaveTextContent("two");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-userCommons.totalWealth`)).toHaveTextContent("1000");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-commonsId`)).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-userId`)).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-commonsId`)).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-userId`)).toHaveTextContent("2");
 
   });
 

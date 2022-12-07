@@ -17,12 +17,12 @@ export default function LeaderboardPage() {
   const { data: currentUser } = useCurrentUser();
 
   // Stryker disable all 
-  const { data: userCommons, error: _error, status: _status } =
+  const { data: userCommonsPlus, error: _error, status: _status } =
     useBackend(
-      [`/api/usercommons/commons/all?commonsId=${commonsId}`],
+      [`/api/usercommons/commons/all/plus?commonsId=${commonsId}`],
       {
         method: "GET",
-        url: "/api/usercommons/commons/all",
+        url: "/api/usercommons/commons/all/plus",
         params: {
           commonsId: commonsId
         }
@@ -54,7 +54,7 @@ export default function LeaderboardPage() {
                 <h1>Leaderboard</h1>
                 {
                   showLeaderboard?
-                  (<LeaderboardTable leaderboardUsers={userCommons} currentUser={currentUser} />) :
+                  (<LeaderboardTable leaderboardUsers={userCommonsPlus} currentUser={currentUser} />) :
                   (<p>You're not authorized to see the leaderboard.</p>)
                 }
             </div>
