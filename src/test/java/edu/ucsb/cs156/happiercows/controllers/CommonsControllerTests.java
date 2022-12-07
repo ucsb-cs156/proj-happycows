@@ -374,17 +374,6 @@ public class CommonsControllerTests extends ControllerTestCase {
         .carryingCapacity(-100)
         .build();
 
-    Commons commons = Commons.builder()
-        .name("Jackson's Commons")
-        .cowPrice(500.99)
-        .milkPrice(8.99)
-        .startingBalance(1020.10)
-        .startingDate(someTime)
-        .degradationRate(8.49)
-        .showLeaderboard(false)
-        .carryingCapacity(100)
-        .build();
-
     String requestBody = objectMapper.writeValueAsString(parameters);
 
     MvcResult response = mockMvc
@@ -414,17 +403,6 @@ public class CommonsControllerTests extends ControllerTestCase {
         .startingBalance(1020.10)
         .startingDate(someTime)
         .degradationRate(-20)
-        .showLeaderboard(false)
-        .carryingCapacity(100)
-        .build();
-
-    Commons commons = Commons.builder()
-        .name("Jackson's Commons")
-        .cowPrice(500.99)
-        .milkPrice(8.99)
-        .startingBalance(1020.10)
-        .startingDate(someTime)
-        .degradationRate(8.49)
         .showLeaderboard(false)
         .carryingCapacity(100)
         .build();
