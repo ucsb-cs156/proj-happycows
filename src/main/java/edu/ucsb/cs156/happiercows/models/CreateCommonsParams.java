@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import org.springframework.security.core.GrantedAuthority;
 
-import edu.ucsb.cs156.happiercows.entities.User;
 
 @Data
 @AllArgsConstructor

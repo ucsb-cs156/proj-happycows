@@ -60,7 +60,8 @@ describe("AdminCreateCommonsPage tests", () => {
             "startingBalance": 500,
             "startingDate": "2022-03-05T00:00:00",
             "degradationRate": 30.4,
-            "showLeaderboard": false
+            "showLeaderboard": false,
+            "carryingCapacity": 100
         });
 
         render(
@@ -79,6 +80,7 @@ describe("AdminCreateCommonsPage tests", () => {
         const milkPriceField = screen.getByLabelText("Milk Price");
         const startDateField = screen.getByLabelText("Starting Date");
         const degradationRateField = screen.getByLabelText("Degradation Rate");
+        const carryingCapacityField = screen.getByLabelText("Carrying Capacity");
         const showLeaderboardField = screen.getByLabelText("Show Leaderboard?");
         const button = screen.getByTestId("CommonsForm-Submit-Button");
 
@@ -88,6 +90,7 @@ describe("AdminCreateCommonsPage tests", () => {
         fireEvent.change(milkPriceField, { target: { value: '5' } })
         fireEvent.change(startDateField, { target: { value: '2022-03-05' } })
         fireEvent.change(degradationRateField, { target: { value: '30.4' } })
+        fireEvent.change(carryingCapacityField, {target: { value: '50'}})
         fireEvent.change(showLeaderboardField, { target: { value: true } })
         fireEvent.click(button);
 
@@ -104,7 +107,8 @@ describe("AdminCreateCommonsPage tests", () => {
             milkPrice: 5,
             startingDate: '2022-03-05T00:00:00.000Z', // [1]
             degradationRate: 30.4,
-            showLeaderboard: false
+            carryingCapacity: 50,
+            showLeaderboard: false,
         };
 
         expect(axiosMock.history.post[0].data).toEqual( JSON.stringify(expectedCommons) );

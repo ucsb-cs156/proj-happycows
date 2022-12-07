@@ -103,6 +103,14 @@ public class CommonsController extends ApiController {
     Commons updated;
     HttpStatus status;
 
+    if(params.getDegradationRate() < 0){
+      throw new IllegalArgumentException("Degradation Rate cannot be negative");
+    }
+
+    if(params.getCarryingCapacity() <= 0){
+      throw new IllegalArgumentException("Carrying Capacity must be strictly >0");
+    }
+
     if (existing.isPresent()) {
       updated = existing.get();
       status = HttpStatus.NO_CONTENT;
@@ -117,14 +125,9 @@ public class CommonsController extends ApiController {
     updated.setStartingBalance(params.getStartingBalance());
     updated.setStartingDate(params.getStartingDate());
     updated.setEndingDate(params.getEndingDate());
-    updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setShowLeaderboard(params.getShowLeaderboard());
+    updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setDegradationRate(params.getDegradationRate()); 
-
-    if(params.getDegradationRate() < 0){
-      throw new IllegalArgumentException("Degradation Rate cannot be negative");
-    }
-    
 
     commonsRepository.save(updated);
 

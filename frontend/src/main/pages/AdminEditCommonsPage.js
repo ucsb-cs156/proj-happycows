@@ -36,6 +36,7 @@ export default function CommonsEditPage() {
         "startingDate": commons.startingDate,
         "degradationRate": commons.degradationRate,
         "showLeaderboard": commons.showLeaderboard,
+        "carryingCapacity": commons.carryingCapacity,
     }
   });
 
