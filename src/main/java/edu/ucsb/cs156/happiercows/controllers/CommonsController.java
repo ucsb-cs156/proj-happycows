@@ -108,7 +108,7 @@ public class CommonsController extends ApiController {
     }
 
     if(params.getCarryingCapacity() < 0){
-      throw new IllegalArgumentException("Degradation Rate cannot be negative");
+      throw new IllegalArgumentException("Carrying Capacity cannot be negative");
     }
 
     if (existing.isPresent()) {
