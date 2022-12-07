@@ -277,6 +277,9 @@ public class CommonsControllerTests extends ControllerTestCase {
     parameters.setShowLeaderboard(false);
     commons.setShowLeaderboard(parameters.getShowLeaderboard());
 
+    parameters.setCarryingCapacity(150);
+    commons.setCarryingCapacity(parameters.getCarryingCapacity());
+
     requestBody = objectMapper.writeValueAsString(parameters);
 
     when(commonsRepository.findById(0L))
