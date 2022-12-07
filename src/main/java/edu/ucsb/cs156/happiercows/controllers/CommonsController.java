@@ -119,7 +119,6 @@ public class CommonsController extends ApiController {
     updated.setEndingDate(params.getEndingDate());
     updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setShowLeaderboard(params.getShowLeaderboard());
-    updated.setCarryingCapacity(params.getCarryingCapacity());
     updated.setDegradationRate(params.getDegradationRate()); 
 
     if(params.getDegradationRate() < 0){
