@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-local-changes","number":12,"title":"Pc local changes","url":"https://github.com/ucsb-cs156/proj-happycows/pull/12"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-add-some-javadoc","number":14,"title":"pc - add javadoc comment","url":"https://github.com/ucsb-cs156/proj-happycows/pull/14"}]
