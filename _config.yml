@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-update-workflows","number":13,"title":"pc - update workflows","url":"https://github.com/ucsb-cs156/proj-happycows/pull/13"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-local-changes","number":12,"title":"Pc local changes","url":"https://github.com/ucsb-cs156/proj-happycows/pull/12"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-local-changes","number":12,"title":"Pc local changes","url":"https://github.com/ucsb-cs156/proj-happycows/pull/12"}]
