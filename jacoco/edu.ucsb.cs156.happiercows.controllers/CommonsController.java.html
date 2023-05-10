@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">example</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">CommonsController.java</span></div><h1>CommonsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+import java.util.*;
+import java.util.stream.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.controllers.ApiController;
+
+<span class="fc" id="L45">@Slf4j</span>
+@Api(description = &quot;Commons&quot;)
+@RequestMapping(&quot;/api/commons&quot;)
+@RestController
+<span class="fc" id="L49">public class CommonsController extends ApiController {</span>
+  @Autowired
+  private CommonsRepository commonsRepository;
+
+  @Autowired
+  private UserCommonsRepository userCommonsRepository;
+
+  @Autowired
+  ObjectMapper mapper;
+
+  @ApiOperation(value = &quot;Get a list of all commons&quot;)
+  @GetMapping(&quot;/all&quot;)
+  public ResponseEntity&lt;String&gt; getCommons() throws JsonProcessingException {
+<span class="fc" id="L62">    log.info(&quot;getCommons()...&quot;);</span>
+<span class="fc" id="L63">    Iterable&lt;Commons&gt; commons = commonsRepository.findAll();</span>
+<span class="fc" id="L64">    String body = mapper.writeValueAsString(commons);</span>
+<span class="fc" id="L65">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @ApiOperation(value = &quot;Get a list of all commons and number of cows/users&quot;)
+  @GetMapping(&quot;/allplus&quot;)
+  public ResponseEntity&lt;String&gt; getCommonsPlus() throws JsonProcessingException {
+<span class="fc" id="L71">    log.info(&quot;getCommonsPlus()...&quot;);</span>
+<span class="fc" id="L72">    Iterable&lt;Commons&gt; commonsListIter = commonsRepository.findAll();</span>
+
+    // convert Iterable to List for the purposes of using a Java Stream &amp; lambda
+    // below
+<span class="fc" id="L76">    List&lt;Commons&gt; commonsList = new ArrayList&lt;Commons&gt;();</span>
+<span class="fc" id="L77">    commonsListIter.forEach(commonsList::add);</span>
+
+<span class="fc" id="L79">    List&lt;CommonsPlus&gt; commonsPlusList1 = commonsList.stream()</span>
+<span class="fc" id="L80">        .map(c -&gt; toCommonsPlus(c))</span>
+<span class="fc" id="L81">        .collect(Collectors.toList());</span>
+
+<span class="fc" id="L83">    ArrayList&lt;CommonsPlus&gt; commonsPlusList = new ArrayList&lt;CommonsPlus&gt;(commonsPlusList1);</span>
+
+<span class="fc" id="L85">    String body = mapper.writeValueAsString(commonsPlusList);</span>
+<span class="fc" id="L86">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @ApiOperation(value = &quot;Update a commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PutMapping(&quot;/update&quot;)
+  public ResponseEntity&lt;String&gt; updateCommons(
+      @ApiParam(&quot;commons identifier&quot;) @RequestParam long id,
+      @ApiParam(&quot;request body&quot;) @RequestBody CreateCommonsParams params) {
+<span class="fc" id="L95">    Optional&lt;Commons&gt; existing = commonsRepository.findById(id);</span>
+
+    Commons updated;
+    HttpStatus status;
+
+<span class="fc bfc" id="L100" title="All 2 branches covered.">    if (existing.isPresent()) {</span>
+<span class="fc" id="L101">      updated = existing.get();</span>
+<span class="fc" id="L102">      status = HttpStatus.NO_CONTENT;</span>
+    } else {
+<span class="fc" id="L104">      updated = new Commons();</span>
+<span class="fc" id="L105">      status = HttpStatus.CREATED;</span>
+    }
+
+<span class="fc" id="L108">    updated.setName(params.getName());</span>
+<span class="fc" id="L109">    updated.setCowPrice(params.getCowPrice());</span>
+<span class="fc" id="L110">    updated.setMilkPrice(params.getMilkPrice());</span>
+<span class="fc" id="L111">    updated.setStartingBalance(params.getStartingBalance());</span>
+<span class="fc" id="L112">    updated.setStartingDate(params.getStartingDate());</span>
+<span class="fc" id="L113">    updated.setShowLeaderboard(params.getShowLeaderboard());</span>
+<span class="fc" id="L114">    updated.setDegradationRate(params.getDegradationRate());</span>
+<span class="fc" id="L115">    updated.setCarryingCapacity(params.getCarryingCapacity());</span>
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">    if (params.getDegradationRate() &lt; 0) {</span>
+<span class="fc" id="L118">      throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
+    }
+
+<span class="fc" id="L121">    commonsRepository.save(updated);</span>
+
+<span class="fc" id="L123">    return ResponseEntity.status(status).build();</span>
+  }
+
+  @ApiOperation(value = &quot;Get a specific commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @GetMapping(&quot;&quot;)
+  public Commons getCommonsById(
+      @ApiParam(&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
+
+<span class="fc" id="L132">    Commons commons = commonsRepository.findById(id)</span>
+<span class="fc" id="L133">        .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+
+<span class="fc" id="L135">    return commons;</span>
+  }
+
+  @ApiOperation(value = &quot;Create a new commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @PostMapping(value = &quot;/new&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; createCommons(
+
+      @ApiParam(&quot;request body&quot;) @RequestBody CreateCommonsParams params) throws JsonProcessingException {
+<span class="fc" id="L144">    Commons commons = Commons.builder()</span>
+<span class="fc" id="L145">        .name(params.getName())</span>
+<span class="fc" id="L146">        .cowPrice(params.getCowPrice())</span>
+<span class="fc" id="L147">        .milkPrice(params.getMilkPrice())</span>
+<span class="fc" id="L148">        .startingBalance(params.getStartingBalance())</span>
+<span class="fc" id="L149">        .startingDate(params.getStartingDate())</span>
+<span class="fc" id="L150">        .degradationRate(params.getDegradationRate())</span>
+<span class="fc" id="L151">        .showLeaderboard(params.getShowLeaderboard())</span>
+<span class="fc" id="L152">        .carryingCapacity(params.getCarryingCapacity())</span>
+<span class="fc" id="L153">        .build();</span>
+
+    // throw exception for degradation rate
+<span class="fc bfc" id="L156" title="All 2 branches covered.">    if (params.getDegradationRate() &lt; 0) {</span>
+<span class="fc" id="L157">      throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
+    }
+
+<span class="fc" id="L160">    Commons saved = commonsRepository.save(commons);</span>
+<span class="fc" id="L161">    String body = mapper.writeValueAsString(saved);</span>
+
+<span class="fc" id="L163">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @ApiOperation(value = &quot;Join a commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+  @PostMapping(value = &quot;/join&quot;, produces = &quot;application/json&quot;)
+  public ResponseEntity&lt;String&gt; joinCommon(
+    @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws Exception {
+
+<span class="fc" id="L172">    User u = getCurrentUser().getUser();</span>
+<span class="fc" id="L173">    Long userId = u.getId();</span>
+<span class="fc" id="L174">    String username = u.getFullName();</span>
+
+<span class="fc" id="L176">    Commons joinedCommons = commonsRepository.findById(commonsId)</span>
+<span class="fc" id="L177">        .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, commonsId));</span>
+<span class="fc" id="L178">    Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+
+<span class="fc bfc" id="L180" title="All 2 branches covered.">    if (userCommonsLookup.isPresent()) {</span>
+      // user is already a member of this commons
+<span class="fc" id="L182">      String body = mapper.writeValueAsString(joinedCommons);</span>
+<span class="fc" id="L183">      return ResponseEntity.ok().body(body);</span>
+    }
+
+<span class="fc" id="L186">    UserCommons uc = UserCommons.builder()</span>
+<span class="fc" id="L187">        .commonsId(commonsId)</span>
+<span class="fc" id="L188">        .userId(userId)</span>
+<span class="fc" id="L189">        .username(username)</span>
+<span class="fc" id="L190">        .totalWealth(joinedCommons.getStartingBalance())</span>
+<span class="fc" id="L191">        .numOfCows(0)</span>
+<span class="fc" id="L192">        .cowHealth(100)</span>
+<span class="fc" id="L193">        .build();</span>
+
+<span class="fc" id="L195">    userCommonsRepository.save(uc);</span>
+
+<span class="fc" id="L197">    String body = mapper.writeValueAsString(joinedCommons);</span>
+<span class="fc" id="L198">    return ResponseEntity.ok().body(body);</span>
+  }
+
+  @ApiOperation(value = &quot;Delete a Commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @DeleteMapping(&quot;&quot;)
+  public Object deleteCommons(
+      @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+
+<span class="fc" id="L207">    Commons foundCommons = commonsRepository.findById(id)</span>
+<span class="fc" id="L208">        .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+
+<span class="fc" id="L210">    commonsRepository.deleteById(id);</span>
+<span class="fc" id="L211">    userCommonsRepository.deleteAllByCommonsId(id);</span>
+
+<span class="fc" id="L213">    String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
+
+<span class="fc" id="L215">    return genericMessage(responseString);</span>
+
+  }
+
+  @ApiOperation(&quot;Delete a user from a commons&quot;)
+  @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+  @DeleteMapping(&quot;/{commonsId}/users/{userId}&quot;)
+  public ResponseEntity&lt;Commons&gt; deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,
+      @PathVariable(&quot;userId&quot;) Long userId) throws Exception {
+
+<span class="fc" id="L225">    Optional&lt;UserCommons&gt; uc = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L226">    UserCommons userCommons = uc.orElseThrow(() -&gt; new Exception(</span>
+<span class="fc" id="L227">        String.format(&quot;UserCommons with commonsId=%d and userId=%d not found.&quot;, commonsId, userId)));</span>
+
+<span class="fc" id="L229">    userCommonsRepository.deleteById(userCommons.getId());</span>
+<span class="fc" id="L230">    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();</span>
+  }
+
+  public CommonsPlus toCommonsPlus(Commons c) {
+<span class="fc" id="L234">    Optional&lt;Integer&gt; numCows = commonsRepository.getNumCows(c.getId());</span>
+<span class="fc" id="L235">    Optional&lt;Integer&gt; numUsers = commonsRepository.getNumUsers(c.getId());</span>
+
+<span class="fc" id="L237">    return CommonsPlus.builder()</span>
+<span class="fc" id="L238">        .commons(c)</span>
+<span class="fc" id="L239">        .totalCows(numCows.orElse(0))</span>
+<span class="fc" id="L240">        .totalUsers(numUsers.orElse(0))</span>
+<span class="fc" id="L241">        .build();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
