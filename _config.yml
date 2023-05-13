@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-addMilkTheCowsPlaceholderCode","number":23,"title":"pc - wire up the MilkTheCowsJob with access to the needed database ta…","url":"https://github.com/ucsb-cs156/proj-happycows/pull/23"}]
