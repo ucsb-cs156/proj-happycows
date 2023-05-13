@@ -7,15 +7,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
 
-<span class="fc" id="L10">@Slf4j</span>
+
+/**
+ * This class handles exceptions thrown by the controllers.
+ */
+<span class="fc" id="L14">@Slf4j</span>
 @RestControllerAdvice
-<span class="fc" id="L12">public class HappierCowsControllerAdvice {</span>
+<span class="fc" id="L16">public class HappierCowsControllerAdvice {</span>
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void handleIllegalArgumentException() {
-<span class="fc" id="L17">        log.error(&quot;IllegalArgumentException thrown&quot;);</span>
-<span class="fc" id="L18">    }</span>
+<span class="fc" id="L21">        log.error(&quot;IllegalArgumentException thrown&quot;);</span>
+<span class="fc" id="L22">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
