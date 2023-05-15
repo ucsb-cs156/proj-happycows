@@ -6,11 +6,12 @@ example,edu.ucsb.cs156.happiercows.services,GrantedAuthoritiesService,0,21,0,0,0
 example,edu.ucsb.cs156.happiercows.services.jobs,JobService,0,55,0,0,0,19,0,3,0,3
 example,edu.ucsb.cs156.happiercows.services.jobs,JobContext,0,48,0,4,0,7,0,4,0,2
 example,edu.ucsb.cs156.happiercows.advice,HappierCowsControllerAdvice,0,11,0,0,0,4,0,3,0,3
-example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJob,0,150,0,6,0,23,0,8,0,5
+example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJob,0,146,0,6,0,22,0,7,0,4
 example,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
+example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactory,0,32,0,0,0,6,0,3,0,3
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobFactory,0,27,0,0,0,5,0,3,0,3
 example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,10,0,0,0,4,0,1,0,1
-example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,10,0,0,0,4,0,1,0,1
+example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,77,0,4,0,13,0,4,0,2
 example,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 example,edu.ucsb.cs156.happiercows.errors,NotEnoughMoneyException,0,4,0,0,0,2,0,1,0,1
 example,edu.ucsb.cs156.happiercows.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
@@ -18,7 +19,7 @@ example,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1
 example,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,231,0,4,0,42,0,14,0,12
 example,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,394,0,8,0,90,0,20,0,16
 example,edu.ucsb.cs156.happiercows.controllers,UsersController,0,16,0,0,0,4,0,2,0,2
-example,edu.ucsb.cs156.happiercows.controllers,JobsController,0,52,0,0,0,15,0,7,0,7
+example,edu.ucsb.cs156.happiercows.controllers,JobsController,0,53,0,0,0,15,0,7,0,7
 example,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,260,0,6,0,41,0,21,0,18
 example,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
