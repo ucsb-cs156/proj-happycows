@@ -32,7 +32,7 @@ public class MilkTheCowsJob implements JobContextConsumer {
 <span class="fc" id="L32">        Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
 
 <span class="fc bfc" id="L34" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
-<span class="fc" id="L35">            ctx.log(&quot;Milking cows for Commons: &quot; + commons.getName());</span>
+<span class="fc" id="L35">            ctx.log(&quot;Milking cows for Commons: &quot; + commons.getName() + &quot;, Milk Price: $&quot; + String.format(&quot;%.2f&quot;,commons.getMilkPrice()));</span>
 
 <span class="fc" id="L37">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commons.getId());</span>
 
@@ -40,8 +40,8 @@ public class MilkTheCowsJob implements JobContextConsumer {
 <span class="fc" id="L40">                User user = userRepository.findById(userCommons.getUserId()).orElseThrow(()-&gt;new RuntimeException(&quot;Error calling userRepository.findById(&quot; + userCommons.getUserId() + &quot;)&quot;));</span>
 <span class="fc" id="L41">                ctx.log(&quot;User: &quot; + user.getFullName() + &quot;, numCows: &quot; + userCommons.getNumOfCows() + &quot;, cowHealth: &quot; + userCommons.getCowHealth());</span>
 
-<span class="fc" id="L43">                double profit = calculateMilkingProfit(userCommons);</span>
-<span class="fc" id="L44">                ctx.log(&quot;Profit for user: &quot; + user.getFullName() + &quot; is: &quot; + profit);</span>
+<span class="fc" id="L43">                double profit = calculateMilkingProfit(commons, userCommons);</span>
+<span class="fc" id="L44">                ctx.log(&quot;Profit for user: &quot; + user.getFullName() + &quot; is: $&quot; + String.format(&quot;%.2f&quot;,profit));</span>
 <span class="fc" id="L45">            }</span>
 <span class="fc" id="L46">        }</span>
 
@@ -53,9 +53,10 @@ public class MilkTheCowsJob implements JobContextConsumer {
      * @param userCommons
      * @return
      */
-    public static double calculateMilkingProfit(UserCommons userCommons) {
-<span class="fc" id="L57">        double profit = userCommons.getNumOfCows() * userCommons.getCowHealth();</span>
-<span class="fc" id="L58">        return profit;</span>
+    public static double calculateMilkingProfit(Commons commons, UserCommons userCommons) {
+<span class="fc" id="L57">        double milkPrice = commons.getMilkPrice();</span>
+<span class="fc" id="L58">        double profit = userCommons.getNumOfCows() * (userCommons.getCowHealth() / 100.0) * milkPrice;</span>
+<span class="fc" id="L59">        return profit;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

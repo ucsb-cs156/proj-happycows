@@ -11,7 +11,7 @@ example,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
 example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactory,0,19,0,0,0,3,0,3,0,3
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobFactory,0,27,0,0,0,5,0,3,0,3
 example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,10,0,0,0,4,0,1,0,1
-example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,90,0,4,0,16,0,5,0,3
+example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,116,0,4,0,17,0,5,0,3
 example,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 example,edu.ucsb.cs156.happiercows.errors,NotEnoughMoneyException,0,4,0,0,0,2,0,1,0,1
 example,edu.ucsb.cs156.happiercows.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
