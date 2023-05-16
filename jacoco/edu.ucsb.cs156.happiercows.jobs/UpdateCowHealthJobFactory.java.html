@@ -3,14 +3,16 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.ucsb.cs156.happiercows.entities.jobs.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-<span class="fc" id="L12">@Slf4j</span>
-<span class="fc" id="L13">public class UpdateCowHealthJobFactory  {</span>
+<span class="fc" id="L14">@Slf4j</span>
+<span class="fc" id="L15">public class UpdateCowHealthJobFactory  {</span>
 
     @Autowired 
     private CommonsRepository commonsRepository;
@@ -21,10 +23,10 @@ import lombok.extern.slf4j.Slf4j;
     @Autowired
     private UserRepository userRepository;
 
-    public UpdateCowHealthJob create() {
-<span class="fc" id="L25">        log.info(&quot;commonsRepository = &quot; + commonsRepository);</span>
-<span class="fc" id="L26">        log.info(&quot;userCommonsRepository = &quot; + userCommonsRepository);</span>
-<span class="fc" id="L27">        return new UpdateCowHealthJob(commonsRepository, userCommonsRepository, userRepository);</span>
+    public JobContextConsumer create() {
+<span class="fc" id="L27">        log.info(&quot;commonsRepository = &quot; + commonsRepository);</span>
+<span class="fc" id="L28">        log.info(&quot;userCommonsRepository = &quot; + userCommonsRepository);</span>
+<span class="fc" id="L29">        return new UpdateCowHealthJob(commonsRepository, userCommonsRepository, userRepository);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

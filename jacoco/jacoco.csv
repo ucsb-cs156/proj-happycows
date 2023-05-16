@@ -9,6 +9,7 @@ example,edu.ucsb.cs156.happiercows.advice,HappierCowsControllerAdvice,0,11,0,0,0
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJob,0,146,0,6,0,22,0,7,0,4
 example,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
 example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactory,0,32,0,0,0,6,0,3,0,3
+example,edu.ucsb.cs156.happiercows.jobs,ScheduledJobs,0,39,0,0,0,12,0,4,0,4
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobFactory,0,27,0,0,0,5,0,3,0,3
 example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,10,0,0,0,4,0,1,0,1
 example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,77,0,4,0,13,0,4,0,2
