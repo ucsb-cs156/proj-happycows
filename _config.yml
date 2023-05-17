@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-demo.05.15.2023","number":28,"title":"pc - implement a start at the MilkTheCows job","url":"https://github.com/ucsb-cs156/proj-happycows/pull/28"}]
+pull_requests: []
