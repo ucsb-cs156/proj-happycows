@@ -16,6 +16,9 @@ import io.swagger.annotations.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.Valid;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,9 +39,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(description = &quot;Profits&quot;)
 @RequestMapping(&quot;/api/profits&quot;)
 @RestController
-<span class="fc" id="L39">@Slf4j</span>
+<span class="fc" id="L42">@Slf4j</span>
 
-<span class="fc" id="L41">public class ProfitsController extends ApiController {</span>
+<span class="fc" id="L44">public class ProfitsController extends ApiController {</span>
 
     @Autowired
     CommonsRepository commonsRepository;
@@ -49,124 +52,22 @@ import org.springframework.web.bind.annotation.RestController;
     @Autowired
     ProfitRepository profitRepository;
 
-    @ApiOperation(value = &quot;Get a single profit for user&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-    @GetMapping(&quot;&quot;)
-    public Profit getProfitById(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L57">        Long userId = getCurrentUser().getUser().getId();</span>
-
-<span class="fc" id="L59">        Profit profit = profitRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Profit.class, id));</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (userId != profit.getUserCommons().getUserId())</span>
-<span class="fc" id="L61">            throw new EntityNotFoundException(Profit.class, id);</span>
-<span class="fc" id="L62">        return profit;</span>
-    }
-
-    @ApiOperation(value = &quot;Get a single profit for admin&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @GetMapping(&quot;/admin&quot;)
-    public Profit getProfitById_admin(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L70">        Profit profit = profitRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Profit.class, id));</span>
-<span class="fc" id="L71">        return profit;</span>
-    }
-
-    @ApiOperation(value = &quot;List all profits&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @GetMapping(&quot;/admin/all&quot;)
-    public Iterable&lt;Profit&gt; allUsersProfits() {
-<span class="fc" id="L78">        Iterable&lt;Profit&gt; profits = profitRepository.findAll();</span>
-<span class="fc" id="L79">        return profits;</span>
-    }
-
-    @ApiOperation(value = &quot;Get all profits belonging to a user commons as a user&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-    @GetMapping(&quot;/all/commons&quot;)
-    public Iterable&lt;Profit&gt; allProfitsByUserCommonsId(
-            @ApiParam(&quot;userCommonsId&quot;) @RequestParam Long userCommonsId) {
-<span class="fc" id="L87">        Long userId = getCurrentUser().getUser().getId();</span>
-
-<span class="fc" id="L89">        UserCommons userCommons = userCommonsRepository.findById(userCommonsId).orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, userCommonsId));</span>
-
-<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (userId != userCommons.getUserId())</span>
-<span class="fc" id="L92">            throw new EntityNotFoundException(UserCommons.class, userCommonsId);</span>
-
-<span class="fc" id="L94">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommonsId(userCommonsId);</span>
-
-<span class="fc" id="L96">        return profits;</span>
-    }
-
-    @ApiOperation(value = &quot;Get all profits belonging to a user commons as an admin&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @GetMapping(&quot;/admin/all/commons&quot;)
-    public Iterable&lt;Profit&gt; allProfitsByUserCommonsId_admin(
-            @ApiParam(&quot;userCommonsId&quot;) @RequestParam Long userCommonsId) {
-<span class="fc" id="L104">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommonsId(userCommonsId);</span>
-<span class="fc" id="L105">        return profits;</span>
-    }
-
-    @ApiOperation(value = &quot;Create a new Profit as admin&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @PostMapping(&quot;/admin/post&quot;)
-    public Profit postProfit_admin(
-            @ApiParam(&quot;profit&quot;) @RequestParam long profit,
-            @ApiParam(&quot;timestamp&quot;) @RequestParam long timestamp,
-            @ApiParam(&quot;userCommonsId&quot;) @RequestParam long userCommonsId) {
-<span class="fc" id="L115">        UserCommons userCommons = userCommonsRepository.findById(userCommonsId).orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, userCommonsId));</span>
-
-<span class="fc" id="L117">        Profit createdProfit = new Profit();</span>
-<span class="fc" id="L118">        createdProfit.setProfit(profit);</span>
-<span class="fc" id="L119">        createdProfit.setUserCommons(userCommons);</span>
-<span class="fc" id="L120">        createdProfit.setTimestamp(timestamp);</span>
-<span class="fc" id="L121">        Profit savedProfit = profitRepository.save(createdProfit);</span>
-<span class="fc" id="L122">        return savedProfit;</span>
-    }
-
-
-    @ApiOperation(value = &quot;Delete other user profit as admin&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @DeleteMapping(&quot;/admin&quot;)
-    public Object deleteProfit_Admin(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
-<span class="fc" id="L131">        Profit profit = profitRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Profit.class, id));</span>
-
-<span class="fc" id="L133">        profitRepository.delete(profit);</span>
-
-<span class="fc" id="L135">        return genericMessage(&quot;Profit with id %s deleted&quot;.formatted(id));</span>
-    }
-
-    @ApiOperation(value = &quot;Update a single profit as admin&quot;)
-    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @PutMapping(&quot;/admin&quot;)
-    public Profit putProfitById_admin(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id,
-            @RequestBody @Valid Profit newProfit) {
-<span class="fc" id="L144">        Profit profit = profitRepository.findById(id).orElseThrow(() -&gt; new EntityNotFoundException(Profit.class, id));</span>
-
-<span class="fc" id="L146">        profit.setProfit(newProfit.getProfit());</span>
-<span class="fc" id="L147">        profit.setTimestamp(newProfit.getTimestamp());</span>
-
-<span class="fc" id="L149">        profitRepository.save(profit);</span>
-
-<span class="fc" id="L151">        return profit;</span>
-    }
-
     @ApiOperation(value = &quot;Get all profits belonging to a user commons as a user via CommonsID&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all/commonsid&quot;)
     public Iterable&lt;Profit&gt; allProfitsByCommonsId(
             @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L159">        Long userId = getCurrentUser().getUser().getId();</span>
+<span class="fc" id="L60">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L161">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L162">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L62">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L63">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc bfc" id="L164" title="All 2 branches covered.">        if (userId != userCommons.getUserId())</span>
-<span class="fc" id="L165">            throw new EntityNotFoundException(UserCommons.class, userCommons.getId());</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (userId != userCommons.getUserId())</span>
+<span class="fc" id="L66">            throw new EntityNotFoundException(UserCommons.class, userCommons.getId());</span>
 
-<span class="fc" id="L167">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommonsId(userCommons.getId());</span>
+<span class="fc" id="L68">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommonsId(userCommons.getId());</span>
 
-<span class="fc" id="L169">        return profits;</span>
+<span class="fc" id="L70">        return profits;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
