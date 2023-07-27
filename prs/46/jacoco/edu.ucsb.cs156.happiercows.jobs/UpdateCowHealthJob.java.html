@@ -30,7 +30,7 @@ public class UpdateCowHealthJob implements JobContextConsumer {
 
 <span class="fc bfc" id="L31" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
 <span class="fc" id="L32">            ctx.log(&quot;Commons &quot; + commons.getName() + &quot;, degradationRate: &quot; + commons.getDegradationRate() + &quot;, carryingCapacity: &quot; + commons.getCarryingCapacity());</span>
-<span class="pc" id="L33">            int numUsers = commonsRepository.getNumUsers(commons.getId()).orElseThrow(() -&gt; new RuntimeException(&quot;Error calling getNumUsers(&quot; + commons.getId() + &quot;)&quot;));</span>
+<span class="fc" id="L33">            int numUsers = commonsRepository.getNumUsers(commons.getId()).orElseThrow(() -&gt; new RuntimeException(&quot;Error calling getNumUsers(&quot; + commons.getId() + &quot;)&quot;));</span>
 
 <span class="fc bfc" id="L35" title="All 2 branches covered.">            if (numUsers==0) {</span>
 <span class="fc" id="L36">                ctx.log(&quot;No users in this commons, skipping&quot;);</span>
