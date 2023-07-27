@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-bug-fix-issue-45","number":46,"title":"pc/gw - if no users in commons, skip updating the health","url":"https://github.com/ucsb-cs156/proj-happycows/pull/46"}]
