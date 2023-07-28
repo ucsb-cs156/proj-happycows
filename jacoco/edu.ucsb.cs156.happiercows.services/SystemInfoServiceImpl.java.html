@@ -22,8 +22,8 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
   @Value(&quot;${app.showSwaggerUILink:false}&quot;)
   private boolean showSwaggerUILink;
 
-  @Value(&quot;${app.sourceRepo}&quot;)
-  String sourceRepo;
+<span class="fc" id="L25">  @Value(&quot;${app.sourceRepo}&quot;)</span>
+  private String sourceRepo = &quot;https://github.com/ucsb-cs156/proj-happycows&quot;;
 
   public SystemInfo getSystemInfo() {
 <span class="fc" id="L29">    SystemInfo si = SystemInfo.builder()</span>
