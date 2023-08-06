@@ -20,9 +20,9 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;;
+import io.swagger.v3.oas.annotations.Parameter;
 
 import org.springframework.http.ResponseEntity;
 import javax.validation.Valid;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Api(description = &quot;User Commons&quot;)
+@Tag(name = &quot;User Commons&quot;)
 @RequestMapping(&quot;/api/usercommons&quot;)
 @RestController
 <span class="fc" id="L37">public class UserCommonsController extends ApiController {</span>
@@ -45,12 +45,12 @@ import org.springframework.web.bind.annotation.RequestBody;
   @Autowired
   ObjectMapper mapper;
 
-  @ApiOperation(value = &quot;Get a specific user commons (admin only)&quot;)
+  @Operation(summary = &quot;Get a specific user commons (admin only)&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @GetMapping(&quot;&quot;)
   public UserCommons getUserCommonsById(
-      @ApiParam(&quot;userId&quot;) @RequestParam Long userId,
-      @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
+      @Parameter(name=&quot;userId&quot;) @RequestParam Long userId,
+      @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
 
 <span class="fc" id="L55">    UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
 <span class="fc" id="L56">        .orElseThrow(</span>
@@ -58,11 +58,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 <span class="fc" id="L58">    return userCommons;</span>
   }
 
-  @ApiOperation(value = &quot;Get a user commons for current user&quot;)
+  @Operation(summary = &quot;Get a user commons for current user&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
   @GetMapping(&quot;/forcurrentuser&quot;)
   public UserCommons getUserCommonsById(
-      @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
+      @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
 
 <span class="fc" id="L67">    User u = getCurrentUser().getUser();</span>
 <span class="fc" id="L68">    Long userId = u.getId();</span>
@@ -72,11 +72,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 <span class="fc" id="L72">    return userCommons;</span>
   }
 
-  @ApiOperation(value = &quot;Buy a cow, totalWealth updated&quot;)
+  @Operation(summary = &quot;Buy a cow, totalWealth updated&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
   @PutMapping(&quot;/buy&quot;)
   public ResponseEntity&lt;String&gt; putUserCommonsByIdBuy(
-          @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws NotEnoughMoneyException, JsonProcessingException{
+          @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws NotEnoughMoneyException, JsonProcessingException{
 
 <span class="fc" id="L81">        User u = getCurrentUser().getUser();</span>
 <span class="fc" id="L82">        Long userId = u.getId();</span>
@@ -101,11 +101,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 <span class="fc" id="L101">        return ResponseEntity.ok().body(body);</span>
     }
 
-  @ApiOperation(value = &quot;Sell a cow, totalWealth updated&quot;)
+  @Operation(summary = &quot;Sell a cow, totalWealth updated&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
   @PutMapping(&quot;/sell&quot;)
   public ResponseEntity&lt;String&gt; putUserCommonsByIdSell(
-          @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws NoCowsException, JsonProcessingException {
+          @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws NoCowsException, JsonProcessingException {
 <span class="fc" id="L109">        User u = getCurrentUser().getUser();</span>
 <span class="fc" id="L110">        Long userId = u.getId();</span>
 
@@ -132,10 +132,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
     
 
-    @ApiOperation(value = &quot;Get all user commons for a specific commons&quot;)
+    @Operation(summary = &quot;Get all user commons for a specific commons&quot;)
     @GetMapping(&quot;/commons/all&quot;)
     public  ResponseEntity&lt;String&gt; getUsersCommonsByCommonsId(
-        @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
+        @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
 <span class="fc" id="L139">      Iterable&lt;UserCommons&gt; uc = userCommonsRepository.findByCommonsId(commonsId);</span>
       
    
