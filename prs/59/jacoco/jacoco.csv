@@ -32,7 +32,7 @@ example,edu.ucsb.cs156.happiercows.models,HealthUpdateStrategyList,0,29,0,0,0,12
 example,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,243,0,4,0,44,0,14,0,12
 example,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,473,0,16,0,106,0,27,0,19
 example,edu.ucsb.cs156.happiercows.controllers,UsersController,0,16,0,0,0,4,0,2,0,2
-example,edu.ucsb.cs156.happiercows.controllers,JobsController,0,75,0,0,0,19,0,9,0,9
+example,edu.ucsb.cs156.happiercows.controllers,JobsController,0,78,0,0,0,19,0,9,0,9
 example,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,40,0,0,0,7,0,4,0,4
 example,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
