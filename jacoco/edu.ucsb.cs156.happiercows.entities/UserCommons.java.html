@@ -18,7 +18,7 @@ public class UserCommons {
     @EmbeddedId
     @JsonIgnore
     @Builder.Default
-    private final UserCommonsKey id = new UserCommonsKey();
+    private UserCommonsKey id = new UserCommonsKey();
 
     @MapsId(&quot;userId&quot;)
     @ManyToOne
@@ -53,6 +53,13 @@ public class UserCommons {
     @JsonInclude
     public long getCommonsId() {
 <span class="fc" id="L55">        return commons.getId();</span>
+    }
+
+    public void setId(UserCommonsKey id) {
+<span class="fc" id="L59">        this.id = id;</span>
+<span class="fc" id="L60">    }</span>
+     public UserCommonsKey getId() {
+<span class="fc" id="L62">        return this.id;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
