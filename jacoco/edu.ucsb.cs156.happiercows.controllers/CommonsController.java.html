@@ -12,9 +12,9 @@ import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 <span class="fc" id="L30">@Slf4j</span>
-@Api(description = &quot;Commons&quot;)
+@Tag(name = &quot;Commons&quot;)
 @RequestMapping(&quot;/api/commons&quot;)
 @RestController
 <span class="fc" id="L34">public class CommonsController extends ApiController {</span>
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
     @Autowired
     ObjectMapper mapper;
 
-    @ApiOperation(value = &quot;Get a list of all commons&quot;)
+    @Operation(summary = &quot;Get a list of all commons&quot;)
     @GetMapping(&quot;/all&quot;)
     public ResponseEntity&lt;String&gt; getCommons() throws JsonProcessingException {
 <span class="fc" id="L47">        log.info(&quot;getCommons()...&quot;);</span>
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 <span class="fc" id="L50">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @ApiOperation(value = &quot;Get a list of all commons and number of cows/users&quot;)
+    @Operation(summary = &quot;Get a list of all commons and number of cows/users&quot;)
     @GetMapping(&quot;/allplus&quot;)
     public ResponseEntity&lt;String&gt; getCommonsPlus() throws JsonProcessingException {
 <span class="fc" id="L56">        log.info(&quot;getCommonsPlus()...&quot;);</span>
@@ -71,23 +71,23 @@ import java.util.stream.Collectors;
 <span class="fc" id="L71">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @ApiOperation(value = &quot;Get the number of cows/users in a commons&quot;)
+    @Operation(summary = &quot;Get the number of cows/users in a commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/plus&quot;)
     public CommonsPlus getCommonsPlusById(
-            @ApiParam(&quot;id&quot;) @RequestParam long id) throws JsonProcessingException {
+            @Parameter(name=&quot;id&quot;) @RequestParam long id) throws JsonProcessingException {
 <span class="fc" id="L79">                CommonsPlus commonsPlus = toCommonsPlus(commonsRepository.findById(id)</span>
 <span class="fc" id="L80">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id)));</span>
 
 <span class="fc" id="L82">        return commonsPlus;</span>
     }
 
-    @ApiOperation(value = &quot;Update a commons&quot;)
+    @Operation(summary = &quot;Update a commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;/update&quot;)
     public ResponseEntity&lt;String&gt; updateCommons(
-            @ApiParam(&quot;commons identifier&quot;) @RequestParam long id,
-            @ApiParam(&quot;request body&quot;) @RequestBody CreateCommonsParams params
+            @Parameter(name=&quot;commons identifier&quot;) @RequestParam long id,
+            @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
     ) {
 <span class="fc" id="L92">        Optional&lt;Commons&gt; existing = commonsRepository.findById(id);</span>
 
@@ -126,11 +126,11 @@ import java.util.stream.Collectors;
 <span class="fc" id="L126">        return ResponseEntity.status(status).build();</span>
     }
 
-    @ApiOperation(value = &quot;Get a specific commons&quot;)
+    @Operation(summary = &quot;Get a specific commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
     public Commons getCommonsById(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
 
 <span class="fc" id="L135">        Commons commons = commonsRepository.findById(id)</span>
 <span class="fc" id="L136">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
@@ -138,11 +138,11 @@ import java.util.stream.Collectors;
 <span class="fc" id="L138">        return commons;</span>
     }
 
-    @ApiOperation(value = &quot;Create a new commons&quot;)
+    @Operation(summary = &quot;Create a new commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(value = &quot;/new&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;String&gt; createCommons(
-            @ApiParam(&quot;request body&quot;) @RequestBody CreateCommonsParams params
+            @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
     ) throws JsonProcessingException {
 
 <span class="fc" id="L148">        var builder = Commons.builder()</span>
@@ -178,7 +178,7 @@ import java.util.stream.Collectors;
     }
 
 
-    @ApiOperation(value = &quot;List all cow health update strategies&quot;)
+    @Operation(summary = &quot;List all cow health update strategies&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all-health-update-strategies&quot;)
     public ResponseEntity&lt;String&gt; listCowHealthUpdateStrategies() throws JsonProcessingException {
@@ -187,11 +187,11 @@ import java.util.stream.Collectors;
 <span class="fc" id="L187">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @ApiOperation(value = &quot;Join a commons&quot;)
+    @Operation(summary = &quot;Join a commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @PostMapping(value = &quot;/join&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;String&gt; joinCommon(
-            @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId) throws Exception {
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws Exception {
 
 <span class="fc" id="L196">        User u = getCurrentUser().getUser();</span>
 <span class="fc" id="L197">        Long userId = u.getId();</span>
@@ -225,11 +225,11 @@ import java.util.stream.Collectors;
 <span class="fc" id="L225">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @ApiOperation(value = &quot;Delete a Commons&quot;)
+    @Operation(summary = &quot;Delete a Commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
     public Object deleteCommons(
-            @ApiParam(&quot;id&quot;) @RequestParam Long id) {
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
 
 <span class="fc" id="L234">        commonsRepository.findById(id)</span>
 <span class="fc" id="L235">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
@@ -241,7 +241,7 @@ import java.util.stream.Collectors;
 
     }
 
-    @ApiOperation(&quot;Delete a user from a commons&quot;)
+    @Operation(summary=&quot;Delete a user from a commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;/{commonsId}/users/{userId}&quot;)
     public Object deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,

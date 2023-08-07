@@ -6,9 +6,9 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(description = &quot;Profits&quot;)
+@Tag(name = &quot;Profits&quot;)
 @RequestMapping(&quot;/api/profits&quot;)
 @RestController
 <span class="fc" id="L23">@Slf4j</span>
@@ -33,11 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
     @Autowired
     ProfitRepository profitRepository;
 
-    @ApiOperation(value = &quot;Get all profits belonging to a user commons as a user via CommonsID&quot;)
+    @Operation(summary = &quot;Get all profits belonging to a user commons as a user via CommonsID&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all/commonsid&quot;)
     public Iterable&lt;Profit&gt; allProfitsByCommonsId(
-            @ApiParam(&quot;commonsId&quot;) @RequestParam Long commonsId
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
     ) {
 <span class="fc" id="L42">        Long userId = getCurrentUser().getUser().getId();</span>
 

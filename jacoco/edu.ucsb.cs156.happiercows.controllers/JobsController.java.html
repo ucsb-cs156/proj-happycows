@@ -2,9 +2,9 @@
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
 
 <span class="fc" id="L34">@Slf4j</span>
-@Api(description = &quot;Jobs&quot;)
+@Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
 <span class="fc" id="L38">public class JobsController extends ApiController {</span>
@@ -54,7 +54,7 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
     @Autowired
     SetCowHealthJobFactory setCowHealthJobFactory;
 
-    @ApiOperation(value = &quot;List all jobs&quot;)
+    @Operation(summary = &quot;List all jobs&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Job&gt; allJobs() {
@@ -62,12 +62,12 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 <span class="fc" id="L62">        return jobs;</span>
     }
 
-    @ApiOperation(value = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
+    @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/testjob&quot;)
     public Job launchTestJob(
-        @ApiParam(&quot;fail&quot;) @RequestParam Boolean fail, 
-        @ApiParam(&quot;sleepMs&quot;) @RequestParam Integer sleepMs
+        @Parameter(name=&quot;fail&quot;) @RequestParam Boolean fail, 
+        @Parameter(name=&quot;sleepMs&quot;) @RequestParam Integer sleepMs
     ) {
 <span class="fc" id="L72">        TestJob testJob = TestJob.builder()</span>
 <span class="fc" id="L73">        .fail(fail)</span>
@@ -77,7 +77,7 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 <span class="fc" id="L77">        return jobService.runAsJob(testJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Milk the Cows (click fail if you want to test exception handling)&quot;)
+    @Operation(summary = &quot;Launch Job to Milk the Cows (click fail if you want to test exception handling)&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/milkthecowjob&quot;)
     public Job launchTestJob(
@@ -86,7 +86,7 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 <span class="fc" id="L86">        return jobService.runAsJob(milkTheCowsJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Update Cow Health&quot;)
+    @Operation(summary = &quot;Launch Job to Update Cow Health&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/updatecowhealth&quot;)
     public Job updateCowHealth(
@@ -95,18 +95,18 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 <span class="fc" id="L95">        return jobService.runAsJob(updateCowHealthJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Set Cow Health&quot;)
+    @Operation(summary = &quot;Launch Job to Set Cow Health&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/setcowhealth&quot;)
     public Job setCowHealth( 
-        @ApiParam(&quot;commonsID&quot;) @RequestParam Long commonsID, 
-        @ApiParam(&quot;health&quot;) @RequestParam double health
+        @Parameter(name=&quot;commonsID&quot;) @RequestParam Long commonsID, 
+        @Parameter(name=&quot;health&quot;) @RequestParam double health
     ) { 
 <span class="fc" id="L105">        JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(commonsID, health);</span>
 <span class="fc" id="L106">        return jobService.runAsJob(setCowHealthJob);</span>
     }
 
-    @ApiOperation(value = &quot;Launch Job to Produce Instructor Report&quot;)
+    @Operation(summary = &quot;Launch Job to Produce Instructor Report&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/launch/instructorreport&quot;)
     public Job instructorReport(
