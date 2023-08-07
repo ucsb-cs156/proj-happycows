@@ -14,7 +14,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Sort.Order;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Reports&quot;)
 @RequestMapping(&quot;/api/reports&quot;)
 @RestController
-<span class="fc" id="L27">public class ReportsController extends ApiController {</span>
+<span class="fc" id="L34">public class ReportsController extends ApiController {</span>
 
     @Autowired
     CommonsRepository commonsRepository;
@@ -39,14 +46,37 @@ import org.springframework.web.bind.annotation.RestController;
     ReportLineRepository reportLineRepository;
 
 
+    @Operation(summary = &quot;Get all report headers&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;&quot;)
+    public Iterable&lt;Report&gt; allReports() {   
+<span class="fc" id="L53">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
+<span class="fc" id="L54">            Sort.by(List.of(</span>
+                new Order(Sort.Direction.ASC, &quot;commonsId&quot;),
+                new Order(Sort.Direction.DESC, &quot;id&quot;)
+              ))
+        );
+<span class="fc" id="L59">        return reports;</span>
+    }
+
+    @Operation(summary = &quot;Get report headers for a given report&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/byReportId&quot;)
+    public Optional&lt;Report&gt; findByReportId(
+            @Parameter(name=&quot;reportId&quot;) @RequestParam Long reportId
+    ) {   
+<span class="fc" id="L68">        Optional&lt;Report&gt; reports = reportRepository.findById(reportId);</span>
+<span class="fc" id="L69">        return reports;</span>
+    }
+
     @Operation(summary = &quot;Get report headers for a given user commons&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/headers&quot;)
     public Iterable&lt;Report&gt; allReportsByCommonsId(
             @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
     ) {   
-<span class="fc" id="L48">        Iterable&lt;Report&gt; reports = reportRepository.findAllByCommonsId(commonsId);</span>
-<span class="fc" id="L49">        return reports;</span>
+<span class="fc" id="L78">        Iterable&lt;Report&gt; reports = reportRepository.findAllByCommonsId(commonsId);</span>
+<span class="fc" id="L79">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report lines for a report id&quot;)
@@ -55,8 +85,8 @@ import org.springframework.web.bind.annotation.RestController;
     public Iterable&lt;ReportLine&gt; allLinesByReportId(
             @Parameter(name=&quot;reportId&quot;) @RequestParam Long reportId
     ) {   
-<span class="fc" id="L58">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
-<span class="fc" id="L59">        return reportLines;</span>
+<span class="fc" id="L88">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
+<span class="fc" id="L89">        return reportLines;</span>
     }
 
 }
