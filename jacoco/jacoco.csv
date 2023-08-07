@@ -13,12 +13,15 @@ example,edu.ucsb.cs156.happiercows.strategies,CowHealthUpdateStrategies.new CowH
 example,edu.ucsb.cs156.happiercows.strategies,CowHealthUpdateStrategies,0,31,0,0,0,6,0,1,0,1
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJob,0,186,0,12,0,34,0,11,0,5
 example,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
+example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJobSingleCommonsFactory,0,10,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactory,0,15,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.jobs,ScheduledJobs,0,39,0,0,0,12,0,4,0,4
 example,edu.ucsb.cs156.happiercows.jobs,SetCowHealthJobFactory,0,30,0,0,0,5,0,3,0,3
+example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJobSingleCommons,0,30,0,0,0,4,0,1,0,1
 example,edu.ucsb.cs156.happiercows.jobs,SetCowHealthJob,0,85,0,4,0,16,0,3,0,1
+example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJobFactory,0,11,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobFactory,0,27,0,0,0,5,0,3,0,3
-example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,10,0,0,0,4,0,1,0,1
+example,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,69,0,2,0,10,0,2,0,1
 example,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,150,0,4,0,38,0,6,0,4
 example,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 example,edu.ucsb.cs156.happiercows.errors,NotEnoughMoneyException,0,4,0,0,0,2,0,1,0,1
