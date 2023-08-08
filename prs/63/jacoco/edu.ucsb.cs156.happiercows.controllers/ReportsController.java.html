@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Reports&quot;)
 @RequestMapping(&quot;/api/reports&quot;)
 @RestController
-<span class="fc" id="L42">public class ReportsController extends ApiController {</span>
+<span class="fc" id="L43">public class ReportsController extends ApiController {</span>
 
     @Autowired
     CommonsRepository commonsRepository;
@@ -57,11 +58,11 @@ import org.springframework.web.bind.annotation.RestController;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;&quot;)
     public Iterable&lt;Report&gt; allReports() {
-<span class="fc" id="L60">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
-<span class="fc" id="L61">                Sort.by(List.of(</span>
+<span class="fc" id="L61">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
+<span class="fc" id="L62">                Sort.by(List.of(</span>
                         new Order(Sort.Direction.ASC, &quot;commonsId&quot;),
                         new Order(Sort.Direction.DESC, &quot;id&quot;))));
-<span class="fc" id="L64">        return reports;</span>
+<span class="fc" id="L65">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report headers for a given report&quot;)
@@ -69,8 +70,8 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/byReportId&quot;)
     public Optional&lt;Report&gt; findByReportId(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
-<span class="fc" id="L72">        Optional&lt;Report&gt; reports = reportRepository.findById(reportId);</span>
-<span class="fc" id="L73">        return reports;</span>
+<span class="fc" id="L73">        Optional&lt;Report&gt; reports = reportRepository.findById(reportId);</span>
+<span class="fc" id="L74">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report headers for a given user commons&quot;)
@@ -78,8 +79,8 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/headers&quot;)
     public Iterable&lt;Report&gt; allReportsByCommonsId(
             @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L81">        Iterable&lt;Report&gt; reports = reportRepository.findAllByCommonsId(commonsId);</span>
-<span class="fc" id="L82">        return reports;</span>
+<span class="fc" id="L82">        Iterable&lt;Report&gt; reports = reportRepository.findAllByCommonsId(commonsId);</span>
+<span class="fc" id="L83">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report lines for a report id&quot;)
@@ -87,27 +88,27 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/lines&quot;)
     public Iterable&lt;ReportLine&gt; allLinesByReportId(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
-<span class="fc" id="L90">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
-<span class="fc" id="L91">        return reportLines;</span>
+<span class="fc" id="L91">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
+<span class="fc" id="L92">        return reportLines;</span>
     }
 
     @Operation(summary = &quot;Get report lines for a report id and user commons id&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/download&quot;)
     public ResponseEntity&lt;Resource&gt; getLinesCSV(
-            @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
+            @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) throws IOException {
 
-<span class="nc" id="L100">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
+<span class="fc" id="L101">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
 
-<span class="nc" id="L102">        String filename = String.format(&quot;report%05d.csv&quot;,reportId);</span>
+<span class="fc" id="L103">        String filename = String.format(&quot;report%05d.csv&quot;,reportId);</span>
 
-<span class="nc" id="L104">        ByteArrayInputStream bais = ReportCSVHelper.toCSV(reportLines);</span>
-<span class="nc" id="L105">        InputStreamResource isr = new InputStreamResource(bais);</span>
+<span class="fc" id="L105">        ByteArrayInputStream bais = ReportCSVHelper.toCSV(reportLines);</span>
+<span class="fc" id="L106">        InputStreamResource isr = new InputStreamResource(bais);</span>
 
-<span class="nc" id="L107">        return ResponseEntity.ok()</span>
-<span class="nc" id="L108">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=&quot; + filename)</span>
-<span class="nc" id="L109">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;))</span>
-<span class="nc" id="L110">                .body(isr);</span>
+<span class="fc" id="L108">        return ResponseEntity.ok()</span>
+<span class="fc" id="L109">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=&quot; + filename)</span>
+<span class="fc" id="L110">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;))</span>
+<span class="fc" id="L111">                .body(isr);</span>
     }
 
 }
