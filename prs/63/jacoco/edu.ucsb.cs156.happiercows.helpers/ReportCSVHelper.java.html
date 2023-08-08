@@ -22,10 +22,25 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // prevents jacoco from reporting missed coverage
 public class ReportCSVHelper {
 
-  public static ByteArrayInputStream toCSV(Iterable&lt;ReportLine&gt; lines) throws IOException {
-<span class="fc" id="L26">    final CSVFormat format = CSVFormat.DEFAULT;</span>
+  /**
+   * This method is a hack to avoid a jacoco issue; it isn't possible to 
+   * exclude an individual method call from jacoco coverage, but we can
+   * exclude the entire method.  
+   * @param out
+   */
 
-<span class="fc" id="L28">    List&lt;String&gt; headers = Arrays.asList(</span>
+  public static void flush_and_close_noPitest(ByteArrayOutputStream out, CSVPrinter csvPrinter) throws IOException {
+<span class="fc" id="L33">    csvPrinter.flush();</span>
+<span class="fc" id="L34">    csvPrinter.close();</span>
+<span class="fc" id="L35">    out.flush();</span>
+<span class="fc" id="L36">    out.close();</span>
+<span class="fc" id="L37">  }</span>
+  
+
+  public static ByteArrayInputStream toCSV(Iterable&lt;ReportLine&gt; lines) throws IOException {
+<span class="fc" id="L41">    final CSVFormat format = CSVFormat.DEFAULT;</span>
+
+<span class="fc" id="L43">    List&lt;String&gt; headers = Arrays.asList(</span>
         &quot;id&quot;,
         &quot;reportId&quot;,
         &quot;userId&quot;,
@@ -38,31 +53,29 @@ public class ReportCSVHelper {
         &quot;cowDeaths&quot;,
         &quot;reportDate&quot;);
 
-<span class="fc" id="L41">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
-<span class="fc" id="L42">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
+<span class="fc" id="L56">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L57">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
 
-<span class="fc" id="L44">    csvPrinter.printRecord(headers);</span>
+<span class="fc" id="L59">    csvPrinter.printRecord(headers);</span>
 
-<span class="fc bfc" id="L46" title="All 2 branches covered.">    for (ReportLine line : lines) {</span>
-<span class="fc" id="L47">      List&lt;String&gt; data = Arrays.asList(</span>
-<span class="fc" id="L48">          String.valueOf(line.getId()),</span>
-<span class="fc" id="L49">          String.valueOf(line.getReportId()),</span>
-<span class="fc" id="L50">          String.valueOf(line.getUserId()),</span>
-<span class="fc" id="L51">          line.getUsername(),</span>
-<span class="fc" id="L52">          String.valueOf(line.getTotalWealth()),</span>
-<span class="fc" id="L53">          String.valueOf(line.getNumOfCows()),</span>
-<span class="fc" id="L54">          String.valueOf(line.getAvgCowHealth()),</span>
-<span class="fc" id="L55">          String.valueOf(line.getCowsBought()),</span>
-<span class="fc" id="L56">          String.valueOf(line.getCowsSold()),</span>
-<span class="fc" id="L57">          String.valueOf(line.getCowDeaths()),</span>
-<span class="fc" id="L58">          String.valueOf(line.getCreateDate()));</span>
-<span class="fc" id="L59">      csvPrinter.printRecord(data);</span>
-<span class="fc" id="L60">    }</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    for (ReportLine line : lines) {</span>
+<span class="fc" id="L62">      List&lt;String&gt; data = Arrays.asList(</span>
+<span class="fc" id="L63">          String.valueOf(line.getId()),</span>
+<span class="fc" id="L64">          String.valueOf(line.getReportId()),</span>
+<span class="fc" id="L65">          String.valueOf(line.getUserId()),</span>
+<span class="fc" id="L66">          line.getUsername(),</span>
+<span class="fc" id="L67">          String.valueOf(line.getTotalWealth()),</span>
+<span class="fc" id="L68">          String.valueOf(line.getNumOfCows()),</span>
+<span class="fc" id="L69">          String.valueOf(line.getAvgCowHealth()),</span>
+<span class="fc" id="L70">          String.valueOf(line.getCowsBought()),</span>
+<span class="fc" id="L71">          String.valueOf(line.getCowsSold()),</span>
+<span class="fc" id="L72">          String.valueOf(line.getCowDeaths()),</span>
+<span class="fc" id="L73">          String.valueOf(line.getCreateDate()));</span>
+<span class="fc" id="L74">      csvPrinter.printRecord(data);</span>
+<span class="fc" id="L75">    }</span>
 
-<span class="fc" id="L62">    csvPrinter.flush();</span>
-<span class="fc" id="L63">    csvPrinter.close();</span>
-<span class="fc" id="L64">    out.close();</span>
-<span class="fc" id="L65">    return new ByteArrayInputStream(out.toByteArray());</span>
+<span class="fc" id="L77">    flush_and_close_noPitest(out, csvPrinter);</span>
+<span class="fc" id="L78">    return new ByteArrayInputStream(out.toByteArray());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
