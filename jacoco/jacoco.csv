@@ -38,4 +38,4 @@ example,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,
 example,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
 example,edu.ucsb.cs156.happiercows.controllers,ApiController,0,33,0,0,0,10,0,6,0,6
 example,edu.ucsb.cs156.happiercows.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
-example,edu.ucsb.cs156.happiercows.controllers,ReportsController,0,17,0,0,0,5,0,3,0,3
+example,edu.ucsb.cs156.happiercows.controllers,ReportsController,0,42,0,0,0,10,0,5,0,5
