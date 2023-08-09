@@ -5,40 +5,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import edu.ucsb.cs156.happiercows.entities.jobs.Job;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJob;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommons;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommonsFactory;
-import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJob;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.SetCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
-import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJob;
 import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.repositories.jobs.JobsRepository;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
 
 
-
-<span class="fc" id="L37">@Slf4j</span>
 @Tag(name = &quot;Jobs&quot;)
 @RequestMapping(&quot;/api/jobs&quot;)
 @RestController
-<span class="fc" id="L41">public class JobsController extends ApiController {</span>
+<span class="fc" id="L38">public class JobsController extends ApiController {</span>
     @Autowired
     private JobsRepository jobsRepository;
 
@@ -67,8 +64,19 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Job&gt; allJobs() {
-<span class="fc" id="L70">        Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
-<span class="fc" id="L71">        return jobs;</span>
+<span class="fc" id="L67">        Iterable&lt;Job&gt; jobs = jobsRepository.findAll();</span>
+<span class="fc" id="L68">        return jobs;</span>
+    }
+
+    @Operation(summary = &quot;List all jobs&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/all/pageable&quot;)
+    public Page&lt;Job&gt; allJobsPaged(
+         @Parameter(name=&quot;page&quot;) @RequestParam int page,
+         @Parameter(name=&quot;size&quot;) @RequestParam int size
+    ) {
+<span class="fc" id="L78">        Page&lt;Job&gt; jobs = jobsRepository.findAll(PageRequest.of(page, size, Sort.by(&quot;id&quot;).descending()));</span>
+<span class="fc" id="L79">        return jobs;</span>
     }
 
     @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
@@ -78,12 +86,12 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
         @Parameter(name=&quot;fail&quot;) @RequestParam Boolean fail, 
         @Parameter(name=&quot;sleepMs&quot;) @RequestParam Integer sleepMs
     ) {
-<span class="fc" id="L81">        TestJob testJob = TestJob.builder()</span>
-<span class="fc" id="L82">        .fail(fail)</span>
-<span class="fc" id="L83">        .sleepMs(sleepMs)</span>
-<span class="fc" id="L84">        .build();</span>
+<span class="fc" id="L89">        TestJob testJob = TestJob.builder()</span>
+<span class="fc" id="L90">        .fail(fail)</span>
+<span class="fc" id="L91">        .sleepMs(sleepMs)</span>
+<span class="fc" id="L92">        .build();</span>
 
-<span class="fc" id="L86">        return jobService.runAsJob(testJob);</span>
+<span class="fc" id="L94">        return jobService.runAsJob(testJob);</span>
     }
 
     @Operation(summary = &quot;Launch Job to Milk the Cows (click fail if you want to test exception handling)&quot;)
@@ -91,8 +99,8 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
     @PostMapping(&quot;/launch/milkthecowjob&quot;)
     public Job launchTestJob(
     ) {
-<span class="fc" id="L94">        JobContextConsumer milkTheCowsJob = milkTheCowsJobFactory.create();</span>
-<span class="fc" id="L95">        return jobService.runAsJob(milkTheCowsJob);</span>
+<span class="fc" id="L102">        JobContextConsumer milkTheCowsJob = milkTheCowsJobFactory.create();</span>
+<span class="fc" id="L103">        return jobService.runAsJob(milkTheCowsJob);</span>
     }
 
     @Operation(summary = &quot;Launch Job to Update Cow Health&quot;)
@@ -100,8 +108,8 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
     @PostMapping(&quot;/launch/updatecowhealth&quot;)
     public Job updateCowHealth(
     ) { 
-<span class="fc" id="L103">        JobContextConsumer updateCowHealthJob = updateCowHealthJobFactory.create();</span>
-<span class="fc" id="L104">        return jobService.runAsJob(updateCowHealthJob);</span>
+<span class="fc" id="L111">        JobContextConsumer updateCowHealthJob = updateCowHealthJobFactory.create();</span>
+<span class="fc" id="L112">        return jobService.runAsJob(updateCowHealthJob);</span>
     }
 
     @Operation(summary = &quot;Launch Job to Set Cow Health&quot;)
@@ -111,8 +119,8 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
         @Parameter(name=&quot;commonsID&quot;) @RequestParam Long commonsID, 
         @Parameter(name=&quot;health&quot;) @RequestParam double health
     ) { 
-<span class="fc" id="L114">        JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(commonsID, health);</span>
-<span class="fc" id="L115">        return jobService.runAsJob(setCowHealthJob);</span>
+<span class="fc" id="L122">        JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(commonsID, health);</span>
+<span class="fc" id="L123">        return jobService.runAsJob(setCowHealthJob);</span>
     }
 
     @Operation(summary = &quot;Launch Job to Produce Instructor Report&quot;)
@@ -120,8 +128,8 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
     @PostMapping(&quot;/launch/instructorreport&quot;)
     public Job instructorReport(
     ) { 
-<span class="fc" id="L123">        InstructorReportJob instructorReportJob = (InstructorReportJob) instructorReportJobFactory.create();</span>
-<span class="fc" id="L124">        return jobService.runAsJob(instructorReportJob);</span>
+<span class="fc" id="L131">        InstructorReportJob instructorReportJob = (InstructorReportJob) instructorReportJobFactory.create();</span>
+<span class="fc" id="L132">        return jobService.runAsJob(instructorReportJob);</span>
     }
 
     @Operation(summary = &quot;Launch Job to Produce Instructor Report for a single commons&quot;)
@@ -131,8 +139,8 @@ import edu.ucsb.cs156.happiercows.services.jobs.JobService;
          @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
     ) { 
 
-<span class="fc" id="L134">        InstructorReportJobSingleCommons instructorReportJobSingleCommons = (InstructorReportJobSingleCommons) instructorReportJobSingleCommonsFactory.create(commonsId);</span>
-<span class="fc" id="L135">        return jobService.runAsJob(instructorReportJobSingleCommons);</span>
+<span class="fc" id="L142">        InstructorReportJobSingleCommons instructorReportJobSingleCommons = (InstructorReportJobSingleCommons) instructorReportJobSingleCommonsFactory.create(commonsId);</span>
+<span class="fc" id="L143">        return jobService.runAsJob(instructorReportJobSingleCommons);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
