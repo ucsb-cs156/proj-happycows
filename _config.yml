@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-step-change","number":69,"title":"Pc step change","url":"https://github.com/ucsb-cs156/proj-happycows/pull/69"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-last-online","number":68,"title":"Pc last online","url":"https://github.com/ucsb-cs156/proj-happycows/pull/68"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-last-online","number":68,"title":"Pc last online","url":"https://github.com/ucsb-cs156/proj-happycows/pull/68"}]
