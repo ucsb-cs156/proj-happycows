@@ -112,7 +112,20 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -123,22 +136,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,10 +151,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -168,7 +194,7 @@ import ReportTable from "main/components/Reports/ReportTable";
 import ReportHeaderTable from "main/components/Reports/ReportHeaderTable";
 import ReportLineTable from "main/components/Reports/ReportLineTable";
 import { useBackend } from 'main/utils/useBackend';
-import { Button } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 &nbsp;
 export default function AdminViewReportPage() {
@@ -176,7 +202,7 @@ export default function AdminViewReportPage() {
   const navigate = useNavigate();
 &nbsp;
   // Stryker disable  all 
-  const { data: reportHeader} =
+  const { data: reportHeader } =
     useBackend(
       ["/api/reports/byReportId"],
       {
@@ -186,7 +212,7 @@ export default function AdminViewReportPage() {
       []
     );
 &nbsp;
-  const { data: reportLines} =
+  const { data: reportLines } =
     useBackend(
       ["/api/reports/lines"],
       {
@@ -200,12 +226,25 @@ export default function AdminViewReportPage() {
   return (
     &lt;BasicLayout&gt;
       &lt;div className="pt-2"&gt;
-        &lt;Button style={{float: "right"}} variant="primary" onClick={() =&gt; navigate("/admin/reports")} &gt;Back to Reports&lt;/Button&gt;
-        &lt;h1&gt;Instructor Report&lt;/h1&gt;
-        &lt;ReportTable reports={[reportHeader]} buttons={false}  /&gt; 
-        &lt;ReportHeaderTable report={reportHeader}  /&gt; 
-        &lt;h2&gt;Farmers&lt;/h2&gt;
-        &lt;ReportLineTable reportLines={reportLines}  /&gt; 
+        &lt;Row&gt;
+          &lt;Col&gt;
+            &lt;h1&gt;Instructor Report&lt;/h1&gt;
+          &lt;/Col&gt;
+          &lt;Col&gt;
+            &lt;Button variant="primary" onClick={() =&gt; navigate("/admin/reports")} &gt;Back to Reports&lt;/Button&gt;
+          &lt;/Col&gt;
+        &lt;/Row&gt;
+        &lt;ReportTable reports={[reportHeader]} buttons={false} /&gt;
+        &lt;ReportHeaderTable report={reportHeader} /&gt;
+        &lt;Row  className="pt-5"&gt;
+          &lt;Col&gt;
+            &lt;h2&gt;Farmers&lt;/h2&gt;
+          &lt;/Col&gt;
+          &lt;Col&gt;
+            &lt;Button variant="secondary" href={`/api/reports/download?reportId=${reportId}`} &gt;Download as CSV&lt;/Button&gt;
+          &lt;/Col&gt;
+        &lt;/Row&gt;
+        &lt;ReportLineTable reportLines={reportLines} /&gt;
       &lt;/div&gt;
     &lt;/BasicLayout&gt;
   )
@@ -217,7 +256,7 @@ export default function AdminViewReportPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Wed Aug 09 2023 09:00:37 GMT-0700 (Pacific Daylight Time)
+                at Fri Aug 18 2023 14:40:49 GMT-0700 (Pacific Daylight Time)
             </div>
         <script src="../prettify.js"></script>
         <script>
