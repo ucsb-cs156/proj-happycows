@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -26,11 +27,13 @@ public class User {
     private String hostedDomain;
     private boolean admin;
 
-    // this is used by the frontend
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = &quot;user_commons&quot;,
-            joinColumns = @JoinColumn(name = &quot;user_id&quot;, referencedColumnName = &quot;id&quot;),
-            inverseJoinColumns = @JoinColumn(name = &quot;commons_id&quot;, referencedColumnName = &quot;id&quot;))
+  @Builder.Default
+  private Instant lastOnline = Instant.now();
+
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
+  @JoinTable(name = &quot;user_commons&quot;, 
+    joinColumns = @JoinColumn(name = &quot;user_id&quot;, referencedColumnName = &quot;id&quot;), 
+    inverseJoinColumns = @JoinColumn(name = &quot;commons_id&quot;, referencedColumnName = &quot;id&quot;))
     private List&lt;Commons&gt; commons;
 
     @OneToMany(mappedBy = &quot;user&quot;, cascade = CascadeType.REMOVE)
@@ -40,7 +43,7 @@ public class User {
 
     @Override
     public String toString() {
-<span class="fc" id="L43">        return String.format(&quot;User: id=%d email=%s&quot;, id, email);</span>
+<span class="fc" id="L46">        return String.format(&quot;User: id=%d email=%s&quot;, id, email);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

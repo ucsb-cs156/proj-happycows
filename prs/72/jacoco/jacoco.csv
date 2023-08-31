@@ -49,7 +49,7 @@ happycows,edu.ucsb.cs156.happiercows.controllers,UsersController,0,16,0,0,0,4,0,
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,146,0,8,0,30,0,16,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,109,0,0,0,18,0,5,0,5
 happycows,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
-happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,6,0,0,0,2,0,2,0,2
+happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,24,0,0,0,7,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.controllers,ApiController,0,29,0,0,0,9,0,5,0,5
 happycows,edu.ucsb.cs156.happiercows.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.controllers,ReportsController,0,81,0,0,0,18,0,6,0,6
