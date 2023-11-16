@@ -270,14 +270,20 @@ import java.util.Optional;
     @DeleteMapping(&quot;&quot;)
     public Object deleteCommons(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
+        
+<span class="fc" id="L274">        Iterable&lt;UserCommons&gt; userCommons = userCommonsRepository.findByCommonsId(id);</span>
 
-<span class="fc" id="L274">        commonsRepository.findById(id)</span>
-<span class="fc" id="L275">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        for (UserCommons commons : userCommons) {</span>
+<span class="fc" id="L277">            userCommonsRepository.delete(commons);</span>
+<span class="fc" id="L278">        }</span>
 
-<span class="fc" id="L277">        commonsRepository.deleteById(id);</span>
+<span class="fc" id="L280">        commonsRepository.findById(id)</span>
+<span class="fc" id="L281">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
 
-<span class="fc" id="L279">        String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
-<span class="fc" id="L280">        return genericMessage(responseString);</span>
+<span class="fc" id="L283">        commonsRepository.deleteById(id);</span>
+
+<span class="fc" id="L285">        String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
+<span class="fc" id="L286">        return genericMessage(responseString);</span>
 
     }
 
@@ -287,16 +293,16 @@ import java.util.Optional;
     public Object deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,
                                        @PathVariable(&quot;userId&quot;) Long userId) throws Exception {
 
-<span class="fc" id="L290">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L291">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
+<span class="fc" id="L296">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L297">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
                         UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId)
                 );
 
-<span class="fc" id="L295">        userCommonsRepository.delete(userCommons);</span>
+<span class="fc" id="L301">        userCommonsRepository.delete(userCommons);</span>
 
-<span class="fc" id="L297">        String responseString = String.format(&quot;user with id %d deleted from commons with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
+<span class="fc" id="L303">        String responseString = String.format(&quot;user with id %d deleted from commons with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
 
-<span class="fc" id="L299">        return genericMessage(responseString);</span>
+<span class="fc" id="L305">        return genericMessage(responseString);</span>
     }
 
     
