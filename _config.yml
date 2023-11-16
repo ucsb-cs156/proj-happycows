@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjU5NjY0ODg0","is_bot":false,"login":"LeonFeng0325","name":""},"headRefName":"update-github-action-98-tag","number":87,"title":"Add tag environment variable in github action 98","url":"https://github.com/ucsb-cs156/proj-happycows/pull/87"},{"author":{"id":"MDQ6VXNlcjcyODI0MjQ4","is_bot":false,"login":"sangitakunapuli","name":""},"headRefName":"sk-fixdeletebug","number":85,"title":"sk - add manual deletes of UserCommons to DELETE commons endpoint","url":"https://github.com/ucsb-cs156/proj-happycows/pull/85"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjcyODI0MjQ4","is_bot":false,"login":"sangitakunapuli","name":""},"headRefName":"sk-fixdeletebug","number":85,"title":"sk - add manual deletes of UserCommons to DELETE commons endpoint","url":"https://github.com/ucsb-cs156/proj-happycows/pull/85"}]
