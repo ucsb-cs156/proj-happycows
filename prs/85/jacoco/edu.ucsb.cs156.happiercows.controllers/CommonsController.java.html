@@ -273,9 +273,9 @@ import java.util.Optional;
         
 <span class="fc" id="L274">        Iterable&lt;UserCommons&gt; userCommons = userCommonsRepository.findByCommonsId(id);</span>
 
-<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        for (UserCommons userCommon : userCommons) {</span>
-<span class="nc" id="L277">            userCommonsRepository.delete(userCommon);</span>
-<span class="nc" id="L278">        }</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        for (UserCommons commons : userCommons) {</span>
+<span class="fc" id="L277">            userCommonsRepository.delete(commons);</span>
+<span class="fc" id="L278">        }</span>
 
 <span class="fc" id="L280">        commonsRepository.findById(id)</span>
 <span class="fc" id="L281">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
