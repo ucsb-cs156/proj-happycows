@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/32</span>
+                <span class='fraction'>33/33</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/16</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/31</span>
+                <span class='fraction'>32/32</span>
             </div>
         
             
@@ -204,7 +204,12 @@
 <a name='L139'></a><a href='#L139'>139</a>
 <a name='L140'></a><a href='#L140'>140</a>
 <a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -253,6 +258,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">84x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -397,51 +407,56 @@ export default function CommonsTable({ commons, currentUser }) {
             accessor: 'commons.name',
         },
         {
-            Header:'Cow Price',
+            Header: &lt;span&gt;Cow&lt; br /&gt; Price&lt;/span&gt;,
             accessor: row =&gt; row.commons.cowPrice,
             id: 'commons.cowPrice'
         },
         {
-            Header:'Milk Price',
+            Header:&lt;span&gt; Milk &lt;br /&gt; Price &lt;/span&gt;,
             accessor: row =&gt; row.commons.milkPrice,
-            id: 'commons.milkPrice'
+            id: 'commons.milkPrice' 
         },
         {
-            Header:'Starting Balance',
+            Header:&lt;span&gt; Start &lt;br /&gt; Bal &lt;/span&gt;,
             accessor: row =&gt; row.commons.startingBalance,
             id: 'commons.startingBalance'
         },
         {
-            Header:'Starting Date',
+            Header:&lt;span&gt; Starting &lt;br /&gt; Date &lt;/span&gt;,
             accessor: row =&gt; String(row.commons.startingDate).slice(0,10),
             id: 'commons.startingDate'
         },
         {
-            Header:'Degradation Rate',
+            Header:&lt;span&gt; Last &lt;br /&gt; Date &lt;/span&gt;,
+            accessor: row =&gt; String(row.commons.lastDate).slice(0,10),
+            id: 'commons.lastDate'
+        },
+        {
+            Header: &lt;span&gt; Degrad &lt;br /&gt; Rate &lt;/span&gt;,
             accessor: row =&gt; row.commons.degradationRate,
             id: 'commons.degradationRate'
         },
         {
-            Header:'Show Leaderboard?',
+            Header:&lt;span&gt; Show &lt;br /&gt; LrdrBrd? &lt;/span&gt;,
             id: 'commons.showLeaderboard', // needed for tests
             accessor: (row, _rowIndex) =&gt; String(row.commons.showLeaderboard) // hack needed for boolean values to show up
         },
         {
-            Header: 'Cows',
+            Header: &lt;span&gt; Tot &lt;br /&gt; Cows &lt;/span&gt;,
             accessor: 'totalCows'
         },
         {
-            Header: 'Capacity Per User',
+            Header: &lt;span&gt; Cap / &lt;br /&gt; User &lt;/span&gt;,
             accessor: row =&gt; row.commons.capacityPerUser,
             id: 'commons.capacityPerUser'
         },
         {
-            Header: 'Carrying Capacity',
+            Header: &lt;span&gt; Carry &lt;br /&gt; Cap &lt;/span&gt;,
             accessor: row =&gt; row.commons.carryingCapacity,
             id: 'commons.carryingCapacity'
         },
         {
-            Header: 'Effective Capacity',
+            Header: &lt;span&gt; Eff &lt;br /&gt; Cap &lt;/span&gt;,
             accessor: 'effectiveCapacity'
         }
     ];
@@ -493,7 +508,7 @@ export default function CommonsTable({ commons, currentUser }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri Sep 01 2023 10:19:22 GMT-0700 (Pacific Daylight Time)
+                at Tue Feb 20 2024 17:34:28 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>
