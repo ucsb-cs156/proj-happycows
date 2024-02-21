@@ -37,20 +37,36 @@ import java.util.List;
     @Autowired
     ProfitRepository profitRepository;
 
+    @Operation(summary = &quot;Get all profits belonging to a user commons as a admin via CommonsID and UserId&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;Profit&gt; allProfitsByCommonsId(
+            @Parameter(name=&quot;userId&quot;) @RequestParam Long userId,
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
+
+    ) {
+
+<span class="fc" id="L49">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L50">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+
+<span class="fc" id="L52">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommons(userCommons);</span>
+
+<span class="fc" id="L54">        return profits;</span>
+    }
     @Operation(summary = &quot;Get all profits belonging to a user commons as a user via CommonsID&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all/commonsid&quot;)
     public Iterable&lt;Profit&gt; allProfitsByCommonsId(
             @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
     ) {
-<span class="fc" id="L46">        Long userId = getCurrentUser().getUser().getId();</span>
+<span class="fc" id="L62">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L48">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L49">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L64">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L65">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L51">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommons(userCommons);</span>
+<span class="fc" id="L67">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommons(userCommons);</span>
 
-<span class="fc" id="L53">        return profits;</span>
+<span class="fc" id="L69">        return profits;</span>
     }
 
     @Operation(summary = &quot;Get all profits belonging to a user commons as a user via CommonsID with pagination&quot;)
@@ -62,24 +78,24 @@ import java.util.List;
             @Parameter(name = &quot;pageSize&quot;, description = &quot;Number of records per page&quot;) @RequestParam(defaultValue = &quot;7&quot;) int pageSize
 
     ) {
-<span class="fc" id="L65">        Long userId = getCurrentUser().getUser().getId();</span>
+<span class="fc" id="L81">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L67">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L68">                .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L83">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L70">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByUserCommons(userCommons);</span>
+<span class="fc" id="L86">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByUserCommons(userCommons);</span>
 
-<span class="fc" id="L72">        List&lt;Profit&gt; allProfits = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L73">        iterableProfits.forEach(allProfits::add);</span>
+<span class="fc" id="L88">        List&lt;Profit&gt; allProfits = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L89">        iterableProfits.forEach(allProfits::add);</span>
 
-<span class="fc" id="L75">        int start = pageNumber * pageSize;</span>
-<span class="fc" id="L76">        int end = Math.min((start + pageSize), allProfits.size());</span>
-<span class="fc" id="L77">        List&lt;Profit&gt; paginatedProfits = allProfits.subList(start, end);</span>
+<span class="fc" id="L91">        int start = pageNumber * pageSize;</span>
+<span class="fc" id="L92">        int end = Math.min((start + pageSize), allProfits.size());</span>
+<span class="fc" id="L93">        List&lt;Profit&gt; paginatedProfits = allProfits.subList(start, end);</span>
 
-<span class="fc" id="L79">        Pageable pageable = PageRequest.of(pageNumber, pageSize);</span>
-<span class="fc" id="L80">        Page&lt;Profit&gt; profitsPage = new PageImpl&lt;&gt;(paginatedProfits, pageable, allProfits.size());</span>
+<span class="fc" id="L95">        Pageable pageable = PageRequest.of(pageNumber, pageSize);</span>
+<span class="fc" id="L96">        Page&lt;Profit&gt; profitsPage = new PageImpl&lt;&gt;(paginatedProfits, pageable, allProfits.size());</span>
 
-<span class="fc" id="L82">        return profitsPage;</span>
+<span class="fc" id="L98">        return profitsPage;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
