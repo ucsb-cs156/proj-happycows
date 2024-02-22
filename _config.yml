@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: []
+pull_requests: [{"author":{"id":"MDQ6VXNlcjcyODM5MjIz","is_bot":false,"login":"whuang602","name":"Will H."},"headRefName":"wh-readme-update","number":104,"title":"wh - heroku to dokku in readme","url":"https://github.com/ucsb-cs156/proj-happycows/pull/104"}]
