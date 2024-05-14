@@ -25,14 +25,18 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
 <span class="fc" id="L25">  @Value(&quot;${app.sourceRepo}&quot;)</span>
   private String sourceRepo = &quot;https://github.com/ucsb-cs156/proj-happycows&quot;;
 
+  @Value(&quot;${app.oauth.login:/oauth2/authorization/google}&quot;)
+  private String oauthLogin;
+
   public SystemInfo getSystemInfo() {
-<span class="fc" id="L29">    SystemInfo si = SystemInfo.builder()</span>
-<span class="fc" id="L30">    .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
-<span class="fc" id="L31">    .showSwaggerUILink(this.showSwaggerUILink)</span>
-<span class="fc" id="L32">    .sourceRepo(this.sourceRepo)</span>
-<span class="fc" id="L33">    .build();</span>
-<span class="fc" id="L34">  log.info(&quot;getSystemInfo returns {}&quot;,si);</span>
-<span class="fc" id="L35">  return si;</span>
+<span class="fc" id="L32">    SystemInfo si = SystemInfo.builder()</span>
+<span class="fc" id="L33">    .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
+<span class="fc" id="L34">    .showSwaggerUILink(this.showSwaggerUILink)</span>
+<span class="fc" id="L35">    .sourceRepo(this.sourceRepo)</span>
+<span class="fc" id="L36">    .oauthLogin(this.oauthLogin)</span>
+<span class="fc" id="L37">    .build();</span>
+<span class="fc" id="L38">  log.info(&quot;getSystemInfo returns {}&quot;,si);</span>
+<span class="fc" id="L39">  return si;</span>
   }
 
 }
