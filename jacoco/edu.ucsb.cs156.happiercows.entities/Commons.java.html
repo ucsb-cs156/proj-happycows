@@ -30,6 +30,9 @@ public class Commons {
     private LocalDateTime startingDate;
     private LocalDateTime lastDate;
     private boolean showLeaderboard;
+
+    @Builder.Default
+    private boolean showChat = true;
     
     private int capacityPerUser;
     private int carryingCapacity;
@@ -49,11 +52,11 @@ public class Commons {
     private List&lt;UserCommons&gt; joinedUsers;
 
     public boolean gameInProgress() {
-<span class="fc" id="L52">        LocalDateTime today = LocalDateTime.now();</span>
-<span class="fc bfc" id="L53" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
-<span class="fc" id="L54">            return true;</span>
+<span class="fc" id="L55">        LocalDateTime today = LocalDateTime.now();</span>
+<span class="fc bfc" id="L56" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
+<span class="fc" id="L57">            return true;</span>
         }
-<span class="fc" id="L56">        return false;</span>
+<span class="fc" id="L59">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
