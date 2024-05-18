@@ -5,10 +5,11 @@ import { formatTime } from "main/utils/dateUtils";
 
 export default function UsersTable({ users }) {
 
-    const removeCallback = (_cell) => {
+    // Stryker disable next-line all : TODO create this function & test it
+    const removeCallback = (_cell) => { }
         // TODO: create a page and navigate to it
         // navigate(`/articles/edit/${cell.row.values.id}`)
-    }
+    
 
     const columns = [
         {

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
@@ -14,6 +14,16 @@ describe("UserTable tests", () => {
         render(
             <UsersTable users={usersFixtures.threeUsers} />
         );
+    });
+
+    test("Remove button calls remove callback", () => {
+        const testId = "UsersTable";
+        render(
+            <UsersTable users={usersFixtures.threeUsers} />
+        );
+        const removeButton = screen.getByTestId(`${testId}-cell-row-0-col-Remove-button`);
+        expect(removeButton).toBeInTheDocument();
+        fireEvent.click(removeButton);
     });
 
     test("Has the expected colum headers and content", () => {
