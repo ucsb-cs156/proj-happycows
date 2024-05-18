@@ -3,6 +3,7 @@ import {useForm} from "react-hook-form";
 import {useBackend} from "main/utils/useBackend";
 import { useEffect } from "react";
 import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrategiesUpdateDropdown";
+import { toLocalISOString } from "main/components/Utils/DateConversion";
 
 function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
     let modifiedCommons = initialCommons ? { ...initialCommons } : {};  // make a shallow copy of initialCommons
@@ -67,25 +68,12 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
         }
     }, [defaultValuesData, initialCommons, reset]);
     // Stryker restore all
-    
-    //custom function to convert date to local ISO string
-    const toLocalISOString = (date) => {
-        const pad = (num) => String(num).padStart(2, '0');
-        const datePart = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-        const timePart = `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}.${pad(date.getMilliseconds(), 3)}`;
-        const offset = -date.getTimezoneOffset();
-        const sign = offset >= 0 ? '+' : '-';
-        const hours = pad(Math.floor(Math.abs(offset) / 60));
-        const minutes = pad(Math.abs(offset) % 60);
-        const timezone = `${sign}${hours}:${minutes}`;
-        return `${datePart}T${timePart}${timezone}`;
-    };
 
     const testid = "CommonsForm";
     const curr = new Date();
     const today = toLocalISOString(curr).split('T')[0];
     const currMonth = curr.getMonth() % 12;
-    const nextMonth = new Date(curr.getFullYear(), currMonth + 1, curr.getDate()).toISOString().substr(0, 10);
+    const nextMonth = toLocalISOString(new Date(curr.getFullYear(), currMonth + 1, curr.getDate())).split('T')[0];
     const DefaultVals = {
         name: "",
         startingBalance: defaultValuesData?.startingBalance || "10000",
