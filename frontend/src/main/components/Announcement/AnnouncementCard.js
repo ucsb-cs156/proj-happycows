@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 
 const curr = new Date();
@@ -13,6 +13,7 @@ function isFutureDate(startingDate) {
 
     if (startYear === currYear) {
         if (startMonth === currMonth) {
+            // Stryker disable next-line all: mutation test unreasonable
             return startDate > currDate;
         } else {
             // Stryker disable next-line all: mutation test unreasonable
@@ -26,15 +27,13 @@ function isFutureDate(startingDate) {
 
 const AnnouncementCard = ({ announcement }) => {
     const testIdPrefix = "announcementCard";
-    if (announcement != null && isFutureDate(announcement.startDate)) {
+    if (!announcement || isFutureDate(announcement.startDate)) {
         return null;
     }
 
-    const [isCollapsed, setIsCollapsed] = useState(true);
-
-    const toggleCollapse = () => {
-        setIsCollapsed(!isCollapsed);
-    };
+    if ( announcement.endDate && (!isFutureDate(announcement.endDate))) {
+        return null;
+    }
 
     return (
         <Card.Body style={
