@@ -42,7 +42,7 @@ export default function UsersTable({ users }) {
 
     // if (hasRole(currentUser, "ROLE_ADMIN")) {
     // don't need to check for admin because this page will not display if not admin
-    columns.push(ButtonColumn("Remove", "danger", removeCallback, "UsersTable"));
+    columns.push(ButtonColumn("Edit Commons", "danger", removeCallback, "UsersTable"));
     // } 
 
     return <OurTable

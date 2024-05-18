@@ -21,9 +21,10 @@ describe("UserTable tests", () => {
         render(
             <UsersTable users={usersFixtures.threeUsers} />
         );
-        const removeButton = screen.getByTestId(`${testId}-cell-row-0-col-Remove-button`);
-        expect(removeButton).toBeInTheDocument();
-        fireEvent.click(removeButton);
+        const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit Commons-button`);
+        expect(editButton).toBeInTheDocument();
+        expect(editButton).toHaveClass("btn-danger");
+        fireEvent.click(editButton);
     });
 
     test("Has the expected colum headers and content", () => {
