@@ -75,8 +75,6 @@ describe('Arithmetic Operator Functions', () => {
   });
 
 describe('toLocalISOString', () => {
-  const pad = (num) => String(num).padStart(2, '0');
-
   it('correctly formats a date to local ISO string', () => {
     const date = new Date('2024-05-18T10:00:00.000Z');
     const localISO = toLocalISOString(date);
