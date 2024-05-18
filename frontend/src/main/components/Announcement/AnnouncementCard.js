@@ -1,28 +1,11 @@
 import React from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
 
-const curr = new Date();
-
-function isFutureDate(startingDate) {
-    const startYear = parseInt(startingDate);
-    const startMonth = parseInt(startingDate.substring(5,7));
-    const startDate = parseInt(startingDate.substring(8,10));
-    const currYear = curr.getFullYear();
-    const currMonth = curr.getMonth() + 1;
-    const currDate = curr.getDate();
-
-    if (startYear === currYear) {
-        if (startMonth === currMonth) {
-            // Stryker disable next-line all: mutation test unreasonable
-            return startDate > currDate;
-        } else {
-            // Stryker disable next-line all: mutation test unreasonable
-            return startMonth > currMonth;
-        }
-    } else {
-        // Stryker disable next-line all: mutation test unreasonable
-        return startYear > currYear;
-    }
+export function isFutureDate(startingDate) {
+    const curr = new Date();
+    const startDate = new Date(startingDate);
+    // Stryker disable next-line all: mutation test unreasonable
+    return startDate > curr;
 }
 
 const AnnouncementCard = ({ announcement }) => {

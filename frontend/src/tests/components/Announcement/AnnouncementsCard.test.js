@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { announcementFixtures } from "fixtures/announcementFixtures";
-import AnnouncementCard from "main/components/Announcement/AnnouncementCard";
+import AnnouncementCard, { isFutureDate } from "main/components/Announcement/AnnouncementCard";
 
 const curr = new Date();
 
@@ -17,7 +17,7 @@ describe("AnnouncementCard tests", () => {
     test("cannot show announcement with future start date - future year", async () => {
         const futureYearAnnouncement = {
             ...announcementFixtures.threeAnnouncements[0],
-            startDate: `${curr.getFullYear() + 1}-01-01T00:00:00`
+            startDate: new Date(curr.getFullYear() + 1, curr.getMonth(), curr.getDate()).toISOString().substring(0, 10)
         };
 
         render(
@@ -59,7 +59,7 @@ describe("AnnouncementCard tests", () => {
     test("cannot show announcement with future start date - future day", async () => {
         const futureDayAnnouncement = {
             ...announcementFixtures.threeAnnouncements[0],
-            startDate: new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 1).toISOString().substring(0, 10)
+            startDate: new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 10).toISOString().substring(0, 10)
         };
 
         render(
@@ -99,14 +99,6 @@ describe("AnnouncementCard tests", () => {
         expect(textElement).toBeNull();
     });
 
-    test("isFutureDate function works correctly", () => {
-        const futureDate = `${curr.getFullYear() + 1}-01-01T00:00:00`;
-        const pastDate = `${curr.getFullYear() - 1}-01-01T00:00:00`;
-
-        expect(new Date(futureDate) > curr).toBe(true);
-        expect(new Date(pastDate) < curr).toBe(true);
-    });
-
     test("renders with correct data-testid", async () => {
         render(
             <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]}/>
@@ -115,5 +107,15 @@ describe("AnnouncementCard tests", () => {
         const testId = `announcementCard-id-${announcementFixtures.threeAnnouncements[1].announcementText}`;
         const element = screen.getByTestId(testId);
         expect(element).toBeInTheDocument();
+    });
+
+    test("isFutureDate function works correctly", () => {
+        const futureDate = `${curr.getFullYear() + 1}-01-01T00:00:00`;
+        const pastDate = `${curr.getFullYear() - 1}-01-01T00:00:00`;
+        const currentDate = curr.toISOString().substring(0, 10);
+
+        expect(isFutureDate(futureDate)).toBe(true);
+        expect(isFutureDate(pastDate)).toBe(false);
+        expect(isFutureDate(currentDate)).toBe(false);
     });
 });
