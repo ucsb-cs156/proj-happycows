@@ -15,8 +15,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
       }
       <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
         <Container>
-          {/* Stryker disable next-line all : don't mutation test CSS */}
-          <Navbar.Brand as={Link} to="/" style= {{ fontFamily: 'Rye'}}>
+          <Navbar.Brand as={Link} to="/" /*Stryker disable next-line all : don't mutation test CSS */ style= {{ fontFamily: 'Rye'}}>
             Happy Cows
           </Navbar.Brand>
 
