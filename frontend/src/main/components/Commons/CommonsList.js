@@ -17,7 +17,10 @@ const CommonsList = (props) => {
                 data-testid="commonsList-title"
                 style={
                     // Stryker disable next-line all: don't test CSS params
-                    { fontSize: "35px" }
+                    { fontSize: "35px",
+                    fontWeight: "bold",
+                    color: "#1E4D2B"
+                    }
                 }
                 className="text-center my-3"
             >
