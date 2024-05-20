@@ -8,8 +8,6 @@ import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import { commonsNotJoined } from "main/utils/commonsUtils";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
-// import DragItem from "main/utils//DragItem";
-// import DropZone from "main/utils/DropZone"; 
 
 import "./HomePage.css"
 

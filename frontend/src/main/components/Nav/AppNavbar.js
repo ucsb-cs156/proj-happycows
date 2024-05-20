@@ -15,8 +15,8 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
       }
       <Navbar expand="xl" variant="dark" bg="dark" sticky="top" data-testid="AppNavbar">
         <Container>
-          <Navbar.Brand as={Link} to="/" 
-          style= {{ fontFamily: 'Rye'}}>
+          {/* Stryker disable next-line all : don't mutation test CSS */}
+          <Navbar.Brand as={Link} to="/" style= {{ fontFamily: 'Rye'}}>
             Happy Cows
           </Navbar.Brand>
 
@@ -63,10 +63,13 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                 currentUser && currentUser.loggedIn ? (
                   <>
                     <Navbar.Text className="me-3" as={Link} to="/profile">Welcome, {currentUser.root.user.email}</Navbar.Text>
-                    <Button onClick={doLogout} style= {{ fontFamily: 'Rye'}} >Log Out</Button>
+                    <Button onClick={doLogout} /*Stryker disable next-line all : don't mutation test CSS*/ 
+                    style= {{ fontFamily: 'Rye'}} >Log Out</Button>
                   </>
                 ) : (
-                  <Button href={oauthLogin} style= {{ fontFamily: 'Rye'}} >Log In</Button>
+                  <Button href={oauthLogin} 
+                    /*Stryker disable next-line all : don't mutation test CSS*/ 
+                  style= {{ fontFamily: 'Rye'}} >Log In</Button>
                 )
               }
             </Nav>

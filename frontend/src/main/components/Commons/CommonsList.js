@@ -18,6 +18,7 @@ const CommonsList = (props) => {
                 style={
                     // Stryker disable next-line all: don't test CSS params
                     { fontSize: "35px", 
+                      // Stryker disable next-line all: don't test CSS params
                       fontFamily: 'Rye'
                      }
                 }
@@ -56,6 +57,7 @@ const CommonsList = (props) => {
             <Card.Subtitle>
                 <Container>
                     <Row style={{justifyContent: "center",
+                        // Stryker disable next-line all: don't test CSS params
                         fontFamily: 'Sancreek'
                     }}
                      data-testid="commonsList-default-message">
