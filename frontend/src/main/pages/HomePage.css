@@ -1,12 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ewert&family=Sancreek&display=swap');
 .animate-charcter
 {
   background-image: linear-gradient(
     -225deg,
     #b72525 0%,
-    #e87902 29%,
-    #667503 67%,
-    #04a617 100%
-  );
+    #e87902 15%,
+    #667503 30%,
+    #04a617 45%,
+    #667503 60%,
+    #e87902 75%,
+    #b72525 100%
+  ); 
 
   background-size: auto auto;
   background-clip: border-box;
@@ -16,9 +21,14 @@
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: textclip 2s linear infinite;
+  animation: textclip 8s linear infinite;
   display: inline-block;
   font-size: 50px;
+  font-family: 'Rye', cursive;
+}
+.reg-text 
+{
+  font-family: 'Rye', cursive;
 }
 
 @keyframes textclip {
