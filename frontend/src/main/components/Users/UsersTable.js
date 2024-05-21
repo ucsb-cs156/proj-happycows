@@ -1,14 +1,15 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable"
 import { formatTime } from "main/utils/dateUtils";
-
+import { useNavigate } from 'react-router-dom';
 
 export default function UsersTable({ users }) {
 
+    const navigate = useNavigate();
     // Stryker disable next-line all : TODO create this function & test it
-    const removeCallback = (_cell) => { }
-        // TODO: create a page and navigate to it
-        // navigate(`/articles/edit/${cell.row.values.id}`)
+    const removeCallback = (_cell) => { 
+        navigate(`/admin/remove/user/${users.id}`)
+    }
     
 
     const columns = [
@@ -40,10 +41,8 @@ export default function UsersTable({ users }) {
         },
     ];
 
-    // if (hasRole(currentUser, "ROLE_ADMIN")) {
     // don't need to check for admin because this page will not display if not admin
     columns.push(ButtonColumn("Edit Commons", "danger", removeCallback, "UsersTable"));
-    // } 
 
     return <OurTable
         data={users}

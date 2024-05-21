@@ -19,6 +19,8 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
+import AdminRemoveUserPage from "main/pages/AdminRemoveUserPage";
+
 
 function App() {
     const { data: currentUser } = useCurrentUser();
@@ -47,6 +49,10 @@ function App() {
             <Route
                 path="/admin/play/:commonsId/user/:userId"
                 element={<AdminViewPlayPage />}
+            />
+            <Route
+                path="/admin/remove/user/:userId"
+                element={<AdminRemoveUserPage />}
             />
         </>
     ) : null;
