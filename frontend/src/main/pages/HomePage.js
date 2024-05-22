@@ -66,7 +66,9 @@ export default function HomePage({hour=null}) {
   return (
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
       <BasicLayout>
-        <h1 data-testid="homePage-title" className="new-title" >Howdy Farmer {firstName}!</h1>
+        <div className="title-box">
+          <h1 data-testid="homePage-title" className="new-title" >Howdy Farmer {firstName}!</h1>
+        </div>
         <Container>
           <Row>
             <div className="homePage-boxes">
