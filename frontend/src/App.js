@@ -16,7 +16,6 @@ import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
-//import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import ProtectedPlayPage from "main/pages/ProtectedPlayPage";
