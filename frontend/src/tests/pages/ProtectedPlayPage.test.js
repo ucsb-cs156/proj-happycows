@@ -78,4 +78,18 @@ describe('ProtectedPlayPage', () => {
         const { getByText } = renderComponent(1, currentUser);
         expect(getByText('Not Found Page')).toBeInTheDocument();
     });
+    test('navigates to Not Found page if user component does not exist', () => {
+        const currentUser = {
+            root: { 
+            }
+        };
+        const { getByText } = renderComponent(1, currentUser);
+        expect(getByText('Not Found Page')).toBeInTheDocument();
+    });
+    test('navigates to Not Found page if root component does not exist', () => {
+        const currentUser = {
+        };
+        const { getByText } = renderComponent(1, currentUser);
+        expect(getByText('Not Found Page')).toBeInTheDocument();
+    });
 });
