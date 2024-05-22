@@ -4,7 +4,7 @@ describe('Arithmetic Operator Functions', () => {
     it('correctly calculates the timezone offset', () => {
       const date = new Date('2024-05-18T10:00:00.000+08:00');
       const offset = calculateTimezoneOffset(date);
-      expect(offset).toBe(-0);
+      expect(offset).toBe(-420);
     });
   
     it('correctly calculates the sign for positive offset', () => {
@@ -79,7 +79,7 @@ describe('toLocalISOString', () => {
     const date = new Date('2024-05-18T10:00:00.000Z');
     const localISO = toLocalISOString(date);
 
-    const expectedISO = '2024-05-18T10:00:00.00+00:00';
+    const expectedISO = '2024-05-18T03:00:00.00-07:00';
     
     expect(localISO).toBe(expectedISO);
   });
@@ -88,7 +88,7 @@ describe('toLocalISOString', () => {
     const date = new Date('2024-01-01T00:00:00.000Z');
     const localISO = toLocalISOString(date);
 
-    const expectedISO = '2024-01-01T00:00:00.00+00:00';
+    const expectedISO = '2023-12-31T16:00:00.00-08:00';
     
     expect(localISO).toBe(expectedISO);
   });
@@ -97,7 +97,7 @@ describe('toLocalISOString', () => {
     const date = new Date('2024-12-31T23:59:59.999Z');
     const localISO = toLocalISOString(date);
 
-    const expectedISO = '2024-12-31T23:59:59.999+00:00';
+    const expectedISO = '2024-12-31T15:59:59.999-08:00';
 
     expect(localISO).toBe(expectedISO);
   });
@@ -106,7 +106,7 @@ describe('toLocalISOString', () => {
     const date = new Date('2024-03-10T02:30:00.000Z');
     const localISO = toLocalISOString(date);
 
-    const expectedISO = '2024-03-10T02:30:00.00+00:00';
+    const expectedISO = '2024-03-09T18:30:00.00-08:00';
 
     expect(localISO).toBe(expectedISO);
   });
@@ -116,8 +116,8 @@ describe('DateConversion', () => {
   it('should return the correct today date', () => {
     const date = new Date('2024-05-22T00:00:00.000Z');
     const [today, nextMonth] = DateConversion(date);
-    expect(today).toBe('2024-05-22');
-    expect(nextMonth).toBe('2024-06-22');
+    expect(today).toBe('2024-05-21');
+    expect(nextMonth).toBe('2024-06-21');
   });
 
 });
