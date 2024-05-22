@@ -24,7 +24,7 @@ const announcementFixtures = {
         {
             "id": 3,
             "commonsId": 1,
-            "startDate": "2024-11-12T00:00:00",
+            "startDate": "2024-1-12T00:00:00",
             "endDate": "2025-10-12T00:00:00",
             "announcementText": "This is another test announcement for commons id 1. This one does have an end date."
         }
