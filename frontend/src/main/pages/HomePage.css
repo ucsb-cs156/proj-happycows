@@ -13,6 +13,7 @@
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
     display: inline-block;
+    margin-bottom: 0px;
 }
 
 .subtitle{
@@ -24,14 +25,13 @@
 .homePage-boxes{
   display: flex;
   justify-content: space-around;
-  margin-top: 50px;
   gap: 20px;
 }
 
 .homePage-box{
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 20px;
   flex: 1;
 }
 
