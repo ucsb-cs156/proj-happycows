@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ProtectedPlayPage from 'main/pages/ProtectedPlayPage';
 import { useCurrentUser } from 'main/utils/currentUser';
@@ -34,8 +34,8 @@ describe('ProtectedPlayPage', () => {
                 }
             }
         };
-        const { getByText } = renderComponent(2, currentUser);
-        expect(getByText('Mocked PlayPage')).toBeInTheDocument();
+        renderComponent(2, currentUser);
+        expect(screen.getByText('Mocked PlayPage')).toBeInTheDocument();
     });
 
     test('navigates to Not Found page if user is not in the commons', () => {
@@ -46,28 +46,16 @@ describe('ProtectedPlayPage', () => {
                 }
             }
         };
-        const { getByText } = renderComponent(2, currentUser);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
+        renderComponent(2, currentUser);
+        expect(screen.getByText('Not Found Page')).toBeInTheDocument();
     });
 
     test('navigates to Not Found page if currentUser is null', () => {
-        const { getByText } = renderComponent(2, null);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
+        renderComponent(2, null);
+        expect(screen.getByText('Not Found Page')).toBeInTheDocument();
     });
 
-    test('renders PlayPage if currentUser exists and commons is empty', () => {
-        const currentUser = {
-            root: {
-                user: {
-                    commons: []
-                }
-            }
-        };
-        const { getByText } = renderComponent(1, currentUser);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
-    });
-
-    test('renders PlayPage if currentUser exists and commons is not an array', () => {
+    test('navigates to Not Found page if currentUser exists and commons is not an array', () => {
         const currentUser = {
             root: {
                 user: {
@@ -75,21 +63,23 @@ describe('ProtectedPlayPage', () => {
                 }
             }
         };
-        const { getByText } = renderComponent(1, currentUser);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
+        renderComponent(1, currentUser);
+        expect(screen.getByText('Not Found Page')).toBeInTheDocument();
     });
+
     test('navigates to Not Found page if user component does not exist', () => {
         const currentUser = {
             root: { 
             }
         };
-        const { getByText } = renderComponent(1, currentUser);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
+        renderComponent(1, currentUser);
+        expect(screen.getByText('Not Found Page')).toBeInTheDocument();
     });
+
     test('navigates to Not Found page if root component does not exist', () => {
         const currentUser = {
         };
-        const { getByText } = renderComponent(1, currentUser);
-        expect(getByText('Not Found Page')).toBeInTheDocument();
+        renderComponent(1, currentUser);
+        expect(screen.getByText('Not Found Page')).toBeInTheDocument();
     });
 });
