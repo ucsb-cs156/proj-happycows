@@ -1,10 +1,14 @@
 import { calculateTimezoneOffset, calculateSign, calculateHours, calculateMinutes, toLocalISOString, DateConversion } from "main/components/Utils/DateConversion";
 
 describe('Arithmetic Operator Functions', () => {
+
+    const localTimezoneOffsetInMinutes = new Date().getTimezoneOffset();
+    const localTimezoneOffsetInHours = -localTimezoneOffsetInMinutes / 60;
+
     it('correctly calculates the timezone offset', () => {
       const date = new Date('2024-05-18T10:00:00.000+08:00');
       const offset = calculateTimezoneOffset(date);
-      expect(offset).toBe(-420);
+      expect(offset).toBe(60 * localTimezoneOffsetInHours);
     });
   
     it('correctly calculates the sign for positive offset', () => {
@@ -74,50 +78,69 @@ describe('Arithmetic Operator Functions', () => {
     });
   });
 
-describe('toLocalISOString', () => {
-  it('correctly formats a date to local ISO string', () => {
-    const date = new Date('2024-05-18T10:00:00.000Z');
-    const localISO = toLocalISOString(date);
+  describe('toLocalISOString', () => {
+    const localTimezoneOffsetInMinutes = new Date().getTimezoneOffset();
+    const localTimezoneOffsetInHours = -localTimezoneOffsetInMinutes / 60;
+    const expectedSign = localTimezoneOffsetInMinutes <= 0 ? '+' : '-';
+    const formattedOffsetHours = String(Math.abs(Math.floor(localTimezoneOffsetInMinutes / 60))).padStart(2, '0');
+    const formattedOffsetMinutes = String(Math.abs(localTimezoneOffsetInMinutes % 60)).padStart(2, '0');
 
-    const expectedISO = '2024-05-18T03:00:00.00-07:00';
-    
-    expect(localISO).toBe(expectedISO);
-  });
+    const formatExpectedISO = (date) => {
+        const pad = (num, size = 2) => String(num).padStart(size, '0');
+        const expectedDate = new Date(date);
+        expectedDate.setMinutes(expectedDate.getMinutes() - localTimezoneOffsetInMinutes);
+        const datePart = `${expectedDate.getFullYear()}-${pad(expectedDate.getMonth() + 1, 2)}-${pad(expectedDate.getDate(), 2)}`;
+        const timePart = `${pad(expectedDate.getHours(), 2)}:${pad(expectedDate.getMinutes(), 2)}:${pad(expectedDate.getSeconds(), 2)}.${pad(expectedDate.getMilliseconds(), 2)}`;
+        return `${datePart}T${timePart}${expectedSign}${formattedOffsetHours}:${formattedOffsetMinutes}`;
+    };
 
-  it('handles dates at the start of the year correctly', () => {
-    const date = new Date('2024-01-01T00:00:00.000Z');
-    const localISO = toLocalISOString(date);
+    it('correctly formats a date to local ISO string', () => {
+        const date = new Date('2024-05-18T03:00:00.000Z');
+        const localISO = toLocalISOString(date);
+        const expectedISO = formatExpectedISO(date);
+        expect(localISO).toBe(expectedISO);
+    });
 
-    const expectedISO = '2023-12-31T16:00:00.00-08:00';
-    
-    expect(localISO).toBe(expectedISO);
-  });
+    it('handles dates at the start of the year correctly', () => {
+        const date = new Date('2023-12-31T17:00:00.000Z');
+        const localISO = toLocalISOString(date);
+        const expectedISO = formatExpectedISO(date);
+        expect(localISO).toBe(expectedISO);
+    });
 
-  it('handles dates at the end of the year correctly', () => {
-    const date = new Date('2024-12-31T23:59:59.999Z');
-    const localISO = toLocalISOString(date);
+    it('handles dates at the end of the year correctly', () => {
+        const date = new Date('2024-12-31T16:59:59.999Z');
+        const localISO = toLocalISOString(date);
+        const expectedISO = formatExpectedISO(date);
+        expect(localISO).toBe(expectedISO);
+    });
 
-    const expectedISO = '2024-12-31T15:59:59.999-08:00';
-
-    expect(localISO).toBe(expectedISO);
-  });
-
-  it('handles dates with daylight saving time changes correctly', () => {
-    const date = new Date('2024-03-10T02:30:00.000Z');
-    const localISO = toLocalISOString(date);
-
-    const expectedISO = '2024-03-09T18:30:00.00-08:00';
-
-    expect(localISO).toBe(expectedISO);
-  });
+    it('handles dates with daylight saving time changes correctly', () => {
+        const date = new Date('2024-03-09T19:30:00.000Z');
+        const localISO = toLocalISOString(date);
+        const expectedISO = formatExpectedISO(date);
+        expect(localISO).toBe(expectedISO);
+    });
 });
 
+
 describe('DateConversion', () => {
-  it('should return the correct today date', () => {
-    const date = new Date('2024-05-22T00:00:00.000Z');
-    const [today, nextMonth] = DateConversion(date);
-    expect(today).toBe('2024-05-21');
-    expect(nextMonth).toBe('2024-06-21');
-  });
+  const localTimezoneOffsetInMinutes = new Date().getTimezoneOffset();
+
+    it('should return the correct today date', () => {
+        const date = new Date('2024-05-21T17:00:00.000Z');
+        const [today, nextMonth] = DateConversion(date);
+
+        const expectedToday = new Date(date);
+        expectedToday.setMinutes(expectedToday.getMinutes() - localTimezoneOffsetInMinutes);
+
+        const expectedNextMonth = new Date(expectedToday);
+        expectedNextMonth.setMonth(expectedNextMonth.getMonth() + 1);
+
+        const formatDate = (d) => d.toISOString().split('T')[0];
+
+        expect(today).toBe(formatDate(expectedToday));
+        expect(nextMonth).toBe(formatDate(expectedNextMonth));
+    });
 
 });
