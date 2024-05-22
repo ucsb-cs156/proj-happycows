@@ -1,5 +1,7 @@
-import React from "react";
-import { Card, Container, Row, Col } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card, Button, Container, Row, Col } from "react-bootstrap";
+
+const curr = new Date();
 
 export function isFutureDate(startingDate) {
     const curr = new Date();
@@ -18,6 +20,12 @@ const AnnouncementCard = ({ announcement }) => {
         return null;
     }
 
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
+    const toggleCollapse = () => {
+        setIsCollapsed(!isCollapsed);
+    };
+
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
@@ -25,7 +33,22 @@ const AnnouncementCard = ({ announcement }) => {
         }>
             <Container>
                 <Row>
-                    <Col sx={4} data-testid={`${testIdPrefix}-id-${announcement.announcementText}`}>{announcement.announcementText}</Col>
+                    <Col xs={12} data-testid={`${testIdPrefix}-id-${announcement.announcementText}`}>
+                        <div style={{
+                            // Stryker disable next-line all : don't mutation test CSS
+                            whiteSpace: isCollapsed ? 'nowrap' : 'normal',
+                            overflow: isCollapsed ? 'hidden' : 'visible',
+                            textOverflow: isCollapsed ? 'ellipsis' : 'clip',
+                            maxWidth: isCollapsed ? '250px' : 'none'
+                        }}>
+                            {announcement.announcementText}
+                        </div>
+                        <Button variant="link" onClick={toggleCollapse} style={
+                            // Stryker disable next-line all : don't mutation test CSS
+                            { fontSize: '11px', padding: '2px' }}>
+                            {isCollapsed ? 'Show more' : 'Show less'}
+                        </Button>
+                    </Col>
                 </Row>
             </Container>
         </Card.Body>
