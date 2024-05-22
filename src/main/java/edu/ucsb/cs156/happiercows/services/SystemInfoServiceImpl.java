@@ -28,12 +28,16 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${app.oauth.login:/oauth2/authorization/google}")
   private String oauthLogin;
 
+  @Value("${app.featureFlags:}")
+  private String featureFlags;
+
   public SystemInfo getSystemInfo() {
     SystemInfo si = SystemInfo.builder()
     .springH2ConsoleEnabled(this.springH2ConsoleEnabled)
     .showSwaggerUILink(this.showSwaggerUILink)
     .sourceRepo(this.sourceRepo)
     .oauthLogin(this.oauthLogin)
+    .featureFlags(featureFlags)
     .build();
   log.info("getSystemInfo returns {}",si);
   return si;

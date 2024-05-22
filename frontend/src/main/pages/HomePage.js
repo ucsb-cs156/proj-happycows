@@ -8,13 +8,15 @@ import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import { commonsNotJoined } from "main/utils/commonsUtils";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
+import { useSystemInfo } from "main/utils/systemInfo";
 
 import "./HomePage.css"
 
-export default function HomePage({hour=null}) {
+export default function HomePage({ hour = null }) {
   // Stryker disable next-line all: it is acceptable to exclude useState calls from mutation testing
   const [commonsJoined, setCommonsJoined] = useState([]);
   const { data: currentUser } = useCurrentUser();
+  const { data: systemInfo } = useSystemInfo();
 
   // Stryker disable all : it is acceptable to exclude useBackend calls from mutation testing
   const { data: commons } =
@@ -52,7 +54,7 @@ export default function HomePage({hour=null}) {
   );
 
   const firstName = (currentUser?.root?.user?.givenName) || "";
-  const time = (hour===null) ? new Date().getHours() : hour;
+  const time = (hour === null) ? new Date().getHours() : hour;
   const Background = getBackgroundImage(time);
 
   // Stryker restore all
@@ -62,21 +64,29 @@ export default function HomePage({hour=null}) {
 
   //create a list of commons that the user hasn't joined for use in the "Join a New Commons" list.
   const commonsNotJoinedList = commonsNotJoined(commons, commonsJoined);
-  
+
   return (
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
       <BasicLayout>
-      <Card data-testid= {"HomePage-intro-card"} style={{opacity: ".9" }}>
-      <div className= "text-center border-0 my-3">
-              <h1 data-testid="homePage-title" className="animate-charcter" >Howdy Farmer {firstName}</h1>
-              </div>
-      </Card>
+        <Card data-testid={"HomePage-intro-card"} style={{ opacity: ".9" }}>
+          <div className="text-center border-0 my-3">
+            <h1 data-testid="homePage-title" className="animate-charcter" >Howdy Farmer {firstName}</h1>
+          </div>
+        </Card>
         <Container>
           <Row>
             <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
             <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>
+        {systemInfo.featureFlags.includes("A") && (
+          <Card>
+            <div className="text-center border-0 my-3">
+              <h2>What is HappyCows?</h2>
+              <p>Commons is a farming simulation game that allows you to grow crops, raise animals, and build a community with other players. Join a Commons to start farming today!</p>
+            </div>
+          </Card>
+        )}
       </BasicLayout>
     </div>
   )
