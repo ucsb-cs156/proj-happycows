@@ -335,8 +335,8 @@ public class CommonsController extends ApiController {
 
     @Operation(summary="Delete a user from a commons")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/{commonsId}/users/{userId}")
-    public Object accessCommon(@PathVariable("commonsId") Long commonsId,
+    @DeleteMapping("/{commonsId}/users/{userId}")
+    public Object deleteUserFromCommon(@PathVariable("commonsId") Long commonsId,
                                        @PathVariable("userId") Long userId) throws Exception {
 
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
