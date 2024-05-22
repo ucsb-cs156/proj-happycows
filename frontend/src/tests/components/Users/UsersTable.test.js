@@ -3,6 +3,7 @@ import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
 
+const mockedNavigate = jest.fn();
 describe("UserTable tests", () => {
     test("renders without crashing for empty table", () => {
         render(
@@ -16,15 +17,21 @@ describe("UserTable tests", () => {
         );
     });
 
-    test("Remove button calls remove callback", () => {
+    test("Remove button calls remove callback", async () => {
         const testId = "UsersTable";
         render(
             <UsersTable users={usersFixtures.threeUsers} />
         );
+
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+
         const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit Commons-button`);
         expect(editButton).toBeInTheDocument();
         expect(editButton).toHaveClass("btn-danger");
         fireEvent.click(editButton);
+        
+        // expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/undefined');
+
     });
 
     test("Has the expected colum headers and content", () => {

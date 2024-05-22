@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import AdminRemoveUserPage from "main/pages/Admin/AdminRemoveUserPage";
+import AdminRemoveUserPage from "main/pages/AdminRemoveUserPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -13,10 +13,11 @@ describe("AdminRemoveUserPage tests", () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
 
-    const setupUserOnly = () => {
+
+    const setupAdminUser = () => {
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
 
@@ -24,7 +25,7 @@ describe("AdminRemoveUserPage tests", () => {
     test("Renders expected content", () => {
         // arrange
 
-        setupUserOnly();
+        setupAdminUser();
 
         // act
         render(

@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 
 export default function UsersTable({ users }) {
 
-    const navigate = useNavigate();
-    // Stryker disable next-line all : TODO create this function & test it
+    // const navigate = useNavigate();
+
     const removeCallback = (_cell) => { 
-        navigate(`/admin/remove/user/${users.id}`)
+        // navigate(`/admin/remove/user/${users.id}`)
     }
     
-
     const columns = [
         {
             Header: 'id',

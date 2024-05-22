@@ -50,8 +50,8 @@ function App() {
                 path="/admin/play/:commonsId/user/:userId"
                 element={<AdminViewPlayPage />}
             />
-            <Route
-                path="/admin/remove/user/:userId"
+            <Route 
+                path="/admin/remove/user/:userId" 
                 element={<AdminRemoveUserPage />}
             />
         </>
