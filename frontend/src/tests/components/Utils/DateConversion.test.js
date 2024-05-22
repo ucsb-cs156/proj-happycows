@@ -117,11 +117,7 @@ describe('DateConversion', () => {
     const date = new Date('2024-05-22T00:00:00.000Z');
     const [today, nextMonth] = DateConversion(date);
     expect(today).toBe('2024-05-22');
-  });
-
-  it('should return the correct nextMonth date', () => {
-    const date = new Date('2024-05-22T00:00:00.000Z');
-    const [today, nextMonth] = DateConversion(date);
     expect(nextMonth).toBe('2024-06-22');
   });
+
 });
