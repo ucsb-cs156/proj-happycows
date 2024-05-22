@@ -99,6 +99,9 @@ describe("CommonsList tests", () => {
         expect(title).toBeInTheDocument();
         expect(typeof(title.textContent)).toBe('string');
         expect(title.textContent).toEqual('Join A New Commons');
+        // expect(title).toHaveStyle("font-size: 35px");
+        // expect(title).toHaveStyle("font-weight: bold");
+        // expect(title).toHaveStyle("color: #1E4D2B");
 
         const subtitle_name = screen.getByTestId("commonsList-default-message");
         expect(subtitle_name).toBeInTheDocument();
@@ -113,6 +116,9 @@ describe("CommonsList tests", () => {
         render(
             <CommonsList commonList={[]} buttonText = {"Visit"} title="Visit A Commons"/>
         );
+
+        const background = screen.getByTestId("commonsList-background");
+        expect(background).toBeInTheDocument();
 
         const title = screen.getByTestId("commonsList-title");
         expect(title).toBeInTheDocument();
