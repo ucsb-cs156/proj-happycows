@@ -9,7 +9,11 @@ const CommonsList = (props) => {
         <Card
             style={
                 // Stryker disable next-line all: don't test CSS params
-                { opacity: ".9" }
+                { background: 'rgba(255, 255, 255, 0.7)', 
+                    borderRadius: '10px', 
+                    padding: '10px', 
+                    backdropFilter: 'blur(10px)', 
+                    WebkitBackdropFilter: 'blur(10px)'}
             }
             className="my-3 border-0"
         >
