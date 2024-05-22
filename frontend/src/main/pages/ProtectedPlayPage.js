@@ -1,31 +1,21 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { useBackend } from 'main/utils/useBackend';
 import { useCurrentUser } from 'main/utils/currentUser';
 import PlayPage from 'main/pages/PlayPage';
 
 const ProtectedPlayPage = () => {
     const { commonsId } = useParams();
-    const { data: currentUser } = useCurrentUser();
+    const { data: currentUser} = useCurrentUser();
 
-    const { data: userCommons, error: userCommonsError } = useBackend(
-        [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
-        {
-            method: 'GET',
-            url: '/api/usercommons/forcurrentuser',
-            params: { commonsId },
-        }
+    const isUserInCommons = currentUser?.root?.user?.commons?.some(
+        (commons) => commons.id === parseInt(commonsId)
     );
 
-
-    if (!userCommons && !userCommonsError) {
+    if (!isUserInCommons) {
         return <Navigate to="/not-found" />;
-    } else {
-        return <PlayPage userCommons={userCommons} currentUser={currentUser} />;
     }
 
-
-    
+    return <PlayPage currentUser={currentUser} />;
 };
 
 export default ProtectedPlayPage;
