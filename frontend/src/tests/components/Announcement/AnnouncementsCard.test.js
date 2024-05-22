@@ -112,11 +112,11 @@ describe("AnnouncementCard tests", () => {
     test("isFutureDate function works correctly", () => {
         const futureDate = `${curr.getFullYear() + 1}-01-01T00:00:00`;
         const pastDate = `${curr.getFullYear() - 1}-01-01T00:00:00`;
-        const currentDate = curr.toISOString().substring(0, 10);
+        const futureDay = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 1).toISOString().substring(0, 10);
 
         expect(isFutureDate(futureDate)).toBe(true);
         expect(isFutureDate(pastDate)).toBe(false);
-        expect(isFutureDate(currentDate)).toBe(false);
+        expect(isFutureDate(futureDay)).toBe(true);
     });
 
     test("can toggle collapse state", async () => {
@@ -175,8 +175,8 @@ describe("AnnouncementCard tests", () => {
             <AnnouncementCard announcement={noStartDateAnnouncement} />
         );
 
-        const textElement = screen.getByText("This is a test announcement for commons id 1. This one doesn't have an end date.");
-        expect(textElement).toBeInTheDocument();
+        const textElement = screen.queryByText(noStartDateAnnouncement.announcementText);
+        expect(textElement).toBeNull();
     });
 
     test("button has correct style", async () => {

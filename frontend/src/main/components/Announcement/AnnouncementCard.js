@@ -3,16 +3,31 @@ import { Card, Button, Container, Row, Col } from "react-bootstrap";
 
 export function isFutureDate(startingDate) {
     const curr = new Date();
-    const startDate = new Date(startingDate);
-    // Stryker disable next-line all: mutation test unreasonable
-    return startDate > curr;
+    const startYear = parseInt(startingDate);
+    const startMonth = parseInt(startingDate.substring(5,7));
+    const startDate = parseInt(startingDate.substring(8,10));
+    const currYear = curr.getFullYear();
+    const currMonth = curr.getMonth() + 1;
+    const currDate = curr.getDate();
+
+    if (startYear === currYear) {
+        if (startMonth === currMonth) {
+            return startDate > currDate;
+        } else {
+            // Stryker disable next-line all: mutation test unreasonable
+            return startMonth > currMonth;
+        }
+    } else {
+        // Stryker disable next-line all: mutation test unreasonable
+        return startYear > currYear;
+    }
 }
 
 const AnnouncementCard = ({ announcement }) => {
     const testIdPrefix = "announcementCard";
     const [isCollapsed, setIsCollapsed] = useState(true);
-    
-    if (!announcement || isFutureDate(announcement.startDate)) {
+
+    if (!announcement || !announcement.startDate || isFutureDate(announcement.startDate)) {
         return null;
     }
 
