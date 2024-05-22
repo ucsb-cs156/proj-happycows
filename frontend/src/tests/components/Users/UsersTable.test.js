@@ -43,7 +43,7 @@ describe("UserTable tests", () => {
         expect(editButton).toHaveClass("btn-primary");
         fireEvent.click(editButton);
 
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/undefined'));
+        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/1'));
         
     });
 
