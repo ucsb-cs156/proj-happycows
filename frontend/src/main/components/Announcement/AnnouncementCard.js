@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 
-const curr = new Date();
-
 export function isFutureDate(startingDate) {
     const curr = new Date();
     const startDate = new Date(startingDate);
