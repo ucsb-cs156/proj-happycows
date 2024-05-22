@@ -34,11 +34,15 @@ const AnnouncementCard = ({ announcement }) => {
             <Container>
                 <Row>
                     <Col xs={12} data-testid={`${testIdPrefix}-id-${announcement.announcementText}`}>
-                        <div style={{
+                        <div style={ // Stryker disable next-line all : don't mutation test CSS 
+                        { 
                             // Stryker disable next-line all : don't mutation test CSS
                             whiteSpace: isCollapsed ? 'nowrap' : 'normal',
+                            // Stryker disable next-line all : don't mutation test CSS
                             overflow: isCollapsed ? 'hidden' : 'visible',
+                            // Stryker disable next-line all : don't mutation test CSS
                             textOverflow: isCollapsed ? 'ellipsis' : 'clip',
+                            // Stryker disable next-line all : don't mutation test CSS
                             maxWidth: isCollapsed ? '250px' : 'none'
                         }}>
                             {announcement.announcementText}
