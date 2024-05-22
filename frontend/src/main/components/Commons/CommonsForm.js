@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import {useBackend} from "main/utils/useBackend";
 import { useEffect } from "react";
 import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrategiesUpdateDropdown";
-import { toLocalISOString } from "main/components/Utils/DateConversion";
+import { DateConversion } from "main/components/Utils/DateConversion";
 
 function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
     let modifiedCommons = initialCommons ? { ...initialCommons } : {};  // make a shallow copy of initialCommons
@@ -71,9 +71,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
 
     const testid = "CommonsForm";
     const curr = new Date();
-    const today = toLocalISOString(curr).split('T')[0];
-    const currMonth = curr.getMonth() % 12;
-    const nextMonth = toLocalISOString(new Date(curr.getFullYear(), currMonth + 1, curr.getDate())).split('T')[0];
+    const [today, currMonth, nextMonth] = DateConversion(curr);
     const DefaultVals = {
         name: "",
         startingBalance: defaultValuesData?.startingBalance || "10000",
