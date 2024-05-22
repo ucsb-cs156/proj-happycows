@@ -20,13 +20,14 @@
   display: flex;
   justify-content: space-around;
   margin-top: 50px;
+  gap: 20px;
 }
 
 .homePage-box{
   display: flex;
   justify-content: center;
   margin-top: 50px;
-  max-width: max-content;
+  flex: 1;
 }
 
 @keyframes textclip {
