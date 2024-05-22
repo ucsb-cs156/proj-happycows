@@ -70,10 +70,10 @@ export default function HomePage({hour=null}) {
         <Container>
           <Row>
             <div className="homePage-boxes">
-              <div className="homePage-visit">
+              <div className="homePage-box">
                 <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
               </div>
-              <div className="homePage-join">
+              <div className="homePage-box">
                 <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
               </div>
             </div>

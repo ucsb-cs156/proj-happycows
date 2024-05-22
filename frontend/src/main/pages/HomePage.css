@@ -22,16 +22,11 @@
   margin-top: 50px;
 }
 
-.homePage-join{
+.homePage-box{
   display: flex;
   justify-content: center;
   margin-top: 50px;
-}
-
-.homePage-visit{
-  display: flex;
-  justify-content: center;
-  margin-top: 50px;
+  max-width: max-content;
 }
 
 @keyframes textclip {
