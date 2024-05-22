@@ -2,31 +2,30 @@ import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useBackend } from 'main/utils/useBackend';
 import { useCurrentUser } from 'main/utils/currentUser';
-import PlayPage from 'main/Pages/PlayPage';
-import NotFoundPage from 'main/Pages/NotFoundPage';
+import PlayPage from 'main/pages/PlayPage';
 
 const ProtectedPlayPage = () => {
     const { commonsId } = useParams();
     const { data: currentUser } = useCurrentUser();
 
-    // Stryker disable all
-    const { data: userCommons } = useBackend(
+    const { data: userCommons, error: userCommonsError } = useBackend(
         [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
         {
-            method: "GET",
-            url: "/api/usercommons/forcurrentuser",
-            params: {
-                commonsId: commonsId,
-            },
+            method: 'GET',
+            url: '/api/usercommons/forcurrentuser',
+            params: { commonsId },
         }
     );
-    // Stryker restore all
 
-    if (userCommons || commonsId) {
-        return <Navigate to="NotFoundPage" />;
+
+    if (!userCommons && !userCommonsError) {
+        return <Navigate to="/not-found" />;
+    } else {
+        return <PlayPage userCommons={userCommons} currentUser={currentUser} />;
     }
 
-    return <PlayPage />;
+
+    
 };
 
 export default ProtectedPlayPage;
