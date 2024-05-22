@@ -1,10 +1,16 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, waitFor, render, screen } from "@testing-library/react";
 import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
 import { MemoryRouter } from "react-router-dom";
 
 const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockedNavigate
+}));
+
 describe("UserTable tests", () => {
     test("renders without crashing for empty table", () => {
         render(
@@ -34,8 +40,10 @@ describe("UserTable tests", () => {
 
         const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit Commons-button`);
         expect(editButton).toBeInTheDocument();
-        expect(editButton).toHaveClass("btn-danger");
+        expect(editButton).toHaveClass("btn-primary");
         fireEvent.click(editButton);
+
+        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/undefined'));
         
     });
 
