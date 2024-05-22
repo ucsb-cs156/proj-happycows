@@ -2,25 +2,32 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
+import { MemoryRouter } from "react-router-dom";
 
 const mockedNavigate = jest.fn();
 describe("UserTable tests", () => {
     test("renders without crashing for empty table", () => {
         render(
-            <UsersTable users={[]} />
+            <MemoryRouter>
+                <UsersTable users={[]} />
+            </MemoryRouter>
         );
     });
 
     test("renders without crashing for three users", () => {
         render(
-            <UsersTable users={usersFixtures.threeUsers} />
+            <MemoryRouter>
+                <UsersTable users={usersFixtures.threeUsers} />
+            </MemoryRouter>
         );
     });
 
     test("Remove button calls remove callback", async () => {
         const testId = "UsersTable";
         render(
-            <UsersTable users={usersFixtures.threeUsers} />
+            <MemoryRouter>
+                <UsersTable users={usersFixtures.threeUsers} />
+            </MemoryRouter>
         );
 
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
@@ -30,13 +37,13 @@ describe("UserTable tests", () => {
         expect(editButton).toHaveClass("btn-danger");
         fireEvent.click(editButton);
         
-        // expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/undefined');
-
     });
 
     test("Has the expected colum headers and content", () => {
         render(
-          <UsersTable users={usersFixtures.threeUsers}/>
+            <MemoryRouter>
+                <UsersTable users={usersFixtures.threeUsers}/>
+            </MemoryRouter>
         );
     
         const expectedHeaders = ["id", "First Name", "Last Name", "Email", "Last Online", "Admin"];
