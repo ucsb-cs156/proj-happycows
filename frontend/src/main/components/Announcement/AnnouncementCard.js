@@ -10,6 +10,8 @@ export function isFutureDate(startingDate) {
 
 const AnnouncementCard = ({ announcement }) => {
     const testIdPrefix = "announcementCard";
+    const [isCollapsed, setIsCollapsed] = useState(true);
+    
     if (!announcement || isFutureDate(announcement.startDate)) {
         return null;
     }
@@ -17,8 +19,6 @@ const AnnouncementCard = ({ announcement }) => {
     if ( announcement.endDate && (!isFutureDate(announcement.endDate))) {
         return null;
     }
-
-    const [isCollapsed, setIsCollapsed] = useState(true);
 
     const toggleCollapse = () => {
         setIsCollapsed(!isCollapsed);
