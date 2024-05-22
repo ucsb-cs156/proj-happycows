@@ -27,8 +27,7 @@ export const calculateMinutes = (offset) => {
 
 export const DateConversion = (curr) => {
   const today = toLocalISOString(curr).split('T')[0];
-  const currMonth = today.slice(5, 7) % 12;
   const nextMonth = toLocalISOString(new Date(curr.getFullYear(), today.slice(5, 7) % 12, today.slice(8, 10))).split('T')[0];
   
-  return [today, currMonth, nextMonth];
+  return [today, nextMonth];
 };

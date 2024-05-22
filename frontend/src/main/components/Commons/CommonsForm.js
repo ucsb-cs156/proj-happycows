@@ -71,7 +71,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
 
     const testid = "CommonsForm";
     const curr = new Date();
-    const [today, currMonth, nextMonth] = DateConversion(curr);
+    const [today, nextMonth] = DateConversion(curr);
     const DefaultVals = {
         name: "",
         startingBalance: defaultValuesData?.startingBalance || "10000",

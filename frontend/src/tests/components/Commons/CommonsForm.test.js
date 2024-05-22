@@ -155,7 +155,7 @@ describe("CommonsForm tests", () => {
   it("Check Default Values and correct styles", async () => {
 
     const curr = new Date();
-    const [today, currMonth, nextMonth] = DateConversion(curr);
+    const [today, nextMonth] = DateConversion(curr);
     const DefaultVals = {
       name: "", startingBalance: 10000, cowPrice: 100,
       milkPrice: 1, degradationRate: 0.001, carryingCapacity: 100, startingDate: today, lastDate: nextMonth
@@ -287,7 +287,7 @@ describe("CommonsForm tests", () => {
 
   it("renders correctly when an initialCommons is not passed in", async () => {
     const curr = new Date();
-    const [today, currMonth, nextMonth] = DateConversion(curr);
+    const [today, nextMonth] = DateConversion(curr);
     const DefaultVals = {
       name: "", startingBalance: 10000, cowPrice: 100,
       milkPrice: 1, degradationRate: 0.001, carryingCapacity: 100, startingDate: today, lastDate: nextMonth, aboveCapacityStrategy: "Linear", belowCapacityStrategy: "Constant"
@@ -357,7 +357,7 @@ test("the correct parameters are passed to useBackend", async () => {
   test("populates form fields with default values when initialCommons is not provided", async () => {
 
     const curr = new Date();
-    const [today, currMonth, nextMonth] = DateConversion(curr);
+    const [today, nextMonth] = DateConversion(curr);
     const defaultValuesData = {
       name: "", startingBalance: 10000, cowPrice: 100,
       milkPrice: 1, degradationRate: 0.001, carryingCapacity: 100, startingDate: today, lastDate: nextMonth
