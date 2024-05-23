@@ -16,5 +16,5 @@ const Template = (args) => {
 export const ThreeItemsUser = Template.bind({});
 
 ThreeItemsUser.args = {
-    announcement: announcementFixtures.threeAnnouncements[1],
+    announcement: announcementFixtures.threeAnnouncements[2],
 };

@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { announcementFixtures } from "fixtures/announcementFixtures";
 import AnnouncementCard, { isFutureDate } from "main/components/Announcement/AnnouncementCard";
 
@@ -7,7 +7,7 @@ const curr = new Date();
 describe("AnnouncementCard tests", () => {
     test("renders without crashing", async () => {
         render(
-            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]}/>
+            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]} />
         );
 
         const textElement = screen.getByText("This is a test announcement for commons id 1. This one doesn't have an end date.");
@@ -21,7 +21,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={futureYearAnnouncement}/>
+            <AnnouncementCard announcement={futureYearAnnouncement} />
         );
 
         const textElement = screen.queryByText(futureYearAnnouncement.announcementText);
@@ -35,7 +35,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={futureMonthAnnouncement}/>
+            <AnnouncementCard announcement={futureMonthAnnouncement} />
         );
 
         const textElement = screen.queryByText(futureMonthAnnouncement.announcementText);
@@ -49,7 +49,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={pastMonthAnnouncement}/>
+            <AnnouncementCard announcement={pastMonthAnnouncement} />
         );
 
         const textElement = screen.getByText("This is a test announcement for commons id 1. This one doesn't have an end date.");
@@ -63,7 +63,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={futureDayAnnouncement}/>
+            <AnnouncementCard announcement={futureDayAnnouncement} />
         );
 
         const textElement = screen.queryByText(futureDayAnnouncement.announcementText);
@@ -77,7 +77,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={currentDayAnnouncement}/>
+            <AnnouncementCard announcement={currentDayAnnouncement} />
         );
 
         const textElement = screen.getByText("This is a test announcement for commons id 1. This one doesn't have an end date.");
@@ -92,7 +92,7 @@ describe("AnnouncementCard tests", () => {
         };
 
         render(
-            <AnnouncementCard announcement={pastDayAnnouncement}/>
+            <AnnouncementCard announcement={pastDayAnnouncement} />
         );
 
         const textElement = screen.queryByText(pastDayAnnouncement.announcementText);
@@ -101,7 +101,7 @@ describe("AnnouncementCard tests", () => {
 
     test("renders with correct data-testid", async () => {
         render(
-            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]}/>
+            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]} />
         );
 
         const testId = `announcementCard-id-${announcementFixtures.threeAnnouncements[1].announcementText}`;
@@ -112,10 +112,80 @@ describe("AnnouncementCard tests", () => {
     test("isFutureDate function works correctly", () => {
         const futureDate = `${curr.getFullYear() + 1}-01-01T00:00:00`;
         const pastDate = `${curr.getFullYear() - 1}-01-01T00:00:00`;
-        const currentDate = curr.toISOString().substring(0, 10);
+        const futureDay = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() + 1).toISOString().substring(0, 10);
 
         expect(isFutureDate(futureDate)).toBe(true);
         expect(isFutureDate(pastDate)).toBe(false);
-        expect(isFutureDate(currentDate)).toBe(false);
+        expect(isFutureDate(futureDay)).toBe(true);
+    });
+
+    test("can toggle collapse state", async () => {
+        render(
+            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]} />
+        );
+
+        const button = screen.getByText("Show more");
+        expect(button).toBeInTheDocument();
+
+        fireEvent.click(button);
+        const buttonAfterClick = screen.getByText("Show less");
+        expect(buttonAfterClick).toBeInTheDocument();
+    });
+
+    test("renders long announcement text correctly", async () => {
+        const longTextAnnouncement = {
+            ...announcementFixtures.threeAnnouncements[1],
+            announcementText: "This is a very long announcement text that should be collapsed initially but expanded when the button is clicked."
+        };
+
+        render(
+            <AnnouncementCard announcement={longTextAnnouncement} />
+        );
+
+        const collapsedText = screen.getByText(/This is a very long announcement text/);
+        expect(collapsedText).toBeInTheDocument();
+
+        const button = screen.getByText("Show more");
+        fireEvent.click(button);
+        const expandedText = screen.getByText("This is a very long announcement text that should be collapsed initially but expanded when the button is clicked.");
+        expect(expandedText).toBeInTheDocument();
+    });
+
+    test("handles announcement without end date", async () => {
+        const noEndDateAnnouncement = {
+            ...announcementFixtures.threeAnnouncements[1],
+            endDate: null
+        };
+
+        render(
+            <AnnouncementCard announcement={noEndDateAnnouncement} />
+        );
+
+        const textElement = screen.getByText("This is a test announcement for commons id 1. This one doesn't have an end date.");
+        expect(textElement).toBeInTheDocument();
+    });
+
+    test("handles announcement without start date", async () => {
+        const noStartDateAnnouncement = {
+            ...announcementFixtures.threeAnnouncements[1],
+            startDate: null
+        };
+
+        render(
+            <AnnouncementCard announcement={noStartDateAnnouncement} />
+        );
+
+        const textElement = screen.queryByText(noStartDateAnnouncement.announcementText);
+        expect(textElement).toBeNull();
+    });
+
+    test("button has correct style", async () => {
+        render(
+            <AnnouncementCard announcement={announcementFixtures.threeAnnouncements[1]} />
+        );
+
+        const button = screen.getByText("Show more");
+        expect(button).toHaveStyle({ fontSize: '11px', padding: '2px' });
     });
 });
+
