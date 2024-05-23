@@ -79,7 +79,7 @@ export default function HomePage({ hour = null }) {
             <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>
-        {systemInfo.featureFlags.includes("A") && (
+        {systemInfo?.featureFlags.includes("A") && (
           <Card>
             <div className="text-center border-0 my-3">
               <h2>What is HappyCows?</h2>
