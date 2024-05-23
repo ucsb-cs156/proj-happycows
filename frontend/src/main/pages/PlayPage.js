@@ -70,7 +70,7 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: announcement } = useBackend(
+    const { data: announcementsResponse } = useBackend(
         [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
         {
             method: "GET",
@@ -80,6 +80,9 @@ export default function PlayPage() {
             },
         }
     );
+
+    const announcements = announcementsResponse ? announcementsResponse.content : [];
+    const announcement = announcements.length > 0 ? announcements[0] : null;
     // Stryker restore all
     
     // Stryker disable all (can't check if commonsId is null because it is mocked)

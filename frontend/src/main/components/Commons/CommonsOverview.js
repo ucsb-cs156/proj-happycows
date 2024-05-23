@@ -18,7 +18,11 @@ export default function CommonsOverview({ commonsPlus, currentUser, announcement
                 <Row>
                     <Col>
                         <div data-testid="announcement-test">
-                            <AnnouncementCard announcement={announcement} />
+                            {announcement ? (
+                                <AnnouncementCard announcement={announcement} />
+                            ) : (
+                                <p>No announcements available.</p>
+                            )}
                         </div>
                     </Col>
                 </Row>
