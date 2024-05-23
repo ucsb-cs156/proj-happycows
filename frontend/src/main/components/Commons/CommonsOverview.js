@@ -17,7 +17,9 @@ export default function CommonsOverview({ commonsPlus, currentUser, announcement
             <Card.Body>
                 <Row>
                     <Col>
-                        <AnnouncementCard announcement={announcement} />
+                        <div data-testid="announcement-test">
+                            <AnnouncementCard announcement={announcement} />
+                        </div>
                     </Col>
                 </Row>
                 <Row>

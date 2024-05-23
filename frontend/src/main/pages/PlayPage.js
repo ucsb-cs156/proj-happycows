@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
@@ -21,7 +21,6 @@ export default function PlayPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [message, setMessage] = useState();
     const [numCows, setNumCows] = useState(1);
-    const [announcement, setAnnouncement] = useState(null);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -71,21 +70,16 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    useEffect(() => {
-        const fetchAnnouncement = async () => {
-            try {
-                const response = await fetch(`/api/announcements/getbycommonsid?commonsId=${commonsId}`);
-                const data = await response.json();
-                if (data.content.length > 0) {
-                    setAnnouncement(data.content[0]);
-                }
-            } catch (error) {
-                console.error('Failed to fetch announcement:', error);
-            }
-        };
-
-        fetchAnnouncement();
-    }, [commonsId]);
+    const { data: announcement } = useBackend(
+        [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+        {
+            method: "GET",
+            url: "/api/announcements/getbycommonsid",
+            params: {
+                commonsId: commonsId,
+            },
+        }
+    );
     // Stryker restore all
     
     // Stryker disable all (can't check if commonsId is null because it is mocked)

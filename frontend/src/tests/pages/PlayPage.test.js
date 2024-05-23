@@ -140,6 +140,7 @@ describe("PlayPage tests", () => {
             </QueryClientProvider>
         );
 
+        expect(await screen.findByTestId("announcement-test")).toBeInTheDocument();
         expect(await screen.findByText(/Announcements/)).toBeInTheDocument();
         expect(await screen.findByTestId("CommonsPlay")).toBeInTheDocument();
     });
