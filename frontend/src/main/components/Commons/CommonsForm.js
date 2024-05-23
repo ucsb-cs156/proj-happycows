@@ -414,6 +414,17 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
                         style={{width: '30%'}}
                 >{buttonLabel}</Button>
             </Row>
+
+            {/* Debug Time Display */}
+            <Row>
+                <Col>
+                    <div style={{ marginTop: '20px' }}>
+                        <h5>Debug Time Display</h5>
+                        <p><strong>today:</strong> {today.toString()}</p >
+                        <p><strong>nextMonth:</strong> {nextMonth.toString()}</p >
+                    </div>
+                </Col>
+            </Row>
         </Form>
     );
 }

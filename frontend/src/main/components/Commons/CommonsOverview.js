@@ -3,8 +3,9 @@ import { Row, Card, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 import { daysSinceTimestamp } from "main/utils/dateUtils";
+import AnnouncementCard from "main/components/Announcement/AnnouncementCard";
 
-export default function CommonsOverview({ commonsPlus, currentUser }) {
+export default function CommonsOverview({ commonsPlus, currentUser, announcement }) {
 
     let navigate = useNavigate();
     // Stryker disable next-line all
@@ -14,6 +15,11 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
         <Card data-testid="CommonsOverview">
             <Card.Header as="h5">Announcements</Card.Header>
             <Card.Body>
+                <Row>
+                    <Col>
+                        <AnnouncementCard announcement={announcement} />
+                    </Col>
+                </Row>
                 <Row>
                     <Col>
                         <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>
