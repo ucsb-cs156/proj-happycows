@@ -37,15 +37,18 @@ describe("PlayPage tests", () => {
             userId: 1,
             showChat: true
         };
-        const announcements = [
-            {
-                id: 1,
-                commonsId: 1,
-                startDate: "2023-05-22T00:00:00Z",
-                endDate: null,
-                announcementText: "Welcome to the Commons!"
-            }
-        ];
+
+        const announcementsResponse = {
+            content: [
+                {
+                    id: 1,
+                    commonsId: 1,
+                    startDate: "2024-05-22T22:19:56.800-07:00",
+                    endDate: null,
+                    announcementText: "First Announcement"
+                }
+            ]
+        };
 
         axiosMock.reset();
         axiosMock.resetHistory();
@@ -74,7 +77,7 @@ describe("PlayPage tests", () => {
         axiosMock.onGet("/api/profits/all/commonsid").reply(200, []);
         axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
         axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
-        axiosMock.onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } }).reply(200, announcements);
+        axiosMock.onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } }).reply(200, announcementsResponse);
     });
 
     test("renders without crashing", () => {
