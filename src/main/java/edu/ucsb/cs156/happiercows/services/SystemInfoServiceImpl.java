@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 import edu.ucsb.cs156.happiercows.models.SystemInfo;
 
@@ -14,6 +16,9 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
 @Slf4j
 @Service("systemInfo")
 @ConfigurationProperties
+@PropertySources(
+        @PropertySource("classpath:git.properties")
+)
 public class SystemInfoServiceImpl extends SystemInfoService {
   
   @Value("${spring.h2.console.enabled:false}")
