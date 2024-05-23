@@ -15,4 +15,5 @@ public class SystemInfo {
   private Boolean showSwaggerUILink;
   private String sourceRepo;
   private String oauthLogin;
+  private String featureFlags;
 }
