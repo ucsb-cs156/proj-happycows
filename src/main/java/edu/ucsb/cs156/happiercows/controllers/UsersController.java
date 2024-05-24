@@ -42,25 +42,23 @@ public class UsersController extends ApiController {
     @Operation(summary = "Suspend a user by id")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/suspend")
-    public ResponseEntity<String> suspendUser(@Parameter(name="userId") @RequestParam long userId ) throws JsonProcessingException {
+    public Object suspendUser(@Parameter(name="userId") @RequestParam long userId ) throws JsonProcessingException {
 
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, userId));
 
         user.setSuspended(true);
-        User savedUser = userRepository.save(user);
-        String body = mapper.writeValueAsString(savedUser);
-        return ResponseEntity.ok().body(body);
+        userRepository.save(user);
+        return genericMessage("User with id %d suspended".formatted(userId));
     }
 
     @Operation(summary="Restore a user by id")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/restore")
-    public ResponseEntity<String> restoreUser(@Parameter(name="userId") @RequestParam long userId ) throws JsonProcessingException {
+    public Object restoreUser(@Parameter(name="userId") @RequestParam long userId ) throws JsonProcessingException {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(User.class, userId));
 
         user.setSuspended(false);
-        User savedUser = userRepository.save(user);
-        String body = mapper.writeValueAsString(savedUser);
-        return ResponseEntity.ok().body(body);
+        userRepository.save(user);
+        return genericMessage("User with id %d restored".formatted(userId));
     }
 }
