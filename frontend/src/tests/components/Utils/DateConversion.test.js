@@ -115,7 +115,7 @@ const formatExpectedISO = (date) => {
   correctOffset;
   const pad = (num, size = 2) => String(num).padStart(size, '0');
   const expectedDate = new Date(date.getTime());
-  expectedDate.setHours(expectedDate.getUTCHours() - correctHourOffset);
+  expectedDate.setHours(expectedDate.getUTCHours() + correctHourOffset);
   const datePart = `${expectedDate.getUTCFullYear()}-${pad(expectedDate.getUTCMonth() + 1, 2)}-${pad(expectedDate.getUTCDate(), 2)}`;
   const timePart = `${pad(expectedDate.getUTCHours(), 2)}:${pad(expectedDate.getUTCMinutes(), 2)}:${pad(expectedDate.getUTCSeconds(), 2)}.${pad(expectedDate.getUTCMilliseconds(), 2)}`;
   return `${datePart}T${timePart}+00:00`;
