@@ -91,6 +91,7 @@ const correctOffset = () => {
   return correctHourOffset;
 };
 const formatExpectedISO = (date) => {
+  correctOffset;
   const pad = (num, size = 2) => String(num).padStart(size, '0');
   const expectedDate = new Date(date.getTime());
   expectedDate.setHours(expectedDate.getUTCHours() - correctHourOffset);
