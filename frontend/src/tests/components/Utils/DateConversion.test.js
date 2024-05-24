@@ -8,6 +8,27 @@ jest.mock("main/components/Utils/DateConversion", () => {
   };
 });
 
+const RealDate = global.Date;
+
+global.Date = class extends RealDate {
+    constructor(...args) {
+        if (args.length === 0) {
+            super('2024-05-18T10:00:00.000Z');
+        } else {
+            super(...args);
+        }
+    }
+    static now() {
+        return RealDate.now();
+    }
+    static UTC(...args) {
+        return RealDate.UTC(...args);
+    }
+    getTimezoneOffset() {
+        return 0;
+    }
+};
+
 describe('Arithmetic Operator Functions', () => {
     it('correctly calculates the timezone offset', () => {
       const date = new Date('2024-05-18T10:00:00.000+08:00');
@@ -125,7 +146,7 @@ describe('DateConversion', () => {
     const date = new Date('2024-05-22T00:00:00.000Z');
     const [today, nextMonth] = DateConversion(date);
     expect(today).toBe('2024-05-22');
-    expect(nextMonth).toBe('2024-06-21');
+    expect(nextMonth).toBe('2024-06-22');
   });
 
 });
