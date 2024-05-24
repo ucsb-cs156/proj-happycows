@@ -276,7 +276,9 @@ function register(new_timezone, glob) {
   glob.Date = MockDate;
   if (!orig_object_toString) {
     orig_object_toString = Object.prototype.toString;
+    /* eslint-disable no-extend-native */
     Object.prototype.toString = mockDateObjectToString;
+    /* eslint-enable no-extend-native */
   }
 }
 exports.register = register;
