@@ -103,19 +103,20 @@ describe('Arithmetic Operator Functions', () => {
     });
   });
 
-const correctHourOffset = 0;
-const correctOffset = () => {
-  const date = new Date('2024-05-18T10:00:00.000+08:00');
-  const localISO = toLocalISOString(date);
-  //calculate hourly difference
-  correctHourOffset = date.slice(11,13).toString()-localISO.slice(11,13).toString()
+let correctHourOffset = 99;
+const correctOffset = (date) => {
+  const initialDate = new Date(date);
+  const localISO = toLocalISOString(initialDate);
+  const initialHours = parseInt(initialDate.toISOString().slice(11, 13), 10);
+  const localHours = parseInt(localISO.slice(11, 13), 10);
+  correctHourOffset = initialHours - localHours;
   return correctHourOffset;
 };
 const formatExpectedISO = (date) => {
-  correctOffset;
+  const hourlyoffset = correctOffset(date);
   const pad = (num, size = 2) => String(num).padStart(size, '0');
   const expectedDate = new Date(date.getTime());
-  expectedDate.setHours(expectedDate.getUTCHours() + correctHourOffset);
+  expectedDate.setHours(expectedDate.getUTCHours() + hourlyoffset);
   const datePart = `${expectedDate.getUTCFullYear()}-${pad(expectedDate.getUTCMonth() + 1, 2)}-${pad(expectedDate.getUTCDate(), 2)}`;
   const timePart = `${pad(expectedDate.getUTCHours(), 2)}:${pad(expectedDate.getUTCMinutes(), 2)}:${pad(expectedDate.getUTCSeconds(), 2)}.${pad(expectedDate.getUTCMilliseconds(), 2)}`;
   return `${datePart}T${timePart}+00:00`;
