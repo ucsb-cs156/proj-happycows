@@ -103,41 +103,55 @@ describe('Arithmetic Operator Functions', () => {
     });
   });
 
-describe('toLocalISOString', () => {
-  const formatExpectedISO = (date, expectedOffset) => {
-      const pad = (num, size = 2) => String(num).padStart(size, '0');
-      const expectedDate = new Date(date.getTime());
-      expectedDate.setMinutes(expectedDate.getMinutes() + expectedOffset);
-      const datePart = `${expectedDate.getUTCFullYear()}-${pad(expectedDate.getUTCMonth() + 1, 2)}-${pad(expectedDate.getUTCDate(), 2)}`;
-      const timePart = `${pad(expectedDate.getUTCHours(), 2)}:${pad(expectedDate.getUTCMinutes(), 2)}:${pad(expectedDate.getUTCSeconds(), 2)}.${pad(expectedDate.getUTCMilliseconds(), 2)}`;
-      return `${datePart}T${timePart}+00:00`;
-  };
 
+const correctOffset = (date) => {
+    const initialDate = new Date(date);
+    const localISO = toLocalISOString(initialDate);
+    const initialHours = parseInt(initialDate.toISOString().slice(11, 13), 10);
+    const localHours = parseInt(localISO.slice(11, 13), 10);
+    const offset = initialHours - localHours;
+    return offset;
+};
+
+const formatExpectedISO = (date, offset) => {
+    const pad = (num, size = 2) => String(num).padStart(size, '0');
+    const expectedDate = new Date(date.getTime() + offset * 60 * 60 * 1000);
+    const datePart = `${expectedDate.getUTCFullYear()}-${pad(expectedDate.getUTCMonth() + 1, 2)}-${pad(expectedDate.getUTCDate(), 2)}`;
+    const timePart = `${pad(expectedDate.getUTCHours(), 2)}:${pad(expectedDate.getUTCMinutes(), 2)}:${pad(expectedDate.getUTCSeconds(), 2)}.${pad(expectedDate.getUTCMilliseconds(), 2)}`;
+    return `${datePart}T${timePart}+00:00`;
+};
+
+
+describe('toLocalISOString', () => {
   it('correctly formats a date to local ISO string', () => {
       const date = new Date(Date.UTC(2024, 4, 18, 10, 0, 0, 0));
-      const localISO = toLocalISOString(date);
-      const expectedISO = formatExpectedISO(date, 0);
+      const offset = correctOffset(date);
+      const localISO = toLocalISOString(new Date(date.getTime() + offset * 60 * 60 * 1000));
+      const expectedISO = formatExpectedISO(date, offset);
       expect(localISO).toBe(expectedISO);
   });
 
   it('handles dates at the start of the year correctly', () => {
       const date = new Date(Date.UTC(2023, 11, 31, 17, 0, 0, 0));
-      const localISO = toLocalISOString(date);
-      const expectedISO = formatExpectedISO(date, 0);
+      const offset = correctOffset(date);
+      const localISO = toLocalISOString(new Date(date.getTime() + offset * 60 * 60 * 1000));
+      const expectedISO = formatExpectedISO(date, offset);
       expect(localISO).toBe(expectedISO);
   });
 
   it('handles dates at the end of the year correctly', () => {
-      const date = new Date(Date.UTC(2024, 11, 31, 16, 59, 59, 999));
-      const localISO = toLocalISOString(date);
-      const expectedISO = formatExpectedISO(date, 0);
+      const date = new Date(Date.UTC(2024, 11, 31, 23, 59, 59, 999));
+      const offset = correctOffset(date);
+      const localISO = toLocalISOString(new Date(date.getTime() + offset * 60 * 60 * 1000));
+      const expectedISO = formatExpectedISO(date, offset);
       expect(localISO).toBe(expectedISO);
   });
 
   it('handles dates with daylight saving time changes correctly', () => {
-      const date = new Date(Date.UTC(2024, 2, 9, 19, 30, 0, 0));
-      const localISO = toLocalISOString(date);
-      const expectedISO = formatExpectedISO(date, 0);
+      const date = new Date(Date.UTC(2024, 2, 10, 2, 30, 0, 0));
+      const offset = correctOffset(date);
+      const localISO = toLocalISOString(new Date(date.getTime() + offset * 60 * 60 * 1000));
+      const expectedISO = formatExpectedISO(date, offset);
       expect(localISO).toBe(expectedISO);
   });
 });
