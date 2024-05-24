@@ -8,6 +8,27 @@ jest.mock("main/components/Utils/DateConversion", () => {
   };
 });
 
+const RealDate = global.Date;
+
+global.Date = class extends RealDate {
+    constructor(...args) {
+        if (args.length === 0) {
+            super('2024-05-18T10:00:00.000Z');
+        } else {
+            super(...args);
+        }
+    }
+    static now() {
+        return RealDate.now();
+    }
+    static UTC(...args) {
+        return RealDate.UTC(...args);
+    }
+    getTimezoneOffset() {
+        return 0;
+    }
+};
+
 describe('Arithmetic Operator Functions', () => {
     it('correctly calculates the timezone offset', () => {
       const date = new Date('2024-05-18T10:00:00.000+08:00');
