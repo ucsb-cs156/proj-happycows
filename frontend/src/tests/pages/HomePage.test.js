@@ -50,7 +50,7 @@ describe("HomePage tests", () => {
         expect(typeof (title.textContent)).toBe('string');
         
         await waitFor(() => {
-            expect(title.textContent).toEqual('Howdy Farmer Phillip');
+            expect(title.textContent).toEqual('Howdy Farmer Phillip!');
         });
     });
 
@@ -71,7 +71,7 @@ describe("HomePage tests", () => {
         const title = screen.getByTestId("homePage-title");
         expect(title).toBeInTheDocument();
         expect(typeof (title.textContent)).toBe('string');
-        expect(title.textContent).toEqual('Howdy Farmer Phillip');
+        expect(title.textContent).toEqual('Howdy Farmer Phillip!');
     });
 
     test("expected CSS properties", () => {
@@ -85,7 +85,7 @@ describe("HomePage tests", () => {
             </QueryClientProvider>
         );        
         const title = screen.getByTestId("homePage-title");
-        expect(title).toHaveAttribute("class", "animate-charcter");
+        expect(title).toHaveAttribute("class", "new-title");
         });
 
     test("renders without crashing when lists are full", () => {
@@ -103,7 +103,7 @@ describe("HomePage tests", () => {
         const title = screen.getByTestId("homePage-title");
         expect(title).toBeInTheDocument();
         expect(typeof (title.textContent)).toBe('string');
-        expect(title.textContent).toEqual('Howdy Farmer Phillip');
+        expect(title.textContent).toEqual('Howdy Farmer Phillip!');
     });
 
     test("Redirects to the PlayPage when you click visit", async () => {
@@ -208,7 +208,7 @@ describe("HomePage tests", () => {
         expect(await screen.findByTestId("HomePage-intro-card")).toBeInTheDocument();
     
         const HomePageCard = screen.getByTestId("HomePage-intro-card");
-        expect(HomePageCard).toHaveStyle('opacity: .9;');       
+        expect(HomePageCard).toHaveAttribute("class", "title-box");
 
     });
 

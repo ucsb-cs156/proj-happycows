@@ -1,24 +1,38 @@
-.animate-charcter
-{
-  background-image: linear-gradient(
-    -225deg,
-    #b72525 0%,
-    #e87902 29%,
-    #667503 67%,
-    #04a617 100%
-  );
+.title-box{
+    display: flex;
+    justify-content: center;
+}
 
-  background-size: auto auto;
-  background-clip: border-box;
-  background-size: 200% auto;
+.new-title{
+    font-size: 50px;
+    color: #0e442d;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.7); 
+    border-radius: 10px; 
+    padding: 10px; 
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    display: inline-block;
+    margin-bottom: 0px;
+}
+
+.subtitle{
+  font-size: 20px;
   color: #0e442d;
-  background-clip: text;
-  text-fill-color: transparent;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textclip 2s linear infinite;
-  display: inline-block;
-  font-size: 50px;
+  font-weight: bold;
+}
+
+.homePage-boxes{
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.homePage-box{
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  flex: 1;
 }
 
 @keyframes textclip {

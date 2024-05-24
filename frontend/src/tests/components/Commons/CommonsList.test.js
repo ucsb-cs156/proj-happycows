@@ -114,6 +114,9 @@ describe("CommonsList tests", () => {
             <CommonsList commonList={[]} buttonText = {"Visit"} title="Visit A Commons"/>
         );
 
+        const background = screen.getByTestId("commonsList-background");
+        expect(background).toBeInTheDocument();
+
         const title = screen.getByTestId("commonsList-title");
         expect(title).toBeInTheDocument();
         expect(typeof(title.textContent)).toBe('string');

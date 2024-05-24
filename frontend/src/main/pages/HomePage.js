@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Card, Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
@@ -66,15 +66,19 @@ export default function HomePage({hour=null}) {
   return (
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
       <BasicLayout>
-      <Card data-testid= {"HomePage-intro-card"} style={{opacity: ".9" }}>
-      <div className= "text-center border-0 my-3">
-              <h1 data-testid="homePage-title" className="animate-charcter" >Howdy Farmer {firstName}</h1>
-              </div>
-      </Card>
+        <div data-testid= {"HomePage-intro-card"} className="title-box">
+          <h1 data-testid="homePage-title" className="new-title" >Howdy Farmer {firstName}!</h1>
+        </div>
         <Container>
           <Row>
-            <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
-            <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
+            <div className="homePage-boxes">
+              <div className="homePage-box">
+                <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
+              </div>
+              <div className="homePage-box">
+                <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
+              </div>
+            </div>
           </Row>
         </Container>
       </BasicLayout>
