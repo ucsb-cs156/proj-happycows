@@ -16,7 +16,7 @@ export default function CommonsOverview({ commonsPlus, currentUser, announcement
             <Card.Header as="h5">Announcements</Card.Header>
             <Card.Body>
                 <Row>
-                    <Col>
+                    <Col className="text-start">
                         <div data-testid="announcement-test">
                             {announcement ? (
                                 <AnnouncementCard announcement={announcement} />
@@ -26,7 +26,7 @@ export default function CommonsOverview({ commonsPlus, currentUser, announcement
                         </div>
                     </Col>
                 </Row>
-                <Row>
+                <Row className="mt-3">
                     <Col>
                         <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>
                         <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>

@@ -42,7 +42,7 @@ const AnnouncementCard = ({ announcement }) => {
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "14px", border: "1px solid lightgrey", padding: "4px" }
+            { fontSize: "14px", border: "1px solid lightgrey", padding: "4px", borderRadius: "10px" }
         }>
             <Container>
                 <Row>
