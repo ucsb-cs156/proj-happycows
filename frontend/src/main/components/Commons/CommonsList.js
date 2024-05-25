@@ -7,17 +7,27 @@ const CommonsList = (props) => {
 
     return (
         <Card
+            data-testid="commonsList-background"
             style={
-                // Stryker disable next-line all: don't test CSS params
-                { opacity: ".9" }
+                // Stryker disable all: don't test CSS params
+                { background: 'rgba(255, 255, 255, 0.7)', 
+                    borderRadius: '10px', 
+                    padding: '10px', 
+                    backdropFilter: 'blur(10px)', 
+                    WebkitBackdropFilter: 'blur(10px)'}
+                // Stryker restore all
             }
             className="my-3 border-0"
         >
             <Card.Title
                 data-testid="commonsList-title"
                 style={
-                    // Stryker disable next-line all: don't test CSS params
-                    { fontSize: "35px" }
+                    // Stryker disable all: don't test CSS params
+                    { fontSize: "35px",
+                    fontWeight: "bold",
+                    color: "#1E4D2B"
+                    }
+                    // Stryker restore all
                 }
                 className="text-center my-3"
             >
