@@ -105,7 +105,7 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`)).toHaveClass("btn-danger");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Leaderboard-button`)).toHaveClass("btn-secondary");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Stats CSV-button`)).toHaveClass("btn-success");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`)).toHaveClass("btn-info");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`)).toHaveClass("btn btn-primary");
 
   });
 
