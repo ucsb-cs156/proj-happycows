@@ -29,7 +29,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "20px", borderTop: "1px solid lightgrey" }
+            { fontSize: "20px", boxShadow: "5px 5px 5px lightgrey", borderRadius: "10px", margin: "10px", background: "rgba(255, 255, 255, 0.7)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }
         }>
             <Container>
                 <Row>
