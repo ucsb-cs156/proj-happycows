@@ -24,16 +24,15 @@ function isFutureDate(startingDate) {
     }
 }
 
-const CommonsCard = ({ buttonText, buttonLink, commons }) => {
+const CommonsCard = ({ buttonText, buttonLink, commons, color }) => {
     const testIdPrefix = "commonsCard";
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "20px", boxShadow: "5px 5px 5px lightgrey", borderRadius: "10px", margin: "10px", background: "rgba(255, 255, 255, 0.7)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }
+            { fontSize: "20px", boxShadow: "5px 5px 5px lightgrey", borderRadius: "10px", margin: "10px", backgroundColor: color, backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }
         }>
             <Container>
                 <Row>
-                    <Col sx={4} data-testid={`${testIdPrefix}-id-${commons.id}`}>{commons.id}</Col>
                     <Col sx={4} data-testid={`${testIdPrefix}-name-${commons.id}`}>{commons.name}</Col>
                     {buttonText != null &&
                         <Col sm={4}>
