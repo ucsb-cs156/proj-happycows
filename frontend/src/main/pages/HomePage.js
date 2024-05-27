@@ -11,6 +11,28 @@ import getBackgroundImage from "main/components/Utils/HomePageBackground";
 
 import "./HomePage.css"
 
+export function getRandomGreeting() {
+  const greetings = [
+    "Howdy Farmer",
+    "Hello Farmer",
+    "Hi Farmer",
+    "Greetings Farmer",
+    "Welcome Farmer",
+    "Hey there Farmer",
+    "Good to see you Farmer",
+    "Salutations Farmer",
+    "What's up Farmer",
+    "Ahoy Farmer",
+    "Good day Farmer",
+    "Pleased to see you Farmer",
+    "Welcome back Farmer",
+    "Hello there Farmer",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * greetings.length);
+  return greetings[randomIndex];
+}
+
 export default function HomePage({hour=null}) {
   // Stryker disable next-line all: it is acceptable to exclude useState calls from mutation testing
   const [commonsJoined, setCommonsJoined] = useState([]);
@@ -67,7 +89,7 @@ export default function HomePage({hour=null}) {
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
       <BasicLayout>
         <div data-testid= {"HomePage-intro-card"} className="title-box">
-          <h1 data-testid="homePage-title" className="new-title" >Howdy Farmer {firstName}!</h1>
+          <h1 data-testid="homePage-title" className="new-title" >{getRandomGreeting()} {firstName}!</h1>
         </div>
         <Container>
           <Row>

@@ -24,16 +24,15 @@ function isFutureDate(startingDate) {
     }
 }
 
-const CommonsCard = ({ buttonText, buttonLink, commons }) => {
+const CommonsCard = ({ buttonText, buttonLink, commons, color }) => {
     const testIdPrefix = "commonsCard";
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "20px", borderTop: "1px solid lightgrey" }
+            { fontSize: "20px", boxShadow: "5px 5px 5px lightgrey", borderRadius: "10px", margin: "10px", backgroundColor: color, backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }
         }>
             <Container>
                 <Row>
-                    <Col sx={4} data-testid={`${testIdPrefix}-id-${commons.id}`}>{commons.id}</Col>
                     <Col sx={4} data-testid={`${testIdPrefix}-name-${commons.id}`}>{commons.name}</Col>
                     {buttonText != null &&
                         <Col sm={4}>
@@ -41,6 +40,8 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
                                 data-testid={`${testIdPrefix}-button-${buttonText}-${commons.id}`}
                                 size="sm"
                                 className="mx-4"
+                                // Stryker disable next-line all : don't mutation test CSS 
+                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', outline: 'none', border: 'none', fontWeight: 'bold', color: 'rgba(0, 0, 0, 0.7)'}}
                                 onClick={() => {
                                     if (buttonText === "Join" && isFutureDate(commons.startingDate)) {
                                         // Stryker disable next-line all: unable to read alert text in tests
