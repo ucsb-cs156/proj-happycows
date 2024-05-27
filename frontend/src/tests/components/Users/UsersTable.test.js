@@ -28,7 +28,7 @@ describe("UserTable tests", () => {
         );
     });
 
-    test("Remove button calls remove callback", async () => {
+    test("Suspend button calls suspend callback", async () => {
         const testId = "UsersTable";
         render(
             <MemoryRouter>
@@ -38,12 +38,12 @@ describe("UserTable tests", () => {
 
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
 
-        const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit Commons-button`);
+        const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Suspend-button`);
         expect(editButton).toBeInTheDocument();
-        expect(editButton).toHaveClass("btn-primary");
+        expect(editButton).toHaveClass("btn-danger");
         fireEvent.click(editButton);
 
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/remove/user/1'));
+        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/suspend/user/1'));
         
     });
 

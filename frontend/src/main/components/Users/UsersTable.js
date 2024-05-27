@@ -7,9 +7,9 @@ export default function UsersTable({ users }) {
 
     const navigate = useNavigate();
 
-    const removeCallback = (row) => { 
+    const suspendCallback = (row) => { 
         console.log(row)
-        navigate(`/admin/remove/user/${row.row.values.id}`)
+        navigate(`/admin/suspend/user/${row.row.values.id}`)
     }
     
     const columns = [
@@ -42,7 +42,7 @@ export default function UsersTable({ users }) {
     ];
 
     // don't need to check for admin because this page will not display if not admin
-    columns.push(ButtonColumn("Edit Commons", "primary", removeCallback, "UsersTable"));
+    columns.push(ButtonColumn("Suspend User", "danger", suspendCallback, "UsersTable"));
 
     return <OurTable
         data={users}

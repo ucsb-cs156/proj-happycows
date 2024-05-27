@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import AdminRemoveUserPage from "main/pages/AdminRemoveUserPage";
+import AdminSuspendUserPage from "main/pages/AdminSuspendUserPage";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
@@ -9,7 +9,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
 
-describe("AdminRemoveUserPage tests", () => {
+describe("AdminSuspendUserPage tests", () => {
 
     const axiosMock = new AxiosMockAdapter(axios);
 
@@ -31,13 +31,13 @@ describe("AdminRemoveUserPage tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <AdminRemoveUserPage />
+                    <AdminSuspendUserPage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
 
         // assert
-        expect(screen.getByText("Edit User Commons page not yet implemented")).toBeInTheDocument();
+        expect(screen.getByText("Suspend User page not yet implemented")).toBeInTheDocument();
     });
 
 });
