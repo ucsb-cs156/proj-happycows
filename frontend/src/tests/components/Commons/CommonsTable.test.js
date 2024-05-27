@@ -244,6 +244,25 @@ describe("Modal tests", () => {
     // (you'll need to replace `mockMutate` with the actual reference to the mutation in your code)
     expect(mockMutate).not.toHaveBeenCalled();
   });
+
+  test("Clicking the announcements button opens the page for adminUser", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CommonsTable commons={commonsPlusFixtures.threeCommonsPlus} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    const announcementsButton = screen.getByTestId("CommonsTable-cell-row-0-col-Announcements-button");
+    fireEvent.click(announcementsButton);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith(`/admin/announcements/1`);
+    });
+  });
   
   
 });
