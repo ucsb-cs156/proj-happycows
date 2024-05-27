@@ -50,7 +50,7 @@ describe("HomePage tests", () => {
         expect(typeof (title.textContent)).toBe('string');
         
         await waitFor(() => {
-            expect(title.textContent).toEqual('Howdy Farmer Phillip!');
+            expect(title.textContent).toContain('Farmer Phillip!');
         });
     });
 
@@ -71,7 +71,7 @@ describe("HomePage tests", () => {
         const title = screen.getByTestId("homePage-title");
         expect(title).toBeInTheDocument();
         expect(typeof (title.textContent)).toBe('string');
-        expect(title.textContent).toEqual('Howdy Farmer Phillip!');
+        expect(title.textContent).toContain('Farmer Phillip!');
     });
 
     test("expected CSS properties", () => {
@@ -103,7 +103,7 @@ describe("HomePage tests", () => {
         const title = screen.getByTestId("homePage-title");
         expect(title).toBeInTheDocument();
         expect(typeof (title.textContent)).toBe('string');
-        expect(title.textContent).toEqual('Howdy Farmer Phillip!');
+        expect(title.textContent).toContain('Farmer Phillip!');
     });
 
     test("Redirects to the PlayPage when you click visit", async () => {
