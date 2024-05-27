@@ -1,13 +1,12 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import '@testing-library/jest-dom/extend-expect';
 import AdminListAnnouncementsPage from 'main/pages/AdminListAnnouncementsPage';
 
 
 
 test('redirects to /not-found', () => {
-    const { getByText } = render(
+    render(
         <MemoryRouter initialEntries={['/admin/announcements']}>
             <Routes>
                 <Route path="/admin/announcements" element={<AdminListAnnouncementsPage />} />
@@ -15,5 +14,5 @@ test('redirects to /not-found', () => {
             </Routes>
         </MemoryRouter>
     );
-    expect(getByText('404 Not Found')).toBeInTheDocument();
+    expect(screen.getByText('404 Not Found')).toBeInTheDocument();
 });
