@@ -50,7 +50,7 @@ const CommonsList = (props) => {
                 { background: 'rgba(255, 255, 255, 0.7)', 
                     borderRadius: '10px', 
                     padding: '10px', 
-                    boxShadow: '5px 5px 5px lightgrey',
+                    boxShadow: '5px 5px 10px 5px lightgrey',
                     backdropFilter: 'blur(10px)', 
                     WebkitBackdropFilter: 'blur(10px)'}
                 // Stryker restore all
