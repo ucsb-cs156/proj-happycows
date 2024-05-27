@@ -40,6 +40,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons, color }) => {
                                 data-testid={`${testIdPrefix}-button-${buttonText}-${commons.id}`}
                                 size="sm"
                                 className="mx-4"
+                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', outline: 'none', border: 'none', fontWeight: 'bold', color: 'rgba(0, 0, 0, 0.7)'}}
                                 onClick={() => {
                                     if (buttonText === "Join" && isFutureDate(commons.startingDate)) {
                                         // Stryker disable next-line all: unable to read alert text in tests
