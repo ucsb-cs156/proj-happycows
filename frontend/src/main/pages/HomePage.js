@@ -11,6 +11,28 @@ import getBackgroundImage from "main/components/Utils/HomePageBackground";
 
 import "./HomePage.css"
 
+export function getRandomGreeting() {
+  const greetings = [
+    "Howdy Farmer",
+    "Hello Farmer",
+    "Hi Farmer",
+    "Greetings Farmer",
+    "Welcome Farmer",
+    "Hey there Farmer",
+    "Good to see you Farmer",
+    "Salutations Farmer",
+    "What's up Farmer",
+    "Ahoy Farmer",
+    "Good day Farmer",
+    "Pleased to see you Farmer",
+    "Welcome back Farmer",
+    "Hello there Farmer",
+  ];
+
+  const randomIndex = Math.floor(Math.random() * greetings.length);
+  return greetings[randomIndex];
+}
+
 export default function HomePage({hour=null}) {
   // Stryker disable next-line all: it is acceptable to exclude useState calls from mutation testing
   const [commonsJoined, setCommonsJoined] = useState([]);
@@ -62,28 +84,6 @@ export default function HomePage({hour=null}) {
 
   //create a list of commons that the user hasn't joined for use in the "Join a New Commons" list.
   const commonsNotJoinedList = commonsNotJoined(commons, commonsJoined);
-
-  const greetings = [
-    "Howdy Farmer",
-    "Hello Farmer",
-    "Hi Farmer",
-    "Greetings Farmer",
-    "Welcome Farmer",
-    "Hey there Farmer",
-    "Good to see you Farmer",
-    "Salutations Farmer",
-    "What's up Farmer",
-    "Ahoy Farmer",
-    "Good day Farmer",
-    "Pleased to see you Farmer",
-    "Welcome back Farmer",
-    "Hello there Farmer",
-  ];
-
-  function getRandomGreeting() {
-    const randomIndex = Math.floor(Math.random() * greetings.length);
-    return greetings[randomIndex];
-  }
   
   return (
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>

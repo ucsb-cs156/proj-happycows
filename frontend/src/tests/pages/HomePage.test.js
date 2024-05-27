@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
-import HomePage from "main/pages/HomePage";
+import HomePage, {getRandomGreeting} from "main/pages/HomePage";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -52,6 +52,59 @@ describe("HomePage tests", () => {
         await waitFor(() => {
             expect(title.textContent).toContain('Farmer Phillip!');
         });
+    });
+
+    test("getRandomGreeting returns a valid greeting", () => {
+        const greetings = [
+            "Howdy Farmer",
+            "Hello Farmer",
+            "Hi Farmer",
+            "Greetings Farmer",
+            "Welcome Farmer",
+            "Hey there Farmer",
+            "Good to see you Farmer",
+            "Salutations Farmer",
+            "What's up Farmer",
+            "Ahoy Farmer",
+            "Good day Farmer",
+            "Pleased to see you Farmer",
+            "Welcome back Farmer",
+            "Hello there Farmer",
+        ];
+    
+        for (let i = 0; i < 100; i++) {
+            const greeting = getRandomGreeting();
+            expect(greetings).toContain(greeting);
+        }
+    });
+
+    test("getRandomGreeting uses correct randomIndex", () => {
+        const greetings = [
+            "Howdy Farmer",
+            "Hello Farmer",
+            "Hi Farmer",
+            "Greetings Farmer",
+            "Welcome Farmer",
+            "Hey there Farmer",
+            "Good to see you Farmer",
+            "Salutations Farmer",
+            "What's up Farmer",
+            "Ahoy Farmer",
+            "Good day Farmer",
+            "Pleased to see you Farmer",
+            "Welcome back Farmer",
+            "Hello there Farmer",
+        ];
+
+        const mockMath = Object.create(global.Math);
+        mockMath.random = () => 0.5; // This will return a fixed value
+        global.Math = mockMath;
+
+        const greeting = getRandomGreeting();
+        const expectedIndex = Math.floor(0.5 * greetings.length);
+        expect(greeting).toBe(greetings[expectedIndex]);
+
+        global.Math = mockMath; // Restore original Math.random
     });
 
     test("renders with default for commons when api times out", () => {

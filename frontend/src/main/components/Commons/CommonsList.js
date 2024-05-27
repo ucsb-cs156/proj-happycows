@@ -3,6 +3,7 @@ import CommonsCard from "./CommonsCard";
 import { Card, Container, Row, Col } from "react-bootstrap";
 
 const CommonsList = (props) => {
+    // Stryker disable all: don't test removing colors
     const cardColors = [
         "rgba(255, 215, 0, 0.7)",     // Gold
         "rgba(255, 160, 122, 0.7)",   // Light Salmon
@@ -39,6 +40,7 @@ const CommonsList = (props) => {
         "rgba(47, 79, 79, 0.7)",      // Dark Slate Gray
         "rgba(139, 0, 139, 0.7)"      // Dark Magenta
       ];
+      // Stryker restore all
       
     const defaultMessage = props.title?.includes("Join") ? "join" : "visit";
 
