@@ -1,4 +1,14 @@
 import { calculateTimezoneOffset, calculateSign, calculateHours, calculateMinutes, toLocalISOString, DateConversion } from "main/components/Utils/DateConversion";
+import timezoneMock from 'timezone-mock';
+
+beforeAll(() => {
+  timezoneMock.register('US/Pacific');
+});
+
+afterAll(() => {
+  timezoneMock.unregister();
+});
+
 
 describe('Arithmetic Operator Functions', () => {
     it('correctly calculates the timezone offset', () => {
@@ -6,37 +16,37 @@ describe('Arithmetic Operator Functions', () => {
       const offset = calculateTimezoneOffset(date);
       expect(offset).toBe(-420);
     });
-  
+
     it('correctly calculates the sign for positive offset', () => {
       const offset = 300;
       const sign = calculateSign(offset);
       expect(sign).toBe('+');
     });
-  
+
     it('correctly calculates the sign for negative offset', () => {
       const offset = -480;
       const sign = calculateSign(offset);
       expect(sign).toBe('-');
     });
-  
+
     it('correctly calculates the sign for zero offset', () => {
       const offset = 0;
       const sign = calculateSign(offset);
       expect(sign).toBe('+');
     });
-  
+
     it('correctly calculates hours for positive offset', () => {
       const offset = 300;
       const hours = calculateHours(offset);
       expect(hours).toBe('05');
     });
-  
+
     it('correctly calculates hours for negative offset', () => {
       const offset = -480;
       const hours = calculateHours(offset);
       expect(hours).toBe('08');
     });
-  
+
     it('correctly calculates hours for zero offset', () => {
       const offset = 0;
       const hours = calculateHours(offset);
@@ -60,13 +70,13 @@ describe('Arithmetic Operator Functions', () => {
         const minutes = calculateMinutes(offset);
         expect(minutes).toBe('00');
     });
-  
+
     it('correctly calculates minutes for negative offset', () => {
       const offset = -480;
       const minutes = calculateMinutes(offset);
       expect(minutes).toBe('00');
     });
-  
+
     it('correctly calculates minutes for non-zero offset', () => {
       const offset = -345;
       const minutes = calculateMinutes(offset);
@@ -80,7 +90,7 @@ describe('toLocalISOString', () => {
     const localISO = toLocalISOString(date);
 
     const expectedISO = '2024-05-18T03:00:00.00-07:00';
-    
+
     expect(localISO).toBe(expectedISO);
   });
 
@@ -89,7 +99,7 @@ describe('toLocalISOString', () => {
     const localISO = toLocalISOString(date);
 
     const expectedISO = '2023-12-31T16:00:00.00-08:00';
-    
+
     expect(localISO).toBe(expectedISO);
   });
 
