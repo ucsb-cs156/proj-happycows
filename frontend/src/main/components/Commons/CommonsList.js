@@ -83,7 +83,7 @@ const CommonsList = (props) => {
                 </Card.Subtitle>
                 {
                     props.commonList.map(
-                        (c) => (<CommonsCard key={c.id} commons={c} buttonText={props.buttonText} buttonLink={props.buttonLink} color={cardColors[c.id]} />)
+                        (c) => (<CommonsCard key={c.id} commons={c} buttonText={props.buttonText} buttonLink={props.buttonLink} color={cardColors[c.id % cardColors.length]} />)
                     )
                 }
             </React.Fragment> 
