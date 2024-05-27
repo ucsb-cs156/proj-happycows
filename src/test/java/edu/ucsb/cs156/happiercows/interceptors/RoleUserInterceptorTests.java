@@ -50,8 +50,6 @@ public class RoleUserInterceptorTests {
 
   @BeforeEach
   public void setupSecurityContext() {
-    // private boolean admin;
-    // private boolean suspended;
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("id", 1);
     attributes.put("email", "gauchoMock@ucsb.edu");
@@ -138,6 +136,43 @@ public class RoleUserInterceptorTests {
     assertTrue(result);
   }
 
+  @Test
+  public void interceptor_adds_admin_role_when_user_is_admin() throws Exception {
+    User adminUser = User.builder()
+      .id(1)
+      .email("gauchoMock@ucsb.edu")
+      .googleSub("mockGoogleSub")
+      .fullName("Mock Mock")
+      .givenName("Mock Mock")
+      .familyName("Mock Mock")
+      .emailVerified(true)
+      .locale("mockLocale")
+      .hostedDomain("mockHostedDomain")
+      .admin(true)  // User is an admin
+      .suspended(false)
+      .build();
+
+    when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(adminUser));
+    MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
+    HandlerExecutionChain chain = mapping.getHandler(request);
+    MockHttpServletResponse response = new MockHttpServletResponse();
+
+    assert chain != null;
+    Optional<HandlerInterceptor> roleRuleInterceptor = chain.getInterceptorList()
+                    .stream()
+                    .filter(RoleUserInterceptor.class::isInstance)
+                    .findAny();
+
+    assertTrue(roleRuleInterceptor.isPresent());
+    boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
+
+    Collection<? extends GrantedAuthority> updatedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
+    assertTrue(updatedAuthorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")),
+               "ROLE_ADMIN should be added for admin users");
+    assertTrue(result);
+  }
+
 
   @Test
   public void interceptor_logs_out_user_when_suspended_field_in_db_is_true() throws Exception {
@@ -151,7 +186,7 @@ public class RoleUserInterceptorTests {
       .emailVerified(true)
       .locale("mockLocale")
       .hostedDomain("mockHostedDomain")
-      .admin(false)
+      .admin(true)
       .suspended(true)
       .build();
     when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
