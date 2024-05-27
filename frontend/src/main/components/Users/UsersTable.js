@@ -42,7 +42,7 @@ export default function UsersTable({ users }) {
     ];
 
     // don't need to check for admin because this page will not display if not admin
-    columns.push(ButtonColumn("Suspend User", "danger", suspendCallback, "UsersTable"));
+    columns.push(ButtonColumn("Suspend", "danger", suspendCallback, "UsersTable"));
 
     return <OurTable
         data={users}
