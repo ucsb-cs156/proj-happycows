@@ -2,45 +2,42 @@
 
 # Deployments (S24 teams: DO NOT EDIT)
 
-| Type | Link       | 
-|------|------------|
-| prod | <https://happy-cows.dokku-00.cs.ucsb.edu/>     | 
-| qa   | <https://happy-cows-qa.dokku-00.cs.ucsb.edu/>  | 
+| Type | Link                                          |
+| ---- | --------------------------------------------- |
+| prod | <https://happy-cows.dokku-00.cs.ucsb.edu/>    |
+| qa   | <https://happy-cows-qa.dokku-00.cs.ucsb.edu/> |
 
 # W24 Production Deployments
 
-
-| Team | Link       | 
-|------|------------|
-| w24-4pm-1 | <https://happycows.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://happycows.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://happycows.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://happycows.dokku-04.cs.ucsb.edu/>  | 
+| Team      | Link                                      |
+| --------- | ----------------------------------------- |
+| w24-4pm-1 | <https://happycows.dokku-01.cs.ucsb.edu/> |
+| w24-4pm-2 | <https://happycows.dokku-02.cs.ucsb.edu/> |
+| w24-4pm-3 | <https://happycows.dokku-03.cs.ucsb.edu/> |
+| w24-4pm-4 | <https://happycows.dokku-04.cs.ucsb.edu/> |
 
 # W24 QA Deployments
 
-
-| Team | Link       | 
-|------|------------|
-| w24-4pm-1 | <https://happycows-qa.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://happycows-qa.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://happycows-qa.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://happycows-qa.dokku-04.cs.ucsb.edu/>  | 
+| Team      | Link                                         |
+| --------- | -------------------------------------------- |
+| w24-4pm-1 | <https://happycows-qa.dokku-01.cs.ucsb.edu/> |
+| w24-4pm-2 | <https://happycows-qa.dokku-02.cs.ucsb.edu/> |
+| w24-4pm-3 | <https://happycows-qa.dokku-03.cs.ucsb.edu/> |
+| w24-4pm-4 | <https://happycows-qa.dokku-04.cs.ucsb.edu/> |
 
 # Description
 
 This is a full rewrite of the application HappyCows, a project sponsored by [Mattanjah de Vries, Distingished Professor of Chemistry at UC Santa Barbara](https://www.chem.ucsb.edu/people/mattanjah-s-de-vries).
 
-
 The application is a simulation game that gives players (typically students in Prof. de Vries' courses) an opportunity to learn about the [Tragedy of the Commons](https://en.wikipedia.org/wiki/Tragedy_of_the_commons).
 
-This rewrite uses the new tech stack being developed for [CMPSC 156](https://ucsb-cs156.github.io).    This tech stack uses:
-* Spring Boot (Java) for the backend
-* React (JavaScript) for the frontend
-* Spring Security plus Google OAuth for authentication/authorization
+This rewrite uses the new tech stack being developed for [CMPSC 156](https://ucsb-cs156.github.io). This tech stack uses:
+
+- Spring Boot (Java) for the backend
+- React (JavaScript) for the frontend
+- Spring Security plus Google OAuth for authentication/authorization
   - This last point is what distinguishes this tech stack from the one currently in use (as S21) for the three legacy code apps in
     CMPSC 156: the current apps use Auth0 with JWTs as the authentication/authorization mechanism.
-
 
 The GitHub actions script to deploy the Storybook to QA requires some configuration; see [docs/github-actions.md](docs/github-actions.md) for details.
 
@@ -66,12 +63,12 @@ will likely see an error such as:
 
 # Getting Started on localhost
 
-* Open *two separate terminal windows*  
-* In the first window, start up the backend with:
+- Open _two separate terminal windows_
+- In the first window, start up the backend with:
   ```
   mvn spring-boot:run
   ```
-* In the second window:
+- In the second window:
   ```
   cd frontend
   npm install  # only on first run or when dependencies change
@@ -80,7 +77,7 @@ will likely see an error such as:
 
 Then, the app should be available on <http://localhost:8080>
 
-If it doesn't work at first, e.g. you have a blank page on  <http://localhost:8080>, give it a minute and a few page refreshes.  Sometimes it takes a moment for everything to settle in.
+If it doesn't work at first, e.g. you have a blank page on <http://localhost:8080>, give it a minute and a few page refreshes. Sometimes it takes a moment for everything to settle in.
 
 If you see the following on localhost, make sure that you also have the frontend code running in a separate window.
 
@@ -92,21 +89,20 @@ Failed to connect to the frontend server... On Dokku, be sure that PRODUCTION is
 
 To access the swagger API endpoints, use:
 
-* <http://localhost:8080/swagger-ui/index.html>
-
+- <http://localhost:8080/swagger-ui/index.html>
 
 # To run React Storybook
 
-* cd into frontend
-* use: npm run storybook
-* This should put the storybook on http://localhost:6006
-* Additional stories are added under frontend/src/stories
+- cd into frontend
+- use: npm run storybook
+- This should put the storybook on http://localhost:6006
+- Additional stories are added under frontend/src/stories
 
-* For documentation on React Storybook, see: https://storybook.js.org/
+- For documentation on React Storybook, see: https://storybook.js.org/
 
 # Accessing Database Console
 
-* On localhost only: <http://localhost:8080/h2-console>  See also: [docs/h2-console.md](docs/h2-console.md)
+- On localhost only: <http://localhost:8080/h2-console> See also: [docs/h2-console.md](docs/h2-console.md)
 
 # To Run Integration and End-to-end Tests
 
@@ -122,4 +118,26 @@ In order to run the end-to-end tests 'not headless' use the following instead of
 
 ```
 INTEGRATION=true HEADLESS=false mvn failsafe:integration-test
+```
+
+# Partial pitest runs
+
+This repo has support for partial pitest runs
+
+For example, to run pitest on just one class, use:
+
+```
+mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.example.controllers.RestaurantsController
+```
+
+To run pitest on just one package, use:
+
+```
+mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.example.controllers.*
+```
+
+To run full mutation test coverage, as usual, use:
+
+```
+mvn pitest:mutationCoverage
 ```
