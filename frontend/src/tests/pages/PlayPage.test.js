@@ -343,4 +343,143 @@ describe("PlayPage tests", () => {
             expect(screen.getByTestId("playpage-chat-toggle")).toBeInTheDocument();
         });
     })
+
+
+
+    
+
+    test("User that has not joined any commons is trying to access an unjoined common", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+                user: {
+                    id : 1,
+                    email: "pconrad.cis@gmail.com",
+                    googleSub: "102656447703889917227",
+                    pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+                    fullName : "Phil Conrad",
+                    givenName : "Phil",
+                    familyName : "Conrad",
+                    emailVerified : true,
+                    locale: "en",
+                    hostedDomain: null,
+                    admin : false,
+                    commons : [
+                        // {
+                        //     id : 1,
+                        //     name : "Commons1",
+                        // }
+                    ]
+                }
+            }
+        );
+
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText("You have yet to join this commons!")).toBeInTheDocument();    
+        });
+        expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    })
+
+
+    test("User that has joined one commons is trying to access an unjoined common", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+                user: {
+                    id : 1,
+                    email: "pconrad.cis@gmail.com",
+                    googleSub: "102656447703889917227",
+                    pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+                    fullName : "Phil Conrad",
+                    givenName : "Phil",
+                    familyName : "Conrad",
+                    emailVerified : true,
+                    locale: "en",
+                    hostedDomain: null,
+                    admin : false,
+                    commons : [
+                        {
+                            id : 4,
+                            name : "Commons4",
+                        }
+                    ]
+                }
+            }
+        );
+
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText("You have yet to join this commons!")).toBeInTheDocument();    
+        });
+        expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    })
+
+
+    test("User that has joined one commons is trying to access a joined common", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+
+        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+                user: {
+                    id : 1,
+                    email: "pconrad.cis@gmail.com",
+                    googleSub: "102656447703889917227",
+                    pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+                    fullName : "Phil Conrad",
+                    givenName : "Phil",
+                    familyName : "Conrad",
+                    emailVerified : true,
+                    locale: "en",
+                    hostedDomain: null,
+                    admin : false,
+                    commons : [
+                        {
+                            id : 1,
+                            name : "Commons1",
+                        }
+                    ]
+                }
+            }
+        );
+
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText("Announcements")).toBeInTheDocument();
+        });        
+
+        expect(screen.queryByText("Whoa there, parder! You ain't a part of this commons!")).not.toBeInTheDocument();
+        expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+    })
+
 });
