@@ -78,7 +78,7 @@ export default function UsersTable({ users }) {
           Cancel
         </Button>
         <Button variant="danger" onClick={confirmSuspend}>
-          Suspend
+          Confirm Suspend
         </Button>
       </Modal.Footer>
     </Modal>
@@ -97,7 +97,7 @@ export default function UsersTable({ users }) {
           Cancel
         </Button>
         <Button variant="primary" onClick={confirmRestore}>
-          Restore
+          Confirm Restore
         </Button>
       </Modal.Footer>
     </Modal>

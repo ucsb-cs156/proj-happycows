@@ -20,11 +20,11 @@ export function useUsers() {
   );
 }
 
-export function suspendUser(cell) {
+export async function suspendUser(cell) {
   const uri = "/api/admin/users/suspend";
   const user = cell.row.values;
   try {
-    const response = axios.post(
+    const response = await axios.post(
       uri,
       {},
       {
@@ -40,15 +40,19 @@ export function suspendUser(cell) {
   }
 }
 
-export function restoreUser(cell) {
+export async function restoreUser(cell) {
   const uri = "/api/admin/users/restore";
   const user = cell.row.values;
   try {
-    const response = axios.post(cell.row.values, [], {
-      params: {
-        userId: user.id,
-      },
-    });
+    const response = await axios.post(
+      uri,
+      {},
+      {
+        params: {
+          userId: user.id,
+        },
+      }
+    );
     return response.data;
   } catch (e) {
     console.error(`Error restoring user with id ${user.id} from ${uri}`, e);
