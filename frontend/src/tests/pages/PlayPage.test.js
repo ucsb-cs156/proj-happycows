@@ -361,12 +361,7 @@ describe("PlayPage tests", () => {
                     locale: "en",
                     hostedDomain: null,
                     admin : false,
-                    commons : [
-                        // {
-                        //     id : 1,
-                        //     name : "Commons1",
-                        // }
-                    ]
+                    commons : []
                 },
                 roles: [
                     {
