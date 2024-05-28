@@ -27,7 +27,7 @@ public class User {
     private String hostedDomain;
     private boolean admin;
     @Builder.Default
-    private String status = "active";  // options are "active" and "suspended"
+    private boolean suspended = false;
 
   @Builder.Default
   private Instant lastOnline = Instant.now();
