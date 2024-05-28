@@ -344,7 +344,6 @@ describe("PlayPage tests", () => {
         });
     })
 
-
     test("User that has not joined any commons is trying to access an unjoined common", async () => {
 
         axiosMock.reset();
@@ -393,12 +392,11 @@ describe("PlayPage tests", () => {
         expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
     })
 
-
     test("User that has joined one commons is trying to access an unjoined common", async () => {
 
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+        axiosMock.onGet("/api/currentUser").reply(200, {
                 user: {
                     id : 1,
                     email: "pconrad.cis@gmail.com",
@@ -448,7 +446,7 @@ describe("PlayPage tests", () => {
         axiosMock.reset();
         axiosMock.resetHistory();
 
-        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+        axiosMock.onGet("/api/currentUser").reply(200, { 
                 user: {
                     id : 1,
                     email: "pconrad.cis@gmail.com",
@@ -500,7 +498,7 @@ describe("PlayPage tests", () => {
         axiosMock.reset();
         axiosMock.resetHistory();
 
-        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+        axiosMock.onGet("/api/currentUser").reply(200, { 
                 user: {
                     id : 1,
                     email: "pconrad.cis@gmail.com",

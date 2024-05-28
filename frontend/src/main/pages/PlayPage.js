@@ -62,7 +62,7 @@ export default function PlayPage() {
     let commonsforuser;
     let matched; 
 
-    if (commonsPlusExists) { // only IF the commons exists, get this info 
+    if (commonsPlusExists) { 
         commonsforuser = currentUser.root.user.commons;
         matched = commonsforuser.some(com => com.id === commonsPlus.commons.id);
     }
