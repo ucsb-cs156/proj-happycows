@@ -22,6 +22,8 @@ export default function PlayPage() {
     const [message, setMessage] = useState();
     const [numCows, setNumCows] = useState(1);
 
+    
+
     const openModal = () => {
         setIsModalOpen(true);
     };
@@ -55,6 +57,27 @@ export default function PlayPage() {
         }
     );
     // Stryker restore all
+
+    // MY STUFF IS HERE 
+    //const commonsPlusExists = !!commonsPlus; // check if it exists.. TYIS ONE IS WRONG 
+    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); // need to check for undefined (getting error in console) YEASS IT WORLKED
+
+    let commonsforuser; // does this have to be a const ?
+    let matched; 
+
+    if (commonsPlusExists) { // only IF the commons exists, get this info 
+        commonsforuser = currentUser.root.user.commons;
+        matched = commonsforuser.some(checkId);
+    }
+
+    function checkId(com) { // is this allowed... checking is id matches
+        return com.id === commonsPlus.commons.id;
+    }
+
+    // so then, I can use these for condition checking inside the play page itself 
+    const allowed = commonsPlusExists && matched;
+    const notallowed = commonsPlusExists && !matched;
+
 
     // Stryker disable all
     const { data: userCommonsProfits } = useBackend(
@@ -160,7 +183,8 @@ export default function PlayPage() {
         >
             <BasicLayout>
                 <Container>
-                    {!!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {notallowed && <h1>You have yet to join this commons!</h1>}
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
