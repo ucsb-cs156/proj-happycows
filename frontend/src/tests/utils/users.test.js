@@ -102,17 +102,12 @@ describe("utils/users tests", () => {
       axiosMock.onPost("/api/admin/users/suspend").reply(404);
       let result;
       const user = { id: 1 };
-      try {
-        result = suspendUser({ row: { values: user } });
-      } catch (e) {
-        expect(error.response.status).toBe(404);
-        expect(console.error).toHaveBeenCalled();
-        expect(console.error).toHaveBeenCalledWith(
-          `Error suspending user with id ${user.id} from /api/admin/users/suspend`,
-          expect.anything()
-        );
-        expect(result).toEqual([]);
-      }
+      result = await suspendUser({ row: { values: user } });
+      expect(console.error).toHaveBeenCalledWith(
+        `Error suspending user with id ${user.id} from /api/admin/users/suspend`,
+        expect.anything()
+      );
+      expect(result).toEqual([]);
     });
     test("suspendUser returns empty array on failure", async () => {
       var axiosMock = new AxiosMockAdapter(axios);
@@ -158,16 +153,12 @@ describe("utils/users tests", () => {
       axiosMock.onPost("/api/admin/users/restore").reply(404);
       let result;
       const user = { id: 1 };
-      try {
-        result = restoreUser({ row: { values: user } });
-      } catch (e) {
-        expect(error.response.status).toBe(404);
-        expect(console.error).toHaveBeenCalledWith(
-          `Error restoring user with id ${user.id} from /api/admin/users/restore`,
-          expect.anything()
-        );
-        expect(result).toEqual([]);
-      }
+      result = await restoreUser({ row: { values: user } });
+      expect(console.error).toHaveBeenCalledWith(
+        `Error restoring user with id ${user.id} from /api/admin/users/restore`,
+        expect.anything()
+      );
+      expect(result).toEqual([]);
     });
 
     test("restoreUser returns empty array on failure", async () => {

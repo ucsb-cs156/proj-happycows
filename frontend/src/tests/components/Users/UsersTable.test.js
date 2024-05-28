@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
-import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 jest.mock("main/utils/users", () => ({
   suspendUser: jest.fn(),
@@ -221,7 +220,7 @@ describe("Modal tests", () => {
     });
   });
 
-  test("Pressing the escape key on the suspended modal cancels the suspension", async () => {
+  test("Pressing the cancel button on the suspended modal cancels the restoration", async () => {
     render(<UsersTable users={usersFixtures.threeUsers} />);
 
     const restoredButtons = screen.getAllByText("Restore");
