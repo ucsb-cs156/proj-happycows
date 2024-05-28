@@ -6,13 +6,17 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
+import AdminListCommonsPage from "main/pages/AdminListCommonPage";
+import commonsPlusFixtures from "fixtures/commonsPlusFixtures"
+
+const mockedNavigate = jest.fn();
 
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useParams: () => ({
-        userId: 1,
         commonsId: 1,
     }),
+    useNavigate: () => mockedNavigate
 }));
 
 describe("AdminAnnouncementsPage tests", () => {
@@ -59,6 +63,25 @@ describe("AdminAnnouncementsPage tests", () => {
         );
 
         expect(await screen.findByText("Announcements for Commons: Sample Commons")).toBeInTheDocument();
+
+    });
+
+    test("correct href for announcements button as an admin", async () => {
+        const testId = "CommonsTable";
+        axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminListCommonsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`)).toHaveTextContent("1");
+      
+        const announcementsButton = screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`);
+        expect(announcementsButton).toHaveAttribute("href", "/admin/announcements/1");
 
     });
 });
