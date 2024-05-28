@@ -368,7 +368,12 @@ describe("PlayPage tests", () => {
                         //     name : "Commons1",
                         // }
                     ]
-                }
+                },
+                roles: [
+                    {
+                        authority: "ROLE_USER"
+                    },
+                ]
             }
         );
 
@@ -412,7 +417,12 @@ describe("PlayPage tests", () => {
                             name : "Commons4",
                         }
                     ]
-                }
+                },
+                roles: [
+                    {
+                        authority: "ROLE_USER"
+                    },
+                ]
             }
         );
 
@@ -457,7 +467,12 @@ describe("PlayPage tests", () => {
                             name : "Commons1",
                         }
                     ]
-                }
+                },
+                roles: [
+                    {
+                        authority: "ROLE_USER"
+                    },
+                ]
             }
         );
 
@@ -474,7 +489,7 @@ describe("PlayPage tests", () => {
         await waitFor(() => {
             expect(screen.getByText("Announcements")).toBeInTheDocument();
         });        
-
+  
         expect(screen.queryByText("You have yet to join this commons!")).not.toBeInTheDocument();
         expect(screen.getByTestId("commons-card")).toBeInTheDocument();
     })
@@ -504,7 +519,12 @@ describe("PlayPage tests", () => {
                             name : "Commons4",
                         }
                     ]
-                }
+                },
+                roles: [
+                    {
+                        authority: "ROLE_USER"
+                    },
+                ]
             }
         );
 
