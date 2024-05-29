@@ -56,20 +56,20 @@ describe("HomePage tests", () => {
 
     test("getRandomGreeting returns a valid greeting", () => {
         const greetings = [
-            "Howdy Farmer",
-            "Hello Farmer",
-            "Hi Farmer",
-            "Greetings Farmer",
-            "Welcome Farmer",
-            "Hey there Farmer",
-            "Good to see you Farmer",
-            "Salutations Farmer",
-            "What's up Farmer",
-            "Ahoy Farmer",
-            "Good day Farmer",
-            "Pleased to see you Farmer",
-            "Welcome back Farmer",
-            "Hello there Farmer",
+            "Howdy, Farmer",
+            "Hello, Farmer",
+            "Hi, Farmer",
+            "Greetings, Farmer",
+            "Welcome, Farmer",
+            "Hey there, Farmer",
+            "Good to see you, Farmer",
+            "Salutations, Farmer",
+            "What's up, Farmer",
+            "Ahoy, Farmer",
+            "Good day, Farmer",
+            "Pleased to see you, Farmer",
+            "Welcome back, Farmer",
+            "Hello there, Farmer",
         ];
     
         for (let i = 0; i < 100; i++) {
@@ -80,20 +80,20 @@ describe("HomePage tests", () => {
 
     test("getRandomGreeting uses correct randomIndex", () => {
         const greetings = [
-            "Howdy Farmer",
-            "Hello Farmer",
-            "Hi Farmer",
-            "Greetings Farmer",
-            "Welcome Farmer",
-            "Hey there Farmer",
-            "Good to see you Farmer",
-            "Salutations Farmer",
-            "What's up Farmer",
-            "Ahoy Farmer",
-            "Good day Farmer",
-            "Pleased to see you Farmer",
-            "Welcome back Farmer",
-            "Hello there Farmer",
+            "Howdy, Farmer",
+            "Hello, Farmer",
+            "Hi, Farmer",
+            "Greetings, Farmer",
+            "Welcome, Farmer",
+            "Hey there, Farmer",
+            "Good to see you, Farmer",
+            "Salutations, Farmer",
+            "What's up, Farmer",
+            "Ahoy, Farmer",
+            "Good day, Farmer",
+            "Pleased to see you, Farmer",
+            "Welcome back, Farmer",
+            "Hello there, Farmer",
         ];
 
         const mockMath = Object.create(global.Math);

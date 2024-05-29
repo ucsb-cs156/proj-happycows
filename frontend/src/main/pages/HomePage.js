@@ -13,20 +13,20 @@ import "./HomePage.css"
 
 export function getRandomGreeting() {
   const greetings = [
-    "Howdy Farmer",
-    "Hello Farmer",
-    "Hi Farmer",
-    "Greetings Farmer",
-    "Welcome Farmer",
-    "Hey there Farmer",
-    "Good to see you Farmer",
-    "Salutations Farmer",
-    "What's up Farmer",
-    "Ahoy Farmer",
-    "Good day Farmer",
-    "Pleased to see you Farmer",
-    "Welcome back Farmer",
-    "Hello there Farmer",
+    "Howdy, Farmer",
+    "Hello, Farmer",
+    "Hi, Farmer",
+    "Greetings, Farmer",
+    "Welcome, Farmer",
+    "Hey there, Farmer",
+    "Good to see you, Farmer",
+    "Salutations, Farmer",
+    "What's up, Farmer",
+    "Ahoy, Farmer",
+    "Good day, Farmer",
+    "Pleased to see you, Farmer",
+    "Welcome back, Farmer",
+    "Hello there, Farmer",
   ];
 
   const randomIndex = Math.floor(Math.random() * greetings.length);
