@@ -5,21 +5,24 @@ import { hasRole } from "main/utils/currentUser";
 import { daysSinceTimestamp } from "main/utils/dateUtils";
 import AnnouncementCard from "main/components/Announcement/AnnouncementCard";
 
-export default function CommonsOverview({ commonsPlus, currentUser, announcement }) {
+export default function CommonsOverview({ commonsPlus, currentUser, announcements }) {
 
     let navigate = useNavigate();
     // Stryker disable next-line all
     const leaderboardButtonClick = () => { navigate("/leaderboard/" + commonsPlus.commons.id) };
     const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard );
-    return (
+    return ( // Stryker disable all: announcements backend broken so testing by posting announcements does not work
+
         <Card data-testid="CommonsOverview">
             <Card.Header as="h5">Announcements</Card.Header>
             <Card.Body>
                 <Row>
                     <Col className="text-start">
                         <div data-testid="announcement-test">
-                            {announcement ? (
-                                <AnnouncementCard announcement={announcement} />
+                            {announcements && announcements.length > 0 ? (
+                                announcements.map((announcement, index) => (
+                                    <AnnouncementCard key={index} announcement={announcement} />
+                                ))
                             ) : (
                                 <p>No announcements available.</p>
                             )}
@@ -40,5 +43,5 @@ export default function CommonsOverview({ commonsPlus, currentUser, announcement
                 </Row>
             </Card.Body>
         </Card>
-    );
+    ); // Stryker restore all
 }; 

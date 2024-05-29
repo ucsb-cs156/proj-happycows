@@ -81,8 +81,7 @@ export default function PlayPage() {
         }
     );
 
-    const announcements = announcementsResponse ? announcementsResponse.content : [];
-    const announcement = announcements.length > 0 ? announcements[0] : null;
+    const announcements = announcementsResponse ? announcementsResponse.content : null;
     // Stryker restore all
     
     // Stryker disable all (can't check if commonsId is null because it is mocked)
@@ -180,7 +179,7 @@ export default function PlayPage() {
                         <CommonsOverview
                             commonsPlus={commonsPlus}
                             currentUser={currentUser}
-                            announcement={announcement}
+                            announcements={announcements}
                         />
                     )}
                     <br />

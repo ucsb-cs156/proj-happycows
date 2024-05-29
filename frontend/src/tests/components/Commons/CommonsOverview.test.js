@@ -84,4 +84,17 @@ describe("CommonsOverview tests", () => {
         });
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
     });
+
+    test("commons with no announcements", async () => {
+        apiCurrentUserFixtures.userOnly.user.commonsPlus = commonsPlusFixtures.oneCommonsPlus[0];
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        expect(screen.getByText("No announcements available.")).toBeInTheDocument();
+    });
 });
