@@ -348,7 +348,7 @@ describe("PlayPage tests", () => {
 
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, { // the only info i need to get is that of the current user.. but do i need to check if the commons exists?
+        axiosMock.onGet("/api/currentUser").reply(200, { 
                 user: {
                     id : 1,
                     email: "pconrad.cis@gmail.com",
