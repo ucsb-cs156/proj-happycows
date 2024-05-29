@@ -117,6 +117,7 @@ export default function CommonsTable({ commons, currentUser }) {
         ButtonColumn("Delete", "danger", deleteCallback, testid),
         ButtonColumn("Leaderboard", "secondary", leaderboardCallback, testid),
         HrefButtonColumn("Stats CSV", "success", `/api/commonstats/download?commonsId=`, testid),
+        HrefButtonColumn("Announcements", "info", `/admin/announcements/`, testid)
     ];
 
     const columnsToDisplay = hasRole(currentUser,"ROLE_ADMIN") ? columnsIfAdmin : columns;
