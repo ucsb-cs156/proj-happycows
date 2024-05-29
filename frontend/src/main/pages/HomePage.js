@@ -66,14 +66,14 @@ export default function HomePage({hour=null}) {
   return (
     <div data-testid={"HomePage-main-div"} style={{ backgroundSize: 'cover', backgroundImage: `url(${Background})` }}>
       <BasicLayout>
-      <Card data-testid= {"HomePage-intro-card"} style={{opacity: ".9" }}>
+      <Card data-testid= {"HomePage-intro-card"} className= "woodentitle">
       <div className= "text-center border-0 my-3">
               <h1 data-testid="homePage-title" className="animate-charcter" >Howdy Farmer {firstName}</h1>
               </div>
       </Card>
         <Container>
           <Row>
-            <Col sm><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
+            <Col sm ><CommonsList commonList={commonsJoined} title="Visit A Commons" buttonText={"Visit"} buttonLink={visitButtonClick} /></Col>
             <Col sm><CommonsList commonList={commonsNotJoinedList} title="Join A New Commons" buttonText={"Join"} buttonLink={mutation.mutate} /></Col>
           </Row>
         </Container>

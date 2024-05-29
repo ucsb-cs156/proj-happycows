@@ -17,10 +17,10 @@ const Profits = ({ profits }) => {
         profitsForTable.reverse();
     return (
         <Card>
-            <Card.Header as="h5">
+            <Card.Header as="h5" className = "woodenboardtable">
                 Profits
             </Card.Header>
-            <Card.Body>
+            <Card.Body style={{backgroundColor: "rgb(245, 210, 140)"}}>
                 {/* change 4am to admin-appointed time? And consider adding milk bottle as decoration */}
                 <Card.Title>
                     You will earn profits from milking your cows everyday at 4am.

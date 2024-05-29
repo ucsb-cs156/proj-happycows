@@ -1,5 +1,6 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import WoodenBoard from './../../../assets/WoodenBoard.png';
 
 const curr = new Date();
 
@@ -29,7 +30,10 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "20px", borderTop: "1px solid lightgrey" }
+            { fontFamily: 'Sancreek', fontSize: "19px", borderTop: "1px solid lightgrey", backgroundImage: `url(${WoodenBoard})`, backgroundSize: '300% 300%',  // Ensure the image covers the container
+            backgroundPosition: '-340px -135px',  // Center the image
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: "rgb(148, 95, 5)"}
         }>
             <Container>
                 <Row>
@@ -40,7 +44,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
                             <Button
                                 data-testid={`${testIdPrefix}-button-${buttonText}-${commons.id}`}
                                 size="sm"
-                                className="mx-4"
+                                className="buttonchange"
                                 onClick={() => {
                                     if (buttonText === "Join" && isFutureDate(commons.startingDate)) {
                                         // Stryker disable next-line all: unable to read alert text in tests

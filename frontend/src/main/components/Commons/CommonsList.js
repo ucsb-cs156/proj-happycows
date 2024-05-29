@@ -9,15 +9,15 @@ const CommonsList = (props) => {
         <Card
             style={
                 // Stryker disable next-line all: don't test CSS params
-                { opacity: ".9" }
+                { opacity: "1", backgroundColor: "rgb(147,98,66)", color: "rgb(245, 210, 140)", border: "6px solid rgb(99,71,52)" }
             }
-            className="my-3 border-0"
+            className="my-3"
         >
             <Card.Title
                 data-testid="commonsList-title"
                 style={
                     // Stryker disable next-line all: don't test CSS params
-                    { fontSize: "35px" }
+                    {fontFamily: 'Rye',fontSize: "35px", backgroundColor: "rgb(147,98,66)", color: "rgb(245, 210, 140)" }
                 }
                 className="text-center my-3"
             >
@@ -28,8 +28,18 @@ const CommonsList = (props) => {
                 <Card.Subtitle>
                     <Container>
                         <Row>
-                            <Col data-testid="commonsList-subtitle-id" sx={4}>ID#</Col>
-                            <Col data-testid="commonsList-subtitle-name" sx={4}>Common's Name</Col>
+                            <Col data-testid="commonsList-subtitle-id" sx={4} 
+                            style={
+                                // Stryker disable next-line all: don't test CSS params
+                                {fontFamily: 'Rye', paddingBottom: "10px"}}>
+                                ID#
+                            </Col>
+                            <Col data-testid="commonsList-subtitle-name" sx={4}
+                            style={
+                                // Stryker disable next-line all: don't test CSS params
+                                {fontFamily: 'Rye', paddingBottom: "10px"}}>
+                                Common's Name
+                            </Col>
                             <Col sm={4}></Col>
                         </Row>
                     </Container>
@@ -43,7 +53,7 @@ const CommonsList = (props) => {
             : 
             <Card.Subtitle>
                 <Container>
-                    <Row style={{justifyContent: "center"}} data-testid="commonsList-default-message">
+                    <Row style={{justifyContent: "center", fontFamily: 'Rye', paddingBottom: "10px"}} data-testid="commonsList-default-message">
                         There are currently no commons to {defaultMessage}
                     </Row>
                 </Container>
