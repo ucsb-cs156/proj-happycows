@@ -173,9 +173,11 @@ export default function PlayPage() {
             data-testid="playpage-div"
         >
             <BasicLayout>
-                <Container>
+                <Container> 
+                    {!commonsPlus && <h1>This commons does not exist!</h1>}
+                    {notallowed && <h1>You have yet to join this commons!</h1>} 
                     {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
-                    {notallowed && <h1>You have yet to join this commons!</h1>}
+                    
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
