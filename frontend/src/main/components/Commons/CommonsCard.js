@@ -1,6 +1,5 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
-import WoodenBoard from './../../../assets/WoodenBoard.png';
 
 const curr = new Date();
 
@@ -28,13 +27,7 @@ function isFutureDate(startingDate) {
 const CommonsCard = ({ buttonText, buttonLink, commons }) => {
     const testIdPrefix = "commonsCard";
     return (
-        <Card.Body style={
-            // Stryker disable next-line all : don't mutation test CSS 
-            { fontFamily: 'Sancreek', fontSize: "19px", borderTop: "1px solid lightgrey", backgroundImage: `url(${WoodenBoard})`, backgroundSize: '300% 300%',  // Ensure the image covers the container
-            backgroundPosition: '-340px -135px',  // Center the image
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: "rgb(148, 95, 5)"}
-        }>
+        <Card.Body className = "woodenboardtable">
             <Container>
                 <Row>
                     <Col sx={4} data-testid={`${testIdPrefix}-id-${commons.id}`}>{commons.id}</Col>

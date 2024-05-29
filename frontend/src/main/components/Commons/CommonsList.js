@@ -31,13 +31,13 @@ const CommonsList = (props) => {
                             <Col data-testid="commonsList-subtitle-id" sx={4} 
                             style={
                                 // Stryker disable next-line all: don't test CSS params
-                                {fontFamily: 'Rye', paddingBottom: "10px"}}>
+                                {fontFamily: 'Sancreek', paddingBottom: "10px"}}>
                                 ID#
                             </Col>
                             <Col data-testid="commonsList-subtitle-name" sx={4}
                             style={
                                 // Stryker disable next-line all: don't test CSS params
-                                {fontFamily: 'Rye', paddingBottom: "10px"}}>
+                                {fontFamily: 'Sancreek', paddingBottom: "10px"}}>
                                 Common's Name
                             </Col>
                             <Col sm={4}></Col>
@@ -53,7 +53,7 @@ const CommonsList = (props) => {
             : 
             <Card.Subtitle>
                 <Container>
-                    <Row style={{justifyContent: "center", fontFamily: 'Rye', paddingBottom: "10px"}} data-testid="commonsList-default-message">
+                    <Row style={{justifyContent: "center", fontFamily: 'Sancreek', paddingBottom: "10px"}} data-testid="commonsList-default-message">
                         There are currently no commons to {defaultMessage}
                     </Row>
                 </Container>

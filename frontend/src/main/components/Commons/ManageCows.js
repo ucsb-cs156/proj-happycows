@@ -16,9 +16,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
     return (
         <Card>
             <Card.Header as="h5" className= "woodenboardtable" >Manage Cows</Card.Header>
-            <Card.Body style={{
-            backgroundColor: "rgb(245, 210, 140)"
-        }}>
+            <Card.Body style={{backgroundColor: "rgb(245, 210, 140)"}}>
                 {/* change $10 to info from fixture */}
                 <Card.Title className="text-center">
                     💵 Market Cow Price: ${commons?.cowPrice}
