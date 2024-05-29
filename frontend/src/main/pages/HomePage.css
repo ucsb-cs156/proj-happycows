@@ -16,15 +16,14 @@
   background-size: auto auto;
   background-clip: border-box;
   background-size: 200% auto;
-  color: #0e442d;
+  color: rgb(245, 210, 140);
   background-clip: text;
-  text-fill-color: transparent;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: textclip 8s linear infinite;
+
+
   display: inline-block;
   font-size: 50px;
-  font-family: 'Rye', cursive;
+  font-family: 'Rye', serif;
 }
 
 @keyframes textclip {

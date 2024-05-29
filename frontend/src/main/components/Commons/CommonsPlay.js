@@ -11,9 +11,10 @@ export default function CommonsPlay({ currentUser }) {
 
   return (
     <div data-testid="CommonsPlay">
-      <Card data-testid = "commons-card" style={{opacity: ".9" }}>
-      <h1 className="animate-charcter"> {welcomeText} {firstName}! 
-    </h1>
+      <Card data-testid = "commons-card" className= "woodentitle">
+      <div className= "text-center border-0 my-3">
+        <h1 data-testid="commonsPlay-title" className="animate-charcter">{welcomeText} {firstName}!</h1>
+      </div> 
     </Card>
     </div>
   );
