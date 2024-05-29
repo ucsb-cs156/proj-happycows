@@ -58,7 +58,7 @@ export default function PlayPage() {
     );
     // Stryker restore all
 
-    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); // does the commons exist?
+    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); 
     let commonsforuser;
     let matched; 
 
