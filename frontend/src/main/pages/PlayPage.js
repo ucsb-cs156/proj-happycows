@@ -67,9 +67,23 @@ export default function PlayPage() {
             },
         }
     );
-
     // Stryker restore all
 
+    // Stryker disable all
+    const { data: announcementsResponse } = useBackend(
+        [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+        {
+            method: "GET",
+            url: "/api/announcements/getbycommonsid",
+            params: {
+                commonsId: commonsId,
+            },
+        }
+    );
+
+    const announcements = announcementsResponse ? announcementsResponse.content : null;
+    // Stryker restore all
+    
     // Stryker disable all (can't check if commonsId is null because it is mocked)
     const objectToAxiosParamsBuy = (newUserCommons) => ({
         url: "/api/usercommons/buy",
@@ -165,6 +179,7 @@ export default function PlayPage() {
                         <CommonsOverview
                             commonsPlus={commonsPlus}
                             currentUser={currentUser}
+                            announcements={announcements}
                         />
                     )}
                     <br />

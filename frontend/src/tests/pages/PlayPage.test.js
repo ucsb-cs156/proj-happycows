@@ -37,6 +37,19 @@ describe("PlayPage tests", () => {
             userId: 1,
             showChat: true
         };
+
+        const announcementsResponse = {
+            content: [
+                {
+                    id: 1,
+                    commonsId: 1,
+                    startDate: "2024-05-22T22:19:56.800-07:00",
+                    endDate: null,
+                    announcementText: "First Announcement"
+                }
+            ]
+        };
+
         axiosMock.reset();
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
@@ -64,6 +77,7 @@ describe("PlayPage tests", () => {
         axiosMock.onGet("/api/profits/all/commonsid").reply(200, []);
         axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
         axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
+        axiosMock.onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } }).reply(200, announcementsResponse);
     });
 
     test("renders without crashing", () => {
@@ -89,10 +103,10 @@ describe("PlayPage tests", () => {
         const buyCowButton = screen.getByTestId("buy-cow-button");
         fireEvent.click(buyCowButton);
 
-        const modal_buy = screen.findByTestId("buy-sell-cow-modal")
+        const modal_buy = screen.findByTestId("buy-sell-cow-modal");
         expect(await modal_buy).toBeInTheDocument();
-        const submitModalButton = screen.getByTestId("buy-sell-cow-modal-submit")
-        fireEvent.click(submitModalButton)
+        const submitModalButton = screen.getByTestId("buy-sell-cow-modal-submit");
+        fireEvent.click(submitModalButton);
 
         await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
     });
@@ -129,6 +143,7 @@ describe("PlayPage tests", () => {
             </QueryClientProvider>
         );
 
+        expect(await screen.findByTestId("announcement-test")).toBeInTheDocument();
         expect(await screen.findByText(/Announcements/)).toBeInTheDocument();
         expect(await screen.findByTestId("CommonsPlay")).toBeInTheDocument();
     });
@@ -342,5 +357,5 @@ describe("PlayPage tests", () => {
         await waitFor(() => {
             expect(screen.getByTestId("playpage-chat-toggle")).toBeInTheDocument();
         });
-    })
+    });
 });

@@ -413,6 +413,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
                         style={{width: '30%'}}
                 >{buttonLabel}</Button>
             </Row>
+
         </Form>
     );
 }
