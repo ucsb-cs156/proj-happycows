@@ -66,7 +66,7 @@ describe("PlayPage tests", () => {
         axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
     });
 
-    test("renders without crashing", () => {
+    test("renders without crashing", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -86,6 +86,7 @@ describe("PlayPage tests", () => {
         );
 
         expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
+        expect(screen.queryByText("This commons does not exist!")).not.toBeInTheDocument();
         const buyCowButton = screen.getByTestId("buy-cow-button");
         fireEvent.click(buyCowButton);
 
@@ -532,7 +533,7 @@ describe("PlayPage tests", () => {
                     <PlayPage commonsPlusExists={commonsPlusExists} matched={matched}/> 
                 </MemoryRouter>
             </QueryClientProvider>
-        );
+        ); 
 
         await waitFor(() => {
             expect(screen.getByText("Announcements")).toBeInTheDocument();
@@ -591,54 +592,4 @@ describe("PlayPage tests", () => {
         });        
     })
 
-    
-    test("User not allowed to access a commons that does not exist - test for negation of commonsPlusExists", async () => {
-
-        axiosMock.reset();
-        axiosMock.resetHistory();
-    
-        axiosMock.onGet("/api/currentUser").reply(200, { 
-            user: {
-                id: 1,
-                email: "pconrad.cis@gmail.com",
-                googleSub: "102656447703889917227",
-                pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
-                fullName: "Phil Conrad",
-                givenName: "Phil",
-                familyName: "Conrad",
-                emailVerified: true,
-                locale: "en",
-                hostedDomain: null,
-                admin: false,
-                commons: [
-                    {
-                        id: 5,
-                        name: "hello5",
-                    }
-                ]
-            },
-            roles: [
-                {
-                    authority: "ROLE_USER"
-                }
-            ]
-        });
-    
-        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
-        //axiosMock.onGet("/api/commons/plus").reply(200, undefined);
-        const commonsPlusExists = true;
-    
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <PlayPage commonsPlusExists={commonsPlusExists}/>
-                </MemoryRouter>
-            </QueryClientProvider>
-        ); 
-    
-        await waitFor(() => { 
-            expect(screen.queryByText("Announcements")).toBeInTheDocument();
-        });       
-    })
-
-});
+});  

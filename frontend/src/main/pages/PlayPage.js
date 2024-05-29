@@ -174,9 +174,10 @@ export default function PlayPage() {
         >
             <BasicLayout>
                 <Container> 
-                    {!!commonsPlusExists && <h1>This commons does not exist!</h1>}
-                    {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {!commonsPlus && <h1>This commons does not exist!</h1>}
                     {notallowed && <h1>You have yet to join this commons!</h1>} 
+                    {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
