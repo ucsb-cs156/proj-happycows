@@ -22,6 +22,8 @@ export default function PlayPage() {
     const [message, setMessage] = useState();
     const [numCows, setNumCows] = useState(1);
 
+    
+
     const openModal = () => {
         setIsModalOpen(true);
     };
@@ -55,6 +57,18 @@ export default function PlayPage() {
         }
     );
     // Stryker restore all
+
+    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); 
+    let commonsforuser;
+    let matched; 
+
+    if (commonsPlusExists) { 
+        commonsforuser = currentUser.root.user.commons;
+        matched = commonsforuser.some(com => com.id === commonsPlus.commons.id);
+    }
+
+    const allowed = commonsPlusExists && matched;
+    const notallowed = commonsPlusExists && !matched;
 
     // Stryker disable all
     const { data: userCommonsProfits } = useBackend(
@@ -160,7 +174,8 @@ export default function PlayPage() {
         >
             <BasicLayout>
                 <Container>
-                    {!!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {notallowed && <h1>You have yet to join this commons!</h1>}
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
