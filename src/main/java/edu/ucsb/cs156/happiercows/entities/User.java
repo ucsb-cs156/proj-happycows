@@ -27,7 +27,7 @@ public class User {
     private String hostedDomain;
     private boolean admin;
     @Builder.Default
-    private Boolean suspended = false;
+    private boolean suspended = false;
 
   @Builder.Default
   private Instant lastOnline = Instant.now();
