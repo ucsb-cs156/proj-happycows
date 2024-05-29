@@ -7,8 +7,6 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 import {apiCurrentUserFixtures} from "fixtures/currentUserFixtures";
 import {systemInfoFixtures} from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
-import { announcementFixtures } from "fixtures/announcementFixtures";
-import { create } from "react-test-renderer";
 
 const mockedNavigate = jest.fn();
 
