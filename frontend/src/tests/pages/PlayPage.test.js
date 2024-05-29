@@ -529,7 +529,7 @@ describe("PlayPage tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <PlayPage commonsPlusExists={commonsPlusExists} matched={matched}/>
+                    <PlayPage commonsPlusExists={commonsPlusExists} matched={matched}/> 
                 </MemoryRouter>
             </QueryClientProvider>
         );
@@ -539,6 +539,106 @@ describe("PlayPage tests", () => {
         });        
 
         expect(screen.getByText("You have yet to join this commons!")).toBeInTheDocument();
+    })
+
+
+    test("User not allowed to access a commons that does not exist", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+
+        axiosMock.onGet("/api/currentUser").reply(200, { 
+                user: {
+                    id : 1,
+                    email: "pconrad.cis@gmail.com",
+                    googleSub: "102656447703889917227",
+                    pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+                    fullName : "Phil Conrad",
+                    givenName : "Phil",
+                    familyName : "Conrad",
+                    emailVerified : true,
+                    locale: "en",
+                    hostedDomain: null,
+                    admin : false,
+                    commons : [
+                        {
+                            id : 4,
+                            name : "Commons4",
+                        }
+                    ]
+                },
+                roles: [
+                    {
+                        authority: "ROLE_USER"
+                    },
+                ]
+            }
+        );
+
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/commons/plus").reply(200, undefined);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => { 
+            expect(screen.getByText("This commons does not exist!")).toBeInTheDocument();
+        });        
+    })
+
+    
+    test("User not allowed to access a commons that does not exist - test for negation of commonsPlusExists", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+    
+        axiosMock.onGet("/api/currentUser").reply(200, { 
+            user: {
+                id: 1,
+                email: "pconrad.cis@gmail.com",
+                googleSub: "102656447703889917227",
+                pictureUrl: "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+                fullName: "Phil Conrad",
+                givenName: "Phil",
+                familyName: "Conrad",
+                emailVerified: true,
+                locale: "en",
+                hostedDomain: null,
+                admin: false,
+                commons: [
+                    {
+                        id: 5,
+                        name: "hello5",
+                    }
+                ]
+            },
+            roles: [
+                {
+                    authority: "ROLE_USER"
+                }
+            ]
+        });
+    
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        //axiosMock.onGet("/api/commons/plus").reply(200, undefined);
+        const commonsPlusExists = true;
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage commonsPlusExists={commonsPlusExists}/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        ); 
+    
+        await waitFor(() => { 
+            expect(screen.queryByText("Announcements")).toBeInTheDocument();
+        });       
     })
 
 });

@@ -58,7 +58,7 @@ export default function PlayPage() {
     );
     // Stryker restore all
 
-    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); 
+    const commonsPlusExists = !(typeof commonsPlus == 'undefined'); // does the commons exist?
     let commonsforuser;
     let matched; 
 
@@ -173,9 +173,10 @@ export default function PlayPage() {
             data-testid="playpage-div"
         >
             <BasicLayout>
-                <Container>
+                <Container> 
+                    {!!commonsPlusExists && <h1>This commons does not exist!</h1>}
                     {allowed && !!currentUser && <CommonsPlay currentUser={currentUser} />}
-                    {notallowed && <h1>You have yet to join this commons!</h1>}
+                    {notallowed && <h1>You have yet to join this commons!</h1>} 
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
