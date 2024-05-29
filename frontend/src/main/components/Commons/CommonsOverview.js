@@ -13,7 +13,9 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
     return (
         <Card data-testid="CommonsOverview">
             <Card.Header as="h5" className = "woodenboardtable">Announcements</Card.Header>
-            <Card.Body style={{backgroundColor: "rgb(245, 210, 140)"}}>
+            <Card.Body style={
+                // Stryker disable next-line all: don't test CSS params
+                {backgroundColor: "rgb(245, 210, 140)"}}>
                 <Row>
                     <Col>
                         <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>

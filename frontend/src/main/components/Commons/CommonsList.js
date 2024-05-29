@@ -53,7 +53,10 @@ const CommonsList = (props) => {
             : 
             <Card.Subtitle>
                 <Container>
-                    <Row style={{justifyContent: "center", fontFamily: 'Sancreek', paddingBottom: "10px"}} data-testid="commonsList-default-message">
+                    <Row style={ 
+                        // Stryker disable next-line all: don't test CSS params
+                        {justifyContent: "center", fontFamily: 'Sancreek', paddingBottom: "10px"}}
+                        data-testid="commonsList-default-message">
                         There are currently no commons to {defaultMessage}
                     </Row>
                 </Container>
