@@ -1,6 +1,6 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import PagedJobsTable from "main/components/Jobs/PagedJobsTable";
+import JobsTable from "main/components/Jobs/JobsTable";
 import Accordion from "react-bootstrap/Accordion";
 import TestJobForm from "main/components/Jobs/TestJobForm";
 import UpdateCowHealthForm from "main/components/Jobs/UpdateCowHealthForm";
@@ -9,7 +9,7 @@ import InstructorReportForm from "main/components/Jobs/InstructorReportForm";
 import InstructorReportSpecificCommonsForm from "main/components/Jobs/InstructorReportSpecificCommonsForm";
 import { toast } from "react-toastify";
 
-import { useBackendMutation } from "main/utils/useBackend";
+import {useBackend, useBackendMutation } from "main/utils/useBackend";
 import SetCowHealthForm from "main/components/Jobs/SetCowHealthForm";
 
 const AdminJobsPage = () => {
@@ -196,6 +196,35 @@ const jobLaunchers = [
   },
 ];
 
+// Stryker disable all
+const { data: jobs } = useBackend(
+  ["/api/jobs/all"],
+  {
+    method: "GET",
+    url: "/api/jobs/all",
+  },
+  { content: [] }
+);
+// Stryker restore all
+
+const jobsForTable = 
+  Array.isArray(jobs) ?
+  jobs.map((job) => {
+    return {
+      id: job.id,
+      createdAt: job.createdAt,
+      updatedAt: job.updatedAt,
+      status: job.status,
+      log: job.log,
+    };
+  }) : 
+  // Stryker disable next-line ArrayDeclaration : no need to test what happens if [] is replaced with ["Stryker was here"]
+  [];
+
+// display in reverse chronological order
+// Stryker disable next-line all : no need to test what happens if jobsForTable is reversed
+jobsForTable.reverse();
+
 return (
   <BasicLayout>
     <h2 className="p-3">Launch Jobs</h2>
@@ -209,7 +238,7 @@ return (
     </Accordion>
 
     <h2 className="p-3">Job Status</h2>
-    <PagedJobsTable />
+    <JobsTable jobs={jobsForTable}/>
   </BasicLayout>
 );
 };

@@ -19,8 +19,6 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import ProtectedPlayPage from "main/pages/ProtectedPlayPage";
-import AdminSuspendUserPage from "main/pages/AdminSuspendUserPage";
-
 
 function App() {
     const { data: currentUser } = useCurrentUser();
@@ -49,10 +47,6 @@ function App() {
             <Route
                 path="/admin/play/:commonsId/user/:userId"
                 element={<AdminViewPlayPage />}
-            />
-            <Route 
-                path="/admin/suspend/user/:userId" 
-                element={<AdminSuspendUserPage />}
             />
         </>
     ) : null;
