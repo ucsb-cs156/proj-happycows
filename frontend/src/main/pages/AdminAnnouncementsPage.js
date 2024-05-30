@@ -1,4 +1,5 @@
 import React from "react";
+import Button from 'react-bootstrap/Button';
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
@@ -28,6 +29,9 @@ export default function AdminAnnouncementsPage() {
           <Row  className="pt-5">
             <Col>
               <h2>Announcements for Commons: {commonsName}</h2>
+              <Button variant = "primary" href = {`/admin/announcements/${commonsId}/create`} >
+                Create Announcement
+              </Button>
             </Col>
           </Row>
         </div>
