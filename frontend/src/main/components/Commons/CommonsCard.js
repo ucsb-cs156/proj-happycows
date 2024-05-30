@@ -54,18 +54,6 @@ const CommonsCard = ({ buttonText, buttonLink, commons, color }) => {
                                     }
                                     }} >{buttonText}
                             </Button>
-                            { buttonText === "Visit" &&
-                            <Button
-                                data-testid={`${testIdPrefix}-button-leave-${commons.id}`}
-                                size="sm"
-                                className="mx-4"
-                                // Stryker disable next-line all : don't mutation test CSS 
-                                style={{ backgroundColor: 'rgba(255, 80, 80)', outline: 'none', border: 'none', fontWeight: 'bold', color: 'rgba(50, 50, 50, 1)', textAlign: 'center'}}
-                                onClick={() => {
-                                        alert("The leave feature has not yet been implemented. This will be a destructive action.");
-                                    }} >Leave
-                            </Button>
-                            }
                         </Col>
                     }
                 </Row>

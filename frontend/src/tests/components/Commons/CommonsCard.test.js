@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import '@testing-library/jest-dom'
 import CommonsCard from "main/components/Commons/CommonsCard";
 import commonsFixtures from "fixtures/commonsFixtures";
@@ -144,29 +144,5 @@ describe("CommonsCard tests", () => {
         expect(button.textContent).toEqual('Join');
         fireEvent.click(button);
         expect(click).toBeCalledTimes(1);
-    });
-
-    test("no leave for join card", async () => {
-        const click = jest.fn();
-        render(
-            <CommonsCard commons={commonsFixtures.threeCommons[0]} buttonText={"Join"} buttonLink={click} />
-        );
-        expect(() => screen.getByTestId("commonsCard-button-leave-5")).toThrow('Unable to find an element');
-    });
-
-    test("leave for joined card", async () => {
-        const click = jest.fn();
-        render(
-            <CommonsCard commons={commonsFixtures.threeCommons[0]} buttonText={"Visit"} buttonLink={click} />
-        );
-
-        const button = screen.getByTestId("commonsCard-button-Visit-5");
-        expect(button).toBeInTheDocument();
-        expect(typeof (button.textContent)).toBe('string');
-        expect(button.textContent).toEqual('Visit');
-        const leaveButton = screen.getByTestId("commonsCard-button-leave-5");
-        expect(leaveButton).toBeInTheDocument();
-        fireEvent.click(leaveButton);
-        await waitFor(() => expect(window.alert).toHaveBeenCalledWith("The leave feature has not yet been implemented. This will be a destructive action."));
     });
 });
