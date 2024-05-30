@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { formatTime } from "main/utils/dateUtils";
-import { restoreUser, suspendUser } from "main/utils/users";
+import { useRestoreUser, useSuspendUser } from "main/utils/users";
 import { Button, Modal } from "react-bootstrap";
 
 export default function UsersTable({ users }) {
+  const { mutate: suspendUser } = useSuspendUser();
+  const { mutate: restoreUser } = useRestoreUser();
   const [showSuspendModal, setShowSuspendModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);

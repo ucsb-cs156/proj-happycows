@@ -1,5 +1,6 @@
 import { useQuery } from "react-query";
 import axios from "axios";
+import { useBackendMutation } from "./useBackend";
 
 export function useUsers() {
   return useQuery(
@@ -20,42 +21,26 @@ export function useUsers() {
   );
 }
 
-export async function suspendUser(cell) {
-  const uri = "/api/admin/users/suspend";
-  const user = cell.row.values;
-  try {
-    const response = await axios.post(
-      uri,
-      {},
-      {
-        params: {
-          userId: user.id,
-        },
-      }
-    );
-    return response.data;
-  } catch (e) {
-    console.error(`Error suspending user with id ${user.id} from ${uri}`, e);
-    return [];
-  }
+export function useSuspendUser() {
+  return useBackendMutation(
+    (cell) => ({
+      method: "post",
+      url: "/api/admin/users/suspend",
+      params: { userId: cell.row.values.id },
+    }),
+    {},
+    "users"
+  );
 }
 
-export async function restoreUser(cell) {
-  const uri = "/api/admin/users/restore";
-  const user = cell.row.values;
-  try {
-    const response = await axios.post(
-      uri,
-      {},
-      {
-        params: {
-          userId: user.id,
-        },
-      }
-    );
-    return response.data;
-  } catch (e) {
-    console.error(`Error restoring user with id ${user.id} from ${uri}`, e);
-    return [];
-  }
+export function useRestoreUser() {
+  return useBackendMutation(
+    (cell) => ({
+      method: "post",
+      url: "/api/admin/users/restore",
+      params: { userId: cell.row.values.id },
+    }),
+    {},
+    "users"
+  );
 }
