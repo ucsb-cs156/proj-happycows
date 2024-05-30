@@ -3,9 +3,11 @@ import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
 
+const mockMutate = jest.fn();
+
 jest.mock("main/utils/users", () => ({
-  suspendUser: jest.fn(),
-  restoreUser: jest.fn(),
+  useSuspendUser: () => ({ mutate: mockMutate }),
+  useRestoreUser: () => ({ mutate: mockMutate }),
 }));
 
 describe("UserTable tests", () => {
@@ -128,7 +130,7 @@ describe("Modal tests", () => {
     });
 
     await waitFor(() => {
-      expect(require("main/utils/users").suspendUser).toHaveBeenCalled();
+      expect(mockMutate).toHaveBeenCalled();
     });
   });
 
@@ -148,7 +150,7 @@ describe("Modal tests", () => {
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
     });
-    expect(require("main/utils/users").suspendUser).not.toHaveBeenCalled();
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
   test("Pressing the escape key on the suspended modal cancels the suspension", async () => {
@@ -170,7 +172,7 @@ describe("Modal tests", () => {
       expect(document.body).not.toHaveClass("modal-open");
     });
 
-    expect(require("main/utils/users").suspendUser).not.toHaveBeenCalled();
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
   test("Clicking Restore button opens the modal for restoreUser", async () => {
@@ -216,7 +218,7 @@ describe("Modal tests", () => {
     });
 
     await waitFor(() => {
-      expect(require("main/utils/users").restoreUser).toHaveBeenCalled();
+      expect(mockMutate).toHaveBeenCalled();
     });
   });
 
@@ -236,7 +238,7 @@ describe("Modal tests", () => {
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
     });
-    expect(require("main/utils/users").restoreUser).not.toHaveBeenCalled();
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
   test("Pressing the escape key on the restored modal cancels the restoration", async () => {
@@ -259,6 +261,6 @@ describe("Modal tests", () => {
       expect(document.body).not.toHaveClass("modal-open");
     });
 
-    expect(require("main/utils/users").restoreUser).not.toHaveBeenCalled();
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 });

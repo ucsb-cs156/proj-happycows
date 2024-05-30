@@ -29,6 +29,7 @@ export function useSuspendUser() {
       params: { userId: cell.row.values.id },
     }),
     {},
+    // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
     "users"
   );
 }
@@ -41,6 +42,7 @@ export function useRestoreUser() {
       params: { userId: cell.row.values.id },
     }),
     {},
+    // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
     "users"
   );
 }

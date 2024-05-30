@@ -4,8 +4,9 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import { restoreUser, suspendUser, useUsers } from "main/utils/users";
+import { useRestoreUser, useSuspendUser, useUsers } from "main/utils/users";
 import usersFixtures from "fixtures/usersFixtures";
+import { act } from "react-dom/test-utils";
 
 jest.mock("react-router-dom");
 
@@ -80,6 +81,9 @@ describe("utils/users tests", () => {
     beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation();
       axiosMock = new AxiosMockAdapter(axios);
+      queryClient.prefetchQuery("users", async () => {
+        return [];
+      });
     });
 
     afterEach(() => {
@@ -87,42 +91,30 @@ describe("utils/users tests", () => {
       console.error.mockRestore();
     });
 
+    const queryClient = new QueryClient();
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
     test("suspendUser posts to correct endpoint on successful request", async () => {
       axiosMock
         .onPost("/api/admin/users/suspend")
         .reply(200, "User with id 1 suspended");
 
-      const user = { id: 1 }; // Simulating user data
-      const response = await suspendUser({ row: { values: user } });
-      expect(response).toEqual("User with id 1 suspended");
+      const userCell = { row: { values: { id: 1 } } };
+      const { result, waitFor } = renderHook(() => useSuspendUser(), {
+        wrapper,
+      });
+
+      act(() => {
+        result.current.mutate(userCell);
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      const queryState = queryClient.getQueryState("users");
+      expect(queryState).toBeDefined();
+      expect(result.current.data).toEqual("User with id 1 suspended");
       expect(axiosMock.history.post[0].params).toEqual({ userId: 1 });
-    });
-
-    test("suspendUser hits error logic on 404 error", async () => {
-      axiosMock.onPost("/api/admin/users/suspend").reply(404);
-      let result;
-      const user = { id: 1 };
-      result = await suspendUser({ row: { values: user } });
-      expect(console.error).toHaveBeenCalledWith(
-        `Error suspending user with id ${user.id} from /api/admin/users/suspend`,
-        expect.anything()
-      );
-      expect(result).toEqual([]);
-    });
-    test("suspendUser returns empty array on failure", async () => {
-      var axiosMock = new AxiosMockAdapter(axios);
-      axiosMock.onPost("/api/admin/users/suspend").networkError();
-
-      const user = { id: 1 };
-      const response = await suspendUser({ row: { values: user } }).catch(
-        (e) => e
-      );
-
-      expect(response).toEqual([]);
-      expect(console.error).toHaveBeenCalledWith(
-        `Error suspending user with id ${user.id} from /api/admin/users/suspend`,
-        expect.anything()
-      );
     });
   });
 
@@ -131,6 +123,9 @@ describe("utils/users tests", () => {
     beforeEach(() => {
       jest.spyOn(console, "error").mockImplementation();
       axiosMock = new AxiosMockAdapter(axios);
+      queryClient.prefetchQuery("users", async () => {
+        return [];
+      });
     });
 
     afterEach(() => {
@@ -138,43 +133,30 @@ describe("utils/users tests", () => {
       console.error.mockRestore();
     });
 
+    const queryClient = new QueryClient();
+    const wrapper = ({ children }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
     test("restoreUser posts to correct endpoint on success request", async () => {
       axiosMock
         .onPost("/api/admin/users/restore")
         .reply(200, "User with id 1 restored");
 
-      const user = { id: 1 }; // Simulating user data
-      const response = await restoreUser({ row: { values: user } });
-      expect(response).toEqual("User with id 1 restored");
+      const userCell = { row: { values: { id: 1 } } };
+      const { result, waitFor } = renderHook(() => useRestoreUser(), {
+        wrapper,
+      });
+
+      act(() => {
+        result.current.mutate(userCell);
+      });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      const queryState = queryClient.getQueryState("users");
+      expect(queryState).toBeDefined();
+      expect(result.current.data).toEqual("User with id 1 restored");
       expect(axiosMock.history.post[0].params).toEqual({ userId: 1 });
-    });
-
-    test("restoreUser hits error logic on 404 error", async () => {
-      axiosMock.onPost("/api/admin/users/restore").reply(404);
-      let result;
-      const user = { id: 1 };
-      result = await restoreUser({ row: { values: user } });
-      expect(console.error).toHaveBeenCalledWith(
-        `Error restoring user with id ${user.id} from /api/admin/users/restore`,
-        expect.anything()
-      );
-      expect(result).toEqual([]);
-    });
-
-    test("restoreUser returns empty array on failure", async () => {
-      var axiosMock = new AxiosMockAdapter(axios);
-      axiosMock.onPost("/api/admin/users/restore").networkError();
-
-      const user = { id: 1 };
-      const response = await restoreUser({ row: { values: user } }).catch(
-        (e) => e
-      );
-
-      expect(response).toEqual([]); // Ensure that it returns an empty array on error
-      expect(console.error).toHaveBeenCalledWith(
-        `Error restoring user with id ${user.id} from /api/admin/users/restore`,
-        expect.anything()
-      );
     });
   });
 });
