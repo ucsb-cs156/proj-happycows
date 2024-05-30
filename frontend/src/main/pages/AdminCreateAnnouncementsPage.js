@@ -6,6 +6,7 @@ export default function AdminCreateAnnouncementsPage() {
         <BasicLayout>
             <div className="pt-2">
                 <h1>Create Announcement</h1>
+                <h2>Not implemented yet; coming soon!</h2>
             </div>
         </BasicLayout>
     )
