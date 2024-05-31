@@ -35,13 +35,16 @@ const CommonsCard = ({ buttonText, buttonLink, commons, color }) => {
                 <Row>
                     <Col sx={4} data-testid={`${testIdPrefix}-name-${commons.id}`}>{commons.name}</Col>
                     {buttonText != null &&
-                        <Col sm={4}>
+                        <Col sm={4}
+                            // Stryker disable next-line all : don't mutation test CSS 
+                            style = {{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+                        >
                             <Button
                                 data-testid={`${testIdPrefix}-button-${buttonText}-${commons.id}`}
                                 size="sm"
                                 className="mx-4"
                                 // Stryker disable next-line all : don't mutation test CSS 
-                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', outline: 'none', border: 'none', fontWeight: 'bold', color: 'rgba(0, 0, 0, 0.7)'}}
+                                style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', outline: 'none', border: '1.5px solid lightgrey', fontWeight: 'bold', color: 'rgba(0, 0, 0, 0.7)', textAlign: 'center'}}
                                 onClick={() => {
                                     if (buttonText === "Join" && isFutureDate(commons.startingDate)) {
                                         // Stryker disable next-line all: unable to read alert text in tests
