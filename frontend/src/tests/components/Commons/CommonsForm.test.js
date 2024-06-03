@@ -360,7 +360,7 @@ test("the correct parameters are passed to useBackend", async () => {
   test("populates form fields with default values when initialCommons is not provided", async () => {
 
     const curr = new Date();
-    const today = curr.toLocaleDateString('en-CA');
+    const today = curr.toLocaleDateString('en-CA'); // Canadian english gives YYYY-MM-DD
     const currMonth = curr.getMonth() % 12;
     const nextMonth = new Date(curr.getFullYear(), currMonth + 1, curr.getDate()).toISOString().substr(0, 10);
     const defaultValuesData = {
