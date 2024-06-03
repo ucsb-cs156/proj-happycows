@@ -288,7 +288,7 @@ describe("CommonsForm tests", () => {
 
   it("renders correctly when an initialCommons is not passed in", async () => {
     const curr = new Date();
-    const today = curr.toLocaleDateString('en-CA');
+    const today = curr.toLocaleDateString('en-CA'); // Canadian english gives YYYY-MM-DD
     const currMonth = curr.getMonth() % 12;
     const nextMonth = new Date(curr.getFullYear(), currMonth + 1, curr.getDate()).toISOString().substr(0, 10);
     const DefaultVals = {
