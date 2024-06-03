@@ -70,7 +70,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
     
     const testid = "CommonsForm";
     const curr = new Date();
-    const today = curr.toLocaleDateString('en-CA');
+    const today = curr.toLocaleDateString('en-CA'); // Canadian english gives YYYY-MM-DD
     const currMonth = curr.getMonth() % 12;
     const nextMonth = new Date(curr.getFullYear(), currMonth + 1, curr.getDate()).toISOString().substr(0, 10);
     const DefaultVals = {
