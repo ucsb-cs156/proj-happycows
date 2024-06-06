@@ -358,7 +358,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         //act 
-        MvcResult response = mockMvc.perform(get("/api/announcements/a?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/all?commonsId={commonsId}", commonsId))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
