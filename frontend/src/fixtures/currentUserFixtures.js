@@ -76,6 +76,12 @@ const apiCurrentUserFixtures = {
                     "name": "MyCommon",
                     "cowPrice": 2,
                     "milkPrice": 3,
+                },
+                {
+                    "id": 0,
+                    "name": "Common2",
+                    "cowPrice": 3,
+                    "milkPrice": 7,
                 }
             ]
         },

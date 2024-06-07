@@ -12,8 +12,10 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
     const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard );
     return (
         <Card data-testid="CommonsOverview">
-            <Card.Header as="h5">Announcements</Card.Header>
-            <Card.Body>
+            <Card.Header as="h5" className = "woodenboardtable">Announcements</Card.Header>
+            <Card.Body style={
+                // Stryker disable next-line all: don't test CSS params
+                {backgroundColor: "rgb(245, 210, 140)"}}>
                 <Row>
                     <Col>
                         <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>

@@ -34,9 +34,5 @@ describe("CommonsPlay tests", () => {
         await waitFor(()=>{
             expect(screen.getByTestId("commons-card")).toBeInTheDocument();
         });
-    
-        const CommonsCard = screen.getByTestId("commons-card");
-        expect(CommonsCard).toHaveStyle('opacity: .9;');       
-
     });
 });

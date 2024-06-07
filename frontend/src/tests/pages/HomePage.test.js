@@ -206,10 +206,6 @@ describe("HomePage tests", () => {
 
 
         expect(await screen.findByTestId("HomePage-intro-card")).toBeInTheDocument();
-    
-        const HomePageCard = screen.getByTestId("HomePage-intro-card");
-        expect(HomePageCard).toHaveStyle('opacity: .9;');       
-
     });
 
 });

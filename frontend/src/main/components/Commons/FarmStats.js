@@ -5,8 +5,12 @@ import { ProgressBar } from "react-bootstrap";
 const FarmStats = ({userCommons}) => {
     return (
         <Card>
-        <Card.Header as="h5">Your Farm Stats</Card.Header>
-        <Card.Body>
+        <Card.Header as="h5" className = "woodenboardtable">
+            Your Farm Stats
+        </Card.Header>
+        <Card.Body style={
+            // Stryker disable next-line all: don't test CSS params
+            {backgroundColor: "rgb(245, 210, 140)"}}>
             {/* update total wealth and cow health with data from fixture */}
             <Card.Title className="text-center">
                 💰 Total Wealth: ${userCommons.totalWealth.toFixed(2)}

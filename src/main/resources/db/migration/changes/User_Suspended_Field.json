@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "User-Suspended-Field",
+        "author": "JeffreyM",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "USERS",
+                  "columnName": "SUSPENDED"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "USERS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "SUSPENDED",
+                    "type": "BOOLEAN",
+                    "defaultValue": "false"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

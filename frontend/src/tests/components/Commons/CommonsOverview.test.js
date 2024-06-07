@@ -39,7 +39,7 @@ describe("CommonsOverview tests", () => {
     });
 
     test("Redirects to the LeaderboardPage for an admin when you click visit", async () => {
-        apiCurrentUserFixtures.adminUser.user.commons = commonsFixtures.oneCommons[0];
+        apiCurrentUserFixtures.adminUser.user.commons[0] = commonsFixtures.oneCommons;
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/commons/plus", {params: {id:1}}).reply(200, commonsPlusFixtures.oneCommonsPlus[0]);
         axiosMock.onGet("/api/leaderboard/all").reply(200, leaderboardFixtures.threeUserCommonsLB);
