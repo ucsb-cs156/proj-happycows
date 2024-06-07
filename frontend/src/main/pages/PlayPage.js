@@ -8,7 +8,7 @@ import CommonsPlay from "main/components/Commons/CommonsPlay";
 import FarmStats from "main/components/Commons/FarmStats";
 import ManageCows from "main/components/Commons/ManageCows";
 import Profits from "main/components/Commons/Profits";
-import { useBackend, useBackendMutation } from "main/utils/useBackend";
+import { useBackendNoToast, useBackendMutation } from "main/utils/useBackend";
 import { hasRole } from "main/utils/currentUser";
 import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.jpg";
@@ -21,6 +21,13 @@ export default function PlayPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [message, setMessage] = useState();
     const [numCows, setNumCows] = useState(1);
+    const [showAfterDelay, setShowAfterDelay] = useState(false);
+    
+    const startDelay = () => {
+        setTimeout(() => {
+            setShowAfterDelay(true);
+        }, 100);
+    };
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -30,8 +37,16 @@ export default function PlayPage() {
         setIsModalOpen(false);
     };
 
+    // Stryker disable all : it is acceptable to exclude useBackend calls from mutation testing
+    const { data: commons } = useBackendNoToast(
+      ["/api/commons/all"],
+      { url: "/api/commons/all" },
+      []
+    );
+    // Stryker restore all
+
     // Stryker disable all
-    const { data: userCommons } = useBackend(
+    const { data: userCommons } = useBackendNoToast(
         [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
         {
             method: "GET",
@@ -44,7 +59,7 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: commonsPlus } = useBackend(
+    const { data: commonsPlus } = useBackendNoToast(
         [`/api/commons/plus?id=${commonsId}`],
         {
             method: "GET",
@@ -57,7 +72,7 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: userCommonsProfits } = useBackend(
+    const { data: userCommonsProfits } = useBackendNoToast(
         [`/api/profits/all/commonsid?commonsId=${commonsId}`],
         {
             method: "GET",
@@ -149,6 +164,11 @@ export default function PlayPage() {
         fontFamily: "Arial, sans-serif",
         fontSize: "30px",
     };
+    
+    const commonsLoaded = !(typeof commonsPlus == 'undefined');
+    const commonsExists = commons.some(com => parseInt(com.id) === parseInt(commonsId));
+    const userJoinedCommons = commonsLoaded && (currentUser.root.user.commons.some(com => com.id === commonsPlus.commons.id));
+    const userNotJoinedCommons = commonsLoaded && !(currentUser.root.user.commons.some(com => com.id === commonsPlus.commons.id));
 
     return (
         <div
@@ -160,7 +180,10 @@ export default function PlayPage() {
         >
             <BasicLayout>
                 <Container>
-                    {!!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {startDelay()}
+                    {!commonsExists && showAfterDelay &&  <h1>What are you doing here, friendo? This here commons don't exist! You best be headin' back.</h1>}
+                    {userJoinedCommons && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {userNotJoinedCommons && commonsExists && <h1>Whoa there, parder! You ain't a part of this commons!</h1> }            
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}
@@ -195,7 +218,7 @@ export default function PlayPage() {
                     )}
                 </Container>
             </BasicLayout>
-            { (hasRole(currentUser, "ROLE_ADMIN") || (!!commonsPlus && commonsPlus.commons.showChat)) &&
+            { ((hasRole(currentUser, "ROLE_ADMIN") && commonsExists) || (!!commonsPlus && commonsPlus.commons.showChat && userJoinedCommons)) &&
                 <div style={chatContainerStyle} data-testid="playpage-chat-div">
                     {!!isChatOpen && <ChatPanel commonsId={commonsId} />}
                     <Button
