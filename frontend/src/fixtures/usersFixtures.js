@@ -13,6 +13,7 @@ const usersFixtures = {
             "hostedDomain": "ucsb.edu",
             "admin": true,
             "lastOnline": "2023-06-04T18:45:16.014490Z",
+            "suspended": false,
         },
         {
             "id": 2,
@@ -27,6 +28,7 @@ const usersFixtures = {
             "hostedDomain": null,
             "admin": false,
             "lastOnline": "2023-06-04T18:45:16.014490Z",
+            "suspended": true,
         },
         {
             "id": 3,
@@ -41,6 +43,7 @@ const usersFixtures = {
             "hostedDomain": null,
             "admin": false,
             "lastOnline": "2023-06-04T18:45:16.014490Z",
+            "suspended": false,
         }
     ]
 }

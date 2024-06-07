@@ -1,4 +1,4 @@
-import { padWithZero, timestampToDate, daysSinceTimestamp, formatTime } from "main/utils/dateUtils";
+import { padWithZero, timestampToDate, daysSinceTimestamp, formatTime, makeCommonsStartEndDate } from "main/utils/dateUtils";
 
 
 describe("dateUtils tests", () => {
@@ -72,4 +72,18 @@ describe("dateUtils tests", () => {
       expect(formatTime(twoWeeksAgo.toISOString())).toEqual(twoWeeksAgo.toLocaleDateString());
     });
   })
+
+  describe ("makeCommonsStartEndDate tests", () => {
+
+    it('correctly creates the start and end date for troublsome times', () => {
+      jest.useFakeTimers().setSystemTime(new Date('2022-06-30T21:00:00'));
+      const [today, nextMonth] = makeCommonsStartEndDate();
+    
+      expect(today).toBe('2022-06-30');
+      expect(nextMonth).toBe('2022-07-30');
+      
+      jest.useRealTimers();
+    });
+
+  });
 });

@@ -164,5 +164,48 @@ describe("utils/currentUser tests", () => {
             expect(hasRole({ loggedIn: true, root: { rolesList: ["ROLE_USER"] } }, "ROLE_ADMIN")).toBeFalsy();
             expect(hasRole({ loggedIn: true, root: { rolesList: ["ROLE_USER", "ROLE_ADMIN"] } }, "ROLE_ADMIN")).toBeTruthy();
         });
+        test('hasRole returns false when currentUser is null', () => {
+            expect(hasRole(null, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser is an empty object', () => {
+            expect(hasRole({}, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser loggedIn is null', () => {
+            expect(hasRole({ loggedIn: null }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser loggedIn is true but root is null', () => {
+            expect(hasRole({ loggedIn: true, root: null }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser loggedIn is true but root is an empty object', () => {
+            expect(hasRole({ loggedIn: true, root: {} }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser loggedIn is true but rolesList is null', () => {
+            expect(hasRole({ loggedIn: true, root: { rolesList: null } }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser loggedIn is true but rolesList is empty', () => {
+            expect(hasRole({ loggedIn: true, root: { rolesList: [] } }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns false when currentUser has roles but not ROLE_ADMIN', () => {
+            expect(hasRole({ loggedIn: true, root: { rolesList: ["ROLE_USER"] } }, "ROLE_ADMIN")).toBeFalsy();
+        });
+    
+        test('hasRole returns true when currentUser has ROLE_ADMIN', () => {
+            expect(hasRole({ loggedIn: true, root: { rolesList: ["ROLE_USER", "ROLE_ADMIN"] } }, "ROLE_ADMIN")).toBeTruthy();
+        });
+    
+        test('hasRole returns true when currentUser data structure has rolesList', () => {
+            expect(hasRole({ data: { root: { rolesList: ["ROLE_USER", "ROLE_ADMIN"] } } }, "ROLE_ADMIN")).toBeTruthy();
+        });
+    
+        test('hasRole returns false when currentUser data structure missing rolesList', () => {
+            expect(hasRole({ data: { root: {} } }, "ROLE_ADMIN")).toBeFalsy();
+        });
     });
 });

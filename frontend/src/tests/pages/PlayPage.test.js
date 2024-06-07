@@ -12,7 +12,8 @@ jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useParams: () => ({
         commonsId: 1
-    })
+    }),
+    useNavigate: () => jest.fn() // Mocking navigate function
 }));
 
 const mockToast = jest.fn();
@@ -24,6 +25,7 @@ jest.mock('react-toastify', () => {
         toast: (x) => mockToast(x)
     };
 });
+
 
 describe("PlayPage tests", () => {
     const axiosMock = new AxiosMockAdapter(axios);
@@ -343,4 +345,198 @@ describe("PlayPage tests", () => {
             expect(screen.getByTestId("playpage-chat-toggle")).toBeInTheDocument();
         });
     })
+
+
+    test("disallow user from navigating to unjoined common", async () => {
+
+        axiosMock.reset();
+        axiosMock.resetHistory();
+        axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+        axiosMock.onGet("/api/currentUser").reply(200, {
+
+        user: {
+            id : 1,
+            fullName : "Steven",
+            givenName : "steven",
+            familyName : "Le",
+            emailVerified : true,
+            admin : false,
+            commons : [
+                {
+                    id : 3,
+                    name : "Disallowed Commons",
+                }
+            ]
+
+        }});
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const accessDeniedElement = await screen.findByText("Access Denied.");
+        expect(accessDeniedElement).toBeInTheDocument();
+    
+        const styles = window.getComputedStyle(accessDeniedElement);
+        expect(styles.backgroundColor).toBe("black");
+        expect(styles.color).toBe("red");
+        expect(styles.textAlign).toBe("center");
+        expect(styles.padding).toBe("50px");
+    
+        expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    
+
+});
+
+
+
+test("user has not joined the commons (multiple commons)", async () => {
+
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+    axiosMock.onGet("/api/currentUser").reply(200, {
+
+    user: {
+        id : 1,
+        fullName : "Steven",
+        givenName : "steven",
+        familyName : "Le",
+        emailVerified : true,
+        admin : false,
+        commons : [
+            {
+                id : 2,
+                name : "Not this one",
+            },
+            {
+                id : 3,
+                name : "Don't exist!",
+            }
+        ]
+
+    }});
+
+    render(
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <PlayPage />
+            </MemoryRouter>
+        </QueryClientProvider>
+    );
+
+    const accessDeniedElement = await screen.findByText("Access Denied.");
+    expect(accessDeniedElement).toBeInTheDocument();
+
+    const styles = window.getComputedStyle(accessDeniedElement);
+    expect(styles.backgroundColor).toBe("black");
+    expect(styles.color).toBe("red");
+    expect(styles.textAlign).toBe("center");
+    expect(styles.padding).toBe("50px");
+
+    expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+
+})
+
+test("user has joined the commons (single common)", async () => {
+
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+    axiosMock.onGet("/api/currentUser").reply(200, {
+
+    user: {
+        id : 1,
+        fullName : "Test",
+        givenName : "Test",
+        familyName : "Testing",
+        emailVerified : true,
+        admin : false,
+        commons : [
+            {
+                id : 1,
+                name : "da test zone",
+            }
+        ]
+
+    }});
+
+    render(
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <PlayPage />
+            </MemoryRouter>
+        </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+        expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+
+    });
+
+    await waitFor(() => {
+        expect(screen.getByText("Announcements")).toBeInTheDocument();
+    });        
+
+    expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+    expect(screen.queryByText("Access Denied.")).not.toBeInTheDocument();
+
+})
+
+test("user has joined the commons (multiple commons)", async () => {
+
+    axiosMock.reset();
+    axiosMock.resetHistory();
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+
+    axiosMock.onGet("/api/currentUser").reply(200, {
+
+    user: {
+        id : 1,
+        fullName : "steven le",
+        givenName : "steven",
+        familyName : "Team 5",
+        emailVerified : true,
+        admin : false,
+        commons : [
+            {
+                id : 1,
+                name : "Interesting"
+            },
+            {
+                id : 3,
+                name : "Awesome Common!"
+            }
+        ]
+
+    }});
+
+    render(
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <PlayPage />
+            </MemoryRouter>
+        </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+        expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+        expect(screen.getByText("Announcements")).toBeInTheDocument();
+    });        
+
+    expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+    expect(screen.queryByText("Access Denied.")).not.toBeInTheDocument();
+
+})
+
 });

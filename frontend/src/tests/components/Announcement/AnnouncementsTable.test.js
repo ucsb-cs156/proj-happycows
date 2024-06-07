@@ -4,6 +4,8 @@ import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 
 
 const mockedNavigate = jest.fn();
@@ -15,10 +17,16 @@ jest.mock('react-router-dom', () => ({
 
 describe("AnnouncementTable tests", () => {
   const queryClient = new QueryClient();
+  const axiosMock = new AxiosMockAdapter(axios);
 
   const expectedHeaders = ["id", "Start Date ISO Format", "End Date ISO Format", "Announcement"];
   const expectedFields = ["id", "startDate", "endDate", "announcementText"];
   const testId = "AnnouncementTable";
+
+  beforeEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+  });
 
   test("renders empty table correctly", () => {
     
@@ -152,6 +160,8 @@ describe("AnnouncementTable tests", () => {
   test("Delete button calls delete callback", async () => {
     // arrange
     const currentUser = currentUserFixtures.adminUser;
+    axiosMock.onGet("/api/announcements/getbyid", {params: {id: 1}}).reply(200, announcementFixtures.oneAnnouncement);
+    axiosMock.onDelete("/api/announcements/delete", {params: {id: 1}}).reply(200);
 
     // act - render the component
     render(
@@ -171,5 +181,7 @@ describe("AnnouncementTable tests", () => {
 
     // act - click the delete button
     fireEvent.click(deleteButton);
+
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(0));
   });
 });

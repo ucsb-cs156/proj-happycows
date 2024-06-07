@@ -8,7 +8,7 @@ import CommonsPlay from "main/components/Commons/CommonsPlay";
 import FarmStats from "main/components/Commons/FarmStats";
 import ManageCows from "main/components/Commons/ManageCows";
 import Profits from "main/components/Commons/Profits";
-import { useBackend, useBackendMutation } from "main/utils/useBackend";
+import { useBackendConsole, useBackendMutation } from "main/utils/useBackend";
 import { hasRole } from "main/utils/currentUser";
 import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.jpg";
@@ -31,7 +31,7 @@ export default function PlayPage() {
     };
 
     // Stryker disable all
-    const { data: userCommons } = useBackend(
+    const { data: userCommons } = useBackendConsole(
         [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
         {
             method: "GET",
@@ -44,7 +44,7 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: commonsPlus } = useBackend(
+    const { data: commonsPlus } = useBackendConsole(
         [`/api/commons/plus?id=${commonsId}`],
         {
             method: "GET",
@@ -57,7 +57,7 @@ export default function PlayPage() {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: userCommonsProfits } = useBackend(
+    const { data: userCommonsProfits } = useBackendConsole(
         [`/api/profits/all/commonsid?commonsId=${commonsId}`],
         {
             method: "GET",
@@ -150,6 +150,9 @@ export default function PlayPage() {
         fontSize: "30px",
     };
 
+    // Stryker disable next-line OptionalChaining
+    const isUserInCommon = currentUser?.root?.user?.commons?.some(common => common.id === parseInt(commonsId));
+
     return (
         <div
             style={{
@@ -160,7 +163,11 @@ export default function PlayPage() {
         >
             <BasicLayout>
                 <Container>
-                    {!!currentUser && <CommonsPlay currentUser={currentUser} />}
+                {isUserInCommon && !!currentUser && <CommonsPlay currentUser={currentUser} />}
+                    {!isUserInCommon && currentUser && <h1 style={{ color: 'red', backgroundColor: 'black', padding: '50px', 
+                    textAlign: 'center' }}>
+                        Access Denied.
+                    </h1> }   
                     {!!commonsPlus && (
                         <CommonsOverview
                             commonsPlus={commonsPlus}

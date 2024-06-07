@@ -24,23 +24,30 @@ function isFutureDate(startingDate) {
     }
 }
 
-const CommonsCard = ({ buttonText, buttonLink, commons }) => {
+const CommonsCard = ({ buttonText, buttonLink, commons ,color}) => {
     const testIdPrefix = "commonsCard";
     return (
         <Card.Body style={
             // Stryker disable next-line all : don't mutation test CSS 
-            { fontSize: "20px", borderTop: "1px solid lightgrey" }
+            { fontSize: "20px", borderTop: "1px solid lightgrey",backgroundColor: color ,boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"}
         }>
             <Container>
                 <Row>
-                    <Col sx={4} data-testid={`${testIdPrefix}-id-${commons.id}`}>{commons.id}</Col>
-                    <Col sx={4} data-testid={`${testIdPrefix}-name-${commons.id}`}>{commons.name}</Col>
+                    <Col sx={4} data-testid={`${testIdPrefix}-name-${commons.id}` }style={
+                    // Stryker disable next-line all: don't test CSS params
+                    { fontSize: "20px", fontWeight: "bold",fontFamily:'fantasy'}
+                }
+                >{commons.name}</Col>
                     {buttonText != null &&
                         <Col sm={4}>
                             <Button
                                 data-testid={`${testIdPrefix}-button-${buttonText}-${commons.id}`}
                                 size="sm"
                                 className="mx-4"
+                                style={
+                                    // Stryker disable next-line all: don't test CSS params
+                                    { fontWeight: "bold",fontFamily:'fantasy'}
+                                }
                                 onClick={() => {
                                     if (buttonText === "Join" && isFutureDate(commons.startingDate)) {
                                         // Stryker disable next-line all: unable to read alert text in tests

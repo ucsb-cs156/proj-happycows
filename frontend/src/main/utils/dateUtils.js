@@ -49,4 +49,16 @@ export function formatTime(timeString) {
     return dateFromEpoch.toLocaleDateString();
 }
 
+export function makeCommonsStartEndDate () {
+
+    const curr = new Date();
+    const localTime = new Date(curr.getTime() - curr.getTimezoneOffset() * 60000);
+    const today = localTime.toISOString().split('T')[0];
+    const currMonth = localTime.getMonth() % 12;
+    const nextMonth = new Date(localTime.getFullYear(), currMonth + 1, localTime.getDate()).toISOString().substr(0, 10);
+
+    return [today, nextMonth];
+
+}
+
 export {timestampToDate, padWithZero, daysSinceTimestamp};

@@ -5,6 +5,7 @@ import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/announcementUtils"
 import { useNavigate } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
+import "./AnnouncementText.css"
 
 export default function AnnouncementTable({ announcements, currentUser }) {
 
@@ -19,12 +20,18 @@ export default function AnnouncementTable({ announcements, currentUser }) {
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
-        ["/api/announcements/all"]
+        ["/api/announcements/getbycommonsid"]
     );
     // Stryker restore all 
 
     // Stryker disable next-line all : TODO try to make a good test for this
-    const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
+    const deleteCallback = async (cell) => {
+        deleteMutation.mutate(cell, {
+            onSuccess: () => {
+                navigate(0); // Refreshes the current page
+            }
+        });
+    };
 
 
     const columns = [
@@ -43,6 +50,7 @@ export default function AnnouncementTable({ announcements, currentUser }) {
         {
             Header: 'Announcement',
             accessor: 'announcementText',
+            Cell: ({ value }) => <div className="announcement-text">{value}</div>,
         }
     ];
 

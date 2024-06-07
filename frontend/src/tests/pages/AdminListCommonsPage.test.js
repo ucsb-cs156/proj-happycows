@@ -217,4 +217,25 @@ describe("AdminListCommonPage tests", () => {
         expect(statsCSVButton).toHaveAttribute("href", "/api/commonstats/download?commonsId=1");
 
     })
+
+    test("correct href for announcements button as an admin", async () => {
+        setupAdminUser();
+
+        const queryClient = new QueryClient();
+        axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <AdminListCommonPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`)).toHaveTextContent("1");
+      
+        const announcementButton = screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`);
+        expect(announcementButton).toHaveAttribute("href", "/admin/announcements/1");
+
+    })
 });
