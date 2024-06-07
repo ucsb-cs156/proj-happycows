@@ -51,7 +51,7 @@ describe("CommonsOverview tests", () => {
             </QueryClientProvider>
         );
         await waitFor(() => {
-            expect(axiosMock.history.get.length).toEqual(5);
+            expect(axiosMock.history.get.length).toEqual(6);
         });
         expect(await screen.findByTestId("user-leaderboard-button")).toBeInTheDocument();
         const leaderboardButton = screen.getByTestId("user-leaderboard-button");
@@ -83,5 +83,18 @@ describe("CommonsOverview tests", () => {
             expect(axiosMock.history.get.length).toEqual(3);
         });
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
+    });
+
+    test("commons with no announcements", async () => {
+        apiCurrentUserFixtures.userOnly.user.commonsPlus = commonsPlusFixtures.oneCommonsPlus[0];
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PlayPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        expect(screen.getByText("No announcements available.")).toBeInTheDocument();
     });
 });
