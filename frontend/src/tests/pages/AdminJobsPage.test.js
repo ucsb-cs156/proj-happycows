@@ -7,7 +7,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
+import jobsFixtures from "fixtures/jobsFixtures";
 import commonsFixtures from "../../fixtures/commonsFixtures";
 
 const mockToast = jest.fn();
@@ -34,7 +34,7 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all/pageable").reply(200, pagedJobsFixtures.onePage);
+    axiosMock.onGet("/api/jobs/all").reply(200, jobsFixtures.sixJobs);
 
     // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red
     jest.spyOn(console, 'error')

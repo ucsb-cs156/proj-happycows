@@ -23,11 +23,6 @@ describe("CommonsCard tests", () => {
         expect(name).toBeInTheDocument();
         expect(typeof (name.textContent)).toBe('string');
         expect(name.textContent).toEqual('Seths Common');
-
-        const id = screen.getByTestId("commonsCard-id-5");
-        expect(id).toBeInTheDocument();
-        expect(typeof (id.textContent)).toBe('string');
-        expect(id.textContent).toEqual('5');
     });
 
     test("renders no button when button text is null", () => {
@@ -41,11 +36,6 @@ describe("CommonsCard tests", () => {
         expect(name).toBeInTheDocument();
         expect(typeof (name.textContent)).toBe('string');
         expect(name.textContent).toEqual('Seths Common');
-
-        const id = screen.getByTestId("commonsCard-id-5");
-        expect(id).toBeInTheDocument();
-        expect(typeof (id.textContent)).toBe('string');
-        expect(id.textContent).toEqual('5');
     });
 
     test("cannot join commons with future start date - future year", async () => {

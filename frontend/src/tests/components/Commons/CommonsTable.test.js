@@ -244,6 +244,5 @@ describe("Modal tests", () => {
     expect(mockMutate).not.toHaveBeenCalled();
   });
   
-  
 });
 

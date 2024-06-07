@@ -27,6 +27,12 @@ public class User {
     private String hostedDomain;
     private boolean admin;
 
+    // using object wrapper class Boolean instead of primitive boolean to allow for null values
+    // so that the @NoArgsConstructor can set the default value to null and the @Builder can set the default value to false
+    // this is necessary because it breaks OAuth2 login otherwise
+    @Builder.Default
+    private Boolean suspended = false;
+
   @Builder.Default
   private Instant lastOnline = Instant.now();
 
