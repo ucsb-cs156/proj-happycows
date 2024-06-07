@@ -34,30 +34,7 @@ describe("AdminListAnnouncementsPage tests", () => {
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
     };
 
-    test("Renders Create Button for admin user", async () => {
-        setupAdminUser();
-        const queryClient = new QueryClient();
-        const commonsId = 1;
-
-        useParams.mockReturnValue({ commonsId });
-
-        axiosMock.onGet(`/api/announcements/all`, { params: { commonsId } }).reply(200, []);
-
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminListAnnouncementsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        await waitFor(() => {
-            expect(screen.getByText(/Create Announcement/)).toBeInTheDocument();
-        });
-        const button = screen.getByText(/Create Announcement/);
-        expect(button).toHaveAttribute("style", "float: right;");
-        expect(button).toHaveAttribute("href", "/admin/announcements/1/create");
-    });
+    
 
     test("Announcements listed for admin user", async () => {
         setupAdminUser();

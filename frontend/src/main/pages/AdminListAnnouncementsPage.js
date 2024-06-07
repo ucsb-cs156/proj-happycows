@@ -19,21 +19,12 @@ export default function AdminListAnnouncementsPage()
     );
     // Stryker restore all
 
-    const createButton = () => {
-        return (
-            <Button href={`/admin/announcements/${commonsId}/create`}
-            style={{ float: "right" }}
-            >
-                Create Announcement
-            </Button>
-        );
-    }
+    
 
     return (
         <BasicLayout>
             <div className="pt-2">
                 <h2>Announcements for Commons {commonsId}</h2>
-                {createButton()}
                 <AnnouncementTable announcements={announcements} currentUser={currentUser} />
             </div>
         </BasicLayout>
