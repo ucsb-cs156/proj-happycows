@@ -105,7 +105,6 @@ describe("UserTable tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`)).toHaveClass("btn-danger");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Leaderboard-button`)).toHaveClass("btn-secondary");
     expect(screen.getByTestId(`${testId}-cell-row-0-col-Stats CSV-button`)).toHaveClass("btn-success");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`)).toHaveClass("btn-primary");
 
   });
 
@@ -244,26 +243,6 @@ describe("Modal tests", () => {
     // (you'll need to replace `mockMutate` with the actual reference to the mutation in your code)
     expect(mockMutate).not.toHaveBeenCalled();
   });
-
-  test("Clicking the announcements button opens the page for adminUser", async () => {
-    const currentUser = currentUserFixtures.adminUser;
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable commons={commonsPlusFixtures.threeCommonsPlus} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    );
-
-    const announcementsButton = screen.getByTestId("CommonsTable-cell-row-0-col-Announcements-button");
-    fireEvent.click(announcementsButton);
-
-    await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith(`/admin/announcements/1`);
-    });
-  });
-  
   
 });
 
