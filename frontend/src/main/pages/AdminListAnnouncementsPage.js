@@ -3,7 +3,6 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AnnouncementTable from 'main/components/Announcement/AnnouncementTable';
 import { useBackend } from 'main/utils/useBackend';
 import { useCurrentUser } from "main/utils/currentUser";
-import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 export default function AdminListAnnouncementsPage()
