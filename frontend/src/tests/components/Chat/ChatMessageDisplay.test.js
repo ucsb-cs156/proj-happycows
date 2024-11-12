@@ -60,10 +60,12 @@ describe("ChatMessageDisplay tests", () => {
       "margin: 0px",
     );
 
-    /* eslint-disable-next-line testing-library/no-node-access */
+    /* eslint-disable testing-library/no-node-access */
     const styleDiv = screen.getByTestId(
       "ChatMessageDisplay-1-User",
     ).parentElement;
+    /* eslint-enable testing-library/no-node-access */
+
 
     expect(styleDiv).toHaveStyle(
       "display: flex; justify-content: space-between; align-items: center",
@@ -199,10 +201,11 @@ describe("ChatMessageDisplay tests", () => {
       "margin: 0px",
     );
 
-    /* eslint-disable-next-line testing-library/no-node-access */
+    /* eslint-disable testing-library/no-node-access */
     const styleDiv = screen.getByTestId(
       "ChatMessageDisplay-1-User",
     ).parentElement;
+    /* eslint-enable testing-library/no-node-access */
 
     expect(styleDiv).toHaveStyle(
       "display: flex; justify-content: space-between; align-items: center",

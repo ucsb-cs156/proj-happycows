@@ -3,8 +3,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
-import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
+// import userCommonsFixtures from "fixtures/userCommonsFixtures";
+// import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
