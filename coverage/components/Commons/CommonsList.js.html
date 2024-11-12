@@ -118,7 +118,20 @@
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,7 +169,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">80x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -184,15 +210,15 @@ const CommonsList = (props) =&gt; {
         &lt;Card
             style={
                 // Stryker disable next-line all: don't test CSS params
-                { opacity: ".9" }
+                { opacity: "1", backgroundColor: "rgb(147,98,66)", color: "rgb(245, 210, 140)", border: "6px solid rgb(99,71,52)" }
             }
-            className="my-3 border-0"
+            className="my-3"
         &gt;
             &lt;Card.Title
                 data-testid="commonsList-title"
                 style={
                     // Stryker disable next-line all: don't test CSS params
-                    { fontSize: "35px" }
+                    {fontFamily: 'Rye',fontSize: "35px", backgroundColor: "rgb(147,98,66)", color: "rgb(245, 210, 140)" }
                 }
                 className="text-center my-3"
             &gt;
@@ -203,8 +229,18 @@ const CommonsList = (props) =&gt; {
                 &lt;Card.Subtitle&gt;
                     &lt;Container&gt;
                         &lt;Row&gt;
-                            &lt;Col data-testid="commonsList-subtitle-id" sx={4}&gt;ID#&lt;/Col&gt;
-                            &lt;Col data-testid="commonsList-subtitle-name" sx={4}&gt;Common's Name&lt;/Col&gt;
+                            &lt;Col data-testid="commonsList-subtitle-id" sx={4} 
+                            style={
+                                // Stryker disable next-line all: don't test CSS params
+                                {fontFamily: 'Sancreek', paddingBottom: "10px"}}&gt;
+                                ID#
+                            &lt;/Col&gt;
+                            &lt;Col data-testid="commonsList-subtitle-name" sx={4}
+                            style={
+                                // Stryker disable next-line all: don't test CSS params
+                                {fontFamily: 'Sancreek', paddingBottom: "10px"}}&gt;
+                                Common's Name
+                            &lt;/Col&gt;
                             &lt;Col sm={4}&gt;&lt;/Col&gt;
                         &lt;/Row&gt;
                     &lt;/Container&gt;
@@ -218,7 +254,10 @@ const CommonsList = (props) =&gt; {
             : 
             &lt;Card.Subtitle&gt;
                 &lt;Container&gt;
-                    &lt;Row style={{justifyContent: "center"}} data-testid="commonsList-default-message"&gt;
+                    &lt;Row style={ 
+                        // Stryker disable next-line all: don't test CSS params
+                        {justifyContent: "center", fontFamily: 'Sancreek', paddingBottom: "10px"}}
+                        data-testid="commonsList-default-message"&gt;
                         There are currently no commons to {defaultMessage}
                     &lt;/Row&gt;
                 &lt;/Container&gt;
@@ -235,7 +274,7 @@ export default CommonsList;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Tue May 14 2024 16:07:39 GMT-0700 (Pacific Daylight Time)
+                at Tue Nov 12 2024 11:34:11 GMT-0800 (Pacific Standard Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>
