@@ -1,31 +1,22 @@
 # HappyCows/HappierCows
 
-# Deployments (S24 teams: DO NOT EDIT)
+# Production Deployments 
 
 | Type | Link       | 
 |------|------------|
 | prod | <https://happy-cows.dokku-00.cs.ucsb.edu/>     | 
 | qa   | <https://happy-cows-qa.dokku-00.cs.ucsb.edu/>  | 
 
-# W24 Production Deployments
+# F24 Deployments
 
+Tracks `main` branch:
 
-| Team | Link       | 
-|------|------------|
-| w24-4pm-1 | <https://happycows.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://happycows.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://happycows.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://happycows.dokku-04.cs.ucsb.edu/>  | 
-
-# W24 QA Deployments
-
-
-| Team | Link       | 
-|------|------------|
-| w24-4pm-1 | <https://happycows-qa.dokku-01.cs.ucsb.edu/> | 
-| w24-4pm-2 | <https://happycows-qa.dokku-02.cs.ucsb.edu/>  | 
-| w24-4pm-3 | <https://happycows-qa.dokku-03.cs.ucsb.edu/>  | 
-| w24-4pm-4 | <https://happycows-qa.dokku-04.cs.ucsb.edu/>  | 
+| Team | Tracks Main Branch       | QA Deployment |
+|------|--------------------------|---------------|
+| f24-05 | <https://happycows.dokku-05.cs.ucsb.edu/> | <https://happycows-qa.dokku-05.cs.ucsb.edu/> | 
+| f24-06 | <https://happycows.dokku-06.cs.ucsb.edu/>  | <https://happycows-qa.dokku-06.cs.ucsb.edu/> | 
+| f24-07 | <https://happycows.dokku-07.cs.ucsb.edu/>  | <https://happycows-qa.dokku-07.cs.ucsb.edu/> | 
+| f24-08 | <https://happycows.dokku-08.cs.ucsb.edu/>  | <https://happycows-qa.dokku-08.cs.ucsb.edu/> | 
 
 # Description
 
