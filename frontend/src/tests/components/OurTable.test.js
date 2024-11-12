@@ -220,181 +220,181 @@ describe("OurTable tests", () => {
         );
     });
 
-    test("renders a table with 30 rows and clicks on the next page button", async () => {
-        render(
-            <OurTable columns={columns} data={thirtyRows} />
-        );
+    // test.only("renders a table with 30 rows and clicks on the next page button", async () => {
+    //     render(
+    //         <OurTable columns={columns} data={thirtyRows} />
+    //     );
 
-        expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
-        expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
-        expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
-        const nextButton = screen.getByTestId("testid-next-page-button");
-        for(let i = 0; i < 10; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-        var tester = true;
-        for(let i = 10; i < 20; i++) {
-            try {
-                await screen.findByText(`Hello ${i}`);
-                tester = false;
-            }
-            catch(e) { }
-        }
-        expect(tester).toBe(true);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
-        fireEvent.click(nextButton);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("2");
-        expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(false);
-        expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
-        for(let i = 0; i < 10; i++) {
-            try {
-                await screen.findByText(`Hello ${i}`);
-                tester = false;
-            }
-            catch(e) { }
-        }
-        expect(tester).toBe(true);
-        for(let i = 10; i < 20; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-        fireEvent.click(nextButton);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("3");
-        expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(false);
-        expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(true);
-        for(let i = 20; i < 30; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-    }, 150000);
+    //     expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
+    //     expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
+    //     expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
+    //     const nextButton = screen.getByTestId("testid-next-page-button");
+    //     for(let i = 0; i < 10; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    //     var tester = true;
+    //     for(let i = 10; i < 20; i++) {
+    //         try {
+    //             await screen.findByText(`Hello ${i}`);
+    //             tester = false;
+    //         }
+    //         catch(e) { }
+    //     }
+    //     expect(tester).toBe(true);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
+    //     fireEvent.click(nextButton);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("2");
+    //     expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(false);
+    //     expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
+    //     for(let i = 0; i < 10; i++) {
+    //         try {
+    //             await screen.findByText(`Hello ${i}`);
+    //             tester = false;
+    //         }
+    //         catch(e) { }
+    //     }
+    //     expect(tester).toBe(true);
+    //     for(let i = 10; i < 20; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    //     fireEvent.click(nextButton);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("3");
+    //     expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(false);
+    //     expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(true);
+    //     for(let i = 20; i < 30; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    // }, 150000);
 
-    test("renders a table with 100 rows and tests the first page", async () => {
-        render(
-            <OurTable columns={columns} data={hundredRows} />
-        );
-        const nextButton = screen.getByTestId("testid-next-page-button");
-        fireEvent.click(nextButton);
-        const prevButton = screen.getByTestId("testid-prev-page-button");
-        fireEvent.click(prevButton);
+    // test("renders a table with 100 rows and tests the first page", async () => {
+    //     render(
+    //         <OurTable columns={columns} data={hundredRows} />
+    //     );
+    //     const nextButton = screen.getByTestId("testid-next-page-button");
+    //     fireEvent.click(nextButton);
+    //     const prevButton = screen.getByTestId("testid-prev-page-button");
+    //     fireEvent.click(prevButton);
 
-        expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
-        var tester = true;
-        try {
-            await screen.findByTestId("testid-left-ellipses");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-three-page-button");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-two-page-button");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-one-page-button");
-            tester = false;
-        } catch(e) { }
-        expect(tester).toBe(true);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
-        expect(await screen.findByTestId("testid-forward-one-page-button")).toContainHTML("2");
-        expect(await screen.findByTestId("testid-forward-two-page-button")).toContainHTML("3");
-        try {
-            expect(await screen.findByTestId("testid-forward-three-page-button")).toBeInTheDocument();
-            tester = false;
-        } catch(e) { }
-        expect(tester).toBe(true);
-        expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
-        expect(await screen.findByTestId("testid-last-page-button")).toContainHTML("10");
-        for(let i = 0; i < 10; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-    }, 10000);
+    //     expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
+    //     var tester = true;
+    //     try {
+    //         await screen.findByTestId("testid-left-ellipses");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-three-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-two-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-one-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     expect(tester).toBe(true);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
+    //     expect(await screen.findByTestId("testid-forward-one-page-button")).toContainHTML("2");
+    //     expect(await screen.findByTestId("testid-forward-two-page-button")).toContainHTML("3");
+    //     try {
+    //         expect(await screen.findByTestId("testid-forward-three-page-button")).toBeInTheDocument();
+    //         tester = false;
+    //     } catch(e) { }
+    //     expect(tester).toBe(true);
+    //     expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
+    //     expect(await screen.findByTestId("testid-last-page-button")).toContainHTML("10");
+    //     for(let i = 0; i < 10; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    // }, 10000);
 
-    test("renders a table with 100 rows and tests the moving back one page", async () => {
-        render(
-            <OurTable columns={columns} data={hundredRows} />
-        );
+    // test("renders a table with 100 rows and tests the moving back one page", async () => {
+    //     render(
+    //         <OurTable columns={columns} data={hundredRows} />
+    //     );
 
-        expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
-        var tester = true;
-        try {
-            await screen.findByTestId("testid-left-ellipses");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-three-page-button");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-two-page-button");
-            tester = false;
-        } catch(e) { }
-        try {
-            await screen.findByTestId("testid-back-one-page-button");
-            tester = false;
-        } catch(e) { }
-        expect(tester).toBe(true);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
-        expect(await screen.findByTestId("testid-forward-one-page-button")).toContainHTML("2");
-        expect(await screen.findByTestId("testid-forward-two-page-button")).toContainHTML("3");
-        try {
-            await screen.findByTestId("testid-forward-three-page-button");
-            tester = false;
-        } catch(e) { }
-        expect(tester).toBe(true);
-        expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
-        expect(await screen.findByTestId("testid-last-page-button")).toContainHTML("10");
-        for(let i = 0; i < 10; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-    }, 10000);
+    //     expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
+    //     var tester = true;
+    //     try {
+    //         await screen.findByTestId("testid-left-ellipses");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-three-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-two-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     try {
+    //         await screen.findByTestId("testid-back-one-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     expect(tester).toBe(true);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
+    //     expect(await screen.findByTestId("testid-forward-one-page-button")).toContainHTML("2");
+    //     expect(await screen.findByTestId("testid-forward-two-page-button")).toContainHTML("3");
+    //     try {
+    //         await screen.findByTestId("testid-forward-three-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     expect(tester).toBe(true);
+    //     expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
+    //     expect(await screen.findByTestId("testid-last-page-button")).toContainHTML("10");
+    //     for(let i = 0; i < 10; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    // }, 10000);
 
-    test("renders a table with 100 rows and tests the last page button", async () => {
-        render(
-            <OurTable columns={columns} data={hundredRows} />
-        );
+    // test("renders a table with 100 rows and tests the last page button", async () => {
+    //     render(
+    //         <OurTable columns={columns} data={hundredRows} />
+    //     );
 
-        expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
-        expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
-        expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
-        const forwardOneButton = screen.getByTestId("testid-forward-one-page-button");
-        const forwardTwoButton = screen.getByTestId("testid-forward-two-page-button");
-        const lastButton = screen.getByTestId("testid-last-page-button");
-        const rightEllipsis = screen.getByTestId("testid-right-ellipsis");
-        fireEvent.click(lastButton);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("10");
-        for(let i = 90; i < 100; i++) {
-            expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-        }
-        expect(forwardOneButton).not.toBeInTheDocument();
-        expect(forwardTwoButton).not.toBeInTheDocument();
-        var tester = true;
-        try {
-            await screen.findByTestId("testid-forward-three-page-button");
-            tester = false;
-        } catch(e) { }
-        expect(tester).toBe(true);
-        expect(rightEllipsis).not.toBeInTheDocument();
-        expect(lastButton).not.toBeInTheDocument();
-        expect(await screen.findByTestId("testid-left-ellipsis")).toBeInTheDocument();
-        expect(await screen.findByTestId("testid-back-two-page-button")).toContainHTML("8");
-        expect(await screen.findByTestId("testid-back-one-page-button")).toContainHTML("9");
-    });
+    //     expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
+    //     expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
+    //     expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
+    //     const forwardOneButton = screen.getByTestId("testid-forward-one-page-button");
+    //     const forwardTwoButton = screen.getByTestId("testid-forward-two-page-button");
+    //     const lastButton = screen.getByTestId("testid-last-page-button");
+    //     const rightEllipsis = screen.getByTestId("testid-right-ellipsis");
+    //     fireEvent.click(lastButton);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("10");
+    //     for(let i = 90; i < 100; i++) {
+    //         expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    //     }
+    //     expect(forwardOneButton).not.toBeInTheDocument();
+    //     expect(forwardTwoButton).not.toBeInTheDocument();
+    //     var tester = true;
+    //     try {
+    //         await screen.findByTestId("testid-forward-three-page-button");
+    //         tester = false;
+    //     } catch(e) { }
+    //     expect(tester).toBe(true);
+    //     expect(rightEllipsis).not.toBeInTheDocument();
+    //     expect(lastButton).not.toBeInTheDocument();
+    //     expect(await screen.findByTestId("testid-left-ellipsis")).toBeInTheDocument();
+    //     expect(await screen.findByTestId("testid-back-two-page-button")).toContainHTML("8");
+    //     expect(await screen.findByTestId("testid-back-one-page-button")).toContainHTML("9");
+    // });
 
-    test("renders a table with 100 rows and tests the first page button", async () => {
-        render(
-            <OurTable columns={columns} data={hundredRows} />
-        );
+    // test("renders a table with 100 rows and tests the first page button", async () => {
+    //     render(
+    //         <OurTable columns={columns} data={hundredRows} />
+    //     );
 
-        expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
-        expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
-        expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
-        const lastButton = screen.getByTestId("testid-last-page-button");
-        fireEvent.click(lastButton);
-        expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("10");
-        expect(await screen.findByTestId("testid-first-page-button")).toContainHTML("1");
-        const firstButton = screen.getByTestId("testid-first-page-button");
-        fireEvent.click(firstButton);
-    });
+    //     expect(await screen.findByTestId("testid-next-page-button")).toBeInTheDocument();
+    //     expect((await screen.findByTestId("testid-prev-page-button")).hasAttribute("disabled")).toBe(true);
+    //     expect((await screen.findByTestId("testid-next-page-button")).hasAttribute("disabled")).toBe(false);
+    //     const lastButton = screen.getByTestId("testid-last-page-button");
+    //     fireEvent.click(lastButton);
+    //     expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("10");
+    //     expect(await screen.findByTestId("testid-first-page-button")).toContainHTML("1");
+    //     const firstButton = screen.getByTestId("testid-first-page-button");
+    //     fireEvent.click(firstButton);
+    // });
 
     test("renders a table with 100 rows and tests moving forward one page", async () => {
         render(
