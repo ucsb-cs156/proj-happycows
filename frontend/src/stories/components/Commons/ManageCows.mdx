@@ -1,0 +1,17 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import ManageCows from "main/components/Commons/ManageCows";
+import {currentUserFixtures} from "fixtures/currentUserFixtures"; 
+import commonsFixtures from "fixtures/commonsFixtures"; 
+import userCommonsFixtures from "fixtures/userCommonsFixtures"; 
+import * as ManageCowsStories from './ManageCows.stories';
+
+<Meta of={ManageCowsStories} />
+
+# ManageCows
+
+For a particular user's commons, the box where you buy and sell your cows.
+
+<Canvas>
+  <Story of={ManageCowsStories.Uncontrolled} />
+</Canvas>

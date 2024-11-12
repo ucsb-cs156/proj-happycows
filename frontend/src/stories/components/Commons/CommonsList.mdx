@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import commonsFixtures from "fixtures/commonsFixtures"; 
+import CommonsList from "main/components/Commons/CommonsList";
+import * as CommonsListStories from './CommonsList.stories';
+
+<Meta of={CommonsListStories} />
+
+# CommonsList
+
+The component that displays commons cards.
+
+<Canvas>
+  <Story of={CommonsListStories.NullButton} />
+
+  <Story of={CommonsListStories.TextButton} />
+</Canvas>

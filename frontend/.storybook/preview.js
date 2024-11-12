@@ -38,3 +38,4 @@ export const decorators = [
   ),
   mswDecorator, // provide the MSW decorator globally
 ];
+export const tags = ["autodocs"];

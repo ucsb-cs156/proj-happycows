@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import FarmStats from "main/components/Commons/FarmStats";
+import {currentUserFixtures} from "fixtures/currentUserFixtures"; 
+import userCommonsFixtures from "fixtures/userCommonsFixtures"; 
+import * as FarmStatsStories from './FarmStats.stories';
+
+<Meta of={FarmStatsStories} />
+
+# FarmStats
+
+For a particular user's commons, the status of their cow health and total wealth.
+
+<Canvas>
+  <Story of={FarmStatsStories.Uncontrolled} />
+</Canvas>

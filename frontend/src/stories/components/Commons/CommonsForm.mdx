@@ -1,18 +1,14 @@
-import { Meta, Story, Canvas } from "@storybook/addon-docs/blocks";
+import { Meta, Story, Canvas } from "@storybook/blocks";
 import { action } from "@storybook/addon-actions";
 import CommonsForm from "main/components/Commons/CommonsForm";
+import * as CommonsFormStories from './CommonsForm.stories';
 
-<Meta
-  title="components/Commons/CommonsForm"
-  component={CommonsForm}
-/>
+<Meta of={CommonsFormStories} />
 
 # CommonsForm
 
 A form for creating a new commons, with basic validations for fields such as cow/milk price.
 
 <Canvas>
-  <Story name="uncontrolled">
-    <CommonsForm submitAction={action("submit")} />
-  </Story>
+  <Story of={CommonsFormStories.Uncontrolled} />
 </Canvas>

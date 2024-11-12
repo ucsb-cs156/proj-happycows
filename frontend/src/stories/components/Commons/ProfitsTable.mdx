@@ -1,0 +1,17 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import ProfitsTable from "main/components/Commons/ProfitsTable";
+import userCommonsFixtures from "fixtures/userCommonsFixtures"; 
+import * as ProfitsTableStories from './ProfitsTable.stories';
+
+<Meta of={ProfitsTableStories} />
+
+# Profits
+
+For a particular user's commons, profits earned from milking cows every day.
+
+<Canvas>
+  <Story of={ProfitsTableStories.Emptytable} />
+
+  <Story of={ProfitsTableStories.BadInput} />
+</Canvas>

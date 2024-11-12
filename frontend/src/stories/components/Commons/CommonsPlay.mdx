@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import CommonsPlay from "main/components/Commons/CommonsPlay";
+import {currentUserFixtures} from "fixtures/currentUserFixtures"; 
+import commonsFixtures from "fixtures/commonsFixtures"; 
+import * as CommonsPlayStories from './CommonsPlay.stories';
+
+<Meta of={CommonsPlayStories} />
+
+# CommonsPlay
+
+The main page for gameplay for a particular commons.
+
+<Canvas>
+  <Story of={CommonsPlayStories.Uncontrolled} />
+</Canvas>

@@ -1,20 +1,17 @@
-import { Meta, Story, Canvas } from "@storybook/addon-docs/blocks";
+import { Meta, Story, Canvas } from "@storybook/blocks";
 import { action } from "@storybook/addon-actions";
 import TestJobForm from "main/components/Jobs/TestJobForm";
+import * as TestJobFormStories from './TestJobForm.stories';
 
-<Meta
-  title="components/Jobs/TestJobForm"
-  component={TestJobForm}
-/>
+<Meta of={TestJobFormStories} />
 
 # TestJobForm
 
 A form for submitting the test job, with:
+
 * a checkbox for whether the job should fail or not
 * a numeric field for the amount of time the job should sleep (to simulate a long-running job)
 
 <Canvas>
-  <Story name="uncontrolled">
-    <TestJobForm submitAction={action("submit")} />
-  </Story>
+  <Story of={TestJobFormStories.Uncontrolled} />
 </Canvas>
