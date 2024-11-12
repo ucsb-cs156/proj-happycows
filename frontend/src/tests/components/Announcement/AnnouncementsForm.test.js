@@ -2,101 +2,102 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
-import { announcementFixtures } from "fixtures/announcementFixtures"
+import { announcementFixtures } from "fixtures/announcementFixtures";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 describe("AnnouncementForm tests", () => {
-    const queryClient = new QueryClient();
+  const queryClient = new QueryClient();
 
-    const expectedHeaders = ["Start Date", "End Date", "Announcement"];
-    const testId = "AnnouncementForm";
+  const expectedHeaders = ["Start Date", "End Date", "Announcement"];
+  const testId = "AnnouncementForm";
 
-    test("renders correctly with no initialContents", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm />
-                </Router>
-            </QueryClientProvider>
-        );
+  test("renders correctly with no initialContents", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
 
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+    expect(await screen.findByText(/Create/)).toBeInTheDocument();
 
-        expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-        });
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
+    });
+  });
 
+  test("renders correctly when passing in initialContents", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm
+            initialContents={announcementFixtures.oneAnnouncement}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Create/)).toBeInTheDocument();
+
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
     });
 
-    test("renders correctly when passing in initialContents", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm initialContents={announcementFixtures.oneAnnouncement} />
-                </Router>
-            </QueryClientProvider>
-        );
+    expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
+    expect(screen.getByText(`Id`)).toBeInTheDocument();
+  });
 
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+  test("that navigate(-1) is called when Cancel is clicked", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    expect(await screen.findByTestId(`${testId}-cancel`)).toBeInTheDocument();
+    const cancelButton = screen.getByTestId(`${testId}-cancel`);
 
-        expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-        });
+    fireEvent.click(cancelButton);
 
-        expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
-        expect(screen.getByText(`Id`)).toBeInTheDocument();
-    });
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
+  });
 
+  test("that the correct validations are performed", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
 
-    test("that navigate(-1) is called when Cancel is clicked", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm />
-                </Router>
-            </QueryClientProvider>
-        );
-        expect(await screen.findByTestId(`${testId}-cancel`)).toBeInTheDocument();
-        const cancelButton = screen.getByTestId(`${testId}-cancel`);
+    expect(await screen.findByText(/Create/)).toBeInTheDocument();
+    const submitButton = screen.getByText(/Create/);
+    fireEvent.click(submitButton);
 
-        fireEvent.click(cancelButton);
+    await screen.findByText(
+      /Start Date is required and must be provided in ISO format./,
+    );
+    expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
 
-        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
-    });
+    // const endInput = screen.getByTestId(`${testId}-end`);
+    // fireEvent.change(endInput, { target: { value: "a" } });
+    // fireEvent.click(submitButton);
 
-    test("that the correct validations are performed", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm />
-                </Router>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
-        const submitButton = screen.getByText(/Create/);
-        fireEvent.click(submitButton);
-
-        await screen.findByText(/Start Date is required and must be provided in ISO format./);
-        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
-
-        // const endInput = screen.getByTestId(`${testId}-end`);
-        // fireEvent.change(endInput, { target: { value: "a" } });
-        // fireEvent.click(submitButton);
-
-        // await waitFor(() => {
-        //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
-        // });
-    });
-
+    // await waitFor(() => {
+    //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
+    // });
+  });
 });
