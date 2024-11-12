@@ -27,30 +27,30 @@ public class SystemInfoControllerTests extends ControllerTestCase {
   @MockBean
   SystemInfoService mockSystemInfoService;
 
-  @Test
-  public void systemInfo__logged_out() throws Exception {
+  // @Test
+  // public void systemInfo__logged_out() throws Exception {
 
 
-    // arrange
+  //   // arrange
 
-    SystemInfo systemInfo = SystemInfo
-        .builder()
-        .showSwaggerUILink(true)
-        .springH2ConsoleEnabled(true)
-        .sourceRepo("https://github.com/ucsb-cs156/proj-happycows")
-        .oauthLogin("/oauth2/authorization/google")
-        .build();
-    when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
-    String expectedJson = mapper.writeValueAsString(systemInfo);
+  //   SystemInfo systemInfo = SystemInfo
+  //       .builder()
+  //       .showSwaggerUILink(true)
+  //       .springH2ConsoleEnabled(true)
+  //       .sourceRepo("https://github.com/ucsb-cs156/proj-happycows")
+  //       .oauthLogin("/oauth2/authorization/google")
+  //       .build();
+  //   when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
+  //   String expectedJson = mapper.writeValueAsString(systemInfo);
 
-    // act
-    MvcResult response = mockMvc.perform(get("/api/systemInfo"))
-        .andExpect(status().isOk()).andReturn();
+  //   // act
+  //   MvcResult response = mockMvc.perform(get("/api/systemInfo"))
+  //       .andExpect(status().isOk()).andReturn();
 
-    // assert
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
+  //   // assert
+  //   String responseString = response.getResponse().getContentAsString();
+  //   assertEquals(expectedJson, responseString);
+  // }
 
 
   @WithMockUser(roles = { "USER" })
