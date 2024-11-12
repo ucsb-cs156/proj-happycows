@@ -26,6 +26,7 @@ public class User {
     private String locale;
     private String hostedDomain;
     private boolean admin;
+    private boolean suspended;
 
   @Builder.Default
   private Instant lastOnline = Instant.now();
@@ -43,7 +44,7 @@ public class User {
 
     @Override
     public String toString() {
-<span class="fc" id="L46">        return String.format(&quot;User: id=%d email=%s&quot;, id, email);</span>
+<span class="fc" id="L47">        return String.format(&quot;User: id=%d email=%s&quot;, id, email);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
