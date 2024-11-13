@@ -91,7 +91,11 @@ function App() {
   }, [currentUser, updateLastOnlineMutation]);
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_relativeSplatPath: true,
+      }}
+    >
       {currentUser?.initialData ? (
         <LoadingPage />
       ) : (
