@@ -66,7 +66,6 @@ describe("ChatMessageDisplay tests", () => {
     ).parentElement;
     /* eslint-enable testing-library/no-node-access */
 
-
     expect(styleDiv).toHaveStyle(
       "display: flex; justify-content: space-between; align-items: center",
     );
