@@ -3,9 +3,10 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
-// import userCommonsFixtures from "fixtures/userCommonsFixtures";
-// import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
-
+import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 
@@ -43,9 +44,8 @@ describe("ChatDisplay tests", () => {
   });
 
   test("displays no messages correctly", async () => {
-    //arrange
-
     //act
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -53,7 +53,6 @@ describe("ChatDisplay tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    //assert
 
     //assert
 
@@ -67,138 +66,215 @@ describe("ChatDisplay tests", () => {
     expect(screen.queryByText("2023-08-17 23:57:46")).not.toBeInTheDocument();
   });
 
-  //   test("displays three messages correctly with usernames in the correct order", async () => {
+  test("displays three messages correctly with usernames in the correct order", async () => {
+    //arrange
 
-  //     //arrange
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.threeChatMessages });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
 
-  //     axiosMock.onGet("/api/chat/get").reply(200, { content: chatMessageFixtures.threeChatMessages });
-  //     axiosMock.onGet("/api/usercommons/commons/all").reply(200, userCommonsFixtures.threeUserCommons);
+    //act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter future={{ v7_startTransition: true }}>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  //     //act
-  //     render(
-  //         <QueryClientProvider client={queryClient}>
-  //             <MemoryRouter>
-  //                 <ChatDisplay commonsId={commonsId} />
-  //             </MemoryRouter>
-  //         </QueryClientProvider>
-  //     );
+    // assert
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThan(1);
+    });
 
-  //     //assert
-  //     await waitFor(() => {
-  //         expect(axiosMock.history.get.length).toBeGreaterThan(1);
-  //     });
-  //     expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
-  //     expect(axiosMock.history.get[0].params).toEqual({ commonsId: 1, page: 0, size: 10 });
-  //     await waitFor(() => {
-  //         expect(axiosMock.history.get.length).toBeGreaterThan(2);
-  //     });
-  //     expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
-  //     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
+    expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
+    expect(axiosMock.history.get[0].params).toEqual({
+      commonsId: 1,
+      page: 0,
+      size: 10,
+    });
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThan(2);
+    });
+    expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
 
-  //     const container = screen.getByTestId("ChatDisplay");
+    const container = screen.getByTestId("ChatDisplay");
 
-  //     /* eslint-disable testing-library/no-node-access */
+    /* eslint-disable testing-library/no-node-access */
 
-  //     await waitFor(() => {
-  //         expect(container.children[2].getAttribute("data-testid")).toBe("ChatMessageDisplay-1");
-  //     });
-  //     expect(container.children[1].getAttribute("data-testid")).toBe("ChatMessageDisplay-2");
-  //     expect(container.children[0].getAttribute("data-testid")).toBe("ChatMessageDisplay-3");
+    await waitFor(() => {
+      expect(container.children[2].getAttribute("data-testid")).toBe(
+        "ChatMessageDisplay-1",
+      );
+    });
 
-  //     /* eslint-enable testing-library/no-node-access */
+    expect(container.children[1].getAttribute("data-testid")).toBe(
+      "ChatMessageDisplay-2",
+    );
+    expect(container.children[0].getAttribute("data-testid")).toBe(
+      "ChatMessageDisplay-3",
+    );
 
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent("George Washington");
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-Message")).toHaveTextContent("Hello World");
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent("2023-08-17 23:57:46");
+    /* eslint-enable testing-library/no-node-access */
 
-  //     expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent("Thomas Jefferson");
-  //     expect(screen.getByTestId("ChatMessageDisplay-2-Message")).toHaveTextContent("Hello World How are you doing???");
-  //     expect(screen.getByTestId("ChatMessageDisplay-2-Date")).toHaveTextContent("2023-08-18 02:59:11");
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "George Washington",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-1-Message"),
+    ).toHaveTextContent("Hello World");
+    expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent(
+      "2023-08-17 23:57:46",
+    );
 
-  //     expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent("John Adams");
-  //     expect(screen.getByTestId("ChatMessageDisplay-3-Message")).toHaveTextContent("This is another test for chat messaging");
-  //     expect(screen.getByTestId("ChatMessageDisplay-3-Date")).toHaveTextContent("2023-08-18 02:59:28");
+    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
+      "Thomas Jefferson",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-2-Message"),
+    ).toHaveTextContent("Hello World How are you doing???");
+    expect(screen.getByTestId("ChatMessageDisplay-2-Date")).toHaveTextContent(
+      "2023-08-18 02:59:11",
+    );
 
-  //   });
+    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
+      "John Adams",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-3-Message"),
+    ).toHaveTextContent("This is another test for chat messaging");
+    expect(screen.getByTestId("ChatMessageDisplay-3-Date")).toHaveTextContent(
+      "2023-08-18 02:59:28",
+    );
+  });
 
-  //   test("displays one message correctly without usernames", async () => {
+  test("displays one message correctly without usernames", async () => {
+    //arrange
 
-  //     //arrange
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.oneChatMessage });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    //act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter future={{ v7_startTransition: true }}>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  //     axiosMock.onGet("/api/chat/get").reply(200, { content: chatMessageFixtures.oneChatMessage });
-  //     axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{userId: 1}]);
+    //assert
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBe(3);
+    });
+    expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
+    expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
+    expect(axiosMock.history.get[1].params).toEqual({
+      commonsId: 1,
+      page: 0,
+      size: 10,
+    });
+    expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
 
-  //     //act
-  //     render(
-  //         <QueryClientProvider client={queryClient}>
-  //             <MemoryRouter>
-  //                 <ChatDisplay commonsId={commonsId} />
-  //             </MemoryRouter>
-  //         </QueryClientProvider>
-  //     );
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
+    });
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "Anonymous",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-1-Message"),
+    ).toHaveTextContent("Hello World");
+    expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent(
+      "2023-08-17 23:57:46",
+    );
+  });
 
-  //     //assert
-  //     await waitFor(() => {
-  //         expect(axiosMock.history.get.length).toBe(3);
-  //     });
-  //     expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
-  //     expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
-  //     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1, page: 0, size: 10 });
-  //     expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
-  //     expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
+  test("displays cuts off at 10 messages", async () => {
+    //arrange
 
-  //     await waitFor(() => {
-  //         expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.twelveChatMessages });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
 
-  //     });
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent("Anonymous");
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-Message")).toHaveTextContent("Hello World");
-  //     expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent("2023-08-17 23:57:46");
+    //act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  //   });
+    //assert
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThan(2);
+    });
 
-  //   test("displays cuts off at 10 messages", async () => {
+    for (let i = 0; i < axiosMock.history.get.length; i++) {
+      const url = axiosMock.history.get[i].url;
+      if (url === "/api/chat/get") {
+        expect(axiosMock.history.get[i].params).toEqual({
+          commonsId: 1,
+          page: 0,
+          size: 10,
+        });
+      }
+      if (url === "/api/usercommons/commons/all") {
+        expect(axiosMock.history.get[i].params).toEqual({ commonsId: 1 });
+      }
+    }
 
-  //     //arrange
+    
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
+    });
 
-  //     axiosMock.onGet("/api/chat/get").reply(200, { content: chatMessageFixtures.twelveChatMessages });
-  //     axiosMock.onGet("/api/usercommons/commons/all").reply(200, userCommonsFixtures.threeUserCommons);
+    expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
+    expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
 
-  //     //act
-  //     render(
-  //         <QueryClientProvider client={queryClient}>
-  //             <MemoryRouter>
-  //                 <ChatDisplay commonsId={commonsId} />
-  //             </MemoryRouter>
-  //         </QueryClientProvider>
-  //     );
+    expect(
+      screen.queryByTestId("ChatMessageDisplay-1"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("ChatMessageDisplay-2"),
+    ).not.toBeInTheDocument();
 
-  //     //assert
-  //     await waitFor(() => {
-  //         expect(axiosMock.history.get.length).toBe(3);
-  //     });
-  //     expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
-  //     expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
-  //     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1, page: 0, size: 10 });
-  //     expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
-  //     expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
+    expect(
+      screen.queryByText("This should not appear"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("This should also be cut off"),
+    ).not.toBeInTheDocument();
 
-  //     await waitFor(() => {
-  //         expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
-
-  //     });
-
-  //     expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
-  //     expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
-
-  //     expect(screen.queryByTestId("ChatMessageDisplay-1")).not.toBeInTheDocument();
-  //     expect(screen.queryByTestId("ChatMessageDisplay-2")).not.toBeInTheDocument();
-
-  //     expect(screen.queryByText("This should not appear")).not.toBeInTheDocument();
-  //     expect(screen.queryByText("This should also be cut off")).not.toBeInTheDocument();
-
-  //     expect(screen.getByText("This should appear, though")).toBeInTheDocument();
-  //     expect(screen.getByText("This one too!")).toBeInTheDocument();
-
-  //   });
+    expect(screen.getByText("This should appear, though")).toBeInTheDocument();
+    expect(screen.getByText("This one too!")).toBeInTheDocument();
+  });
 });
