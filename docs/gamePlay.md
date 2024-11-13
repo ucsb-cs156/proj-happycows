@@ -53,6 +53,12 @@ At certain times during the day each active commons will fire off certain events
 
 The code that governs the scheduling of these events is in the "Jobs" section of the backend code.
 
+## Manually Triggering Events
+
+**For testing purposes, or special purpose game plan, admins can manualy trigger the scheduled events at any time**
+
+This is done on the Admin Manage Jobs page.
+
 ## Other Features
 
 There is a chat feature built into the game; there's a chat icon at the lower right hand corner of the screen.
