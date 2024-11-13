@@ -252,7 +252,6 @@ describe("ChatDisplay tests", () => {
       }
     }
 
-    
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
     });

@@ -1,5 +1,6 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
+import ourTableFixtures from "fixtures/ourTableFixtures";
 
 export default {
   title: "components/OurTable",
@@ -37,4 +38,12 @@ Sample.args = {
       col2: "you want",
     },
   ],
+};
+
+
+export const ThirtyRows = Template.bind({});
+
+ThirtyRows.args = {
+  columns: ourTableFixtures.columns,
+  data: ourTableFixtures.thirtyRows,
 };
