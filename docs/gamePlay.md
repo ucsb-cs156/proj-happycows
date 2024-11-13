@@ -53,6 +53,12 @@ At certain times during the day each active commons will fire off certain events
 
 The code that governs the scheduling of these events is in the "Jobs" section of the backend code.
 
+## Other Features
+
+There is a chat feature built into the game; there's a chat icon at the lower right hand corner of the screen.
+
+Try clicking on it while visiting a commons, and try out the chat feature.
+
 ## Other Notes
 
 For simplification we moved away from representing each cow indvidually in the data base. As a start we want each user to just have a cow count and a running average cow health. This adds a complication for killing cows that we resolved by having a health threshold. For each user if their average cow helath goes below the threshold then there is a random chance that a cow in that user's farm will be killed. Later on we would like to group cows with similar health so we can track cow health more accuartely and kill cows when they are low or out of health. We would also like to add a report system that will auto generate reports. 
