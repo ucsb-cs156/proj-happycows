@@ -172,54 +172,54 @@ describe("OurTable tests", () => {
     expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
 
     
-    // const nextButton = screen.getByTestId("testid-next-page-button");
-    // for (let i = 0; i < 10; i++) {
-    //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-    // }
-    // var tester = true;
-    // for (let i = 10; i < 20; i++) {
-    //   try {
-    //     await screen.findByText(`Hello ${i}`);
-    //     tester = false;
-    //   } catch (e) {}
-    // }
-    // expect(tester).toBe(true);
-    // expect(
-    //   await screen.findByTestId("testid-current-page-button"),
-    // ).toContainHTML("1");
-    // fireEvent.click(nextButton);
-    // expect(
-    //   await screen.findByTestId("testid-current-page-button"),
-    // ).toContainHTML("2");
-    // expect(
-    //   (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-    //     "disabled",
-    //   ),
-    // ).toBe(false);
-    // expect(
-    //   (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-    //     "disabled",
-    //   ),
-    // ).toBe(false);
-    // for (let i = 0; i < 10; i++) {
-    //   try {
-    //     await screen.findByText(`Hello ${i}`);
-    //     tester = false;
-    //   } catch (e) {}
-    // }
-    // expect(tester).toBe(true);
-    // for (let i = 10; i < 20; i++) {
-    //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
-    // }
-    // fireEvent.click(nextButton);
-    // expect(
-    //   await screen.findByTestId("testid-current-page-button"),
-    // ).toContainHTML("3");
-    // expect(
-    //   (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-    //     "disabled",
-    //   ),
-    // ).toBe(false);
+    const nextButton = screen.getByTestId("testid-next-page-button");
+    for (let i = 0; i < 10; i++) {
+      expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    }
+    var tester = true;
+    for (let i = 10; i < 20; i++) {
+      try {
+        await screen.findByText(`Hello ${i}`);
+        tester = false;
+      } catch (e) {}
+    }
+    expect(tester).toBe(true);
+    expect(
+      await screen.findByTestId("testid-current-page-button"),
+    ).toContainHTML("1");
+    fireEvent.click(nextButton);
+    expect(
+      await screen.findByTestId("testid-current-page-button"),
+    ).toContainHTML("2");
+    expect(
+      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
+        "disabled",
+      ),
+    ).toBe(false);
+    expect(
+      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
+        "disabled",
+      ),
+    ).toBe(false);
+    for (let i = 0; i < 10; i++) {
+      try {
+        await screen.findByText(`Hello ${i}`);
+        tester = false;
+      } catch (e) {}
+    }
+    expect(tester).toBe(true);
+    for (let i = 10; i < 20; i++) {
+      expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
+    }
+    fireEvent.click(nextButton);
+    expect(
+      await screen.findByTestId("testid-current-page-button"),
+    ).toContainHTML("3");
+    expect(
+      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
+        "disabled",
+      ),
+    ).toBe(false);
     // expect(
     //   (await screen.findByTestId("testid-next-page-button")).hasAttribute(
     //     "disabled",
@@ -228,7 +228,7 @@ describe("OurTable tests", () => {
     // for (let i = 20; i < 30; i++) {
     //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
     // }
-  });
+  },40000);
 
   test("renders a table with 100 rows and tests the first page", async () => {
     render(<OurTable columns={columns} data={hundredRows} />);
@@ -256,50 +256,50 @@ describe("OurTable tests", () => {
     expect(screen.getByTestId("testid-prev-page-button").parentElement).toHaveClass("disabled");
     expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
 
-    // var tester = true;
-    // try {
-    //   await screen.findByTestId("testid-left-ellipses");
-    //   tester = false;
-    // } catch (e) {}
-    // try {
-    //   await screen.findByTestId("testid-back-three-page-button");
-    //   tester = false;
-    // } catch (e) {}
-    // try {
-    //   await screen.findByTestId("testid-back-two-page-button");
-    //   tester = false;
-    // } catch (e) {}
-    // try {
-    //   await screen.findByTestId("testid-back-one-page-button");
-    //   tester = false;
-    // } catch (e) {}
-    // expect(tester).toBe(true);
-    // expect(
-    //   await screen.findByTestId("testid-current-page-button"),
-    // ).toContainHTML("1");
-    // expect(
-    //   await screen.findByTestId("testid-forward-one-page-button"),
-    // ).toContainHTML("2");
-    // expect(
-    //   await screen.findByTestId("testid-forward-two-page-button"),
-    // ).toContainHTML("3");
-    // try {
-    //   expect(
-    //     await screen.findByTestId("testid-forward-three-page-button"),
-    //   ).toBeInTheDocument();
-    //   tester = false;
-    // } catch (e) {}
-    // expect(tester).toBe(true);
-    // expect(
-    //   await screen.findByTestId("testid-right-ellipsis"),
-    // ).toBeInTheDocument();
-    // expect(await screen.findByTestId("testid-last-page-button")).toContainHTML(
-    //   "10",
-    // );
+    var tester = true;
+    try {
+      await screen.findByTestId("testid-left-ellipses");
+      tester = false;
+    } catch (e) {}
+    try {
+      await screen.findByTestId("testid-back-three-page-button");
+      tester = false;
+    } catch (e) {}
+    try {
+      await screen.findByTestId("testid-back-two-page-button");
+      tester = false;
+    } catch (e) {}
+    try {
+      await screen.findByTestId("testid-back-one-page-button");
+      tester = false;
+    } catch (e) {}
+    expect(tester).toBe(true);
+    expect(
+      await screen.findByTestId("testid-current-page-button"),
+    ).toContainHTML("1");
+    expect(
+      await screen.findByTestId("testid-forward-one-page-button"),
+    ).toContainHTML("2");
+    expect(
+      await screen.findByTestId("testid-forward-two-page-button"),
+    ).toContainHTML("3");
+    try {
+      expect(
+        await screen.findByTestId("testid-forward-three-page-button"),
+      ).toBeInTheDocument();
+      tester = false;
+    } catch (e) {}
+    expect(tester).toBe(true);
+    expect(
+      await screen.findByTestId("testid-right-ellipsis"),
+    ).toBeInTheDocument();
+    expect(await screen.findByTestId("testid-last-page-button")).toContainHTML(
+      "10",
+    );
     // for (let i = 0; i < 10; i++) {
     //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
     // }
-  });
+  },10000);
 
   test("renders a table with 100 rows and tests the moving back one page", async () => {
     render(<OurTable columns={columns} data={hundredRows} />);
