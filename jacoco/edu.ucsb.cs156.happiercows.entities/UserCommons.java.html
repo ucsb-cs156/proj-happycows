@@ -2,11 +2,12 @@
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
-import lombok.*;
 
 @Data
 @AllArgsConstructor
@@ -14,49 +15,52 @@ import lombok.*;
 @Builder
 @Entity(name = &quot;user_commons&quot;)
 public class UserCommons {
-  @EmbeddedId @JsonIgnore @Builder.Default private UserCommonsKey id = new UserCommonsKey();
+    @EmbeddedId
+    @JsonIgnore
+    @Builder.Default
+    private UserCommonsKey id = new UserCommonsKey();
 
-  @MapsId(&quot;userId&quot;)
-  @ManyToOne
-  @JsonIgnore
-  private User user;
+    @MapsId(&quot;userId&quot;)
+    @ManyToOne
+    @JsonIgnore
+    private User user;
 
-  @MapsId(&quot;commonsId&quot;)
-  @ManyToOne
-  @JsonIgnore
-  private Commons commons;
+    @MapsId(&quot;commonsId&quot;)
+    @ManyToOne
+    @JsonIgnore
+    private Commons commons;
 
-  private String username;
+    private String username;
 
-  private double totalWealth;
+    private double totalWealth;
 
-  private int numOfCows;
+    private int numOfCows;
 
-  private double cowHealth;
+    private double cowHealth;
 
-  private int cowsBought;
+    private int cowsBought;
 
-  private int cowsSold;
+    private int cowsSold;
 
-  private int cowDeaths;
+    private int cowDeaths;
 
-  // userID and commonsId are used by the frontend
-  @JsonInclude
-  public long getUserId() {
-<span class="fc" id="L46">    return user.getId();</span>
-  }
+    // userID and commonsId are used by the frontend
+    @JsonInclude
+    public long getUserId() {
+<span class="fc" id="L50">      return user.getId();</span>
+    }
 
-  @JsonInclude
-  public long getCommonsId() {
-<span class="fc" id="L51">    return commons.getId();</span>
-  }
+    @JsonInclude
+    public long getCommonsId() {
+<span class="fc" id="L55">        return commons.getId();</span>
+    }
 
-  public void setId(UserCommonsKey id) {
-<span class="fc" id="L55">    this.id = id;</span>
-<span class="fc" id="L56">  }</span>
-
-  public UserCommonsKey getId() {
-<span class="fc" id="L59">    return this.id;</span>
-  }
+    public void setId(UserCommonsKey id) {
+<span class="fc" id="L59">        this.id = id;</span>
+<span class="fc" id="L60">    }</span>
+    
+    public UserCommonsKey getId() {
+<span class="fc" id="L63">        return this.id;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
