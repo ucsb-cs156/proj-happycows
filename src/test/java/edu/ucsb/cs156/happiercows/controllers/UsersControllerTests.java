@@ -37,29 +37,39 @@ public class UsersControllerTests extends ControllerTestCase {
   @MockBean
   UserRepository userRepository;
 
-  @Test
-  public void temporary_dummy_test() {
-    assertEquals(1, 1);
-  }
-
   // @Test
   // public void users__logged_out() throws Exception {
-  //   mockMvc.perform(get("/api/admin/users"))
-  //       .andExpect(status().is(403));
+  // mockMvc.perform(get("/api/admin/users"))
+  // .andExpect(status().is(403));
   // }
 
   // @WithMockUser(roles = { "USER" })
   // @Test
   // public void users__user_logged_in() throws Exception {
-  //   mockMvc.perform(get("/api/admin/users"))
-  //       .andExpect(status().is(403));
+  // mockMvc.perform(get("/api/admin/users"))
+  // .andExpect(status().is(403));
+  // }
+
+  // @WithMockUser(roles = {"USER"})
+  // @Test
+  // public void regular_user_cannot_suspend_user() throws Exception {
+  // mockMvc.perform(post("/api/admin/users/suspend?userId=1")
+  // .with(csrf()))
+  // .andExpect(status().isForbidden());
+  // }
+
+  // @WithMockUser(roles = {"USER"})
+  // @Test
+  // public void regular_user_cannot_restore_user() throws Exception {
+  // mockMvc.perform(post("/api/admin/users/restore?userId=1")
+  // .with(csrf()))
+  // .andExpect(status().isForbidden());
   // }
 
   @WithMockUser(roles = { "ADMIN" })
   @Test
   public void users__admin_logged_in() throws Exception {
 
-    
     // arrange
 
     User u1 = User.builder().id(1L).build();
@@ -85,24 +95,7 @@ public class UsersControllerTests extends ControllerTestCase {
 
   }
 
-
-  // @WithMockUser(roles = {"USER"})
-  // @Test
-  // public void regular_user_cannot_suspend_user() throws Exception { 
-  //   mockMvc.perform(post("/api/admin/users/suspend?userId=1")
-  //               .with(csrf()))
-  //               .andExpect(status().isForbidden());
-  // }
-
-  // @WithMockUser(roles = {"USER"})
-  // @Test
-  // public void regular_user_cannot_restore_user() throws Exception {
-  //   mockMvc.perform(post("/api/admin/users/restore?userId=1")
-  //               .with(csrf()))
-  //               .andExpect(status().isForbidden());
-  // }
-
-  @WithMockUser(roles = {"ADMIN"})
+  @WithMockUser(roles = { "ADMIN" })
   @Test
   public void admin_user_can_suspend_user() throws Exception {
     User u1 = User.builder().id(1L).build();
@@ -110,7 +103,8 @@ public class UsersControllerTests extends ControllerTestCase {
     when(userRepository.findById(u1.getId())).thenReturn(Optional.of(user));
     when(userRepository.save(any(User.class))).thenReturn(user);
 
-    MvcResult response = mockMvc.perform(post("/api/admin/users/suspend").param("userId", "1").with(csrf())).andExpect(status().isOk()).andReturn();
+    MvcResult response = mockMvc.perform(post("/api/admin/users/suspend").param("userId", "1").with(csrf()))
+        .andExpect(status().isOk()).andReturn();
 
     verify(userRepository, times(1)).save(user);
     verify(user, times(1)).setSuspended(true);
@@ -119,7 +113,7 @@ public class UsersControllerTests extends ControllerTestCase {
     assertEquals("User with id 1 suspended", json.get("message"));
   }
 
-  @WithMockUser(roles = {"ADMIN"})
+  @WithMockUser(roles = { "ADMIN" })
   @Test
   public void admin_user_can_restore_user() throws Exception {
     User u1 = User.builder().id(1L).build();
@@ -127,7 +121,8 @@ public class UsersControllerTests extends ControllerTestCase {
     when(userRepository.findById(u1.getId())).thenReturn(Optional.of(user));
     when(userRepository.save(any(User.class))).thenReturn(user);
 
-    MvcResult response = mockMvc.perform(post("/api/admin/users/restore").param("userId", "1").with(csrf())).andExpect(status().isOk()).andReturn();
+    MvcResult response = mockMvc.perform(post("/api/admin/users/restore").param("userId", "1").with(csrf()))
+        .andExpect(status().isOk()).andReturn();
 
     verify(userRepository, times(1)).save(user);
     verify(user, times(1)).setSuspended(false);
@@ -135,19 +130,21 @@ public class UsersControllerTests extends ControllerTestCase {
     assertEquals("User with id 1 restored", json.get("message"));
   }
 
-  @WithMockUser(roles={"ADMIN"})
+  @WithMockUser(roles = { "ADMIN" })
   @Test
   public void admin_user_cannot_suspend_invalid_user() throws Exception {
     when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-    mockMvc.perform(post("/api/admin/users/suspend").param("userId", "1").with(csrf())).andExpect(status().isNotFound());
+    mockMvc.perform(post("/api/admin/users/suspend").param("userId", "1").with(csrf()))
+        .andExpect(status().isNotFound());
   }
 
-  @WithMockUser(roles={"ADMIN"})
+  @WithMockUser(roles = { "ADMIN" })
   @Test
   public void admin_user_cannot_restore_invalid_user() throws Exception {
     when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-    mockMvc.perform(post("/api/admin/users/restore").param("userId", "1").with(csrf())).andExpect(status().isNotFound());
+    mockMvc.perform(post("/api/admin/users/restore").param("userId", "1").with(csrf()))
+        .andExpect(status().isNotFound());
   }
 }
