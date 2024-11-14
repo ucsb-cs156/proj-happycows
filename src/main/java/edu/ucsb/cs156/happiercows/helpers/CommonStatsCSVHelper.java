@@ -19,11 +19,10 @@ import org.apache.commons.csv.CSVPrinter;
 
 public class CommonStatsCSVHelper {
 
-  /** 
-   * Throw an exception in the constructor; this make jacoco/pitest happy.
-   */
+  /** Throw an exception in the constructor; this make jacoco/pitest happy. */
   public CommonStatsCSVHelper() throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Class has only static methods; invoking constructor not supported.");
+    throw new UnsupportedOperationException(
+        "Class has only static methods; invoking constructor not supported.");
   }
 
   /**

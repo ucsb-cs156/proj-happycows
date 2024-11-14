@@ -9,10 +9,16 @@ class CommonStatsCSVHelperTests {
   @Test
   void constructor_for_static_class_should_throw_exception() {
 
-    UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
-      new CommonStatsCSVHelper();
-    });
+    UnsupportedOperationException thrown =
+        assertThrows(
+            UnsupportedOperationException.class,
+            () -> {
+              new CommonStatsCSVHelper();
+            });
 
-    assertTrue(thrown.getMessage().contains("Class has only static methods; invoking constructor not supported."));
+    assertTrue(
+        thrown
+            .getMessage()
+            .contains("Class has only static methods; invoking constructor not supported."));
   }
 }

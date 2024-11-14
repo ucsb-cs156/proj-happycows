@@ -33,55 +33,56 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
 public class UpdateCowHealthJobTests extends JobTestCase {
-  @Mock
-  CommonsRepository commonsRepository;
+  @Mock CommonsRepository commonsRepository;
 
-  @Mock
-  UserCommonsRepository userCommonsRepository;
+  @Mock UserCommonsRepository userCommonsRepository;
 
-  @Mock
-  UserRepository userRepository;
+  @Mock UserRepository userRepository;
 
-  @Mock
-  CommonsPlusBuilderService commonsPlusBuilderService;
+  @Mock CommonsPlusBuilderService commonsPlusBuilderService;
 
-  private final User user = User.builder().id(1L).fullName("Chris Gaucho").email("cgaucho@example.org").build();
+  private final User user =
+      User.builder().id(1L).fullName("Chris Gaucho").email("cgaucho@example.org").build();
 
-  private final Commons commons = Commons.builder()
-      .name("test commons")
-      .cowPrice(10)
-      .milkPrice(2)
-      .startingBalance(300)
-      .startingDate(LocalDateTime.now())
-      .capacityPerUser(0)
-      .carryingCapacity(100)
-      .degradationRate(1)
-      .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop)
-      .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop)
-      .build();
+  private final Commons commons =
+      Commons.builder()
+          .name("test commons")
+          .cowPrice(10)
+          .milkPrice(2)
+          .startingBalance(300)
+          .startingDate(LocalDateTime.now())
+          .capacityPerUser(0)
+          .carryingCapacity(100)
+          .degradationRate(1)
+          .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop)
+          .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop)
+          .build();
 
-  private final UserCommons userCommons = UserCommons.builder()
-      .user(user)
-      .commons(commons)
-      .totalWealth(300)
-      .numOfCows(1)
-      .cowHealth(10.0)
-      .build();
+  private final UserCommons userCommons =
+      UserCommons.builder()
+          .user(user)
+          .commons(commons)
+          .totalWealth(300)
+          .numOfCows(1)
+          .cowHealth(10.0)
+          .build();
 
   private final Job job = Job.builder().build();
   private final JobContext ctx = new JobContext(null, job);
 
   private void runUpdateCowHealthJob() throws Exception {
-    var updateCowHealthJob = new UpdateCowHealthJob(
-        commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
+    var updateCowHealthJob =
+        new UpdateCowHealthJob(
+            commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
     updateCowHealthJob.accept(ctx);
   }
 
   @Test
   void test_getter_for_CommonsPlusBuilderService() {
-    var updateCowHealthJob = new UpdateCowHealthJob(
-      commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
-      assertEquals(commonsPlusBuilderService, updateCowHealthJob.getCommonsPlusBuilderService());
+    var updateCowHealthJob =
+        new UpdateCowHealthJob(
+            commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
+    assertEquals(commonsPlusBuilderService, updateCowHealthJob.getCommonsPlusBuilderService());
   }
 
   @Test
@@ -96,7 +97,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
   private void setupUpdateCowHealthTestOnCommons(int totalCows, int numUsers) {
     List<Commons> listOfCommons = List.of(commons);
-    CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(totalCows).totalUsers(numUsers).build();
+    CommonsPlus commonsPlus =
+        CommonsPlus.builder().commons(commons).totalCows(totalCows).totalUsers(numUsers).build();
 
     List<CommonsPlus> listOfCommonsPlus = List.of(commonsPlus);
 
@@ -120,7 +122,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     assertEquals(expectedNewHealth, userCommons.getCowHealth());
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         User: Chris Gaucho, numCows: 1, cowHealth: 10.0
@@ -138,7 +141,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     assertEquals(expectedNewHealth, userCommons.getCowHealth());
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         User: Chris Gaucho, numCows: 1, cowHealth: 10.0
@@ -157,7 +161,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     assertEquals(expectedNewHealth, userCommons.getCowHealth());
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         User: Chris Gaucho, numCows: 1, cowHealth: 10.0
@@ -170,8 +175,9 @@ public class UpdateCowHealthJobTests extends JobTestCase {
   void test_cow_health_minimum_is_0() throws Exception {
     var mockStrategy = mock(CowHealthUpdateStrategy.class);
     when(mockStrategy.calculateNewCowHealth(any(), any(), anyInt())).thenReturn(-1.0);
-    var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
-        mockStrategy, commonsPlusBuilderService.toCommonsPlus(commons), userCommons, 1);
+    var newHealth =
+        UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
+            mockStrategy, commonsPlusBuilderService.toCommonsPlus(commons), userCommons, 1);
     assertEquals(0.0, newHealth);
   }
 
@@ -179,24 +185,27 @@ public class UpdateCowHealthJobTests extends JobTestCase {
   void test_cow_health_maximum_is_100() throws Exception {
     var mockStrategy = mock(CowHealthUpdateStrategy.class);
     when(mockStrategy.calculateNewCowHealth(any(), any(), anyInt())).thenReturn(101.0);
-    var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
-        mockStrategy, commonsPlusBuilderService.toCommonsPlus(commons), userCommons, 1);
+    var newHealth =
+        UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
+            mockStrategy, commonsPlusBuilderService.toCommonsPlus(commons), userCommons, 1);
     assertEquals(100.0, newHealth);
   }
 
   @Test
   void test_updating_values_for_multiple_users() throws Exception {
     var userCommons1 = userCommons;
-    var userCommons2 = UserCommons.builder()
-        .user(user)
-        .commons(commons)
-        .totalWealth(300)
-        .numOfCows(6)
-        .cowHealth(20)
-        .build();
+    var userCommons2 =
+        UserCommons.builder()
+            .user(user)
+            .commons(commons)
+            .totalWealth(300)
+            .numOfCows(6)
+            .cowHealth(20)
+            .build();
     commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
 
-    CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(6).totalUsers(1).build();
+    CommonsPlus commonsPlus =
+        CommonsPlus.builder().commons(commons).totalCows(6).totalUsers(1).build();
 
     List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
     List<Commons> commonsList = List.of(commons);
@@ -213,7 +222,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     runUpdateCowHealthJob();
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         User: Chris Gaucho, numCows: 1, cowHealth: 10.0
@@ -231,14 +241,15 @@ public class UpdateCowHealthJobTests extends JobTestCase {
   @Test
   void test_calculateCowDeaths_health_zero() throws Exception {
     // arrange
-    UserCommons userCommons = UserCommons.builder()
-        .user(user)
-        .commons(commons)
-        .totalWealth(300)
-        .numOfCows(5)
-        .cowHealth(0.0)
-        .cowDeaths(0)
-        .build();
+    UserCommons userCommons =
+        UserCommons.builder()
+            .user(user)
+            .commons(commons)
+            .totalWealth(300)
+            .numOfCows(5)
+            .cowHealth(0.0)
+            .cowDeaths(0)
+            .build();
 
     // act
     UpdateCowHealthJob.calculateCowDeaths(userCommons, ctx);
@@ -252,14 +263,15 @@ public class UpdateCowHealthJobTests extends JobTestCase {
   @Test
   void test_calculateCowDeaths_health_nonZero() throws Exception {
     // arrange
-    UserCommons userCommons = UserCommons.builder()
-        .user(user)
-        .commons(commons)
-        .totalWealth(300)
-        .numOfCows(5)
-        .cowHealth(1.0)
-        .cowDeaths(42)
-        .build();
+    UserCommons userCommons =
+        UserCommons.builder()
+            .user(user)
+            .commons(commons)
+            .totalWealth(300)
+            .numOfCows(5)
+            .cowHealth(1.0)
+            .cowDeaths(42)
+            .build();
 
     // act
     UpdateCowHealthJob.calculateCowDeaths(userCommons, ctx);
@@ -272,17 +284,19 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
   @Test
   void test_cowDeaths_in_job_context() throws Exception {
-    UserCommons userCommons = UserCommons.builder()
-        .user(user)
-        .commons(commons)
-        .totalWealth(300)
-        .numOfCows(5)
-        .cowHealth(-1.0)
-        .cowDeaths(0)
-        .build();
+    UserCommons userCommons =
+        UserCommons.builder()
+            .user(user)
+            .commons(commons)
+            .totalWealth(300)
+            .numOfCows(5)
+            .cowHealth(-1.0)
+            .cowDeaths(0)
+            .build();
     commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
 
-    CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
+    CommonsPlus commonsPlus =
+        CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
 
     List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
     List<Commons> commonsList = List.of(commons);
@@ -299,7 +313,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     runUpdateCowHealthJob();
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         User: Chris Gaucho, numCows: 5, cowHealth: -1.0
@@ -316,7 +331,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
   @Test
   void test_skipping_job_when_commons_has_zero_users() throws Exception {
-    CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
+    CommonsPlus commonsPlus =
+        CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
 
     List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
     List<Commons> commonsList = List.of(commons);
@@ -331,7 +347,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
     runUpdateCowHealthJob();
 
-    String expected = """
+    String expected =
+        """
         Updating cow health...
         Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
         No users in this commons, skipping
@@ -347,14 +364,16 @@ public class UpdateCowHealthJobTests extends JobTestCase {
     when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.empty());
     when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
 
-    var updateCowHealthJob = new UpdateCowHealthJob(
-        commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
+    var updateCowHealthJob =
+        new UpdateCowHealthJob(
+            commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
 
-    var thrown = Assertions.assertThrows(
-        RuntimeException.class,
-        () -> {
-          updateCowHealthJob.accept(ctx);
-        });
+    var thrown =
+        Assertions.assertThrows(
+            RuntimeException.class,
+            () -> {
+              updateCowHealthJob.accept(ctx);
+            });
 
     Assertions.assertEquals("Error calling getNumCows(117)", thrown.getMessage());
   }
@@ -365,14 +384,16 @@ public class UpdateCowHealthJobTests extends JobTestCase {
     commons.setId(117);
     when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.empty());
 
-    var updateCowHealthJob = new UpdateCowHealthJob(
-        commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
+    var updateCowHealthJob =
+        new UpdateCowHealthJob(
+            commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService);
 
-    var thrown = Assertions.assertThrows(
-        RuntimeException.class,
-        () -> {
-          updateCowHealthJob.accept(ctx);
-        });
+    var thrown =
+        Assertions.assertThrows(
+            RuntimeException.class,
+            () -> {
+              updateCowHealthJob.accept(ctx);
+            });
 
     Assertions.assertEquals("Error calling getNumUsers(117)", thrown.getMessage());
   }

@@ -69,7 +69,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
                 Starting to milk the cows
                 No commons found for id 1""";
     assertEquals(expected, jobStarted.getLog());
-    assertEquals(1L,milkTheCowsJobInd.getCommonsID());
+    assertEquals(1L, milkTheCowsJobInd.getCommonsID());
   }
 
   @Test
