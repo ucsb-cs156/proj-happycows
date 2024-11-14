@@ -5,23 +5,26 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
-
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 describe("AnnouncementTable tests", () => {
   const queryClient = new QueryClient();
 
-  const expectedHeaders = ["id", "Start Date ISO Format", "End Date ISO Format", "Announcement"];
+  const expectedHeaders = [
+    "id",
+    "Start Date ISO Format",
+    "End Date ISO Format",
+    "Announcement",
+  ];
   const expectedFields = ["id", "startDate", "endDate", "announcementText"];
   const testId = "AnnouncementTable";
 
   test("renders empty table correctly", () => {
-    
     // arrange
     const currentUser = currentUserFixtures.adminUser;
 
@@ -31,7 +34,7 @@ describe("AnnouncementTable tests", () => {
         <MemoryRouter>
           <AnnouncementTable announcements={[]} currentUser={currentUser} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert
@@ -41,7 +44,9 @@ describe("AnnouncementTable tests", () => {
     });
 
     expectedFields.forEach((field) => {
-      const fieldElement = screen.queryByTestId(`${testId}-cell-row-0-col-${field}`);
+      const fieldElement = screen.queryByTestId(
+        `${testId}-cell-row-0-col-${field}`,
+      );
       expect(fieldElement).not.toBeInTheDocument();
     });
   });
@@ -54,9 +59,12 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={announcementFixtures.threeAnnouncements} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={announcementFixtures.threeAnnouncements}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert
@@ -70,20 +78,31 @@ describe("AnnouncementTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-startDate`)).toHaveTextContent("2024-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-startDate`)).toHaveTextContent("2022-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
+      "2",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
+    ).toHaveTextContent("2022-12-12T00:00:00");
 
-    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
     expect(editButton).toBeInTheDocument();
     expect(editButton).toHaveClass("btn-primary");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
     expect(deleteButton).toHaveClass("btn-danger");
-
   });
 
   test("Has the expected column headers, content for ordinary user", () => {
@@ -94,9 +113,12 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={announcementFixtures.threeAnnouncements} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={announcementFixtures.threeAnnouncements}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert
@@ -110,16 +132,23 @@ describe("AnnouncementTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-startDate`)).toHaveTextContent("2024-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-startDate`)).toHaveTextContent("2022-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
+      "2",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
+    ).toHaveTextContent("2022-12-12T00:00:00");
 
     expect(screen.queryByText("Delete")).not.toBeInTheDocument();
     expect(screen.queryByText("Edit")).not.toBeInTheDocument();
   });
-
 
   test("Edit button navigates to the edit page", async () => {
     // arrange
@@ -129,24 +158,34 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={announcementFixtures.threeAnnouncements} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={announcementFixtures.threeAnnouncements}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-startDate`)).toHaveTextContent("2024-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
-    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
     expect(editButton).toBeInTheDocument();
 
     // act - click the edit button
     fireEvent.click(editButton);
 
     // assert - check that the navigate function was called with the expected path
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/announcements/edit/1'));
-
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/announcements/edit/1"),
+    );
   });
 
   test("Delete button calls delete callback", async () => {
@@ -157,16 +196,25 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={announcementFixtures.threeAnnouncements} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={announcementFixtures.threeAnnouncements}
+            currentUser={currentUser}
+          />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-startDate`)).toHaveTextContent("2024-12-12T00:00:00");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
-    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
 
     // act - click the delete button

@@ -5,12 +5,9 @@ import edu.ucsb.cs156.happiercows.entities.UserCommons;
 
 public interface CowHealthUpdateStrategy {
 
-    public double calculateNewCowHealth(
-            CommonsPlus commonsPlus,
-            UserCommons uC,
-            int totalCows
-    );
+  public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows);
 
-    public String getDisplayName();
-    public String getDescription();
+  public String getDisplayName();
+
+  public String getDescription();
 }

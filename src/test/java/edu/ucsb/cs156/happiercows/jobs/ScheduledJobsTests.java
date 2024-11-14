@@ -10,7 +10,6 @@ import edu.ucsb.cs156.happiercows.entities.jobs.Job;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
 import edu.ucsb.cs156.happiercows.services.jobs.JobService;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -21,91 +20,81 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 @AutoConfigureDataJpa
 public class ScheduledJobsTests extends JobTestCase {
 
-    private class MockJobContextConsumer implements JobContextConsumer {
-        @Override
-        public void accept(JobContext jobContext) {}
-    }
+  private class MockJobContextConsumer implements JobContextConsumer {
+    @Override
+    public void accept(JobContext jobContext) {}
+  }
 
-    @MockBean
-    UpdateCowHealthJobFactory updateCowHealthJobFactory;
+  @MockBean UpdateCowHealthJobFactory updateCowHealthJobFactory;
 
-    @MockBean
-    MilkTheCowsJobFactory milkTheCowsJobFactory;
+  @MockBean MilkTheCowsJobFactory milkTheCowsJobFactory;
 
-    @MockBean
-    RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+  @MockBean RecordCommonStatsJobFactory recordCommonStatsJobFactory;
 
-    @Autowired
-    private ScheduledJobs scheduledJobs;
+  @Autowired private ScheduledJobs scheduledJobs;
 
-    @MockBean
-    private JobService jobService;
+  @MockBean private JobService jobService;
 
-    @Test
-    void test_runUpdateCowHealthJobBasedOnCron() throws Exception {
+  @Test
+  void test_runUpdateCowHealthJobBasedOnCron() throws Exception {
 
-        // Arrange
+    // Arrange
 
-        Job job = Job.builder().build();
-        MockJobContextConsumer mockJob = new MockJobContextConsumer();
+    Job job = Job.builder().build();
+    MockJobContextConsumer mockJob = new MockJobContextConsumer();
 
-       when(updateCowHealthJobFactory.create()).thenReturn(mockJob);
-       when(jobService.runAsJob(any())).thenReturn(job);
+    when(updateCowHealthJobFactory.create()).thenReturn(mockJob);
+    when(jobService.runAsJob(any())).thenReturn(job);
 
-        // Act
+    // Act
 
-        scheduledJobs.runUpdateCowHealthJobBasedOnCron();
+    scheduledJobs.runUpdateCowHealthJobBasedOnCron();
 
-        // Assert
+    // Assert
 
-        verify(jobService, times(1)).runAsJob(mockJob);
-        verify(updateCowHealthJobFactory, times(1)).create();
+    verify(jobService, times(1)).runAsJob(mockJob);
+    verify(updateCowHealthJobFactory, times(1)).create();
+  }
 
-    }
+  @Test
+  void test_runMilkTheCowsJobBasedOnCron() throws Exception {
 
-    @Test
-    void test_runMilkTheCowsJobBasedOnCron() throws Exception {
+    // Arrange
 
-        // Arrange
+    Job job = Job.builder().build();
+    MockJobContextConsumer mockJob = new MockJobContextConsumer();
 
-        Job job = Job.builder().build();
-        MockJobContextConsumer mockJob = new MockJobContextConsumer();
+    when(milkTheCowsJobFactory.create()).thenReturn(mockJob);
+    when(jobService.runAsJob(any())).thenReturn(job);
 
-       when(milkTheCowsJobFactory.create()).thenReturn(mockJob);
-       when(jobService.runAsJob(any())).thenReturn(job);
+    // Act
 
-        // Act
+    scheduledJobs.runMilkTheCowsJobBasedOnCron();
 
-        scheduledJobs.runMilkTheCowsJobBasedOnCron();
+    // Assert
 
-        // Assert
+    verify(jobService, times(1)).runAsJob(mockJob);
+    verify(milkTheCowsJobFactory, times(1)).create();
+  }
 
-        verify(jobService, times(1)).runAsJob(mockJob);
-        verify(milkTheCowsJobFactory, times(1)).create();
+  @Test
+  void test_runRecordCommonStatsJobBasedOnCron() throws Exception {
 
-    }
+    // Arrange
 
-    @Test
-    void test_runRecordCommonStatsJobBasedOnCron() throws Exception {
+    Job job = Job.builder().build();
+    MockJobContextConsumer mockJob = new MockJobContextConsumer();
 
-        // Arrange
+    when(recordCommonStatsJobFactory.create()).thenReturn(mockJob);
+    when(jobService.runAsJob(any())).thenReturn(job);
 
-        Job job = Job.builder().build();
-        MockJobContextConsumer mockJob = new MockJobContextConsumer();
+    // Act
 
-       when(recordCommonStatsJobFactory.create()).thenReturn(mockJob);
-       when(jobService.runAsJob(any())).thenReturn(job);
+    scheduledJobs.runRecordCommonStatsJobBasedOnCron();
 
-        // Act
+    // Assert
 
-        scheduledJobs.runRecordCommonStatsJobBasedOnCron();
-
-        // Assert
-
-        verify(jobService, times(1)).runAsJob(mockJob);
-        verify(recordCommonStatsJobFactory, times(1)).create();
-
-    }
-
-  
+    verify(jobService, times(1)).runAsJob(mockJob);
+    verify(recordCommonStatsJobFactory, times(1)).create();
+  }
 }

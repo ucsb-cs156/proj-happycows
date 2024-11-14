@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import UpdateCowHealthForm from "main/components/Jobs/UpdateCowHealthForm";
+import * as UpdateCowHealthFormStories from './UpdateCowHealthForm.stories';
+
+<Meta of={UpdateCowHealthFormStories} />
+
+# UpdateCowHealthForm
+
+A button for updating cow health, with:
+
+* a line telling the user what the button does
+
+<Canvas>
+  <Story of={UpdateCowHealthFormStories.Uncontrolled} />
+</Canvas>

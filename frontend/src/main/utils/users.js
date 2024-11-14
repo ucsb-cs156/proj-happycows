@@ -17,7 +17,7 @@ export function useUsers() {
     },
     {
       initialData: [],
-    }
+    },
   );
 }
 
@@ -30,7 +30,7 @@ export function useSuspendUser() {
     }),
     {},
     // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
-    "users"
+    "users",
   );
 }
 
@@ -43,6 +43,6 @@ export function useRestoreUser() {
     }),
     {},
     // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
-    "users"
+    "users",
   );
 }

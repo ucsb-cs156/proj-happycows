@@ -9,7 +9,7 @@ on:
 env:
   GH_TOKEN: ${{ github.token }}
   javadoc_dest: target/site/apidocs
-  storybook_dest: frontend/storybook_static
+  chromatic_dest: frontend/chromatic_static
   jacoco_dest: target/site/jacoco
   pitest_dest: target/pit-reports
   coverage_dest: frontend/coverage/lcov-report
@@ -29,7 +29,7 @@ jobs:
       pull_requests: ${{ steps.get-prs.outputs.pull_requests }}
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Get Pull Requests from Github api
       id: get-prs
       run: |
@@ -47,7 +47,7 @@ jobs:
 
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Append name of site to _config.yml
       run: | 
           CONFIG_YML=frontend/docs-index/_config.yml
@@ -85,11 +85,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: setup - Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 1
     - name: setup - Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -107,7 +107,7 @@ jobs:
     - name: a-javadoc Make directory in case it doesn't exist
       run: mkdir -p ${{ env.javadoc_dest  }}
     - name: a-javadoc Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -126,29 +126,29 @@ jobs:
         clean: true # Automatically remove deleted files from the deploy branch
         target-folder: javadoc # The folder that we serve our files from
 
-    - name: b-storybook Make directory in case it doesn't exist
-      run: mkdir -p ${{ env.storybook_dest }}
-    - name: b-storybook Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+    - name: b-chromatic Make directory in case it doesn't exist
+      run: mkdir -p ${{ env.chromatic_dest }}
+    - name: b-chromatic Download artifact
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
-        name: storybook
-        path: ${{ env.storybook_dest }}
+        name: chromatic
+        path: ${{ env.chromatic_dest }}
         check_artifacts: true
         if_no_artifact_found: error
-    - name: b-storybook Deploy Storybook (Main) 🚀
+    - name: b-chromatic Deploy chromatic (Main) 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder:  ${{ env.storybook_dest}} # The folder where the files come from
+        folder:  ${{ env.chromatic_dest}} # The folder where the files come from
         clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: storybook # The folder that we serve our files from
+        target-folder: chromatic # The folder that we serve our files from
 
     - name: c-jacoco Make directory in case it doesn't exist
       run: mkdir -p ${{ env.jacoco_dest }}
     - name: c-jacoco Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -169,7 +169,7 @@ jobs:
     - name: d-pitest Make directory in case it doesn't exist
       run: mkdir -p ${{ env.pitest_dest }}
     - name:  d-pitest Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -188,7 +188,7 @@ jobs:
     - name: e-coverage Make directory in case it doesn't exist
       run: mkdir -p ${{ env.coverage_dest }}
     - name: e-coverage Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -208,7 +208,7 @@ jobs:
     - name: f-stryker Make directory in case it doesn't exist
       run: mkdir -p ${{ env.stryker_dest }}
     - name: f-stryker Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -240,13 +240,13 @@ jobs:
 
     steps:
     - name: a-javadoc Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
 
     - name: a-javadoc Make directory in case it doesn't exist
       run: mkdir -p ${{ env.javadoc_dest }}
 
     - name: a-javadoc Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -263,32 +263,32 @@ jobs:
         clean: true # Automatically remove deleted files from the deploy branch
         target-folder: prs/${{ matrix.value.number }}/javadoc # The folder that we serve our files from
 
-    - name: b-storybook Make directory in case it doesn't exist
-      run: mkdir -p ${{ env.storybook_dest }}
+    - name: b-chromatic Make directory in case it doesn't exist
+      run: mkdir -p ${{ env.chromatic_dest }}
 
-    - name:  b-storybook Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+    - name:  b-chromatic Download artifact
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
-        name: prs-${{ matrix.value.number }}-storybook
-        path: ${{ env.storybook_dest }}
+        name: prs-${{ matrix.value.number }}-chromatic
+        path: ${{ env.chromatic_dest }}
         check_artifacts: true
         if_no_artifact_found: error
 
-    - name:  b-storybook Deploy Storybook (PR ${{ matrix.value.number }}) 🚀
+    - name:  b-chromatic Deploy chromatic (PR ${{ matrix.value.number }}) 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages # The branch the action should deploy to.
-        folder: ${{ env.storybook_dest }} # The folder where we put the files
+        folder: ${{ env.chromatic_dest }} # The folder where we put the files
         clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: prs/${{ matrix.value.number }}/storybook # The folder that we serve our files from
+        target-folder: prs/${{ matrix.value.number }}/chromatic # The folder that we serve our files from
 
     - name: c-jacoco Make directory in case it doesn't exist
       run: mkdir -p ${{ env.jacoco_dest }}
 
     - name:  c-jacoco Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -309,7 +309,7 @@ jobs:
       run: mkdir -p ${{ env.pitest_dest }}
 
     - name: d-pitest Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -331,7 +331,7 @@ jobs:
       run: mkdir -p ${{ env.coverage_dest }}
 
     - name: e-coverage Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -352,7 +352,7 @@ jobs:
       run: mkdir -p ${{ env.stryker_dest }}
 
     - name: f-stryker Download artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}

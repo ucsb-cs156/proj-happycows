@@ -5,20 +5,19 @@ import jobsFixtures from "fixtures/jobsFixtures";
 
 const mockedNavigate = jest.fn();
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockedNavigate
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockedNavigate,
 }));
 
 describe("InstructorReportForm tests", () => {
   it("button generates correctly", async () => {
     render(
-      <Router  >
-        <InstructorReportForm jobs={jobsFixtures.formJob}/>
-      </Router  >
+      <Router>
+        <InstructorReportForm jobs={jobsFixtures.formJob} />
+      </Router>,
     );
     const submitButton = screen.getByTestId("InstructorReport-Submit-Button");
     expect(submitButton).toBeInTheDocument();
   });
-
 });

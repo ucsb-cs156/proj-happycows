@@ -1,0 +1,16 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import { action } from "@storybook/addon-actions";
+import CommonsOverview from "main/components/Commons/CommonsOverview";
+import {currentUserFixtures} from "fixtures/currentUserFixtures"; 
+import commonsPlusFixtures from "fixtures/commonsPlusFixtures"; 
+import * as CommonsOverviewStories from './CommonsOverview.stories';
+
+<Meta of={CommonsOverviewStories} />
+
+# CommonsOverview
+
+The announcement box for a specific commons.
+
+<Canvas>
+  <Story of={CommonsOverviewStories.Uncontrolled} />
+</Canvas>
