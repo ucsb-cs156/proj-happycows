@@ -19,7 +19,11 @@ import org.apache.commons.csv.CSVPrinter;
 
 public class CommonStatsCSVHelper {
 
-  private CommonStatsCSVHelper() {}
+  /** Throw an exception in the constructor; this make jacoco/pitest happy. */
+<span class="fc" id="L23">  public CommonStatsCSVHelper() throws UnsupportedOperationException {</span>
+<span class="fc" id="L24">    throw new UnsupportedOperationException(</span>
+        &quot;Class has only static methods; invoking constructor not supported.&quot;);
+  }
 
   /**
    * This method is a hack to avoid a pitest issue; it isn't possible to exclude an individual
@@ -29,35 +33,35 @@ public class CommonStatsCSVHelper {
    */
   public static void flush_and_close_noPitest(ByteArrayOutputStream out, CSVPrinter csvPrinter)
       throws IOException {
-<span class="fc" id="L32">    csvPrinter.flush();</span>
-<span class="fc" id="L33">    csvPrinter.close();</span>
-<span class="fc" id="L34">    out.flush();</span>
-<span class="fc" id="L35">    out.close();</span>
-<span class="fc" id="L36">  }</span>
+<span class="fc" id="L36">    csvPrinter.flush();</span>
+<span class="fc" id="L37">    csvPrinter.close();</span>
+<span class="fc" id="L38">    out.flush();</span>
+<span class="fc" id="L39">    out.close();</span>
+<span class="fc" id="L40">  }</span>
 
   public static ByteArrayInputStream toCSV(Iterable&lt;CommonStats&gt; stats) throws IOException {
-<span class="fc" id="L39">    final CSVFormat format = CSVFormat.DEFAULT;</span>
+<span class="fc" id="L43">    final CSVFormat format = CSVFormat.DEFAULT;</span>
 
-<span class="fc" id="L41">    List&lt;String&gt; headers = Arrays.asList(&quot;id&quot;, &quot;commonsId&quot;, &quot;numCows&quot;, &quot;avgHealth&quot;, &quot;createDate&quot;);</span>
+<span class="fc" id="L45">    List&lt;String&gt; headers = Arrays.asList(&quot;id&quot;, &quot;commonsId&quot;, &quot;numCows&quot;, &quot;avgHealth&quot;, &quot;createDate&quot;);</span>
 
-<span class="fc" id="L43">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
-<span class="fc" id="L44">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
+<span class="fc" id="L47">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L48">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
 
-<span class="fc" id="L46">    csvPrinter.printRecord(headers);</span>
+<span class="fc" id="L50">    csvPrinter.printRecord(headers);</span>
 
-<span class="fc bfc" id="L48" title="All 2 branches covered.">    for (CommonStats line : stats) {</span>
-<span class="fc" id="L49">      List&lt;String&gt; data =</span>
-<span class="fc" id="L50">          Arrays.asList(</span>
-<span class="fc" id="L51">              String.valueOf(line.getId()),</span>
-<span class="fc" id="L52">              String.valueOf(line.getCommonsId()),</span>
-<span class="fc" id="L53">              String.valueOf(line.getNumCows()),</span>
-<span class="fc" id="L54">              String.valueOf(line.getAvgHealth()),</span>
-<span class="fc" id="L55">              String.valueOf(line.getCreateDate()));</span>
-<span class="fc" id="L56">      csvPrinter.printRecord(data);</span>
-<span class="fc" id="L57">    }</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    for (CommonStats line : stats) {</span>
+<span class="fc" id="L53">      List&lt;String&gt; data =</span>
+<span class="fc" id="L54">          Arrays.asList(</span>
+<span class="fc" id="L55">              String.valueOf(line.getId()),</span>
+<span class="fc" id="L56">              String.valueOf(line.getCommonsId()),</span>
+<span class="fc" id="L57">              String.valueOf(line.getNumCows()),</span>
+<span class="fc" id="L58">              String.valueOf(line.getAvgHealth()),</span>
+<span class="fc" id="L59">              String.valueOf(line.getCreateDate()));</span>
+<span class="fc" id="L60">      csvPrinter.printRecord(data);</span>
+<span class="fc" id="L61">    }</span>
 
-<span class="fc" id="L59">    flush_and_close_noPitest(out, csvPrinter);</span>
-<span class="fc" id="L60">    return new ByteArrayInputStream(out.toByteArray());</span>
+<span class="fc" id="L63">    flush_and_close_noPitest(out, csvPrinter);</span>
+<span class="fc" id="L64">    return new ByteArrayInputStream(out.toByteArray());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
