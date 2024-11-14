@@ -40,7 +40,6 @@ Sample.args = {
   ],
 };
 
-
 export const ThirtyRows = Template.bind({});
 
 ThirtyRows.args = {

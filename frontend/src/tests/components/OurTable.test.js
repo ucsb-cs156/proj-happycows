@@ -7,7 +7,8 @@ import OurTable, {
 import ourTableFixtures from "fixtures/ourTableFixtures";
 
 describe("OurTable tests", () => {
-  const { threeRows, tenRows, elevenRows, thirtyRows, hundredRows } = ourTableFixtures;
+  const { threeRows, tenRows, elevenRows, thirtyRows, hundredRows } =
+    ourTableFixtures;
 
   const clickMeCallback = jest.fn();
 
@@ -168,10 +169,13 @@ describe("OurTable tests", () => {
       await screen.findByTestId("testid-prev-page-button"),
     ).toBeInTheDocument();
 
-    expect(screen.getByTestId("testid-prev-page-button").parentElement).toHaveClass("disabled");
-    expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-prev-page-button").parentElement,
+    ).toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-next-page-button").parentElement,
+    ).not.toHaveClass("disabled");
 
-    
     const nextButton = screen.getByTestId("testid-next-page-button");
     for (let i = 0; i < 10; i++) {
       expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
@@ -228,33 +232,44 @@ describe("OurTable tests", () => {
     // for (let i = 20; i < 30; i++) {
     //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
     // }
-  },40000);
+  }, 40000);
 
   test("renders a table with 100 rows and tests the first page", async () => {
     render(<OurTable columns={columns} data={hundredRows} />);
-   
-    
+
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
 
     expect(screen.getByTestId("testid-prev-page-button")).toBeInTheDocument();
-    expect(screen.getByTestId("testid-prev-page-button").parentElement).toHaveClass("disabled");
-    expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-prev-page-button").parentElement,
+    ).toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-next-page-button").parentElement,
+    ).not.toHaveClass("disabled");
     fireEvent.click(screen.getByTestId("testid-next-page-button"));
 
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
-    
+
     expect(screen.getByTestId("testid-prev-page-button")).toBeInTheDocument();
-    expect(screen.getByTestId("testid-prev-page-button").parentElement).not.toHaveClass("disabled");
-    expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-prev-page-button").parentElement,
+    ).not.toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-next-page-button").parentElement,
+    ).not.toHaveClass("disabled");
     fireEvent.click(screen.getByTestId("testid-prev-page-button"));
 
     expect(screen.getByTestId("testid-prev-page-button")).toBeInTheDocument();
-    expect(screen.getByTestId("testid-prev-page-button").parentElement).toHaveClass("disabled");
-    expect(screen.getByTestId("testid-next-page-button").parentElement).not.toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-prev-page-button").parentElement,
+    ).toHaveClass("disabled");
+    expect(
+      screen.getByTestId("testid-next-page-button").parentElement,
+    ).not.toHaveClass("disabled");
 
     var tester = true;
     try {
@@ -299,7 +314,7 @@ describe("OurTable tests", () => {
     // for (let i = 0; i < 10; i++) {
     //   expect(await screen.findByText(`Hello ${i}`)).toBeInTheDocument();
     // }
-  },10000);
+  }, 10000);
 
   test("renders a table with 100 rows and tests the moving back one page", async () => {
     render(<OurTable columns={columns} data={hundredRows} />);
