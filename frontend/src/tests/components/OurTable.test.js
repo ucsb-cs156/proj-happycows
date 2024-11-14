@@ -8,7 +8,6 @@ import ourTableFixtures from "fixtures/ourTableFixtures";
 
 /* eslint-disable testing-library/no-node-access */
 
-
 describe("OurTable tests", () => {
   const { threeRows, tenRows, elevenRows, thirtyRows, hundredRows } =
     ourTableFixtures;
