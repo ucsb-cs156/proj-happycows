@@ -1,11 +1,16 @@
 package edu.ucsb.cs156.happiercows.interceptors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -91,120 +96,119 @@ public class RoleUserInterceptorTests {
     assertTrue(hasUserRole, "ROLE_USER should exist in authorities");
   }
 
-  // @Test
-  // public void interceptor_removes_admin_role_when_admin_field_in_db_is_false() throws Exception {
-  //   User mockUser = User.builder()
-  //     .id(1)
-  //     .email("gauchoMock@ucsb.edu")
-  //     .googleSub("mockGoogleSub")
-  //     .fullName("Mock Mock")
-  //     .givenName("Mock Mock")
-  //     .familyName("Mock Mock")
-  //     .emailVerified(true)
-  //     .locale("mockLocale")
-  //     .hostedDomain("mockHostedDomain")
-  //     .admin(false)
-  //     .build();
-  //   when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
+  @Test
+  public void interceptor_removes_admin_role_when_admin_field_in_db_is_false() throws Exception {
+    User mockUser =
+        User.builder()
+            .id(1)
+            .email("gauchoMock@ucsb.edu")
+            .googleSub("mockGoogleSub")
+            .fullName("Mock Mock")
+            .givenName("Mock Mock")
+            .familyName("Mock Mock")
+            .emailVerified(true)
+            .locale("mockLocale")
+            .hostedDomain("mockHostedDomain")
+            .admin(false)
+            .build();
+    when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
 
-  //   MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
-  //   HandlerExecutionChain chain = mapping.getHandler(request);
-  //   MockHttpServletResponse response = new MockHttpServletResponse();
+    MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
+    HandlerExecutionChain chain = mapping.getHandler(request);
+    MockHttpServletResponse response = new MockHttpServletResponse();
 
-  //   assert chain != null;
-  //   Optional<HandlerInterceptor> roleRuleInterceptor = chain.getInterceptorList()
-  //                   .stream()
-  //                   .filter(RoleUserInterceptor.class::isInstance)
-  //                   .findAny();
+    assert chain != null;
+    Optional<HandlerInterceptor> roleRuleInterceptor =
+        chain.getInterceptorList().stream().filter(RoleUserInterceptor.class::isInstance).findAny();
 
-  //   assertTrue(roleRuleInterceptor.isPresent());
-  //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
+    assertTrue(roleRuleInterceptor.isPresent());
+    boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-  //   Collection<? extends GrantedAuthority> updatedAuthorities =
-  // SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-  //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-  //   boolean hasAdminRole = updatedAuthorities.stream().anyMatch(authority ->
-  // authority.getAuthority().equals("ROLE_ADMIN"));
-  //   boolean hasUserRole = updatedAuthorities.stream().anyMatch(authority ->
-  // authority.getAuthority().equals("ROLE_USER"));
+    Collection<? extends GrantedAuthority> updatedAuthorities =
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
+    boolean hasAdminRole =
+        updatedAuthorities.stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    boolean hasUserRole =
+        updatedAuthorities.stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"));
 
-  //   assertFalse(hasAdminRole, "ROLE_ADMIN should exist authorities");
-  //   assertTrue(hasUserRole, "ROLE_USER should exist in authorities");
-  //   assertTrue(result);
-  // }
+    assertFalse(hasAdminRole, "ROLE_ADMIN should exist authorities");
+    assertTrue(hasUserRole, "ROLE_USER should exist in authorities");
+    assertTrue(result);
+  }
 
-  // @Test
-  // public void interceptor_adds_admin_role_when_user_is_admin() throws Exception {
-  //   User adminUser = User.builder()
-  //     .id(1)
-  //     .email("gauchoMock@ucsb.edu")
-  //     .googleSub("mockGoogleSub")
-  //     .fullName("Mock Mock")
-  //     .givenName("Mock Mock")
-  //     .familyName("Mock Mock")
-  //     .emailVerified(true)
-  //     .locale("mockLocale")
-  //     .hostedDomain("mockHostedDomain")
-  //     .admin(true)  // User is an admin
-  //     .suspended(false)
-  //     .build();
+  @Test
+  public void interceptor_adds_admin_role_when_user_is_admin() throws Exception {
+    User adminUser =
+        User.builder()
+            .id(1)
+            .email("gauchoMock@ucsb.edu")
+            .googleSub("mockGoogleSub")
+            .fullName("Mock Mock")
+            .givenName("Mock Mock")
+            .familyName("Mock Mock")
+            .emailVerified(true)
+            .locale("mockLocale")
+            .hostedDomain("mockHostedDomain")
+            .admin(true) // User is an admin
+            .suspended(false)
+            .build();
 
-  //   when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(adminUser));
-  //   MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
-  //   HandlerExecutionChain chain = mapping.getHandler(request);
-  //   MockHttpServletResponse response = new MockHttpServletResponse();
+    when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(adminUser));
+    MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
+    HandlerExecutionChain chain = mapping.getHandler(request);
+    MockHttpServletResponse response = new MockHttpServletResponse();
 
-  //   assert chain != null;
-  //   Optional<HandlerInterceptor> roleRuleInterceptor = chain.getInterceptorList()
-  //                   .stream()
-  //                   .filter(RoleUserInterceptor.class::isInstance)
-  //                   .findAny();
+    assert chain != null;
+    Optional<HandlerInterceptor> roleRuleInterceptor =
+        chain.getInterceptorList().stream().filter(RoleUserInterceptor.class::isInstance).findAny();
 
-  //   assertTrue(roleRuleInterceptor.isPresent());
-  //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
+    assertTrue(roleRuleInterceptor.isPresent());
+    boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-  //   Collection<? extends GrantedAuthority> updatedAuthorities =
-  // SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-  //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-  //   assertTrue(updatedAuthorities.stream().anyMatch(auth ->
-  // auth.getAuthority().equals("ROLE_ADMIN")),
-  //              "ROLE_ADMIN should be added for admin users");
-  //   assertTrue(result);
-  // }
+    Collection<? extends GrantedAuthority> updatedAuthorities =
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
+    assertTrue(
+        updatedAuthorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")),
+        "ROLE_ADMIN should be added for admin users");
+    assertTrue(result);
+  }
 
-  // @Test
-  // public void interceptor_logs_out_user_when_suspended_field_in_db_is_true() throws Exception {
-  //   User mockUser = User.builder()
-  //     .id(1)
-  //     .email("gauchoMock@ucsb.edu")
-  //     .googleSub("mockGoogleSub")
-  //     .fullName("Mock Mock")
-  //     .givenName("Mock Mock")
-  //     .familyName("Mock Mock")
-  //     .emailVerified(true)
-  //     .locale("mockLocale")
-  //     .hostedDomain("mockHostedDomain")
-  //     .admin(true)
-  //     .suspended(true)
-  //     .build();
-  //   when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
+  @Test
+  public void interceptor_logs_out_user_when_suspended_field_in_db_is_true() throws Exception {
+    User mockUser =
+        User.builder()
+            .id(1)
+            .email("gauchoMock@ucsb.edu")
+            .googleSub("mockGoogleSub")
+            .fullName("Mock Mock")
+            .givenName("Mock Mock")
+            .familyName("Mock Mock")
+            .emailVerified(true)
+            .locale("mockLocale")
+            .hostedDomain("mockHostedDomain")
+            .admin(true)
+            .suspended(true)
+            .build();
+    when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
 
-  //   MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
-  //   HandlerExecutionChain chain = mapping.getHandler(request);
-  //   MockHttpServletResponse response = new MockHttpServletResponse();
+    MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
+    HandlerExecutionChain chain = mapping.getHandler(request);
+    MockHttpServletResponse response = new MockHttpServletResponse();
 
-  //   assert chain != null;
-  //   Optional<HandlerInterceptor> roleRuleInterceptor = chain.getInterceptorList()
-  //                   .stream()
-  //                   .filter(RoleUserInterceptor.class::isInstance)
-  //                   .findAny();
+    assert chain != null;
+    Optional<HandlerInterceptor> roleRuleInterceptor =
+        chain.getInterceptorList().stream().filter(RoleUserInterceptor.class::isInstance).findAny();
 
-  //   assertTrue(roleRuleInterceptor.isPresent());
-  //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
+    assertTrue(roleRuleInterceptor.isPresent());
+    boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-  //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-  //   assertFalse(result);
-  //   assertEquals(response.getStatus(), HttpServletResponse.SC_FORBIDDEN);
-  //   assertNull(SecurityContextHolder.getContext().getAuthentication());
-  // }
+    verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
+    assertFalse(result);
+    assertEquals(response.getStatus(), HttpServletResponse.SC_FORBIDDEN);
+    assertNull(SecurityContextHolder.getContext().getAuthentication());
+  }
 }
