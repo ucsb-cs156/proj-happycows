@@ -63,7 +63,6 @@ export function useBackendMutation(
 ) {
   const queryClient = useQueryClient();
 
-
   return useMutation((object) => wrappedParams(objectToAxiosParams(object)), {
     onError: (error) => {
       const errorMessage = `useBackendMutation: Error communicating with backend via ${error.response.config.method} on ${error.response.config.url}`;

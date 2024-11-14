@@ -357,9 +357,10 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("user can submit instructor report (specific commons) job", async () => {
-
     // arrange
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
     // act
     render(
@@ -367,7 +368,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert
@@ -380,7 +381,9 @@ describe("AdminJobsPage tests", () => {
 
     // expect(screen.queryByText("There are no commons on which to run this job.")).not.toBeInTheDocument();
 
-    const submitButton = await screen.findByTestId("InstructorReportSpecificCommonsForm-Submit-Button");
+    const submitButton = await screen.findByTestId(
+      "InstructorReportSpecificCommonsForm-Submit-Button",
+    );
     expect(submitButton).toBeInTheDocument();
     submitButton.click();
 
@@ -388,13 +391,14 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`
+        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`,
       );
-    })
+    });
 
-    await waitFor( () => {
-      expect(mockToast).toHaveBeenCalledWith('Submitted Job: Instructor Report (Specific Commons)');
-      }
-    );
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith(
+        "Submitted Job: Instructor Report (Specific Commons)",
+      );
+    });
   });
 });

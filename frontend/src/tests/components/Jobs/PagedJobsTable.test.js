@@ -43,11 +43,10 @@ describe("PagedJobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-
-    await waitFor(()=>{
-      expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-        "1",
-      );
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-id`),
+      ).toHaveTextContent("1");
     });
 
     await waitFor(() => {
@@ -62,7 +61,6 @@ describe("PagedJobsTable tests", () => {
     expect(axiosMock.history.get[0].url).toBe("/api/jobs/all/pageable");
     expect(axiosMock.history.get[0].params).toEqual({ page: 0, size: 10 });
 
-    
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Created`),
     ).toHaveTextContent("8/8/2023, 12:14:00");
@@ -157,8 +155,8 @@ describe("PagedJobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    await waitFor(()=>{
-      const field="id";
+    await waitFor(() => {
+      const field = "id";
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
     });
