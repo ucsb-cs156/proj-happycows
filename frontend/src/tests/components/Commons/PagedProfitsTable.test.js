@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PagedProfitsTable from "main/components/Commons/PagedProfitsTable";
@@ -18,71 +18,77 @@ describe("PagedProfitsTable tests", () => {
     axiosMock.resetHistory();
   });
 
-  // test("renders correct content", async () => {
-  //   // arrange
-  //   axiosMock
-  //     .onGet("/api/profits/paged/commonsid")
-  //     .reply(200, pagedProfitsFixtures.onePage);
+  test("renders correct content", async () => {
+    // arrange
+    axiosMock
+      .onGet("/api/profits/paged/commonsid")
+      .reply(200, pagedProfitsFixtures.onePage);
 
-  //   // act
-  //   render(
-  //     <QueryClientProvider client={queryClient}>
-  //       <MemoryRouter>
-  //         <PagedProfitsTable />
-  //       </MemoryRouter>
-  //     </QueryClientProvider>,
-  //   );
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PagedProfitsTable />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-  //   // assert
-  //   const expectedHeaders = ["Profit", "Date", "Health", "Cows"];
-  //   const expectedFields = ["amount", "timestamp", "avgCowHealth", "numCows"];
+    // assert
+    const expectedHeaders = ["Profit", "Date", "Health", "Cows"];
+    const expectedFields = ["amount", "timestamp", "avgCowHealth", "numCows"];
 
-  //   expectedHeaders.forEach((headerText) => {
-  //     const header = screen.getByText(headerText);
-  //     expect(header).toBeInTheDocument();
-  //   });
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   await waitFor(() => {
-  //     expect(axiosMock.history.get.length).toBe(1);
-  //   });
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBe(1);
+    });
 
-  //   expectedFields.forEach((field) => {
-  //     const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
-  //     expect(header).toBeInTheDocument();
-  //   });
+    expect(axiosMock.history.get[0].url).toBe("/api/profits/paged/commonsid");
+    expect(axiosMock.history.get[0].params).toEqual({
+      commonsId: undefined,
+      pageNumber: 0,
+      pageSize: 5,
+    });
 
-  //   expect(axiosMock.history.get[0].url).toBe("/api/profits/paged/commonsid");
-  //   expect(axiosMock.history.get[0].params).toEqual({
-  //     commonsId: undefined,
-  //     pageNumber: 0,
-  //     pageSize: 5,
-  //   });
+    await waitFor(() => {
+      const field="amount";
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   expect(
-  //     screen.getByTestId(`${testId}-cell-row-0-col-amount`),
-  //   ).toHaveTextContent("110");
-  //   expect(
-  //     screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
-  //   ).toHaveTextContent("2024-06-16");
-  //   expect(
-  //     screen.getByTestId(`${testId}-cell-row-0-col-avgCowHealth`),
-  //   ).toHaveTextContent("100.00%");
-  //   expect(
-  //     screen.getByTestId(`${testId}-cell-row-0-col-numCows`),
-  //   ).toHaveTextContent("5");
+    expectedFields.forEach((field) => {
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   expect(
-  //     screen.getByTestId(`${testId}-header-timestamp-sort-carets`),
-  //   ).toHaveTextContent("🔽");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-amount`),
+    ).toHaveTextContent("110");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
+    ).toHaveTextContent("2024-06-16");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-avgCowHealth`),
+    ).toHaveTextContent("100.00%");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-numCows`),
+    ).toHaveTextContent("5");
 
-  //   const nextButton = screen.getByTestId(`${testId}-next-button`);
-  //   expect(nextButton).toBeInTheDocument();
-  //   expect(nextButton).toBeDisabled();
+    expect(
+      screen.getByTestId(`${testId}-header-timestamp-sort-carets`),
+    ).toHaveTextContent("🔽");
 
-  //   const previousButton = screen.getByTestId(`${testId}-previous-button`);
-  //   expect(previousButton).toBeInTheDocument();
-  //   expect(previousButton).toBeDisabled();
-  // });
+    const nextButton = screen.getByTestId(`${testId}-next-button`);
+    expect(nextButton).toBeInTheDocument();
+    expect(nextButton).toBeDisabled();
+
+    const previousButton = screen.getByTestId(`${testId}-previous-button`);
+    expect(previousButton).toBeInTheDocument();
+    expect(previousButton).toBeDisabled();
+  });
 
   test("buttons are disabled where there are zero pages", async () => {
     // arrange
@@ -120,72 +126,78 @@ describe("PagedProfitsTable tests", () => {
     expect(previousButton).toBeDisabled();
   });
 
-  // test("renders correct content with multiple pages", async () => {
-  //   // arrange
+  test("renders correct content with multiple pages", async () => {
+    // arrange
 
-  //   axiosMock.onGet("/api/profits/paged/commonsid"   ,{ params: {commonsId: undefined, pageNumber: 0, pageSize: 5 } }   ).reply(200, pagedProfitsFixtures.twoPages[0]);
-  //   axiosMock.onGet("/api/profits/paged/commonsid" ,{ params: {commonsId: undefined, pageNumber: 1, pageSize: 5 } }     ).reply(200, pagedProfitsFixtures.twoPages[1]);
+    axiosMock.onGet("/api/profits/paged/commonsid"   ,{ params: {commonsId: undefined, pageNumber: 0, pageSize: 5 } }   ).reply(200, pagedProfitsFixtures.twoPages[0]);
+    axiosMock.onGet("/api/profits/paged/commonsid" ,{ params: {commonsId: undefined, pageNumber: 1, pageSize: 5 } }     ).reply(200, pagedProfitsFixtures.twoPages[1]);
 
-  //   // act
-  //   render(
-  //     <QueryClientProvider client={queryClient}>
-  //       <MemoryRouter>
-  //         <PagedProfitsTable />
-  //       </MemoryRouter>
-  //     </QueryClientProvider>
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PagedProfitsTable />
+        </MemoryRouter>
+      </QueryClientProvider>
 
-  //   );
+    );
 
-  //   // assert
-  //   const expectedHeaders = ['Profit', 'Date', 'Health', 'Cows'];
-  //   const expectedFields = ['amount', 'timestamp', 'avgCowHealth', 'numCows'];
+    // assert
+    const expectedHeaders = ['Profit', 'Date', 'Health', 'Cows'];
+    const expectedFields = ['amount', 'timestamp', 'avgCowHealth', 'numCows'];
 
-  //   expectedHeaders.forEach((headerText) => {
-  //     const header = screen.getByText(headerText);
-  //     expect(header).toBeInTheDocument();
-  //   });
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   await waitFor(() => {
-  //     expect(axiosMock.history.get.length).toBe(1);
-  //   });
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBe(1);
+    });
 
-  //   expectedFields.forEach((field) => {
-  //     const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
-  //     expect(header).toBeInTheDocument();
-  //   });
+    await waitFor(() => {
+      const field="amount";
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   expect(axiosMock.history.get[0].url).toBe("/api/profits/paged/commonsid");
-  //   expect(axiosMock.history.get[0].params).toEqual({ commonsId: undefined, pageNumber: 0, pageSize: 5 });
+    expectedFields.forEach((field) => {
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
+    });
 
-  //   const nextButton = screen.getByTestId(`${testId}-next-button`);
-  //   expect(nextButton).toBeInTheDocument();
+    expect(axiosMock.history.get[0].url).toBe("/api/profits/paged/commonsid");
+    expect(axiosMock.history.get[0].params).toEqual({ commonsId: undefined, pageNumber: 0, pageSize: 5 });
 
-  //   const previousButton = screen.getByTestId(`${testId}-previous-button`);
-  //   expect(previousButton).toBeInTheDocument();
+    const nextButton = screen.getByTestId(`${testId}-next-button`);
+    expect(nextButton).toBeInTheDocument();
 
-  //   expect(previousButton).toBeDisabled();
-  //   expect(nextButton).toBeEnabled();
+    const previousButton = screen.getByTestId(`${testId}-previous-button`);
+    expect(previousButton).toBeInTheDocument();
 
-  //   expect(screen.getByText(`Page: 1`)).toBeInTheDocument();
+    expect(previousButton).toBeDisabled();
+    expect(nextButton).toBeEnabled();
 
-  //   expect(
-  //       screen.getByTestId(`${testId}-cell-row-0-col-amount`)
-  //     ).toHaveTextContent("20");
+    expect(screen.getByText(`Page: 1`)).toBeInTheDocument();
 
-  //   fireEvent.click(nextButton);
+    expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-amount`)
+      ).toHaveTextContent("20");
 
-  //   await waitFor(() => {expect(screen.getByText(`Page: 2`)).toBeInTheDocument();});
-  //   expect(previousButton).toBeEnabled();
-  //   expect(nextButton).toBeDisabled();
+    fireEvent.click(nextButton);
 
-  //   fireEvent.click(previousButton);
-  //   await waitFor(() => { expect(screen.getByText(`Page: 1`)).toBeInTheDocument();});
-  //   expect(previousButton).toBeDisabled();
-  //   expect(nextButton).toBeEnabled();
+    await waitFor(() => {expect(screen.getByText(`Page: 2`)).toBeInTheDocument();});
+    expect(previousButton).toBeEnabled();
+    expect(nextButton).toBeDisabled();
 
-  //    expect(
-  //       screen.getByTestId(`${testId}-cell-row-0-col-amount`)
-  //     ).toHaveTextContent("20");
+    fireEvent.click(previousButton);
+    await waitFor(() => { expect(screen.getByText(`Page: 1`)).toBeInTheDocument();});
+    expect(previousButton).toBeDisabled();
+    expect(nextButton).toBeEnabled();
 
-  // });
+     expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-amount`)
+      ).toHaveTextContent("20");
+
+  });
 });
