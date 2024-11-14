@@ -6,6 +6,9 @@ import OurTable, {
 } from "main/components/OurTable";
 import ourTableFixtures from "fixtures/ourTableFixtures";
 
+/* eslint-disable testing-library/no-node-access */
+
+
 describe("OurTable tests", () => {
   const { threeRows, tenRows, elevenRows, thirtyRows, hundredRows } =
     ourTableFixtures;
@@ -30,7 +33,7 @@ describe("OurTable tests", () => {
     render(<OurTable columns={columns} data={[]} />);
   });
 
-  test("renders a table with two rows ", () => {
+  test("renders a table with two rows", () => {
     render(<OurTable columns={columns} data={threeRows} />);
   });
 

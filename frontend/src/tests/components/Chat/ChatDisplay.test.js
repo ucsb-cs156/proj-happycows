@@ -241,6 +241,7 @@ describe("ChatDisplay tests", () => {
     for (let i = 0; i < axiosMock.history.get.length; i++) {
       const url = axiosMock.history.get[i].url;
       if (url === "/api/chat/get") {
+        /* eslint-disable-next-line jest/no-conditional-expect */
         expect(axiosMock.history.get[i].params).toEqual({
           commonsId: 1,
           page: 0,
@@ -248,6 +249,7 @@ describe("ChatDisplay tests", () => {
         });
       }
       if (url === "/api/usercommons/commons/all") {
+        /* eslint-disable-next-line jest/no-conditional-expect */
         expect(axiosMock.history.get[i].params).toEqual({ commonsId: 1 });
       }
     }
