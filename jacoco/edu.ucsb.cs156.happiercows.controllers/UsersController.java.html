@@ -34,9 +34,9 @@ import io.swagger.v3.oas.annotations.Parameter;
     @GetMapping(&quot;&quot;)
     public ResponseEntity&lt;String&gt; users()
             throws JsonProcessingException {
-<span class="nc" id="L37">        Iterable&lt;User&gt; users = userRepository.findAll();</span>
-<span class="nc" id="L38">        String body = mapper.writeValueAsString(users);</span>
-<span class="nc" id="L39">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L37">        Iterable&lt;User&gt; users = userRepository.findAll();</span>
+<span class="fc" id="L38">        String body = mapper.writeValueAsString(users);</span>
+<span class="fc" id="L39">        return ResponseEntity.ok().body(body);</span>
     }
     
     @Operation(summary = &quot;Suspend a user by id&quot;)
@@ -44,22 +44,22 @@ import io.swagger.v3.oas.annotations.Parameter;
     @PostMapping(&quot;/suspend&quot;)
     public Object suspendUser(@Parameter(name=&quot;userId&quot;) @RequestParam long userId ) throws JsonProcessingException {
 
-<span class="nc" id="L47">        User user = userRepository.findById(userId).orElseThrow(() -&gt; new EntityNotFoundException(User.class, userId));</span>
+<span class="fc" id="L47">        User user = userRepository.findById(userId).orElseThrow(() -&gt; new EntityNotFoundException(User.class, userId));</span>
 
-<span class="nc" id="L49">        user.setSuspended(true);</span>
-<span class="nc" id="L50">        userRepository.save(user);</span>
-<span class="nc" id="L51">        return genericMessage(&quot;User with id %d suspended&quot;.formatted(userId));</span>
+<span class="fc" id="L49">        user.setSuspended(true);</span>
+<span class="fc" id="L50">        userRepository.save(user);</span>
+<span class="fc" id="L51">        return genericMessage(&quot;User with id %d suspended&quot;.formatted(userId));</span>
     }
 
     @Operation(summary=&quot;Restore a user by id&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(&quot;/restore&quot;)
     public Object restoreUser(@Parameter(name=&quot;userId&quot;) @RequestParam long userId ) throws JsonProcessingException {
-<span class="nc" id="L58">        User user = userRepository.findById(userId).orElseThrow(() -&gt; new EntityNotFoundException(User.class, userId));</span>
+<span class="fc" id="L58">        User user = userRepository.findById(userId).orElseThrow(() -&gt; new EntityNotFoundException(User.class, userId));</span>
 
-<span class="nc" id="L60">        user.setSuspended(false);</span>
-<span class="nc" id="L61">        userRepository.save(user);</span>
-<span class="nc" id="L62">        return genericMessage(&quot;User with id %d restored&quot;.formatted(userId));</span>
+<span class="fc" id="L60">        user.setSuspended(false);</span>
+<span class="fc" id="L61">        userRepository.save(user);</span>
+<span class="fc" id="L62">        return genericMessage(&quot;User with id %d restored&quot;.formatted(userId));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
