@@ -2,8 +2,9 @@ name: 99 - Copy issues from starter repo
 
 env:
     GH_TOKEN: ${{ github.token }}
-    STARTER: https://github.com/ucsb-cs156/proj-happycows
-    TAG: ${{ vars.QXX }}
+    STARTER: https://github.com/ucsb-cs156/proj-courses
+    TAG: ${{vars.QXX}}
+
 on:
   workflow_dispatch:
      
@@ -44,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v4
          
       - name: Create issue
         uses: dacbd/create-issue-action@main
