@@ -6,12 +6,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
-
 
 @Data
 @AllArgsConstructor
@@ -52,11 +57,11 @@ public class Commons {
     private List&lt;UserCommons&gt; joinedUsers;
 
     public boolean gameInProgress() {
-<span class="fc" id="L55">        LocalDateTime today = LocalDateTime.now();</span>
-<span class="fc bfc" id="L56" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
-<span class="fc" id="L57">            return true;</span>
+<span class="fc" id="L60">        LocalDateTime today = LocalDateTime.now();</span>
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
+<span class="fc" id="L62">            return true;</span>
         }
-<span class="fc" id="L59">        return false;</span>
+<span class="fc" id="L64">        return false;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

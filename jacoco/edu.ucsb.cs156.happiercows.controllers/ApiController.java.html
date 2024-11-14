@@ -37,10 +37,10 @@ import java.util.Map;
   @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Object handleBadRequest(Throwable e) {
-<span class="fc" id="L40">    return Map.of(</span>
-<span class="fc" id="L41">      &quot;type&quot;, e.getClass().getSimpleName(),</span>
-<span class="fc" id="L42">      &quot;message&quot;, e.getMessage()</span>
+<span class="nc" id="L40">    return Map.of(</span>
+<span class="nc" id="L41">      &quot;type&quot;, e.getClass().getSimpleName(),</span>
+<span class="nc" id="L42">      &quot;message&quot;, e.getMessage()</span>
     );
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
