@@ -1,21 +1,17 @@
 package edu.ucsb.cs156.happiercows.interceptors;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,18 +31,12 @@ import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import wiremock.javax.servlet.http.HttpServletResponse;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class RoleUserInterceptorTests {
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
-  @Autowired
-  private RequestMappingHandlerMapping mapping;
+  @Autowired private RequestMappingHandlerMapping mapping;
 
   @BeforeEach
   public void setupSecurityContext() {
@@ -66,7 +56,8 @@ public class RoleUserInterceptorTests {
     fakeAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
     OAuth2User mockUser = new DefaultOAuth2User(fakeAuthorities, attributes, "email");
-    Authentication authentication = new OAuth2AuthenticationToken(mockUser, fakeAuthorities, "mockUserRegisterId");
+    Authentication authentication =
+        new OAuth2AuthenticationToken(mockUser, fakeAuthorities, "mockUserRegisterId");
 
     SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -81,18 +72,21 @@ public class RoleUserInterceptorTests {
     MockHttpServletResponse response = new MockHttpServletResponse();
 
     assert chain != null;
-    Optional<HandlerInterceptor> roleRuleInterceptor = chain.getInterceptorList()
-                    .stream()
-                    .filter(RoleUserInterceptor.class::isInstance)
-                    .findAny();
+    Optional<HandlerInterceptor> roleRuleInterceptor =
+        chain.getInterceptorList().stream().filter(RoleUserInterceptor.class::isInstance).findAny();
 
     assertTrue(roleRuleInterceptor.isPresent());
     roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-    Collection<? extends GrantedAuthority> updatedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    Collection<? extends GrantedAuthority> updatedAuthorities =
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
     verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-    boolean hasAdminRole = updatedAuthorities.stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-    boolean hasUserRole = updatedAuthorities.stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"));
+    boolean hasAdminRole =
+        updatedAuthorities.stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    boolean hasUserRole =
+        updatedAuthorities.stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"));
     assertTrue(hasAdminRole, "ROLE_ADMIN should exist authorities");
     assertTrue(hasUserRole, "ROLE_USER should exist in authorities");
   }
@@ -126,10 +120,13 @@ public class RoleUserInterceptorTests {
   //   assertTrue(roleRuleInterceptor.isPresent());
   //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-  //   Collection<? extends GrantedAuthority> updatedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+  //   Collection<? extends GrantedAuthority> updatedAuthorities =
+  // SecurityContextHolder.getContext().getAuthentication().getAuthorities();
   //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-  //   boolean hasAdminRole = updatedAuthorities.stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-  //   boolean hasUserRole = updatedAuthorities.stream().anyMatch(authority -> authority.getAuthority().equals("ROLE_USER"));
+  //   boolean hasAdminRole = updatedAuthorities.stream().anyMatch(authority ->
+  // authority.getAuthority().equals("ROLE_ADMIN"));
+  //   boolean hasUserRole = updatedAuthorities.stream().anyMatch(authority ->
+  // authority.getAuthority().equals("ROLE_USER"));
 
   //   assertFalse(hasAdminRole, "ROLE_ADMIN should exist authorities");
   //   assertTrue(hasUserRole, "ROLE_USER should exist in authorities");
@@ -166,13 +163,14 @@ public class RoleUserInterceptorTests {
   //   assertTrue(roleRuleInterceptor.isPresent());
   //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
 
-  //   Collection<? extends GrantedAuthority> updatedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+  //   Collection<? extends GrantedAuthority> updatedAuthorities =
+  // SecurityContextHolder.getContext().getAuthentication().getAuthorities();
   //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
-  //   assertTrue(updatedAuthorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN")),
+  //   assertTrue(updatedAuthorities.stream().anyMatch(auth ->
+  // auth.getAuthority().equals("ROLE_ADMIN")),
   //              "ROLE_ADMIN should be added for admin users");
   //   assertTrue(result);
   // }
-
 
   // @Test
   // public void interceptor_logs_out_user_when_suspended_field_in_db_is_true() throws Exception {
@@ -191,7 +189,6 @@ public class RoleUserInterceptorTests {
   //     .build();
   //   when(userRepository.findByEmail("gauchoMock@ucsb.edu")).thenReturn(Optional.of(mockUser));
 
-
   //   MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/currentUser");
   //   HandlerExecutionChain chain = mapping.getHandler(request);
   //   MockHttpServletResponse response = new MockHttpServletResponse();
@@ -204,7 +201,7 @@ public class RoleUserInterceptorTests {
 
   //   assertTrue(roleRuleInterceptor.isPresent());
   //   boolean result = roleRuleInterceptor.get().preHandle(request, response, chain.getHandler());
-    
+
   //   verify(userRepository, times(1)).findByEmail("gauchoMock@ucsb.edu");
   //   assertFalse(result);
   //   assertEquals(response.getStatus(), HttpServletResponse.SC_FORBIDDEN);

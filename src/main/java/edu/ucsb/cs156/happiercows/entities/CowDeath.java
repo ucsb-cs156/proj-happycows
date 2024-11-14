@@ -1,22 +1,16 @@
 package edu.ucsb.cs156.happiercows.entities;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.AccessLevel;
-
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -28,14 +22,13 @@ public class CowDeath {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name="commons_id")
+  @Column(name = "commons_id")
   private long commonsId;
 
-  @Column(name="user_id")
+  @Column(name = "user_id")
   private long userId;
-  
-  private LocalDateTime zonedDateTime;
-  private Integer cowsKilled; 
-  private double avgHealth; 
 
+  private LocalDateTime zonedDateTime;
+  private Integer cowsKilled;
+  private double avgHealth;
 }

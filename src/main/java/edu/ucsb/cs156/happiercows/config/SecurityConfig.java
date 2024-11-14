@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.happiercows.config;
 
-
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import jakarta.servlet.FilterChain;

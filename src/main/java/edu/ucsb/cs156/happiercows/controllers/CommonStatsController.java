@@ -2,23 +2,20 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.helpers.CommonStatsCSVHelper;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,63 +27,61 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CommonStatsController {
 
-    @Autowired
-    CommonsRepository commonsRepository;
+  @Autowired CommonsRepository commonsRepository;
 
-    @Autowired
-    UserCommonsRepository userCommonsRepository;
+  @Autowired UserCommonsRepository userCommonsRepository;
 
-    @Autowired
-    CommonStatsRepository commonStatsRepository;
+  @Autowired CommonStatsRepository commonStatsRepository;
 
-    @Operation(summary = "Get all common stats")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("")
-    public Iterable<CommonStats> allCommonStats() {
-        return commonStatsRepository.findAll();
-    }
+  @Operation(summary = "Get all common stats")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("")
+  public Iterable<CommonStats> allCommonStats() {
+    return commonStatsRepository.findAll();
+  }
 
-    @Operation(summary = "Get all stats for a commons")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/commons")
-    public Iterable<CommonStats> allCommonStatsForCommons(
-            @Parameter(name = "commonsId") @RequestParam Long commonsId) {
-        return commonStatsRepository.findAllByCommonsId(commonsId);
-    }
+  @Operation(summary = "Get all stats for a commons")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("/commons")
+  public Iterable<CommonStats> allCommonStatsForCommons(
+      @Parameter(name = "commonsId") @RequestParam Long commonsId) {
+    return commonStatsRepository.findAllByCommonsId(commonsId);
+  }
 
-    @Operation(summary = "Get all stats for a commons as csv")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/download")
-    public ResponseEntity<Resource> getCSV(
-            @Parameter(name = "commonsId") @RequestParam Long commonsId) throws IOException {
+  @Operation(summary = "Get all stats for a commons as csv")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping(value = "/download")
+  public ResponseEntity<Resource> getCSV(
+      @Parameter(name = "commonsId") @RequestParam Long commonsId) throws IOException {
 
-        Iterable<CommonStats> commonStats = commonStatsRepository.findAllByCommonsId(commonsId);
-                
-        String filename = String.format("stats%05d.csv",commonsId);
+    Iterable<CommonStats> commonStats = commonStatsRepository.findAllByCommonsId(commonsId);
 
-        ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);
-        InputStreamResource isr = new InputStreamResource(bais);
+    String filename = String.format("stats%05d.csv", commonsId);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.parseMediaType("application/csv")).body(isr);
-    }
+    ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);
+    InputStreamResource isr = new InputStreamResource(bais);
 
-    @Operation(summary = "Get all stats for all commons as csv")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping(value = "/downloadAll")
-    public ResponseEntity<Resource> getAllCSV() throws IOException {
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+        .contentType(MediaType.parseMediaType("application/csv"))
+        .body(isr);
+  }
 
-        Iterable<CommonStats> commonStats = commonStatsRepository.findAll();
-                
-        String filename = String.format("CommonStats.csv");
+  @Operation(summary = "Get all stats for all commons as csv")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping(value = "/downloadAll")
+  public ResponseEntity<Resource> getAllCSV() throws IOException {
 
-        ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);
-        InputStreamResource isr = new InputStreamResource(bais);
+    Iterable<CommonStats> commonStats = commonStatsRepository.findAll();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
-                .contentType(MediaType.parseMediaType("application/csv")).body(isr);
-    }
-    
+    String filename = String.format("CommonStats.csv");
+
+    ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);
+    InputStreamResource isr = new InputStreamResource(bais);
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+        .contentType(MediaType.parseMediaType("application/csv"))
+        .body(isr);
+  }
 }

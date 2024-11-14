@@ -1,8 +1,9 @@
 package edu.ucsb.cs156.happiercows;
 
+import edu.ucsb.cs156.happiercows.services.wiremock.WiremockService;
 import java.time.ZonedDateTime;
 import java.util.Optional;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,9 +17,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
-import edu.ucsb.cs156.happiercows.services.wiremock.WiremockService;
-import lombok.extern.slf4j.Slf4j;
-
 @SpringBootApplication
 @EnableJpaAuditing(dateTimeProviderRef = "utcDateTimeProvider")
 @EnableAsync
@@ -26,11 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HappierCowsApplication {
 
-  @Autowired
-  WiremockService wiremockService;
+  @Autowired WiremockService wiremockService;
 
   /**
-   * When using the wiremock profile, this method will call the code needed to set up the wiremock services
+   * When using the wiremock profile, this method will call the code needed to set up the wiremock
+   * services
    */
   @Profile("wiremock")
   @Bean
@@ -42,9 +40,7 @@ public class HappierCowsApplication {
     };
   }
 
-  /**
-   * Hook that can be used to set up any services needed for development
-   */
+  /** Hook that can be used to set up any services needed for development */
   @Profile("development")
   @Bean
   public ApplicationRunner developmentApplicationRunner() {
@@ -53,16 +49,17 @@ public class HappierCowsApplication {
       log.info("developmentApplicationRunner completed");
     };
   }
-  
+
   public static void main(String[] args) {
     SpringApplication.run(HappierCowsApplication.class, args);
   }
+
   @Bean
   public DateTimeProvider utcDateTimeProvider() {
-      return () -> {
-        ZonedDateTime now = ZonedDateTime.now();
-        return Optional.of(now);
-      };
+    return () -> {
+      ZonedDateTime now = ZonedDateTime.now();
+      return Optional.of(now);
+    };
   }
 
   // See: https://www.baeldung.com/spring-security-async-principal-propagation
@@ -82,5 +79,4 @@ public class HappierCowsApplication {
     executor.initialize();
     return executor;
   }
-
 }

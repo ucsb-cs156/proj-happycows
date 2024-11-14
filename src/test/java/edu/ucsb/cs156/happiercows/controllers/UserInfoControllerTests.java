@@ -1,42 +1,28 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-
-import edu.ucsb.cs156.happiercows.ControllerTestCase;
-import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.models.CurrentUser;
-import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
-import static org.mockito.Mockito.verify;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.Instant;
+import edu.ucsb.cs156.happiercows.ControllerTestCase;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 
 @WebMvcTest(controllers = UserInfoController.class)
 @Import(TestConfig.class)
 @AutoConfigureDataJpa
 public class UserInfoControllerTests extends ControllerTestCase {
-  @Captor
-  ArgumentCaptor<User> userCaptor;
+  @Captor ArgumentCaptor<User> userCaptor;
 
-  @MockBean
-  UserRepository userRepository;
+  @MockBean UserRepository userRepository;
 
   @Test
   public void temporary_dummy_test() {
@@ -56,7 +42,6 @@ public class UserInfoControllerTests extends ControllerTestCase {
   // @Test
   // public void currentUser__logged_in() throws Exception {
 
-    
   //   // arrange
 
   //   CurrentUser currentUser = currentUserService.getCurrentUser();

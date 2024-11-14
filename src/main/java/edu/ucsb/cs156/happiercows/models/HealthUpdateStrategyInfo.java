@@ -6,8 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor()
 public class HealthUpdateStrategyInfo {
-    private String name;
-    private String displayName;
-    private String description;
-
+  private String name;
+  private String displayName;
+  private String description;
 }

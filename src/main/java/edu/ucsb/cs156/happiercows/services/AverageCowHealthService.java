@@ -1,48 +1,53 @@
 package edu.ucsb.cs156.happiercows.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service("AverageCowHealthService")
 public class AverageCowHealthService {
 
-    @Autowired
-    CommonsRepository commonsRepository;
+  @Autowired CommonsRepository commonsRepository;
 
-    @Autowired
-    UserCommonsRepository userCommonsRepository;
+  @Autowired UserCommonsRepository userCommonsRepository;
 
-    public int getTotalNumCows(Long commonsId) {
-        commonsRepository.findById(commonsId).orElseThrow(() -> new IllegalArgumentException(String.format("Commons with id %d not found", commonsId)));
+  public int getTotalNumCows(Long commonsId) {
+    commonsRepository
+        .findById(commonsId)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    String.format("Commons with id %d not found", commonsId)));
 
-        Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonsId);
+    Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonsId);
 
-        int totalNumCows = 0;
+    int totalNumCows = 0;
 
-        for (UserCommons userCommons : allUserCommons) {
-            totalNumCows += userCommons.getNumOfCows();
-        }
-
-        return totalNumCows;
+    for (UserCommons userCommons : allUserCommons) {
+      totalNumCows += userCommons.getNumOfCows();
     }
 
-    public double getAverageCowHealth(Long commonsId) {
-        commonsRepository.findById(commonsId).orElseThrow(() -> new IllegalArgumentException(String.format("Commons with id %d not found", commonsId)));
+    return totalNumCows;
+  }
 
-        Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonsId);
+  public double getAverageCowHealth(Long commonsId) {
+    commonsRepository
+        .findById(commonsId)
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    String.format("Commons with id %d not found", commonsId)));
 
-        double totalHealth = 0;
+    Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonsId);
 
-        for (UserCommons userCommons : allUserCommons) {
-            totalHealth += userCommons.getCowHealth() * userCommons.getNumOfCows();
-        }
+    double totalHealth = 0;
 
-        return totalHealth / getTotalNumCows(commonsId);
+    for (UserCommons userCommons : allUserCommons) {
+      totalHealth += userCommons.getCowHealth() * userCommons.getNumOfCows();
     }
 
-    
+    return totalHealth / getTotalNumCows(commonsId);
+  }
 }

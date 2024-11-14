@@ -7,13 +7,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Component
 public class RoleUserInterceptorAppConfig implements WebMvcConfigurer {
-   @Autowired
-   RoleUserInterceptor roleUserInterceptor;
+  @Autowired RoleUserInterceptor roleUserInterceptor;
 
-   @Override
-   public void addInterceptors(InterceptorRegistry registry) {
-      registry.addInterceptor(roleUserInterceptor);
-   }
-
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(roleUserInterceptor);
+  }
 }
-   
