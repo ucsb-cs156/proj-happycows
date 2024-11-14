@@ -62,14 +62,14 @@ public class MockCurrentUserServiceImpl extends CurrentUserServiceImpl {
             .lastOnline(lastOnline)
             .build();
 
-    log.info("************** ALERT **********************");
-    log.info("************* MOCK USER********************");
-    log.info("authentication={}", authentication);
-    log.info("securityContext={}", securityContext);
-    log.info("principal={}", principal);
-    log.info("user (spring security) ={}", user);
-    log.info("u (our custom user entity)={}", u);
-    log.info("************** END ALERT ******************");
+    log.trace("************** ALERT **********************");
+    log.trace("************* MOCK USER********************");
+    log.trace("authentication={}", authentication);
+    log.trace("securityContext={}", securityContext);
+    log.trace("principal={}", principal);
+    log.trace("user (spring security) ={}", user);
+    log.trace("u (our custom user entity)={}", u);
+    log.trace("************** END ALERT ******************");
 
     return u;
   }

@@ -58,10 +58,10 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
     when(commonsRepository.findById(1L)).thenReturn(Optional.empty());
 
     // Act
-    MilkTheCowsJobInd MilkTheCowsJobInd =
+    MilkTheCowsJobInd milkTheCowsJobInd =
         new MilkTheCowsJobInd(
             commonsRepository, userCommonsRepository, userRepository, profitRepository, 1L);
-    MilkTheCowsJobInd.accept(ctx);
+    milkTheCowsJobInd.accept(ctx);
 
     // Assert
     String expected =
@@ -69,6 +69,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
                 Starting to milk the cows
                 No commons found for id 1""";
     assertEquals(expected, jobStarted.getLog());
+    assertEquals(1L,milkTheCowsJobInd.getCommonsID());
   }
 
   @Test

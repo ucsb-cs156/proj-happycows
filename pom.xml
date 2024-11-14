@@ -254,7 +254,7 @@
                         <param>${app.package}.services.CurrentUserServiceImpl</param>
                         <param>${app.package}.HappierCowsApplication</param>
                         <param>${app.package}.config.SecurityConfig</param>
-                        <param>${app.package}.config.SecurityConfig.MyCsrfRequestMatcher</param>
+                        <param>${app.package}.config.SpaCsrfTokenRequestHandler</param>
                         <param>${app.package}.config.SpringFoxConfig</param>
                         <param>${app.package}.services.wiremock.WiremockService</param>
                         <param>${app.package}.services.wiremock.WiremockServiceDummy</param>

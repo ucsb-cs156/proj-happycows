@@ -82,6 +82,18 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
   }
 
   @Test
+  void test_getter_for_commonsId() {
+    var updateCowHealthJobInd =
+        new UpdateCowHealthJobInd(
+            commonsRepository,
+            userCommonsRepository,
+            userRepository,
+            commonsPlusBuilderService,
+            1L);
+    assertEquals(1L, updateCowHealthJobInd.getCommonsID());
+  }
+
+  @Test
   void test_log_output_with_no_commons() throws Exception {
     runUpdateCowHealthJob();
 
