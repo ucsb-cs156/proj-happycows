@@ -356,45 +356,45 @@ describe("AdminJobsPage tests", () => {
     });
   });
 
-  // test("user can submit instructor report (specific commons) job", async () => {
+  test("user can submit instructor report (specific commons) job", async () => {
 
-  //   // arrange
-  //   axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    // arrange
+    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
 
-  //   // act
-  //   render(
-  //     <QueryClientProvider client={queryClient}>
-  //       <MemoryRouter>
-  //         <AdminJobsPage />
-  //       </MemoryRouter>
-  //     </QueryClientProvider>
-  //   );
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
 
-  //   // assert
-  //   const label = "Instructor Report (for specific commons)";
-  //   expect(await screen.findByText(label)).toBeInTheDocument();
+    // assert
+    const label = "Instructor Report (for specific commons)";
+    expect(await screen.findByText(label)).toBeInTheDocument();
 
-  //   const InstructorReportJobButton = screen.getByText(label);
-  //   expect(InstructorReportJobButton).toBeInTheDocument();
-  //   InstructorReportJobButton.click();
+    const InstructorReportJobButton = screen.getByText(label);
+    expect(InstructorReportJobButton).toBeInTheDocument();
+    InstructorReportJobButton.click();
 
-  //   expect(screen.queryByText("There are no commons on which to run this job.")).not.toBeInTheDocument();
+    // expect(screen.queryByText("There are no commons on which to run this job.")).not.toBeInTheDocument();
 
-  //   const submitButton = await screen.findByTestId("InstructorReportSpecificCommonsForm-Submit-Button");
-  //   expect(submitButton).toBeInTheDocument();
-  //   submitButton.click();
+    const submitButton = await screen.findByTestId("InstructorReportSpecificCommonsForm-Submit-Button");
+    expect(submitButton).toBeInTheDocument();
+    submitButton.click();
 
-  //   await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-  //   await waitFor(() => {
-  //     expect(axiosMock.history.post[0].url).toBe(
-  //       `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`
-  //     );
-  //   })
+    await waitFor(() => {
+      expect(axiosMock.history.post[0].url).toBe(
+        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`
+      );
+    })
 
-  //   await waitFor( () => {
-  //     expect(mockToast).toHaveBeenCalledWith('Submitted Job: Instructor Report (Specific Commons)');
-  //     }
-  //   );
-  // });
+    await waitFor( () => {
+      expect(mockToast).toHaveBeenCalledWith('Submitted Job: Instructor Report (Specific Commons)');
+      }
+    );
+  });
 });

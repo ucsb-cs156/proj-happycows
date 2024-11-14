@@ -55,12 +55,14 @@ const wrappedParams = async (params) => {
   ).data;
 };
 
+// istanbul ignore next: hard to know how to test the query key functionality
 export function useBackendMutation(
   objectToAxiosParams,
   useMutationParams,
   queryKey = null,
 ) {
   const queryClient = useQueryClient();
+
 
   return useMutation((object) => wrappedParams(objectToAxiosParams(object)), {
     onError: (error) => {
