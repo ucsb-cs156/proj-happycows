@@ -62,7 +62,7 @@ const ManageCowsModal = ({number, setNumber, isOpen, onClose, message, userCommo
       </Modal.Body>
       <Modal.Footer data-testid={"buy-sell-cow-modal-footer"} style={{borderTop: '0px'}}>
         <Button data-testid={"buy-sell-cow-modal-cancel"} variant="secondary" onClick={handleClose}>Cancel</Button>
-        <Button data-testid={"buy-sell-cow-modal-submit"} variant="primary" onClick={handleSubmit}>{message}</Button>
+        <Button data-testid={"buy-sell-cow-modal-submit"} variant="primary" onClick={handleSubmit}>{message[0].toUpperCase() + message.slice(1)}</Button>
       </Modal.Footer>
     </Modal>
   );
