@@ -4,8 +4,8 @@
 
 | Type | Link       | 
 |------|------------|
-| prod | <https://happy-cows.dokku-00.cs.ucsb.edu/>     | 
-| qa   | <https://happy-cows-qa.dokku-00.cs.ucsb.edu/>  | 
+| prod | <https://happycows.dokku-00.cs.ucsb.edu/>     | 
+| qa   | <https://happycows-qa.dokku-00.cs.ucsb.edu/>  | 
 
 # F24 Deployments
 
