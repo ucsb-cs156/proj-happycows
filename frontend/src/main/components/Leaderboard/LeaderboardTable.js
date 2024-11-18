@@ -1,6 +1,14 @@
 import OurTable from "main/components/OurTable";
 import { Link } from "react-router-dom";
 
+
+const numericSort = (rowA, rowB, columnId) => {
+    const a = parseFloat(rowA.values[columnId]) || 0;
+    const b = parseFloat(rowB.values[columnId]) || 0;
+    return a > b ? 1 : a < b ? -1 : 0;
+};
+
+
 // should take in a players list from a commons
 export default function LeaderboardTable({ leaderboardUsers }) {
     const USD = new Intl.NumberFormat("en-US", {
@@ -22,6 +30,7 @@ export default function LeaderboardTable({ leaderboardUsers }) {
             accessor: (row, _rowIndex) => {
                 return USD.format(row.totalWealth);
             },
+            sortType: numericSort,
             Cell: (props) => {
                 return <div style={{ textAlign: "right" }}>{props.value}</div>;
             },
