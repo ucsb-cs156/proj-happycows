@@ -8,7 +8,7 @@ export default function ProfitsTable({ profits }) {
         [
             {
                 Header: "Profit",
-                accessor: (row) => `$${row.amount.toFixed(2)}`,
+                accessor: (row) => `$${row.amount.toFixed(2)}`
             },
             {
                 Header: "Date",
