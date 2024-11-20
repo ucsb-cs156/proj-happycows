@@ -24,7 +24,7 @@ export default function LeaderboardTable({ leaderboardUsers }) {
             Header: "Total Wealth",
             id: "totalWealth",
             accessor: (row, _rowIndex) => {
-                return USD.format(row.totalWealth);
+                return row.totalWealth;
             },
 
             Cell: (props) => {
