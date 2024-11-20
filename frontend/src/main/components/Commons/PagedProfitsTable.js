@@ -95,9 +95,7 @@ const PagedProfitsTable = () => {
         <Button
           data-testid={`${testId}-next-button`}
           onClick={nextPageCallback()}
-          disabled={
-            page.totalPages === 0 || selectedPage === page.totalPages - 1
-          }
+          disabled={selectedPage === page.totalPages - 1}
         >
           Next
         </Button>
