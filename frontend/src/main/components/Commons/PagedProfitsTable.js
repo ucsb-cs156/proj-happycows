@@ -90,7 +90,7 @@ const PagedProfitsTable = () => {
             <p>Page: {selectedPage + 1}</p>
             <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
             <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
-            // Stryker disable next-line all : don't test CSS params
+            {/* Stryker disable next-line all : don't test CSS params*/}
             <div style={{display: 'flex'}}>
                     < OurTable
                         data={page.content}
