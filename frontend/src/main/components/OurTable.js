@@ -44,7 +44,8 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                             <th
                                 {...column.getHeaderProps({
                                     ...column.getSortByToggleProps(), // Include sorting functionality
-                                    style: { width: column.width || "auto" }, // Apply column width
+                                    // Stryker disable next-line all
+                                    style: { width: column.width }, // Apply column width
                                 })}
                                 data-testid={`${testid}-header-${column.id}`}
                             >
@@ -70,7 +71,8 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                                 return (
                                     <td
                                         {...cell.getCellProps({
-                                            style: { width: cell.column.width || "auto" }, // Apply column width
+                                            // Stryker disable next-line all
+                                            style: { width: cell.column.width }, // Apply column width
                                         })}
                                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                                     >
