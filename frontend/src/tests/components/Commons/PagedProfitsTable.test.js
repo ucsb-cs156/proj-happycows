@@ -75,10 +75,10 @@ describe("PagedProfitsTable tests", () => {
       screen.getByTestId(`${testId}-header-timestamp-sort-carets`)
     ).toHaveTextContent("🔽");
 
-    const nextButton = screen.getByTestId(`${testId}-next-button`);
+    const nextButton = screen.queryByTestId(`${testId}-next-button`);
     expect(nextButton).not.toBeInTheDocument();
 
-    const previousButton = screen.getByTestId(`${testId}-previous-button`);
+    const previousButton = screen.queryByTestId(`${testId}-previous-button`);
     expect(previousButton).not.toBeInTheDocument();
   });
 
@@ -109,10 +109,10 @@ describe("PagedProfitsTable tests", () => {
       pageSize: 5,
     });
 
-    const nextButton = screen.getByTestId(`${testId}-next-button`);
+    const nextButton = screen.queryByTestId(`${testId}-next-button`);
     expect(nextButton).not.toBeInTheDocument();
 
-    const previousButton = screen.getByTestId(`${testId}-previous-button`);
+    const previousButton = screen.queryByTestId(`${testId}-previous-button`);
     expect(previousButton).not.toBeInTheDocument();
   });
 
