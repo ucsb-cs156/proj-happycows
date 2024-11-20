@@ -90,7 +90,7 @@ const PagedProfitsTable = () => {
             <p>Page: {selectedPage + 1}</p>
             <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
             <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
-            <div style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row' }}>
+            <div style={{display: 'flex'}}>
                     < OurTable
                         data={page.content}
                         columns={columns}
