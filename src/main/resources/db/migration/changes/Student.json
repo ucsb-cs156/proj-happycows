@@ -64,7 +64,7 @@
                   }
                 }
               ],
-              "tableName": "students"
+              "tableName": "student"
             }
           }
         ]
