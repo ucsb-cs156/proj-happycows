@@ -13,7 +13,7 @@ const PagedProfitsTable = () => {
 
     const [selectedPage, setSelectedPage] = React.useState(0);
 
-    const PROFIT_PAGE_SIZE = 6;
+    const PROFIT_PAGE_SIZE = 5;
     const { commonsId } = useParams();
 
     // Stryker disable all
@@ -96,7 +96,6 @@ const PagedProfitsTable = () => {
                         columns={columns}
                         testid={testid}
                         initialState={{ sortBy: sortees }}
-            
                     />
             </div>
         </>
