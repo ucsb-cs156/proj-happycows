@@ -64,11 +64,12 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 </Button>
                             </Col>
                         </Row>
-                        <p>
-                            Note: Buying cows buys at the current cow price, but
-                            selling cows sells at the current cow price times
-                            the average health of cows as a percentage!
-                        </p>
+                        <h3>Note:</h3>
+
+                        <ul>
+                            <li>Buying cows buys at the current cow price.</li>
+                            <li>Selling cows sells at the current cow price multiplied by the average health of cows (as a percentage)</li>
+                        </ul>
                     </>
                 )}
             </Card.Body>
