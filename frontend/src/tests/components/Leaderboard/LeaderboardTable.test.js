@@ -180,7 +180,7 @@ describe("LeaderboardTable tests", () => {
         for (let i = 1; i < 3; i++) {
             const username1 = screen.getByText(usersAscending[i - 1]);
             const username2 = screen.getByText(usersAscending[i]);
-            expect(username1.compareDocumentPosition(username2)).toBe(4);
+            expect(username1.compareDocumentPosition(username2)).toBe(4); // username2 follows username 1
         }
 
         fireEvent.click(wealthHeader);
@@ -189,7 +189,7 @@ describe("LeaderboardTable tests", () => {
         for (let i = 1; i < 3; i++) {
             const username1 = screen.getByText(usersDescending[i - 1]);
             const username2 = screen.getByText(usersDescending[i]);
-            expect(username1.compareDocumentPosition(username2)).toBe(4);
+            expect(username1.compareDocumentPosition(username2)).toBe(4); // username2 follows username 1
         }
     });
 
