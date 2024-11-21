@@ -27,6 +27,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         axiosMock.resetHistory();
         axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {commons: { id: 1, name: "Sample Commons", }, totalPlayers: 5, totalCows: 5,});
     });
 
     test("renders page without crashing", async () => {
@@ -38,7 +39,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByText("Create Announcement")).toBeInTheDocument();
+        expect(await screen.findByText("Create Announcement for Sample Commons")).toBeInTheDocument();
 
     });
 
