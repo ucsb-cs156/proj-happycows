@@ -1,8 +1,6 @@
 import OurTable from "main/components/OurTable";
 import { Link } from "react-router-dom";
 
-
-
 // should take in a players list from a commons
 export default function LeaderboardTable({ leaderboardUsers }) {
     const USD = new Intl.NumberFormat("en-US", {
