@@ -165,7 +165,7 @@ describe('ManageCowsModal', () => {
 
     fireEvent.change(input, { target: { value: '0' } });
     expect(mockSetNumber).toHaveBeenCalledWith('0');
-    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot buy a negative number of cows!");
+    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot Buy a negative number of cows!");
   });
 
   test('toast warning not present when selling 0 cows', async () => {
@@ -178,7 +178,7 @@ describe('ManageCowsModal', () => {
 
     fireEvent.change(input, { target: { value: '0' } });
     expect(mockSetNumber).toHaveBeenCalledWith('0');
-    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot sell a negative number of cows!");
+    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot Sell a negative number of cows!");
   });
 
   test('toast warning not present when buying positive cows', async () => {
@@ -191,7 +191,7 @@ describe('ManageCowsModal', () => {
 
     fireEvent.change(input, { target: { value: '3' } });
     expect(mockSetNumber).toHaveBeenCalledWith('3');
-    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot buy a negative number of cows!");
+    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot Buy a negative number of cows!");
   });
 
   test('toast warning not present when selling positive cows', async () => {
@@ -204,7 +204,7 @@ describe('ManageCowsModal', () => {
 
     fireEvent.change(input, { target: { value: '3' } });
     expect(mockSetNumber).toHaveBeenCalledWith('3');
-    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot sell a negative number of cows!");
+    expect(mockToast).not.toHaveBeenCalledWith("Warning: You cannot Sell a negative number of cows!");
   });
 
   test('updates the number state on input change', () => {
