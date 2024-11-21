@@ -11,7 +11,7 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 const mockedNavigate = jest.fn();
 
 jest.mock("react-router-dom", () => ({
-    ...jest.requireActual("react-router-dom"), 
+    ...jest.requireActual("react-router-dom"),
     useParams: () => ({
         commonsId: 1,
     }),
