@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Entity(name = "courses")
 public class Courses {
     @Id
-    private String courseMajor;
+    private String subjectArea;
     private Integer courseNumber;
     private String courseName;    
 }
