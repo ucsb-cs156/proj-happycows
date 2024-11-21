@@ -32,6 +32,22 @@ describe('ManageCowsModal', () => {
     expect(screen.getByTestId('buy-sell-cow-modal')).toBeInTheDocument();
   });
 
+  test('modal has correct buy capitalization', () => {
+    render(
+        <ManageCowsModal isOpen={true} onClose={mockOnClose} message="buy" setNumber={mockSetNumber} />
+    );
+
+    expect(screen.getByText('Buy')).toBeInTheDocument();
+  });
+
+  test('modal has correct sell capitalization', () => {
+    render(
+        <ManageCowsModal isOpen={true} onClose={mockOnClose} message="sell" setNumber={mockSetNumber} />
+    );
+
+    expect(screen.getByText('Sell')).toBeInTheDocument();
+  });
+
   test('does not render the modal when isOpen is false', () => {
     render(
         <ManageCowsModal isOpen={false} onClose={mockOnClose} message="buy" setNumber={mockSetNumber} />
