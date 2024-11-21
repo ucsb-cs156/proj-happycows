@@ -41,7 +41,7 @@
                   },
                   {
                     "column": {
-                      "name": "COURSENUMBER",
+                      "name": "COURSE_NUMBER",
                       "type": "INT"
                     }
                   },
