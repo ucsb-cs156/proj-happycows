@@ -43,7 +43,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-success"
                                     onClick={() => {
-                                        setMessage("buy");
+                                        setMessage("Buy");
                                         openModal();
                                     }}
                                     data-testid={"buy-cow-button"}
@@ -55,7 +55,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-danger"
                                     onClick={() => {
-                                        setMessage("sell");
+                                        setMessage("Sell");
                                         openModal();
                                     }}
                                     data-testid={"sell-cow-button"}
