@@ -1,6 +1,6 @@
 # HappyCows/HappierCows
 
-# Production Deployments 
+# Production Deployments (To Do: Create team prod + qa 11)
 
 | Type | Link       | 
 |------|------------|
@@ -13,10 +13,10 @@ Tracks `main` branch:
 
 | Team | Tracks Main Branch       | QA Deployment |
 |------|--------------------------|---------------|
-| f24-05 | <https://happycows.dokku-05.cs.ucsb.edu/> | <https://happycows-qa.dokku-05.cs.ucsb.edu/> | 
-| f24-06 | <https://happycows.dokku-06.cs.ucsb.edu/>  | <https://happycows-qa.dokku-06.cs.ucsb.edu/> | 
-| f24-07 | <https://happycows.dokku-07.cs.ucsb.edu/>  | <https://happycows-qa.dokku-07.cs.ucsb.edu/> | 
-| f24-08 | <https://happycows.dokku-08.cs.ucsb.edu/>  | <https://happycows-qa.dokku-08.cs.ucsb.edu/> | 
+| f24-09 | <https://happycows.dokku-09.cs.ucsb.edu/> | <https://happycows-qa.dokku-09.cs.ucsb.edu/> | 
+| f24-10 | <https://happycows.dokku-10.cs.ucsb.edu/>  | <https://happycows-qa.dokku-10.cs.ucsb.edu/> | 
+| f24-11 | <https://happycows.dokku-11.cs.ucsb.edu/>  | <https://happycows-qa.dokku-11.cs.ucsb.edu/> | 
+| f24-12 | <https://happycows.dokku-12.cs.ucsb.edu/>  | <https://happycows-qa.dokku-12.cs.ucsb.edu/> | 
 
 # Description
 
