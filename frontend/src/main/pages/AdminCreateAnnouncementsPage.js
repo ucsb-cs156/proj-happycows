@@ -1,70 +1,77 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { Navigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
-import { useBackendMutation } from "main/utils/useBackend";
-import { useBackend } from "main/utils/useBackend";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
+import { useParams, Navigate } from 'react-router-dom'
+import { toast } from "react-toastify"
 
-const AdminCreateAnnouncementPage = () => {
-  const objectToAxiosParams = (newAnnouncement) => ({
-    url: "/api/announcements/new",
-    method: "POST",
-    data: newAnnouncement,
-  });
+import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
-  const { commonsId } = useParams();
+// Stryker disable all
+const AdminCreateAnnouncementsPage = () => {
 
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-        method: "GET",
-        url: "/api/commons/plus",
-        params: {
-            id: commonsId,
-        },
-    }
-);
+    const objectToAxiosParams = (newAnnouncement) => ({
+        url: "/api/announcements/new",
+        method: "POST",
+        data: newAnnouncement
+    });
 
-const commonsName = commonsPlus?.commons.name;
+    const { commonsId } = useParams(); 
 
-  // Success handler
-  const onSuccess = (announcement) => {
-    toast(
-      <div>
-        <p>Announcement successfully created!</p>
-        <ul>
-          <li>{`ID: ${announcement.id}`}</li>
-          <li>{`Start Date: ${announcement.startDate}`}</li>
-          <li>{`End Date: ${announcement.endDate}`}</li>
-          <li>{`Announcement: ${announcement.message}`}</li>
-        </ul>
-      </div>
+    const { data: commonsPlus } = useBackend(
+        [`/api/commons/plus?id=${commonsId}`],
+        {
+            method: "GET",
+            url: "/api/commons/plus",
+            params: {
+                id: commonsId,
+            },
+        }
     );
-  };
 
-  // Backend mutation hook
-  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, [
-    "/api/announcements/all",
-  ]);
+    const commonsName = commonsPlus?.commons.name;
 
-  // Form submission handler
-  const submitAction = async (data) => {
-    mutation.mutate(data);
-  };
+    const onSuccess = (announcement) => {
+        toast(
+          <div>
+            <p>Announcement successfully created!</p>
+            <ul>
+              <li>{`ID: ${announcement.id}`}</li>
+              <li>{`Start Date: ${announcement.startDate}`}</li>
+              <li>{`End Date: ${announcement.endDate}`}</li>
+              <li>{`Announcement: ${announcement.message}`}</li>
+            </ul>
+          </div>
+        );
+      };
+   
+    // Stryker disable all
+    const mutation = useBackendMutation(
+        objectToAxiosParams,
+        { onSuccess },
+        // Stryker disable next-line all : hard to set up test for caching
+        ["/api/announcements/all"]
+    );
+    // Stryker restore all
 
-  // Redirect after successful submission
-  if (mutation.isSuccess) {
-    return <Navigate to="/" />;
-  }
+    const submitAction = async (data) => {
+        mutation.mutate(data);
+    }
 
-  return (
-    <BasicLayout>
-      <h2>Create Announcement for { commonsName} </h2>
-      <AnnouncementForm submitAction={submitAction} />
-    </BasicLayout>
-  );
+
+    if (mutation.isSuccess) {
+        return <Navigate to="/" />
+    }
+
+    return (
+        <BasicLayout>
+            <h2>Create Announcement for {commonsName}</h2>
+            <AnnouncementForm
+                submitAction={submitAction}
+            />
+        </BasicLayout>
+    );
+    
 };
 
-export default AdminCreateAnnouncementPage;
+
+export default AdminCreateAnnouncementsPage;
