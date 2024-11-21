@@ -44,7 +44,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                             <th
                                 {...column.getHeaderProps({
                                     ...column.getSortByToggleProps(), // Include sorting functionality
-                                    // Stryker disable next-line all
+                                    // Stryker disable all: we do not want to test this
                                     style: { width: column.width }, // Apply column width
                                 })}
                                 data-testid={`${testid}-header-${column.id}`}
