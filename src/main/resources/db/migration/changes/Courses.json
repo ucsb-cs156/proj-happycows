@@ -1,0 +1,63 @@
+{
+    "databaseChangeLog": [
+      {
+        "changeSet": {
+          "id": "CoursesTable-1",
+          "author": "TomShangguan",
+          "preConditions": [
+            {
+              "onFail": "MARK_RAN"
+            },
+            {
+              "not": [
+                {
+                  "tableExists": {
+                    "tableName": "COURSES"
+                  }
+                }
+              ]
+            }
+          ],
+          "changes": [
+            {
+              "createTable": {
+                "columns": [
+                  {
+                    "column": {
+                      "autoIncrement": true,
+                      "constraints": {
+                        "primaryKey": true,
+                        "primaryKeyName": "COURSES_PK"
+                      },
+                      "name": "ID",
+                      "type": "BIGINT"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "COURSEMAJOR",
+                      "type": "VARCHAR(255)"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "COURSENUMBER",
+                      "type": "INT"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "COURSENAME",
+                      "type": "VARCHAR(255)"
+                    }
+                  }
+                ],
+                "tableName": "COURSES"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  
