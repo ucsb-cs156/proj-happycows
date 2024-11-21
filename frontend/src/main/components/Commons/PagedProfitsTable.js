@@ -55,20 +55,24 @@ const PagedProfitsTable = () => {
                 Header: "Profit",
                 accessor: "amount",
                 Cell: ({value}) => `$${value.toFixed(2)}`,
+                width: 200,
             },
             {
                 Header: "Date",
                 accessor: "timestamp",
                 Cell: ({ value }) => timestampToDate(value),
+                width: 200,
             },
             {
                 Header: "Health",
                 accessor: "avgCowHealth",
-                Cell: ({value}) => `${value.toFixed(2) + '%'}`
+                Cell: ({value}) => `${value.toFixed(2) + '%'}`,
+                width: 200,
             },
             {
                 Header: "Cows",
                 accessor: "numCows",
+                width: 200,
             },
         ];
 
