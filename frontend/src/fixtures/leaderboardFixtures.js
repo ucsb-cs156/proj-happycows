@@ -31,7 +31,7 @@ const leaderboardFixtures = {
             "userId": 2,
             "username": "two",
             "commonsId": 1,
-            "totalWealth" : 1000,
+            "totalWealth" : 100,
             "numOfCows": 5,
             "cowsBought": 5,
             "cowsSold": 5,
