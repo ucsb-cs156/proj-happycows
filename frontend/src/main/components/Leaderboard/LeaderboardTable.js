@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 
 
 
-
-
 // should take in a players list from a commons
 export default function LeaderboardTable({ leaderboardUsers }) {
     const USD = new Intl.NumberFormat("en-US", {
@@ -22,10 +20,8 @@ export default function LeaderboardTable({ leaderboardUsers }) {
         },
         {
             Header: "Total Wealth",
-            id: "totalWealth",
-            accessor: (row, _rowIndex) => {
-                return row.totalWealth;
-            },
+           
+            accessor: "totalWealth",
 
             Cell: (props) => {
                  return <div style={{ textAlign: "right" }}>{USD.format(props.value)}</div>;
