@@ -44,14 +44,11 @@ const AdminCreateAnnouncementsPage = () => {
         );
       };
    
-    // Stryker disable all
     const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
-        // Stryker disable next-line all : hard to set up test for caching
         ["/api/announcements/all"]
     );
-    // Stryker restore all
 
     const submitAction = async (data) => {
         mutation.mutate(data);
