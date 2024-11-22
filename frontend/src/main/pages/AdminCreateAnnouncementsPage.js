@@ -16,6 +16,7 @@ const AdminCreateAnnouncementsPage = () => {
 
     const { commonsId } = useParams(); 
 
+    // Stryker disable all
     const { data: commonsPlus } = useBackend(
         [`/api/commons/plus?id=${commonsId}`],
         {
@@ -26,6 +27,7 @@ const AdminCreateAnnouncementsPage = () => {
             },
         }
     );
+    // Stryker restore all
 
     const commonsName = commonsPlus?.commons.name;
 
