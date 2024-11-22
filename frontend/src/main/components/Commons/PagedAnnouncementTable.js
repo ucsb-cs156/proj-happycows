@@ -37,10 +37,12 @@ const PagedAnnouncementTable = () => {
             {
                 Header: "Start Date",
                 accessor: "startDate",
+                Cell: ({ value }) => timestampToDate(value),
             },
             {
                 Header: "End Date",
                 accessor: "endDate",
+                Cell: ({ value }) => (value ? timestampToDate(value) : ""),
             },
             {
                 Header: 'Important Announcements',
