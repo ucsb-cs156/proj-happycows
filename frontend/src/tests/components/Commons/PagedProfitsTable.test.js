@@ -210,6 +210,7 @@ describe("PagedProfitsTable tests", () => {
 
     const flexContainer = screen.getByTestId('PagedProfitsTable-container');
     expect(window.getComputedStyle(flexContainer).display).toBe('flex');
+    expect(window.getComputedStyle(flexContainer).overflowX).toBe('auto')
   }); 
 
 });
