@@ -251,5 +251,52 @@ public class StudentsControllerTests extends ControllerTestCase {
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("Students with id 67 not found", json.get("message"));
         }
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_delete_a_Students() throws Exception {
+                Students Students1 = Students.builder()
+                                .lName("Song")
+                                .fmName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long)156)
+                                .build();
+
+                when(StudentsRepository.findById(eq(15L))).thenReturn(Optional.of(Students1));
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                delete("/api/Students?id=15")
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+                verify(StudentsRepository, times(1)).findById(15L);
+                verify(StudentsRepository, times(1)).delete(any());
+
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Student with id 15 deleted", json.get("message"));
+        }
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_tries_to_delete_non_existant_Students_and_gets_right_error_message()
+                        throws Exception {
+                // arrange
+
+                when(StudentsRepository.findById(eq(15L))).thenReturn(Optional.empty());
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                delete("/api/Students?id=15")
+                                                .with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                // assert
+                verify(StudentsRepository, times(1)).findById(15L);
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Students with id 15 not found", json.get("message"));
+        }
 }
 
