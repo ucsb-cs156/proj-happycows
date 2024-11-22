@@ -9,15 +9,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "students")
+@Entity(name = "Students")
 public class Students {
 
   // Unique Student Id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  private String name;
-  private String email;
+
   private String perm;
+  private String lName;
+  private String fmName;
   private Long courseId;
+  private String email;
 }
