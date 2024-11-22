@@ -102,13 +102,6 @@ describe("OurTable tests", () => {
         await waitFor(() => expect(clickMeCallback).toBeCalledTimes(1));
     });
 
-    test("Expect table to have width", async () => {
-        render(
-            <OurTable columns={columns} data={threeRows} />
-        );
-
-        expect(OurTable).toHaveStyle({width: "auto"});
-    });
     test("default testid is testId", async () => {
         render(
             <OurTable columns={columns} data={threeRows} />

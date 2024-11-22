@@ -44,7 +44,6 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                             <th
                                 {...column.getHeaderProps({
                                     ...column.getSortByToggleProps(), // Include sorting functionality
-                                    style: { width: column.width }, // Apply column width
                                 })}
                                 data-testid={`${testid}-header-${column.id}`}
                             >
@@ -69,9 +68,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                             {row.cells.map((cell, _index) => {
                                 return (
                                     <td
-                                        {...cell.getCellProps({
-                                            style: { width: cell.column.width }, // Apply column width
-                                        })}
+                                        {...cell.getCellProps({})}
                                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                                     >
                                         {cell.render('Cell')}
