@@ -6,11 +6,10 @@ import { toast } from "react-toastify"
 
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
-// Stryker disable all
 const AdminCreateAnnouncementsPage = () => {
 
     const objectToAxiosParams = (newAnnouncement) => ({
-        url: "/api/announcements/new",
+        url: "/api/announcements/post",
         method: "POST",
         data: newAnnouncement
     });
@@ -44,11 +43,13 @@ const AdminCreateAnnouncementsPage = () => {
         );
       };
    
+    // Stryker disable all
     const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
-        ["/api/announcements/all"]
+        ["/api/announcements/getbycommonsid"]
     );
+    // Stryker restore all
 
     const submitAction = async (data) => {
         mutation.mutate(data);
