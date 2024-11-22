@@ -3,36 +3,37 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
+    const navigate = useNavigate();
+    const testIdPrefix = "AnnouncementForm";
 
-    // Stryker disable all
+    // Initialize React Hook Form
     const {
         register,
         formState: { errors },
         handleSubmit,
+        watch,
     } = useForm({
         defaultValues: {
-            ...initialContents,
-            startDate: initialContents?.startDate || "",
+            startDate: initialContents?.startDate || new Date().toISOString(),
+            endDate: initialContents?.endDate || "",
+            announcementText: initialContents?.announcementText || "",
         },
     });
-    // Stryker restore all
 
-    const navigate = useNavigate();
-    const testIdPrefix = "AnnouncementForm";
+    // Watch form fields to ensure values are controlled
+    const startDate = watch("startDate");
+    const endDate = watch("endDate");
 
     const isodate_regex = /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d)/i;
 
-    // Get the current date-time formatted for datetime-local inputs
-    const getCurrentDateTime = () => {
-        const now = new Date();
-        return now.toISOString().slice(0, 16); // Matches `datetime-local` format
-    };
-
     const onSubmit = (data) => {
-        if (!data.startDate) {
-            data.startDate = new Date().toISOString(); // Default to current datetime if not provided
-        }
-        submitAction(data);
+        const formattedData = {
+            ...data,
+            // Convert dates to include the timezone offset
+            startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
+            endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+        };
+        submitAction(formattedData);
     };
 
     return (
@@ -41,7 +42,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="id">Id</Form.Label>
                     <Form.Control
-                        // Stryker disable next-line all
                         data-testid={`${testIdPrefix}-id`}
                         id="id"
                         type="text"
@@ -54,14 +54,12 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
 
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="startDate">
-                    Start Date <small>(defaults to current time)</small> {/* Explanation added */}
+                    Start Date <small>(defaults to current time)</small>
                 </Form.Label>
                 <Form.Control
-                    // Stryker disable next-line all
                     data-testid={`${testIdPrefix}-startDate`}
                     id="startDate"
                     type="datetime-local"
-                    placeholder={getCurrentDateTime()} // Placeholder for current datetime
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
                         pattern: {
@@ -69,6 +67,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                             message: "Start Date must be in ISO format.",
                         },
                     })}
+                    defaultValue={startDate}
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.startDate?.message}
@@ -78,7 +77,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="endDate">End Date</Form.Label>
                 <Form.Control
-                    // Stryker disable next-line all
                     data-testid={`${testIdPrefix}-endDate`}
                     id="endDate"
                     type="datetime-local"
@@ -89,14 +87,17 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                             message: "End Date must be in ISO format.",
                         },
                     })}
+                    defaultValue={endDate}
                 />
+                <Form.Control.Feedback type="invalid">
+                    {errors.endDate?.message}
+                </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="announcementText">Announcement</Form.Label>
                 <Form.Control
                     as="textarea"
-                    // Stryker disable next-line all
                     data-testid={`${testIdPrefix}-announcementText`}
                     id="announcementText"
                     rows={5}
@@ -104,6 +105,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     {...register("announcementText", {
                         required: "Announcement is required.",
                     })}
+                    defaultValue={initialContents?.announcementText || ""}
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.announcementText?.message}
@@ -112,7 +114,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
 
             <Button
                 type="submit"
-                // Stryker disable next-line all
                 data-testid={`${testIdPrefix}-submit`}
             >
                 {buttonLabel}
@@ -120,7 +121,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             <Button
                 variant="Secondary"
                 onClick={() => navigate(-1)}
-                // Stryker disable next-line all
                 data-testid={`${testIdPrefix}-cancel`}
             >
                 Cancel
