@@ -187,9 +187,7 @@ export default function PlayPage() {
                     )}
                     <br />
                     {!!commonsPlus && (
-                        <AnnouncementCard
-                            userCommons={userCommons}
-                        />
+                        <AnnouncementCard/>
                     )}
                     <br />
                     {!!userCommons && !!commonsPlus && (
