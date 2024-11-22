@@ -1,12 +1,15 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
+import PagedAnnouncementTable from "main/components/Commons/PagedAnnouncementTable";
 
 
 
-const Profits = () =>{
+const AnnouncementCard = () =>{
     return (
         <Card>
+            <Card.Header as="h5" className = "woodenboardtable">
+                AnnouncementCard
+            </Card.Header>
             <Card.Body style={
                 // Stryker disable next-line all: don't test CSS params
                 {backgroundColor: "rgb(245, 210, 140)"}}>
@@ -14,10 +17,10 @@ const Profits = () =>{
                 <Card.Title>
                     Important Announcements:
                 </Card.Title>
-                <AnnouncementTable/>
+                <PagedAnnouncementTable/>
             </Card.Body>
         </Card>
     );
 };
 
-export default Profits;
+export default AnnouncementCard;
