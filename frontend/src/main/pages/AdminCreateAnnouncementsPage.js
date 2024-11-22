@@ -9,9 +9,13 @@ import { useBackend, useBackendMutation } from "main/utils/useBackend";
 const AdminCreateAnnouncementsPage = () => {
 
     const objectToAxiosParams = (newAnnouncement) => ({
-        url: "/api/announcements/post",
+        url:`/api/announcements/post/${commonsId}`,
         method: "POST",
-        data: newAnnouncement
+        params: {
+            announcementText: newAnnouncement.announcementText,
+            startdate: newAnnouncement.startDate,
+            enddate: newAnnouncement.endDate,
+        }
     });
 
     const { commonsId } = useParams(); 
@@ -39,7 +43,7 @@ const AdminCreateAnnouncementsPage = () => {
               <li>{`ID: ${announcement.id}`}</li>
               <li>{`Start Date: ${announcement.startDate}`}</li>
               <li>{`End Date: ${announcement.endDate}`}</li>
-              <li>{`Announcement: ${announcement.message}`}</li>
+              <li>{`Announcement: ${announcement.announcementText}`}</li>
             </ul>
           </div>
         );
