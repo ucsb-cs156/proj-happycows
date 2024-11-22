@@ -14,11 +14,9 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import java.time.LocalDateTime;
 import javax.validation.Valid;
 
 @Tag(name = "Students")
