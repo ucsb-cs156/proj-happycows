@@ -95,7 +95,7 @@ const PagedProfitsTable = () => {
             <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
             <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
             <div
-                testId="PagedProfitsTable-CSS"
+                data-testid="PagedProfitsTable-CSS"
                 style={{
                     display:"flex",
                     overflow: 'auto',

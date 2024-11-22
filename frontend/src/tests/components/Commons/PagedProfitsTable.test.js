@@ -68,8 +68,9 @@ describe("PagedProfitsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-numCows`)
     ).toHaveTextContent("5");
-
-    expect(screen.getByTestId("PagedProfitsTable-CSS")).toBeInTheDocument();
+    
+    const divContainer = screen.getByTestId("PagedProfitsTable-CSS");
+    expect(divContainer).toBeInTheDocument();
     expect(screen.getByTestId(`${testId}-header-timestamp-sort-carets`)).toHaveTextContent("🔽");
 
 
