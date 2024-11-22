@@ -14,6 +14,7 @@ import AdminViewReportPage from "main/pages/AdminViewReportPage";
 
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
+import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
@@ -45,6 +46,10 @@ function App() {
             <Route
                 path="/admin/editcommons/:id"
                 element={<AdminEditCommonsPage />}
+            />
+            <Route
+                path="/admin/students/"
+                element={<AdminStudentsIndexPage />}
             />
             <Route
                 path="/admin/play/:commonsId/user/:userId"
