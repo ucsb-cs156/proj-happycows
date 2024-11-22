@@ -43,7 +43,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-success"
                                     onClick={() => {
-                                        setMessage("buy");
+                                        setMessage("Buy");
                                         openModal();
                                     }}
                                     data-testid={"buy-cow-button"}
@@ -55,7 +55,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-danger"
                                     onClick={() => {
-                                        setMessage("sell");
+                                        setMessage("Sell");
                                         openModal();
                                     }}
                                     data-testid={"sell-cow-button"}
@@ -65,9 +65,16 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                             </Col>
                         </Row>
                         <p>
-                            Note: Buying cows buys at the current cow price, but
-                            selling cows sells at the current cow price times
-                            the average health of cows as a percentage!
+                        <div>
+                            <h3>Note:</h3>
+                            <ul>
+                                <li>Buying cows buys at the current cow price.</li>
+                                <li>
+                                    Selling cows sells at the current cow price multiplied by
+                                    the average cow health (as a percentage).
+                                </li>
+                            </ul>
+                        </div>
                         </p>
                     </>
                 )}
