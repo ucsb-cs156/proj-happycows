@@ -15,6 +15,9 @@ import javax.persistence.*;
 @Entity(name = "courses")
 public class Courses {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    
     private String subjectArea;
     private Integer courseNumber;
     private String courseName;    
