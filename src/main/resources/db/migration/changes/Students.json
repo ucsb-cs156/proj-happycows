@@ -35,7 +35,13 @@
                   },
                   {
                     "column": {
-                      "name": "NAME",
+                      "name": "LNAME",
+                      "type": "VARCHAR(255)"
+                    }
+                  },
+                  {
+                    "column": {
+                      "name": "FMNAME",
                       "type": "VARCHAR(255)"
                     }
                   },
