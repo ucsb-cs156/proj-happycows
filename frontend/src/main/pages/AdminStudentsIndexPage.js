@@ -7,10 +7,10 @@ export default function AdminStudentsIndexPage() {
       <div className="pt-2">
         <h1>Index page not yet implemented</h1>
         <p>
-          <a href="/admin/students/create">Create</a>
+          <a href="/admin/createstudents">Create</a>
         </p>
         <p>
-          <a href="/admin/students/edit/1">Edit</a>
+          <a href="/admin/editstudents/1">Edit</a>
         </p>
       </div>
     </BasicLayout>
