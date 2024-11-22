@@ -6,6 +6,8 @@ import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.repositories.CoursesRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,9 +50,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .andExpect(status().is(200)); // logged
     }
 
-    // Authorization tests for /api/courses/post
-    // (Perhaps should also have these for put and delete)
-
     @Test
     public void logged_out_users_cannot_post() throws Exception {
         mockMvc.perform(post("/api/courses/post"))
@@ -71,15 +70,21 @@ public class CoursesControllerTests extends ControllerTestCase {
         // arrange
 
         Courses course1 = Courses.builder()
-                .subjectArea("CS")
-                .courseNumber(156)
-                .courseName("ADVANCE JAVA")
+                .name("CS16")
+                .school("UCSB")
+                .term("F23")
+                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+                .githubOrg("ucsb-cs16-f23")
                 .build();
 
         Courses course2 = Courses.builder()
-                .subjectArea("CS")
-                .courseNumber(15)
-                .courseName("NOT ADVANCE JAVA")
+                .name("CS156")
+                .school("UCSB")
+                .term("W24")
+                .startDate(LocalDateTime.parse("2024-01-08T00:00:00"))
+                .endDate(LocalDateTime.parse("2024-03-22T00:00:00"))
+                .githubOrg("ucsb-cs156-w24")
                 .build();
 
         ArrayList<Courses> expectedCourses = new ArrayList<>();
@@ -101,27 +106,30 @@ public class CoursesControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN", "USER" })
     @Test
-    public void an_admin_user_can_post_a_new_courses() throws Exception {
+    public void an_admin_user_can_post_a_new_course() throws Exception {
         // arrange
 
-        Courses course1 = Courses.builder()
-                .subjectArea("CS")
-                .courseNumber(156)
-                .courseName("JAVA")
+        Courses courseBefore = Courses.builder()
+                .name("CS16")
+                .school("UCSB")
+                .term("F23")
+                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+                .githubOrg("ucsb-cs16-f23")
                 .build();
 
-        when(coursesRepository.save(eq(course1)))
-                .thenReturn(course1);
+        when(coursesRepository.save(eq(courseBefore)))
+                .thenReturn(courseBefore);
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?subjectArea=CS&courseNumber=156&courseName=JAVA")
+                post("/api/courses/post?name=CS16&school=UCSB&term=F23&startDate=2023-09-01T00:00:00&endDate=2023-12-31T00:00:00&githubOrg=ucsb-cs16-f23")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(coursesRepository, times(1)).save(course1);
-        String expectedJson = mapper.writeValueAsString(course1);
+        verify(coursesRepository, times(1)).save(courseBefore);
+        String expectedJson = mapper.writeValueAsString(courseBefore);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }

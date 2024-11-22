@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import java.util.Optional;
+import java.time.LocalDateTime;
+
+import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 
 @Slf4j
@@ -44,16 +50,22 @@ public class CoursesController extends ApiController{
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Courses postCourses(
-            @Parameter(name="subjectArea") @RequestParam String subjectArea,
-            @Parameter(name="courseNumber") @RequestParam Integer courseNumber,
-            @Parameter(name="courseName") @RequestParam String courseName)
+            @Parameter(name = "name", description = "course name, e.g. CMPSC 156") @RequestParam String name,
+            @Parameter(name = "school", description = "school abbreviation e.g. UCSB") @RequestParam String school,
+            @Parameter(name = "term", description = "quarter or semester, e.g. F23") @RequestParam String term,
+            @Parameter(name = "startDate", description = "in iso format, i.e. YYYY-mm-ddTHH:MM:SS; e.g. 2023-10-01T00:00:00 see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @Parameter(name = "endDate", description = "in iso format, i.e. YYYY-mm-ddTHH:MM:SS; e.g. 2023-12-31T11:59:59 see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @Parameter(name = "githubOrg", description = "for example ucsb-cs156-f23") @RequestParam String githubOrg)
             throws JsonProcessingException {
 
 
         Courses course = new Courses();
-        course.setSubjectArea(subjectArea);
-        course.setCourseNumber(courseNumber);
-        course.setCourseName(courseName);
+        course.setName(name);
+        course.setSchool(school);
+        course.setTerm(term);
+        course.setStartDate(startDate);
+        course.setEndDate(endDate);
+        course.setGithubOrg(githubOrg);
 
         Courses savedCourse = coursesRepository.save(course);
 

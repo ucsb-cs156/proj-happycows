@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import java.time.LocalDateTime;
 
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -17,8 +18,11 @@ public class Courses {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
-    private String subjectArea;
-    private Integer courseNumber;
-    private String courseName;    
+
+    private String name;
+    private String school;
+    private String term;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String githubOrg;
 }
