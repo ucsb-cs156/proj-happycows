@@ -1,9 +1,9 @@
 import React from "react";
 import { useBackend } from "main/utils/useBackend";
+import StudentsTable from "main/components/Students/StudentsTable";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import StudentsTable from "main/components/Students/StudentsTable";
-import { Button } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 import { useCurrentUser} from "main/utils/currentUser";
 
 export default function StudentsIndexPage() {
@@ -23,15 +23,20 @@ export default function StudentsIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Students</h1>
-        <StudentsTable
-          students={students}
-          currentUser={currentUser}
-        />
-        <Button variant = "primary" href = {`/admin/Students/create`} >
-            Create Student
-        </Button>
+        <Row className="pt-5">
+          <Col>
+            <h2>Students</h2>
+          </Col>
+          <Row>
+            <StudentsTable students={students} currentUser={currentUser} />
+          </Row>
+          <Col>
+            <Button variant="primary" href={`/admin/Students/create`}>
+              Create Student
+            </Button>
+          </Col>
+        </Row>
       </div>
     </BasicLayout>
-  );
+  )
 }
