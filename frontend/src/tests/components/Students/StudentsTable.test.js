@@ -28,7 +28,7 @@ describe("StudentsTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <StudentsTable student={[]} currentUser={currentUser} />
+          <StudentsTable students={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
@@ -53,7 +53,7 @@ describe("StudentsTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <StudentsTable student={studentsFixtures.oneStudent} currentUser={currentUser} />
+          <StudentsTable students={studentsFixtures.threeStudents} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>
     );
