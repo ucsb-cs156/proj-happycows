@@ -9,6 +9,8 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
 
     let navigate = useNavigate();
     // Stryker disable next-line all
+    const [isTableVisible, setIsTableVisible] = useState(true);
+    const changeTableVisibility = () => { setIsTableVisible(!isTableVisible); };
     const leaderboardButtonClick = () => { navigate("/leaderboard/" + commonsPlus.commons.id) };
     const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard );
     return (
@@ -28,12 +30,19 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
                             Leaderboard
                         </Button>)}
                     </Col>
-                </Row>
-                <Row>
                     <Col>
-                        <PagedAnnouncementTable/>
+                        <Button variant="outline-primary" onClick={changeTableVisibility} className="mt-3">
+                            {isTableVisible ? "Hide Announcements" : "Show Announcements"}
+                        </Button>
                     </Col>
                 </Row>
+                {isTableVisible && (
+                    <Row className="mt-3">
+                        <Col>
+                            <PagedAnnouncementTable />
+                        </Col>
+                    </Row>
+                )}
             </Card.Body>
         </Card>
     );
