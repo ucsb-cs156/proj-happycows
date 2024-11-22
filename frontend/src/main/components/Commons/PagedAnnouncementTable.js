@@ -56,7 +56,7 @@ const PagedAnnouncementTable = () => {
                 accessor: "endDate",
             },
             {
-                Header: 'Announcement',
+                Header: 'Important Announcements',
                 accessor: 'announcementText',
             },
         ];

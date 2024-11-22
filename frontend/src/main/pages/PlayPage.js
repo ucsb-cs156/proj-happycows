@@ -185,7 +185,6 @@ export default function PlayPage() {
                             currentUser={currentUser}
                         />
                     )}
-                    <br />
                     {!!commonsPlus && (
                         <AnnouncementCard/>
                     )}
