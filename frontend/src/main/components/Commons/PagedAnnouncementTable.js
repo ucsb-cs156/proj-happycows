@@ -73,6 +73,13 @@ const PagedAnnouncementTable = () => {
         []
     );
 
+    const legalDate = React.useMemo(() => {
+        const now = new Date();
+        return page.content.filter((announcement) => {
+            const startDate = new Date(announcement.startDate);
+            return startDate <= now;
+        });
+    }, [page.content]);
 
     return (
         <>
@@ -80,7 +87,7 @@ const PagedAnnouncementTable = () => {
             <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
             <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
             < OurTable
-                data={page.content}
+                data={legalDate}
                 columns={columns}
                 testid={testid}
                 initialState={{ sortBy: sortees }}
