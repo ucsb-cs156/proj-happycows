@@ -14,6 +14,12 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import java.time.LocalDateTime;
+import javax.validation.Valid;
 
 @Tag(name = "Students")
 @RequestMapping("/api/Students")
@@ -83,5 +89,33 @@ public class StudentsController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
 
         return students;
+    }
+
+        /**
+     * Update a single Student
+     * 
+     * @param id       id of the Student to update
+     * @param incoming the new Student
+     * @return the updated Students object
+     */
+    @Operation(summary= "Update a single Students")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Students updateStudents(
+            @Parameter(name="id") @RequestParam Long id,
+            @RequestBody @Valid Students incoming) {
+
+        Students student = StudentsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
+
+        student.setLName(incoming.getLName());
+        student.setFmName(incoming.getFmName());
+        student.setEmail(incoming.getEmail());
+        student.setCourseId(incoming.getCourseId());
+        student.setPerm(incoming.getPerm());
+
+        StudentsRepository.save(student);
+
+        return student;
     }
 }

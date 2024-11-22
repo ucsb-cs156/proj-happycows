@@ -24,45 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ucsb.cs156.happiercows.ControllerTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.Profit;
-import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import com.fasterxml.jackson.databind.JsonNode;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import org.springframework.http.MediaType;
 
 @WebMvcTest(controllers = StudentsController.class)
 @AutoConfigureDataJpa
@@ -218,6 +181,75 @@ public class StudentsControllerTests extends ControllerTestCase {
                 String expectedJson = mapper.writeValueAsString(student1);
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
+        }
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_Students() throws Exception {
+                Students StudentsOrig = Students.builder()
+                                .lName("Song")
+                                .fmName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long)156)
+                                .build();
+
+                Students StudentsEdited = Students.builder()
+                                .lName("Song2")
+                                .fmName("AlecJ2")
+                                .email("alecsong2@ucsb.edu")
+                                .perm("12345672")
+                                .courseId((long)1562)
+                                .build();
+
+                String requestBody = mapper.writeValueAsString(StudentsEdited);
+
+                when(StudentsRepository.findById(eq(67L))).thenReturn(Optional.of(StudentsOrig));
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/Students?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+                verify(StudentsRepository, times(1)).findById(67L);
+                verify(StudentsRepository, times(1)).save(StudentsEdited); // should be saved with correct user
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(requestBody, responseString);
+        }
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_cannot_edit_Students_that_does_not_exist() throws Exception {
+
+                Students StudentsEdited = Students.builder()
+                                .lName("Song")
+                                .fmName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long)156)
+                                .build();
+
+                String requestBody = mapper.writeValueAsString(StudentsEdited);
+
+                when(StudentsRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/Students?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                // assert
+                verify(StudentsRepository, times(1)).findById(67L);
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Students with id 67 not found", json.get("message"));
         }
 }
 
