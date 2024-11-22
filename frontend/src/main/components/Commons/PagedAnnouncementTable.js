@@ -10,7 +10,7 @@ const PagedAnnouncementTable = () => {
     const testId = "PagedAnnouncementTable";
     const refreshJobsIntervalMilliseconds = 5000;
 
-    const [selectedPage, setSelectedPage] = React.useState(0);
+    // const [selectedPage, setSelectedPage] = React.useState(0);
 
     const { commonsId } = useParams();
 
@@ -33,17 +33,17 @@ const PagedAnnouncementTable = () => {
 
     const testid = "PagedAnnouncementTable";
 
-    const previousPageCallback = () => {
-        return () => {
-            setSelectedPage(selectedPage - 1);
-        }
-    }
+    // const previousPageCallback = () => {
+    //     return () => {
+    //         setSelectedPage(selectedPage - 1);
+    //     }
+    // }
 
-    const nextPageCallback = () => {
-        return () => {
-            setSelectedPage(selectedPage + 1);
-        }
-    }
+    // const nextPageCallback = () => {
+    //     return () => {
+    //         setSelectedPage(selectedPage + 1);
+    //     }
+    // }
 
     const columns = 
         [
@@ -83,9 +83,6 @@ const PagedAnnouncementTable = () => {
 
     return (
         <>
-            <p>Page: {selectedPage + 1}</p>
-            <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
-            <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
             < OurTable
                 data={legalDate}
                 columns={columns}
