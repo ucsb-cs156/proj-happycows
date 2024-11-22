@@ -3,7 +3,6 @@ import OurTable from "main/components/OurTable";
 import { Button } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
 import { useParams } from "react-router-dom";
-import { timestampToDate } from "main/utils/dateUtils";
 
 
 const PagedAnnouncementTable = () => {
@@ -13,7 +12,6 @@ const PagedAnnouncementTable = () => {
 
     const [selectedPage, setSelectedPage] = React.useState(0);
 
-    const ANNOUNCEMENT_PAGE_SIZE = 15;
     const { commonsId } = useParams();
 
     // Stryker disable all
