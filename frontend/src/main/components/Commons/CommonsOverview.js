@@ -9,7 +9,7 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
 
     let navigate = useNavigate();
     // Stryker disable next-line all
-    const [isTableVisible, setIsTableVisible] = useState(true);
+    const [isTableVisible, setIsTableVisible] = React.useState(true);
     const changeTableVisibility = () => { setIsTableVisible(!isTableVisible); };
     const leaderboardButtonClick = () => { navigate("/leaderboard/" + commonsPlus.commons.id) };
     const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard );
