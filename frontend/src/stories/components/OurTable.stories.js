@@ -1,7 +1,5 @@
-
 import React from 'react';
 import OurTable from 'main/components/OurTable';
-import BasicLayout from 'main/layouts/BasicLayout/BasicLayout';
 
 export default {
     title: 'components/OurTable',
