@@ -148,7 +148,8 @@ public class AnnouncementsController extends ApiController{
 
         Announcement updated;
         HttpStatus status;
-
+        
+        // Error 404: Not found
         if (existing.isPresent()) {
             updated = existing.get();
             status = HttpStatus.OK;
@@ -156,12 +157,53 @@ public class AnnouncementsController extends ApiController{
             updated = new Announcement();
             throw new EntityNotFoundException(Announcement.class, id);
         }
-        // updated.setId(params.getId());
-        // updated.setCommonsId(params.getCommonsId());
-        updated.setAnnouncementText(params.getAnnouncementText());
-        updated.setEndDate(params.getEndDate());
-        updated.setStartDate(params.getStartDate());
+
+        // Default start date is OK...
+        if (params.getStartDate() == null) { 
+            log.info("Start date not specified. Defaulting to current date.");
+            updated.setStartDate(new Date());
+        }
+        else {
+            updated.setStartDate(params.getStartDate());
+        }
+
+        // ...But a start date after an end date is not OK.
+        // This error only occurs if the user provides an end date.
+        // Otherwise, the end date is NULL and the start date could be any date.
+        if(params.getEndDate() != null) {
+            if (updated.getStartDate().after(params.getEndDate())) {
+                throw new IllegalArgumentException("The start date may not be after the end date.");
+            }
+            else {
+                updated.setEndDate(params.getEndDate());
+            }
+        }
         
+
+        // The provided announcement text must not be empty or missing.
+        if (params.getAnnouncementText() == null || params.getAnnouncementText().equals("")) {
+            throw new IllegalArgumentException("Announcement Text cannot be empty");
+        }
+        else {
+            updated.setAnnouncementText(params.getAnnouncementText());
+        }
+
+        // At this point we know that the announcement exists. So we can 
+        // also check if the user is in the commons at all. If not, the
+        // request is forbidden
+        User user = getCurrentUser().getUser();
+        Long userId = user.getId();
+        Long commonsId = updated.getCommonsId();
+        // Make sure the user is part of the commons and showChat is true, or user is an admin
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
+            log.info("User is not an admin, checking if they're in the relevant commons");
+            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+
+            if (!userCommonsLookup.isPresent()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        }
         announcementRepository.save(updated);
         return ResponseEntity.status(status).build();
     }

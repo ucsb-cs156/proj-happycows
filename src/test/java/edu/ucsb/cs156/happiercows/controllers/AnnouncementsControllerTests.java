@@ -512,17 +512,82 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         UserCommons userCommons = UserCommons.builder().build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
-
+        
+        // Expected values of the edited announcement, which has no start date
+        String editedAnnouncement = "Hello world edited!";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
+        Date editedEnd = sdf.parse("2025-03-03T17:39:43.000-08:00");
+        
+        // request body
+        String requestBody = "{\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
+        
         //act 
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&announcementText={announcement}", id, commonsId, announcement).with(csrf()))
+        MvcResult response =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(announcementRepository, atLeastOnce()).findByAnnouncementId(id);
         verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
-        String responseString = response.getResponse().getContentAsString();
-        String expectedResponseString = mapper.writeValueAsString(announcementObj);
-        assertEquals(expectedResponseString, responseString);
+
+        String editedResponseString = mapper.writeValueAsString(announcementRepository.findByAnnouncementId(id));
+        // The start date of the edited announcementObj will be automatically set to the current date/time
+        // so every time you run this test it'll actually be different.
+        // That's why we have to use real obj's start date in expectedAnnouncementObj
+        // to eliminate the strange race condition.
+        Date defaultGenerated = announcementRepository.findByAnnouncementId(id).get().getStartDate();
+        Announcement expectedAnnouncementObj = Announcement.builder().id(id).startDate(defaultGenerated).commonsId(commonsId).endDate(editedEnd).announcementText(editedAnnouncement).build();
+        String editedExpectedResponseString = mapper.writeValueAsString(expectedAnnouncementObj);
+        assertEquals(editedExpectedResponseString, editedResponseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userCanEditAnnouncementWithoutAnyDates() throws Exception {
+
+        // arrange
+        Long id = 0L;
+        Long commonsId = 1L;
+        Long userId = 1L;
+        String announcement = "Hello world!";
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).announcementText(announcement).build();
+        when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
+
+        UserCommons userCommons = UserCommons.builder().build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        
+        // Expected values of the edited announcement, which has no start date
+        String editedAnnouncement = "Hello world edited!";
+        
+        // request body
+        String requestBody = "{\"announcementText\":\"Hello world edited!\"}";
+        
+        //act 
+        MvcResult response =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).findByAnnouncementId(id);
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+
+        String editedResponseString = mapper.writeValueAsString(announcementRepository.findByAnnouncementId(id));
+        // The start date of the edited announcementObj will be automatically set to the current date/time
+        // so every time you run this test it'll actually be different.
+        // That's why we have to use real obj's start date in expectedAnnouncementObj
+        // to eliminate the strange race condition.
+        Date defaultGenerated = announcementRepository.findByAnnouncementId(id).get().getStartDate();
+        Announcement expectedAnnouncementObj = Announcement.builder().id(id).startDate(defaultGenerated).commonsId(commonsId).announcementText(editedAnnouncement).build();
+        String editedExpectedResponseString = mapper.writeValueAsString(expectedAnnouncementObj);
+        assertEquals(editedExpectedResponseString, editedResponseString);
     }
 
     @WithMockUser(roles = {"USER"})
@@ -544,12 +609,15 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         //act 
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
-            .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(announcementRepository, times(0)).findByAnnouncementId(id);
-        verify(announcementRepository, times(0)).save(any(Announcement.class));
+        
+        //act 
+        String requestBody = "{\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
+        MvcResult response =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
+            .andExpect(status().isForbidden()).andReturn();
     }
 
     @WithMockUser(roles = {"USER"})
@@ -560,10 +628,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long commonsId = 1L;
         Long userId = 1L;
-        String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.empty());
 
@@ -571,8 +637,14 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
         //act 
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
-            .andExpect(status().isBadRequest()).andReturn();
+        String requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
+        MvcResult response =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
+            .andExpect(status().isNotFound()).andReturn();
+
 
         // assert
         verify(announcementRepository, atLeastOnce()).findByAnnouncementId(id);
@@ -598,13 +670,21 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         UserCommons userCommons = UserCommons.builder().build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
-        //act 
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        //act (NULL announcement text)
+        String requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\"}";
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(announcementRepository, times(0)).findByAnnouncementId(id);
-        verify(announcementRepository, times(0)).save(any(Announcement.class));
+        
+        //act (Provided, but EMPTY announcement text)
+        requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"\"}";
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
     }
 
     @WithMockUser(roles = {"USER"})
@@ -618,8 +698,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         String announcement = "Announcement";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
+        // The initial start/end times should be okay, since we want to make sure the editing is wrong
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
-        Date end = sdf.parse("2022-03-03T17:39:43.000-08:00");
+        Date end = sdf.parse("2026-03-03T17:39:43.000-08:00");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
@@ -628,11 +709,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
         //act 
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", id, commonsId, start, end, announcement).with(csrf()))
+        String requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2022-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
+        MvcResult response =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
-
-        // assert
-        verify(announcementRepository, times(0)).findByAnnouncementId(id);
-        verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 }
