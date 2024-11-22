@@ -2,7 +2,7 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "CoursesTable-2",
+        "id": "CoursesTable-1",
         "author": "TomShangguan",
         "preConditions": [
           {
