@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
-import PagedAnnouncementTable from "main/components/Commons/PagedAnnouncementTable";
-
+// import PagedAnnouncementTable from "main/components/Commons/PagedAnnouncementTable";
+// <PagedAnnouncementTable/>
 
 
 const AnnouncementCard = () =>{
@@ -17,7 +17,6 @@ const AnnouncementCard = () =>{
                 <Card.Title>
                     Important Announcements:
                 </Card.Title>
-                <PagedAnnouncementTable/>
             </Card.Body>
         </Card>
     );
