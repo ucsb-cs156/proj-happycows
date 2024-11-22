@@ -30,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -448,7 +449,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCanEditAnnouncement() throws Exception {
 
 
-        Long id = 0L;
+        Long id = 19090L;
         Long commonsId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
@@ -477,14 +478,21 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(editedStart).endDate(editedEnd).announcementText(editedAnnouncement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        //act 
-        MvcResult editedResponse = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", id, commonsId, editedStart, editedEnd, editedAnnouncement).with(csrf()))
+        // String requestBody = mapper.writeValueAsString(editedAnnouncementObj);
+        String requestBody = "{\"startDate\":\"2023-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
+        // //act 
+        MvcResult editedResponse =
+            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
         verify(announcementRepository, atLeastOnce()).findByAnnouncementId(id);
         verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
-        String editedResponseString = editedResponse.getResponse().getContentAsString();
+
+        String editedResponseString = mapper.writeValueAsString(announcementRepository.findByAnnouncementId(id));
         String editedExpectedResponseString = mapper.writeValueAsString(editedAnnouncementObj);
         assertEquals(editedExpectedResponseString, editedResponseString);
     }
