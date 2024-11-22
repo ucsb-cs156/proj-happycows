@@ -13,8 +13,8 @@ const AdminCreateAnnouncementsPage = () => {
         method: "POST",
         params: {
             announcementText: newAnnouncement.announcementText,
-            startdate: newAnnouncement.startDate,
-            enddate: newAnnouncement.endDate,
+            startDate: newAnnouncement.startDate,
+            endDate: newAnnouncement.endDate,
         }
     });
 
