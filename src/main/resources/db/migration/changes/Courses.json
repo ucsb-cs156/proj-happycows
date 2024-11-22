@@ -1,63 +1,80 @@
 {
-    "databaseChangeLog": [
-      {
-        "changeSet": {
-          "id": "CoursesTable-1",
-          "author": "TomShangguan",
-          "preConditions": [
-            {
-              "onFail": "MARK_RAN"
-            },
-            {
-              "not": [
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "CoursesTable-2",
+        "author": "TomShangguan",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "tableExists": {
+                  "tableName": "COURSES"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
                 {
-                  "tableExists": {
-                    "tableName": "COURSES"
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true,
+                      "primaryKeyName": "COURSES_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SCHOOL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "TERM",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "START_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "END_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "GITHUB_ORG",
+                    "type": "VARCHAR(255)"
                   }
                 }
-              ]
+              ],
+              "tableName": "COURSES"
             }
-          ],
-          "changes": [
-            {
-              "createTable": {
-                "columns": [
-                  {
-                    "column": {
-                      "autoIncrement": true,
-                      "constraints": {
-                        "primaryKey": true,
-                        "primaryKeyName": "COURSES_PK"
-                      },
-                      "name": "ID",
-                      "type": "BIGINT"
-                    }
-                  },
-                  {
-                    "column": {
-                      "name": "SUBJECT_AREA",
-                      "type": "VARCHAR(255)"
-                    }
-                  },
-                  {
-                    "column": {
-                      "name": "COURSE_NUMBER",
-                      "type": "INT"
-                    }
-                  },
-                  {
-                    "column": {
-                      "name": "COURSE_NAME",
-                      "type": "VARCHAR(255)"
-                    }
-                  }
-                ],
-                "tableName": "COURSES"
-              }
-            }
-          ]
-        }
+          }
+        ]
       }
-    ]
-  }
-  
+    }
+  ]
+}
