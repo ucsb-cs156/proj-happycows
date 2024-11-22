@@ -118,4 +118,22 @@ public class StudentsController extends ApiController {
 
         return student;
     }
+
+     /**
+     * Delete a Student
+     * 
+     * @param id the id of the Students to delete
+     * @return a message indicating the Students was deleted
+     */
+    @Operation(summary = "Delete a Student")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteStudents(
+            @Parameter(name = "id") @RequestParam Long id) {
+        Students student = StudentsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
+
+        StudentsRepository.delete(student);
+        return genericMessage("Student with id %s deleted".formatted(id));
+    }
 }
