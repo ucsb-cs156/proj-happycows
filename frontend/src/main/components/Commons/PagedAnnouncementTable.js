@@ -1,13 +1,12 @@
 import React from "react";
 import OurTable from "main/components/OurTable";
-import { Button } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
 import { useParams } from "react-router-dom";
 
 
 const PagedAnnouncementTable = () => {
 
-    const testId = "PagedAnnouncementTable";
+    // const testId = "PagedAnnouncementTable";
     const refreshJobsIntervalMilliseconds = 5000;
 
     // const [selectedPage, setSelectedPage] = React.useState(0);
@@ -32,18 +31,6 @@ const PagedAnnouncementTable = () => {
     // Stryker restore  all
 
     const testid = "PagedAnnouncementTable";
-
-    // const previousPageCallback = () => {
-    //     return () => {
-    //         setSelectedPage(selectedPage - 1);
-    //     }
-    // }
-
-    // const nextPageCallback = () => {
-    //     return () => {
-    //         setSelectedPage(selectedPage + 1);
-    //     }
-    // }
 
     const columns = 
         [

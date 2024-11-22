@@ -17,25 +17,23 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
             <Card.Body style={
                 // Stryker disable next-line all: don't test CSS params
                 {backgroundColor: "rgb(245, 210, 140)"}}>
-                <Container>
-                    <Row>
-                        <Col>
-                            <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>
-                            <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>
-                        </Col>
-                        <Col>
-                            {showLeaderboard &&
-                            (<Button variant="outline-success" data-testid="user-leaderboard-button" onClick={leaderboardButtonClick}>
-                                Leaderboard
-                            </Button>)}
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <PagedAnnouncementTable/>
-                        </Col>
-                    </Row>
-                </Container>
+                <Row>
+                    <Col>
+                        <Card.Title>Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!</Card.Title>
+                        <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>
+                    </Col>
+                    <Col>
+                        {showLeaderboard &&
+                        (<Button variant="outline-success" data-testid="user-leaderboard-button" onClick={leaderboardButtonClick}>
+                            Leaderboard
+                        </Button>)}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <PagedAnnouncementTable/>
+                    </Col>
+                </Row>
             </Card.Body>
         </Card>
     );
