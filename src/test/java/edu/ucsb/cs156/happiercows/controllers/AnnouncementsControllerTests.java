@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
-
+import java.lang.IllegalArgumentException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -478,9 +478,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(editedStart).endDate(editedEnd).announcementText(editedAnnouncement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        // String requestBody = mapper.writeValueAsString(editedAnnouncementObj);
         String requestBody = "{\"startDate\":\"2023-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
-        // //act 
+        //act 
         MvcResult editedResponse =
             mockMvc.perform(put("/api/announcements/put?id={id}", id)
             .contentType(MediaType.APPLICATION_JSON)
@@ -672,19 +671,26 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         //act (NULL announcement text)
         String requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\"}";
-            mockMvc.perform(put("/api/announcements/put?id={id}", id)
+        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestBody)
+            .with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        //assert
+        assertEquals("Announcement Text cannot be empty.", response.getResolvedException().getMessage());
+
+        
+        //act (Provided, but EMPTY announcement text)
+        requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"\"}";
+        response = mockMvc.perform(put("/api/announcements/put?id={id}", id)
             .contentType(MediaType.APPLICATION_JSON)
             .content(requestBody)
             .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
         
-        //act (Provided, but EMPTY announcement text)
-        requestBody = "{\"startDate\":\"2024-03-03T17:39:43.000-08:00\",\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"\"}";
-            mockMvc.perform(put("/api/announcements/put?id={id}", id)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(requestBody)
-            .with(csrf()))
-            .andExpect(status().isBadRequest()).andReturn();
+        //assert
+        assertEquals("Announcement Text cannot be empty.", response.getResolvedException().getMessage());
     }
 
     @WithMockUser(roles = {"USER"})
@@ -716,5 +722,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .content(requestBody)
             .with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
+        //assert
+        assertEquals("The start date may not be after the end date.", response.getResolvedException().getMessage());
     }
 }

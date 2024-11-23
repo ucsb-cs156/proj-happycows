@@ -182,7 +182,7 @@ public class AnnouncementsController extends ApiController{
 
         // The provided announcement text must not be empty or missing.
         if (params.getAnnouncementText() == null || params.getAnnouncementText().equals("")) {
-            throw new IllegalArgumentException("Announcement Text cannot be empty");
+            throw new IllegalArgumentException("Announcement Text cannot be empty.");
         }
         else {
             updated.setAnnouncementText(params.getAnnouncementText());
@@ -205,7 +205,7 @@ public class AnnouncementsController extends ApiController{
             }
         }
         announcementRepository.save(updated);
-        return ResponseEntity.status(status).build();
+        return ResponseEntity.ok(updated);
     }
 
 
