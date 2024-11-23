@@ -83,16 +83,7 @@ const PagedProfitsTable = () => {
         // Stryker disable next-line all
         []
     );
-
-    /*
-    style={{
-        width: column.width || "auto",
-        textAlign: "center", // Center the header text
-        padding: "8px",      // Add padding for spacing
-        whiteSpace: "nowrap", // Prevent overflow
-    }}
-        */
-
+    
     return (
         <>
             <p>Page: {selectedPage + 1}</p>
