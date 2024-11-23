@@ -45,7 +45,6 @@ public class StudentControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "USER" })
     @Test
     public void non_admin_users_cannot_get_by_id() throws Exception {
-        // assertEquals(1,1);
         mockMvc.perform(get("/api/students?id=1"))
                 .andExpect(status().is(403));
     }
