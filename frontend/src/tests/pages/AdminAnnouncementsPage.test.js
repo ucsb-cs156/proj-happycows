@@ -67,7 +67,7 @@ describe("AdminAnnouncementsPage tests", () => {
     });
 
     test("correct href for announcements button as an admin", async () => {
-        const testId = "CommonsTable";
+        // const testId = "CommonsTable";
         axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
 
         render(

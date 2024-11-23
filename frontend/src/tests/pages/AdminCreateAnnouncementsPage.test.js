@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
@@ -107,11 +107,11 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     
         // Verify the post request data
-        const expectedAnnouncement = {
-            startDate: "2023-11-21T17:52:33.000-08:00",
-            endDate: "2024-11-21T17:52:33.000-08:00",
-            announcementText: "Test announcement",
-        };
+        // const expectedAnnouncement = {
+        //     startDate: "2023-11-21T17:52:33.000-08:00",
+        //     endDate: "2024-11-21T17:52:33.000-08:00",
+        //     announcementText: "Test announcement",
+        // };
     
         // Assert that the POST request data matches the expected data
         // expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(expectedAnnouncement);
