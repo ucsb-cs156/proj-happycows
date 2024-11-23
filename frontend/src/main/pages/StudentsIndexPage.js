@@ -23,20 +23,18 @@ export default function StudentsIndexPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <Row className="pt-5">
-          <Col>
-            <h2>Students</h2>
+        <Row className="align-items-center mb-3">
+          <Col xs="auto">
+            <h1 className="mb-0">Students</h1>
           </Col>
-          <Row>
-            <StudentsTable students={students} currentUser={currentUser} />
-          </Row>
-          <Col>
-            <Button variant="primary" href={`/admin/Students/create`}>
+          <Col xs="auto" className="ml-auto">
+            <Button variant="primary" href="/Students/create">
               Create Student
             </Button>
           </Col>
         </Row>
+        <StudentsTable students={students} currentUser={currentUser} />
       </div>
     </BasicLayout>
-  )
+  );
 }
