@@ -286,6 +286,7 @@ describe("OurTable tests", () => {
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("6");
     expect(await screen.findByText(`Hello 51`)).toBeInTheDocument();
+    expect(screen.queryByText(`Hello 11`)).not.toBeInTheDocument();
     expect(
       await screen.findByTestId("testid-back-one-page-button")
     ).toContainHTML("5");
