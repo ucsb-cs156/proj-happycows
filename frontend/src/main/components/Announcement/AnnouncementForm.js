@@ -11,7 +11,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         register,
         formState: { errors },
         handleSubmit,
-        watch,
+        // watch,
     } = useForm({
         defaultValues: {
             startDate: initialContents?.startDate || new Date().toISOString(),
@@ -21,16 +21,16 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
     });
 
     // Watch form fields to ensure values are controlled
-    const startDate = watch("startDate");
-    const endDate = watch("endDate");
+    // const startDate = watch("startDate");
+    // const endDate = watch("endDate");
 
-    const isodate_regex = /(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d)/i;
+    // Define regex for ISO date format
+    const isodate_regex = /(\d{4}-[01]\d-[0-3]\d[T\s][0-2]\d:[0-5]\d)/i;
 
     const onSubmit = (data) => {
         const formattedData = {
             ...data,
-            // Convert dates to include the timezone offset
-            startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
+            startDate: data.startDate ? new Date(data.startDate).toISOString() : null, 
             endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         };
         submitAction(formattedData);
@@ -53,21 +53,20 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             )}
 
             <Form.Group className="mb-3">
-                <Form.Label htmlFor="startDate">
-                    Start Date <small>(defaults to current time)</small>
-                </Form.Label>
+                <Form.Label htmlFor="startDate">Start Date</Form.Label>
                 <Form.Control
-                    data-testid={`${testIdPrefix}-startDate`}
+                    data-testid="startDate"
                     id="startDate"
-                    type="datetime-local"
+                    type="text" 
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
+                        required: "Start Date is required.",
                         pattern: {
                             value: isodate_regex,
                             message: "Start Date must be in ISO format.",
                         },
                     })}
-                    defaultValue={startDate}
+                    placeholder="Enter date in ISO format (e.g., 2023-11-21T17:52:33)"
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.startDate?.message}
@@ -77,9 +76,9 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="endDate">End Date</Form.Label>
                 <Form.Control
-                    data-testid={`${testIdPrefix}-endDate`}
+                    data-testid="endDate"
                     id="endDate"
-                    type="datetime-local"
+                    type="text" 
                     isInvalid={Boolean(errors.endDate)}
                     {...register("endDate", {
                         pattern: {
@@ -87,7 +86,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                             message: "End Date must be in ISO format.",
                         },
                     })}
-                    defaultValue={endDate}
+                    placeholder="Enter date in ISO format (e.g., 2024-11-21T17:52:33)"
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.endDate?.message}
