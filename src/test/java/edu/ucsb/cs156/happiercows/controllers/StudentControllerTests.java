@@ -72,4 +72,12 @@ public class StudentControllerTests extends ControllerTestCase {
                 .andExpect(jsonPath("$.studentId").value("12345"))
                 .andExpect(jsonPath("$.email").value("8TbGZ@example.com"));
     }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_users_cannot_get_by_id_that_does_not_exist() throws Exception {
+        when(studentRepository.findById(1L)).thenReturn(Optional.empty());
+        mockMvc.perform(get("/api/students?id=1"))
+                .andExpect(status().isNotFound());
+    }
 }
