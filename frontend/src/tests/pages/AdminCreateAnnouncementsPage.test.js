@@ -59,9 +59,8 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     });
 
     test("When you fill in form and click submit, the right things happen", async () => {
-        // Mocking the POST response with logging
         axiosMock.onPost("/api/announcements/post/42").reply((config) => {
-            console.log("POST request data:", config.data); // Log request payload
+            console.log("POST request data:", config.data); 
             return [200, {
                 id: 42,
                 startDate: "2023-11-21T17:52:33.000-08:00",
@@ -69,8 +68,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
                 message: "Test announcement"
             }];
         });
-    
-        // Hard-code the commonsId to "42" by mocking useParams hook
+
         jest.spyOn(require('react-router-dom'), 'useParams').mockReturnValue({ commonsId: "42" });
     
         render(
@@ -80,57 +78,21 @@ describe("AdminCreateAnnouncementsPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
-    
-        // Ensure the page is rendered with the expected text
+
         expect(await screen.findByText("Create Announcement for Test Commons")).toBeInTheDocument();
-    
-        // Locate form fields and submit button
+
         const startDateField = screen.getByTestId("startDate");
         const endDateField = screen.getByTestId("endDate");
         const messageField = screen.getByLabelText("Announcement");
         const submitButton = screen.getByTestId("AnnouncementForm-submit");
-    
-        // Simulate filling out the form with the correct ISO format
+
         fireEvent.change(startDateField, { target: { value: "2023-11-21T17:52:33.000-08:00" } });
         fireEvent.change(endDateField, { target: { value: "2024-11-21T17:52:33.000-08:00" } });
         fireEvent.change(messageField, { target: { value: "Test announcement" } });
     
-        // Log form data
-        console.log("Start Date:", startDateField.value);
-        console.log("End Date:", endDateField.value);
-        console.log("Announcement Text:", messageField.value);
-    
-        // Submit the form
         fireEvent.click(submitButton);
-    
-        // Wait for the API call to be triggered
+
         await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
-    
-        // Verify the post request data
-        // const expectedAnnouncement = {
-        //     startDate: "2023-11-21T17:52:33.000-08:00",
-        //     endDate: "2024-11-21T17:52:33.000-08:00",
-        //     announcementText: "Test announcement",
-        // };
-    
-        // Assert that the POST request data matches the expected data
-        // expect(JSON.parse(axiosMock.history.post[0].data)).toEqual(expectedAnnouncement);
-        
-        // // Verify the toast notification
-        // expect(mockToast).toBeCalledWith(
-        //     <div>
-        //         <p>Announcement successfully created!</p>
-        //         <ul>
-        //             <li>ID: 42</li>
-        //             <li>Start Date: 2023-11-21T17:52:33.000-08:00</li>
-        //             <li>End Date: 2024-11-21T17:52:33.000-08:00</li>
-        //             <li>Announcement: Test announcement</li>
-        //         </ul>
-        //     </div>
-        // );
-    
-        // // Verify navigation
-        // expect(mockedNavigate).toBeCalledWith({ to: "/" });
     });
     
     

@@ -86,17 +86,49 @@ describe("AnnouncementForm tests", () => {
         expect(await screen.findByText(/Create/)).toBeInTheDocument();
         const submitButton = screen.getByText(/Create/);
         fireEvent.click(submitButton);
-
-        // await screen.findByText(/Start Date is required and must be provided in ISO format./);
-        // expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
-
-        // const endInput = screen.getByTestId(`${testId}-end`);
-        // fireEvent.change(endInput, { target: { value: "a" } });
-        // fireEvent.click(submitButton);
-
-        // await waitFor(() => {
-        //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
-        // });
     });
+
+    test("that start date is set to current date when not provided, and end date is null", async () => {
+        const submitActionMock = jest.fn();
+    
+        const mockAnnouncement = {
+            announcementText: "Test announcement",
+            startDate: null, 
+            endDate: null   
+        };
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementForm 
+                        submitAction={submitActionMock} 
+                        initialContents={mockAnnouncement} 
+                    />
+                </Router>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+
+        const submitButton = screen.getByText(/Create/);
+        fireEvent.click(submitButton);
+
+        const currentDate = new Date().getTime(); 
+
+        await waitFor(() => {
+            expect(submitActionMock).toHaveBeenCalledTimes(1);
+
+            const submittedData = submitActionMock.mock.calls[0][0];
+            const startDate = new Date(submittedData.startDate).getTime(); 
+ 
+            expect(Math.abs(startDate - currentDate)).toBeLessThan(100000);
+
+            expect(submittedData.endDate).toBeNull();
+        });
+    
+        console.log(submitActionMock.mock.calls);
+    });
+    
+    
 
 });

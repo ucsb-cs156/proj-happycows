@@ -11,7 +11,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         register,
         formState: { errors },
         handleSubmit,
-        // watch,
     } = useForm({
         defaultValues: {
             startDate: initialContents?.startDate || new Date().toISOString(),
@@ -20,17 +19,12 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         },
     });
 
-    // Watch form fields to ensure values are controlled
-    // const startDate = watch("startDate");
-    // const endDate = watch("endDate");
-
     // Define regex for ISO date format
     const isodate_regex = /(\d{4}-[01]\d-[0-3]\d[T\s][0-2]\d:[0-5]\d)/i;
 
     const onSubmit = (data) => {
         const formattedData = {
             ...data,
-            startDate: data.startDate ? new Date(data.startDate).toISOString() : null, 
             endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         };
         submitAction(formattedData);
