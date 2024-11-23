@@ -1,6 +1,5 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.entities.Courses;
@@ -26,17 +25,16 @@ import java.time.LocalDateTime;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-
 @Slf4j
 @Tag(name = "Courses")
 @RequestMapping("/api/courses")
 @RestController
-public class CoursesController extends ApiController{
+public class CoursesController extends ApiController {
     @Autowired
     CoursesRepository coursesRepository;
 
     // Get all records in the table and return as a JSON array
-    @Operation(summary= "List all courses")
+    @Operation(summary = "List all courses")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
     public Iterable<Courses> allCourses() {
@@ -44,9 +42,9 @@ public class CoursesController extends ApiController{
         return items;
     }
 
-
-    // Use the data in the input parameters to create a new row in the table and return the data as JSON
-    @Operation(summary= "Create a new course")
+    // Use the data in the input parameters to create a new row in the table and
+    // return the data as JSON
+    @Operation(summary = "Create a new course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Courses postCourses(
@@ -57,7 +55,6 @@ public class CoursesController extends ApiController{
             @Parameter(name = "endDate", description = "in iso format, i.e. YYYY-mm-ddTHH:MM:SS; e.g. 2023-12-31T11:59:59 see https://en.wikipedia.org/wiki/ISO_8601") @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @Parameter(name = "githubOrg", description = "for example ucsb-cs156-f23") @RequestParam String githubOrg)
             throws JsonProcessingException {
-
 
         Courses course = new Courses();
         course.setName(name);
@@ -71,6 +68,7 @@ public class CoursesController extends ApiController{
 
         return savedCourse;
     }
+
     @Operation(summary = "Delete a course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
@@ -82,4 +80,15 @@ public class CoursesController extends ApiController{
         coursesRepository.delete(course);
         return genericMessage(String.format("Courses with id %s deleted", id));
     }
-}   
+
+    @Operation(summary= "Get a single course")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public Courses getById(
+            @Parameter(name="id") @RequestParam Long id) {
+        Courses course = coursesRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Courses.class, id));
+
+        return course;
+    }
+}
