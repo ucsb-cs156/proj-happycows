@@ -116,17 +116,17 @@ describe("OurTable tests", () => {
 
   test("pagination isn't visible when there is no data", async () => {
     render(<OurTable columns={columns} data={[]} />);
-    expect(await screen.queryByTestId("testid-prev-page-button")).toBe(null);
-    expect(await screen.queryByTestId("testid-next-page-button")).toBe(null);
-    expect(await screen.queryByTestId("testid-current-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-prev-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-next-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-current-page-button")).toBe(null);
   });
 
   test("renders a table with 3 rows and tests that pagination isn't visible when there are less rows than rows per page", async () => {
     render(<OurTable columns={columns} data={threeRows} />);
 
-    expect(await screen.queryByTestId("testid-prev-page-button")).toBe(null);
-    expect(await screen.queryByTestId("testid-next-page-button")).toBe(null);
-    expect(await screen.queryByTestId("testid-current-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-prev-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-next-page-button")).toBe(null);
+    expect(screen.queryByTestId("testid-current-page-button")).toBe(null);
   });
 
   test("renders a table with 11 rows and tests that pagination is visible when there are more rows than rows per page", async () => {
@@ -161,7 +161,7 @@ describe("OurTable tests", () => {
     ).toBe(false);
     const nextButton = screen.getByTestId("testid-next-page-button");
     expect(await screen.findByText(`Hello 5`)).toBeInTheDocument();
-    expect(await screen.queryByText(`Hello 11`)).not.toBeInTheDocument();
+    expect(screen.queryByText(`Hello 11`)).not.toBeInTheDocument();
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("1");
@@ -179,7 +179,7 @@ describe("OurTable tests", () => {
         "disabled"
       )
     ).toBe(true);
-    expect(await screen.queryByText(`Hello 11`)).toBeInTheDocument();
+    expect(await screen.findByText(`Hello 11`)).toBeInTheDocument();
     const prevButton = screen.getByTestId("testid-prev-page-button");
     fireEvent.click(prevButton);
     expect(await screen.findByText(`Hello 1`)).toBeInTheDocument();
@@ -190,14 +190,14 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-next-page-button")
     ).toBeInTheDocument();
-    expect(await screen.queryByTestId("testid-left-ellipses")).toBe(null);
-    expect(await screen.queryByTestId("testid-back-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-left-ellipses")).toBe(null);
+    expect(screen.queryByTestId("testid-back-three-page-button")).toBe(
       null
     );
-    expect(await screen.queryByTestId("testid-back-two-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-two-page-button")).toBe(
       null
     );
-    expect(await screen.queryByTestId("testid-back-one-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-one-page-button")).toBe(
       null
     );
     expect(
@@ -209,7 +209,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-forward-two-page-button")
     ).toContainHTML("3");
-    expect(await screen.queryByTestId("testid-forward-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(
       null
     );
     expect(
@@ -329,7 +329,6 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-next-page-button")
     ).toBeInTheDocument();
-    const nextButton = screen.getByTestId("testid-next-page-button");
     expect(
       await screen.findByTestId("testid-forward-two-page-button")
     ).toContainHTML("3");
@@ -345,7 +344,7 @@ describe("OurTable tests", () => {
     expect(await screen.findByTestId("testid-last-page-button")).toContainHTML(
       "6"
     );
-    expect(await screen.queryByTestId("testid-back-two-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-two-page-button")).toBe(
       null
     );
     const lastButton = screen.getByTestId("testid-last-page-button");
@@ -353,7 +352,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("6");
-    expect(await screen.queryByTestId("testid-forward-two-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-two-page-button")).toBe(
       null
     );
     expect(
@@ -364,7 +363,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("5");
-    expect(await screen.queryByTestId("testid-forward-two-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-two-page-button")).toBe(
       null
     );
     fireEvent.click(backOneButton);
@@ -378,7 +377,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("2");
-    expect(await screen.queryByTestId("testid-back-two-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-two-page-button")).toBe(
       null
     );
     fireEvent.click(await screen.findByTestId("testid-next-page-button"));
@@ -390,7 +389,7 @@ describe("OurTable tests", () => {
   test("renders a table with 41 rows and moving forward and back three pages", async () => {
     render(<OurTable columns={columns} data={fortyOneRows} />);
 
-    expect(await screen.queryByTestId("testid-back-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-three-page-button")).toBe(
       null
     );
     const forwardThreeButton = screen.getByTestId(
@@ -400,10 +399,10 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("4");
-    expect(await screen.queryByTestId("testid-forward-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(
       null
     );
-    fireEvent.click(await screen.getByTestId("testid-forward-one-page-button"));
+    fireEvent.click(screen.getByTestId("testid-forward-one-page-button"));
     expect(
       await screen.findByTestId("testid-back-three-page-button")
     ).toContainHTML("2");
@@ -412,7 +411,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("2");
-    expect(await screen.queryByTestId("testid-back-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-three-page-button")).toBe(
       null
     );
     const forwardOneButton = screen.getByTestId(
@@ -422,20 +421,20 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("3");
-    expect(await screen.queryByTestId("testid-forward-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(
       null
     );
-    expect(await screen.queryByTestId("testid-back-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-three-page-button")).toBe(
       null
     );
     fireEvent.click(forwardOneButton);
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("4");
-    expect(await screen.queryByTestId("testid-forward-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(
       null
     );
-    expect(await screen.queryByTestId("testid-back-three-page-button")).toBe(
+    expect(screen.queryByTestId("testid-back-three-page-button")).toBe(
       null
     );
   });
