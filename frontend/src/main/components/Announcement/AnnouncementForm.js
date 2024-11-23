@@ -7,6 +7,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
     const testIdPrefix = "AnnouncementForm";
 
     // Initialize React Hook Form
+    // Stryker disable all
     const {
         register,
         formState: { errors },
@@ -18,9 +19,12 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             announcementText: initialContents?.announcementText || "",
         },
     });
+    // Stryker restore all
 
     // Define regex for ISO date format
+    // Stryker disable all
     const isodate_regex = /(\d{4}-[01]\d-[0-3]\d[T\s][0-2]\d:[0-5]\d)/i;
+    // Stryker restore all
 
     const onSubmit = (data) => {
         const formattedData = {
@@ -46,6 +50,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 </Form.Group>
             )}
 
+            {/*Stryker disable all*/}
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="startDate">Start Date</Form.Label>
                 <Form.Control

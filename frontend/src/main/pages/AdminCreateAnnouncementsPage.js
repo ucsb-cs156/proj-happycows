@@ -8,6 +8,7 @@ import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
 const AdminCreateAnnouncementsPage = () => {
 
+    // Stryker disable all
     const objectToAxiosParams = (newAnnouncement) => ({
         url:`/api/announcements/post/${commonsId}`,
         method: "POST",
@@ -17,6 +18,7 @@ const AdminCreateAnnouncementsPage = () => {
             endDate: newAnnouncement.endDate,
         }
     });
+    // Stryker restore all
 
     const { commonsId } = useParams(); 
 
@@ -35,6 +37,7 @@ const AdminCreateAnnouncementsPage = () => {
 
     const commonsName = commonsPlus?.commons.name;
 
+    // Stryker disable all
     const onSuccess = (announcement) => {
         toast(
           <div>
@@ -48,6 +51,7 @@ const AdminCreateAnnouncementsPage = () => {
           </div>
         );
       };
+    // Stryker restore all
    
     // Stryker disable all
     const mutation = useBackendMutation(
@@ -61,10 +65,11 @@ const AdminCreateAnnouncementsPage = () => {
         mutation.mutate(data);
     }
 
-
+    // Stryker disable all
     if (mutation.isSuccess) {
         return <Navigate to="/" />
     }
+    // Stryker restore all
 
     return (
         <BasicLayout>

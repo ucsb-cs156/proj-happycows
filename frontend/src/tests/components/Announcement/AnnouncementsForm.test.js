@@ -93,10 +93,10 @@ describe("AnnouncementForm tests", () => {
     
         const mockAnnouncement = {
             announcementText: "Test announcement",
-            startDate: null, 
-            endDate: null   
+            startDate: "",
+            endDate: "" 
         };
-
+    
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
@@ -107,28 +107,46 @@ describe("AnnouncementForm tests", () => {
                 </Router>
             </QueryClientProvider>
         );
-
+    
         expect(await screen.findByText(/Create/)).toBeInTheDocument();
-
+    
         const submitButton = screen.getByText(/Create/);
         fireEvent.click(submitButton);
-
-        const currentDate = new Date().getTime(); 
-
+    
         await waitFor(() => {
             expect(submitActionMock).toHaveBeenCalledTimes(1);
-
-            const submittedData = submitActionMock.mock.calls[0][0];
-            const startDate = new Date(submittedData.startDate).getTime(); 
- 
-            expect(Math.abs(startDate - currentDate)).toBeLessThan(100000);
-
-            expect(submittedData.endDate).toBeNull();
         });
     
-        console.log(submitActionMock.mock.calls);
+        const submittedData = submitActionMock.mock.calls[0][0];
+    
+        await waitFor(() => {
+            const currentDate = new Date().getTime();
+            const startDate = new Date(submittedData.startDate).getTime();
+            expect(Math.abs(startDate - currentDate)).toBeLessThan(100000);
+        });
+    
+        await waitFor(() => {
+            expect(submittedData.endDate).toBeNull();
+        });
     });
-    
-    
+
+    test("that navigate(-1) is called", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementForm />
+                </Router>
+            </QueryClientProvider>
+        );
+
+        const cancelButton = await screen.findByTestId(`${testId}-cancel`);
+        expect(cancelButton).toBeInTheDocument();
+
+        fireEvent.click(cancelButton);
+
+        await waitFor(() => {
+            expect(mockedNavigate).toHaveBeenCalledWith(-1);
+        });
+    });
 
 });
