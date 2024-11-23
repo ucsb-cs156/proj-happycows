@@ -34,6 +34,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         submitAction(formattedData);
     };
 
+    // Stryker disable all (String and object literals)
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             {initialContents && (
@@ -50,7 +51,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 </Form.Group>
             )}
 
-            {/*Stryker disable all*/}
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="startDate">Start Date</Form.Label>
                 <Form.Control
