@@ -28,7 +28,7 @@ export default function StudentsIndexPage() {
             <h1 className="mb-0">Students</h1>
           </Col>
           <Col xs="auto" className="ml-auto">
-            <Button variant="primary" href="/Students/create">
+            <Button variant="primary" href="/admin/Students/create">
               Create Student
             </Button>
           </Col>
