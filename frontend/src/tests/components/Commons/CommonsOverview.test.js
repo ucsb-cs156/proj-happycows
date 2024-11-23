@@ -86,4 +86,57 @@ describe("CommonsOverview tests", () => {
         });
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
     });
+
+    test("test for announcement table button", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} currentUser={apiCurrentUserFixtures.userOnly} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText("Hide Announcements")).toBeInTheDocument();
+        
+        const changeButton = screen.getByText("Hide Announcements");
+        fireEvent.click(changeButton);
+        
+        expect(screen.getByText("Show Announcements")).toBeInTheDocument();
+        
+        fireEvent.click(changeButton);
+        
+        expect(screen.getByText("Hide Announcements")).toBeInTheDocument();
+    });
+
+    test("changing button for multiples times works correctly", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const getButtonState = () => screen.getByRole('button', { 
+            name: /Hide Announcements|Show Announcements/
+        });
+        expect(getButtonState()).toHaveTextContent("Hide Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Show Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).not.toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Hide Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Show Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).not.toBeInTheDocument();
+    });
+
 });
