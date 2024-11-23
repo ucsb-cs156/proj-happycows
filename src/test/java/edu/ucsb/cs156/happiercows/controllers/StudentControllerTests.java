@@ -55,10 +55,21 @@ public class StudentControllerTests extends ControllerTestCase {
     public void admin_users_can_get_by_id() throws Exception {
         Student student = new Student();
         student.setId(1L);
+        student.setCourseId(1L);
+        student.setFname("John");
+        student.setLname("Doe");
+        student.setStudentId("12345");
+        student.setEmail("8TbGZ@example.com");
+
         when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        mockMvc.perform(get("/api/students/1"))
+        mockMvc.perform(get("/api/students?id=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1L));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.courseId").value(1))
+                .andExpect(jsonPath("$.fname").value("John"))
+                .andExpect(jsonPath("$.lname").value("Doe"))
+                .andExpect(jsonPath("$.studentId").value("12345"))
+                .andExpect(jsonPath("$.email").value("8TbGZ@example.com"));
     }
 }
