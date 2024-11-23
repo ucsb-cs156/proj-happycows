@@ -370,6 +370,7 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button")
     ).toContainHTML("5");
+    expect(screen.queryByTestId("testid-left-ellipsis")).toBe(null);
     expect(screen.queryByTestId("testid-forward-two-page-button")).toBe(null);
     fireEvent.click(backOneButton);
     expect(
