@@ -34,7 +34,9 @@ describe("CommonsOverview tests", () => {
 
     test("renders without crashing", () => {
         render(
-            <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} />
+            <QueryClientProvider client={queryClient}>
+                <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} />
+            </QueryClientProvider>
         );
     });
 
