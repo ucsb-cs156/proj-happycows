@@ -72,7 +72,7 @@ const PagedAnnouncementTable = () => {
                 return (startDate <= now) && (now <= endDate);
             }
         });
-    }, []);
+    }, [page.content]);
 
     return (
         <>
