@@ -196,5 +196,22 @@ describe("PagedProfitsTable tests", () => {
 
   });
 
+  test("displayed with flex style", async () => {
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PagedProfitsTable />
+        </MemoryRouter>
+      </QueryClientProvider>
+
+    );
+
+    const divElement = screen.getByTestId('PagedProfitsTable-container');
+    expect(window.getComputedStyle(divElement).display).toBe('flex');
+  }); 
+  
+
 
     });
