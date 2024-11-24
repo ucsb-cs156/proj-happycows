@@ -187,15 +187,6 @@ public class AnnouncementsController extends ApiController{
             updated.setAnnouncementText(params.getAnnouncementText());
         }
 
-        // At this point we know that the announcement exists. So we can 
-        // also check if the user has admin permissions.
-        // Make sure the user is an admin
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
-            log.info("User is not an admin, so they may not edit announcements.");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
         announcementRepository.save(updated);
         return ResponseEntity.ok(updated);
     }
