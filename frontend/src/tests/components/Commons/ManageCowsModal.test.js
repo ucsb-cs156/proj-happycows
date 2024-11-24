@@ -40,6 +40,18 @@ describe('ManageCowsModal', () => {
     expect(screen.queryByTestId('buy-sell-cow-modal')).not.toBeInTheDocument();
   });
 
+  test ('checks if the message is capitalized', () => {
+    render(
+      <>
+      <ManageCowsModal isOpen={true} onClose={mockOnClose} message="buy" setNumber={mockSetNumber}/>
+      <ManageCowsModal isOpen={true} onClose={mockOnClose} message="sell" setNumber={mockSetNumber}/>
+      </>
+    );
+
+    expect(screen.queryAllByTestId('buy-sell-cow-modal')).toHaveLength(2);
+    expect(screen.queryAllByTestId('buy-sell-cow-modal')[0]).toHaveTextContent('Buy');
+    expect(screen.queryAllByTestId('buy-sell-cow-modal')[1]).toHaveTextContent('Sell');
+  });
   test('calls onClose and setNumber when close button is clicked', () => {
     render(
         <ManageCowsModal isOpen={true} onClose={mockOnClose} message="buy" setNumber={mockSetNumber} />
