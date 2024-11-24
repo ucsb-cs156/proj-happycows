@@ -149,8 +149,6 @@ describe("PagedProfitsTable tests", () => {
       expect(axiosMock.history.get.length).toBe(1);
     });
 
-    expect()
-
     expectedFields.forEach((field) => {
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
       expect(header).toBeInTheDocument();
