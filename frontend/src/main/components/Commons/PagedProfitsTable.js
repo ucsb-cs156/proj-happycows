@@ -87,20 +87,15 @@ const PagedProfitsTable = () => {
     return (
         <>
             <p>Page: {selectedPage + 1}</p>
-            <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
-            <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
-            <div 
-                data-testid="PagedProfitsTable-container" 
-                style={{display: "flex", overflowX:"auto"}}
-            >
-                < OurTable
-                    data={page.content}
-                    columns={columns}
-                    testid={testid}
-                    initialState={{ sortBy: sortees }}
+            {page.totalPages > 1 && <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>}
+            {page.totalPages > 1 && <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={selectedPage === page.totalPages-1}>Next</Button>}
+            < OurTable
+                data={page.content}
+                columns={columns}
+                testid={testid}
+                initialState={{ sortBy: sortees }}
 
-                />
-            </div>
+            />
         </>
     );
 }; 
