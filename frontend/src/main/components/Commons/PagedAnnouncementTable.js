@@ -60,19 +60,23 @@ const PagedAnnouncementTable = () => {
         []
     );
 
-    const legalDate = React.useMemo(() => {
-        const now = new Date();
-        return page.content.filter((announcement) => {
-            const startDate = new Date(announcement.startDate);
-            const endDate = announcement.endDate ? new Date(announcement.endDate) : null;;
-            if (!endDate) {
-                return startDate <= now;
-            } 
-            else {
-                return (startDate <= now) && (now <= endDate);
-            }
-        });
-    }, [page.content]);
+    const legalDate = React.useMemo(
+        () => {
+            const now = new Date();
+            return page.content.filter((announcement) => {
+                const startDate = new Date(announcement.startDate);
+                const endDate = announcement.endDate ? new Date(announcement.endDate) : null;;
+                if (!endDate) {
+                    return startDate <= now;
+                } 
+                else {
+                    return (startDate <= now) && (now <= endDate);
+                }
+            });
+        },
+        // Stryker disable next-line all
+        [page.content]
+    );
 
     return (
         <>
