@@ -195,6 +195,25 @@ describe("PagedProfitsTable tests", () => {
 
 
   });
+  test("renders table with correct layout", async () => {
+    // Mock API response
+    axiosMock.onGet("/api/profits/paged/commonsid").reply(200, pagedProfitsFixtures.onePage);
 
+    // Render the component
+    render(
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <PagedProfitsTable />
+            </MemoryRouter>
+        </QueryClientProvider>
+    );
 
+    // Ensure the element with the specified data-testid is rendered
+    await waitFor(() => {
+        const tableWrapper = screen.getByTestId("PagedProfitsTable-style-inline");
+        expect(tableWrapper).toHaveStyle("display: inline-block");
     });
+  });
+
+
+});
