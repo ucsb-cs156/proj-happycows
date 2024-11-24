@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PagedAnnouncementTable from "main/components/Commons/PagedAnnouncementTable";
-import pagedAnnouncementFixtures from "fixtures/pagedAnnouncementFixtures";
+import { announcementFixtures } from "fixtures/announcementFixtures";
 import { useBackend } from "main/utils/useBackend";
 
 jest.mock("main/utils/useBackend");
@@ -35,7 +35,7 @@ describe("PagedAnnouncementTable tests", () => {
 
         useBackend.mockReturnValue({
             data: {
-                content: pagedAnnouncementFixtures.smallTable,
+                content: announcementFixtures.threeAnnouncements,
                 totalPages: 0
             },
             error: null,
@@ -67,7 +67,7 @@ describe("PagedAnnouncementTable tests", () => {
             );
         });
 
-        const expectedAnnouncement = pagedAnnouncementFixtures.smallTable[1].announcementText;
+        const expectedAnnouncement = announcementFixtures.threeAnnouncements[1].announcementText;
         const announcementElement = await screen.findByText(expectedAnnouncement);
         expect(announcementElement).toBeInTheDocument();
 
@@ -78,150 +78,162 @@ describe("PagedAnnouncementTable tests", () => {
         });
     });
 
-    // test("renders empty table correctly", () => {
-    //     // arrange
-    //     useBackend.mockReturnValue({
-    //         data: {
-    //             content: [],
-    //             totalPages: 0
-    //         },
-    //         error: null,
-    //         status: "success"
-    //     });
+    test("renders empty table correctly", () => {
+        // arrange
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
 
-    //     // act
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PagedAnnouncementTable />
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
+        useBackend.mockReturnValue({
+            data: {
+                content: [],
+                totalPages: 0
+            },
+            error: null,
+            status: "success"
+        });
 
-    //     // assert
-    //     const expectedHeaders = ["Start Date", "End Date", "Important Announcements"];
-    //     expectedHeaders.forEach((headerText) => {
-    //         const header = screen.getByText(headerText);
-    //         expect(header).toBeInTheDocument();
-    //     });
+        // act
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
 
-    //     // expect(screen.getByRole("table")).toBeInTheDocument();
-    // });
+        // assert
+        const expectedHeaders = ["Start Date", "End Date", "Important Announcements"];
+        expectedHeaders.forEach((headerText) => {
+            const header = screen.getByText(headerText);
+            expect(header).toBeInTheDocument();
+        });
 
-    // test("filters future announcements correctly", () => {
-    //     // arrange
-    //     const pastAnnouncement = {
-    //         id: 1,
-    //         commonsId: 1,
-    //         startDate: "2022-12-12T00:00:00",
-    //         endDate: null,
-    //         announcementText: "Past announcement"
-    //     };
+        // expect(screen.getByRole("table")).toBeInTheDocument();
+    });
 
-    //     const futureAnnouncement = {
-    //         id: 2,
-    //         commonsId: 1,
-    //         startDate: "2024-12-12T00:00:00",
-    //         endDate: null,
-    //         announcementText: "Future announcement"
-    //     };
+    test("filters future announcements correctly", () => {
+        // arrange
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
 
-    //     useBackend.mockReturnValue({
-    //         data: {
-    //             content: [pastAnnouncement, futureAnnouncement],
-    //             totalPages: 1
-    //         },
-    //         error: null,
-    //         status: "success"
-    //     });
+        const pastAnnouncement = {
+            id: 1,
+            commonsId: 1,
+            startDate: "2022-12-12T00:00:00",
+            endDate: null,
+            announcementText: "Past announcement"
+        };
 
-    //     // act
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PagedAnnouncementTable />
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
+        const futureAnnouncement = {
+            id: 2,
+            commonsId: 1,
+            startDate: "2024-12-12T00:00:00",
+            endDate: null,
+            announcementText: "Future announcement"
+        };
 
-    //     // assert
-    //     expect(screen.getByText("Past announcement")).toBeInTheDocument();
-    //     expect(screen.queryByText("Future announcement")).not.toBeInTheDocument();
-    // });
+        useBackend.mockReturnValue({
+            data: {
+                content: [pastAnnouncement, futureAnnouncement],
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
 
-    // test("handles null end dates correctly", () => {
-    //     // arrange
-    //     const announcementWithNullEnd = {
-    //         id: 1,
-    //         commonsId: 1,
-    //         startDate: "2022-12-12T00:00:00",
-    //         endDate: null,
-    //         announcementText: "Test announcement"
-    //     };
+        // act
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
 
-    //     useBackend.mockReturnValue({
-    //         data: {
-    //             content: [announcementWithNullEnd],
-    //             totalPages: 1
-    //         },
-    //         error: null,
-    //         status: "success"
-    //     });
+        // assert
+        expect(screen.getByText("Past announcement")).toBeInTheDocument();
+        expect(screen.queryByText("Future announcement")).not.toBeInTheDocument();
+    });
 
-    //     // act
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PagedAnnouncementTable />
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
+    test("handles null end dates correctly", () => {
+        // arrange
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
 
-    //     // assert
-    //     const rows = screen.getAllByRole("row");
-    //     expect(rows[1].cells[1].textContent).toBe("");
-    // });
+        const announcementWithNullEnd = {
+            id: 1,
+            commonsId: 1,
+            startDate: "2022-12-12T00:00:00",
+            endDate: null,
+            announcementText: "Test announcement"
+        };
 
-    // test("sorts announcements by start date in descending order", () => {
-    //     // arrange
-    //     const announcements = [
-    //         {
-    //             id: 1,
-    //             commonsId: 1,
-    //             startDate: "2022-01-01T00:00:00",
-    //             endDate: null,
-    //             announcementText: "Older announcement"
-    //         },
-    //         {
-    //             id: 2,
-    //             commonsId: 1,
-    //             startDate: "2022-12-31T00:00:00",
-    //             endDate: null,
-    //             announcementText: "Newer announcement"
-    //         }
-    //     ];
+        useBackend.mockReturnValue({
+            data: {
+                content: [announcementWithNullEnd],
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
 
-    //     useBackend.mockReturnValue({
-    //         data: {
-    //             content: announcements,
-    //             totalPages: 1
-    //         },
-    //         error: null,
-    //         status: "success"
-    //     });
+        // act
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
 
-    //     // act
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PagedAnnouncementTable />
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
+        // assert
+        const rows = screen.getAllByRole("row");
+        expect(rows[1].cells[1].textContent).toBe("");
+    });
 
-    //     // assert
-    //     const rows = screen.getAllByRole("row");
-    //     expect(rows[1].textContent).toContain("Newer announcement");
-    //     expect(rows[2].textContent).toContain("Older announcement");
-    // });
+    test("sorts announcements by start date in descending order", () => {
+        // arrange
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
+
+        const announcements = [
+            {
+                id: 1,
+                commonsId: 1,
+                startDate: "2022-01-01T00:00:00",
+                endDate: null,
+                announcementText: "Older announcement"
+            },
+            {
+                id: 2,
+                commonsId: 1,
+                startDate: "2022-12-31T00:00:00",
+                endDate: "2026-12-31T00:00:00",
+                announcementText: "Newer announcement"
+            }
+        ];
+
+        useBackend.mockReturnValue({
+            data: {
+                content: announcements,
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
+
+        // act
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        // assert
+        const rows = screen.getAllByRole("row");
+        expect(rows[1].textContent).toContain("Newer announcement");
+        expect(rows[2].textContent).toContain("Older announcement");
+    });
 });
