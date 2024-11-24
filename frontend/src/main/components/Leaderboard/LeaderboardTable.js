@@ -18,12 +18,9 @@ export default function LeaderboardTable({ leaderboardUsers }) {
         },
         {
             Header: "Total Wealth",
-            id: "totalWealth",
-            accessor: (row, _rowIndex) => {
-                return USD.format(row.totalWealth);
-            },
+            accessor: "totalWealth",
             Cell: (props) => {
-                return <div style={{ textAlign: "right" }}>{props.value}</div>;
+                return <div style={{ textAlign: "right" }}>{USD.format(props.value)}</div>;
             },
         },
         {

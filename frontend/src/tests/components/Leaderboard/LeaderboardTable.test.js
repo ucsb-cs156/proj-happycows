@@ -153,6 +153,46 @@ describe("LeaderboardTable tests", () => {
         expect(screen.getAllByText("10")[0]).toHaveStyle("text-align: right;");
         expect(screen.getAllByText("9")[0]).toHaveStyle("text-align: right;");
     });
+
+    test("Users are sorted correctly by total wealth", () => {
+        const currentUser = currentUserFixtures.adminUser;
+        
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <LeaderboardTable
+                        leaderboardUsers={leaderboardFixtures.threeUserCommonsLB}
+                        currentUser={currentUser}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+        // expected orders for sorting ascending/descending
+        const usersAscending = ["two", "one", "three"];
+        const usersDescending = ["three", "one", "two"];
+
+        const wealthHeader = screen.getByTestId("LeaderboardTable-header-totalWealth");
+        expect(wealthHeader).toBeInTheDocument();
+
+        fireEvent.click(wealthHeader);
+        expect(wealthHeader).toHaveTextContent("Total Wealth 🔼");
+
+        for (let i = 1; i < 3; i++) {
+            const username1 = screen.getByText(usersAscending[i - 1]);
+            const username2 = screen.getByText(usersAscending[i]);
+            expect(username1.compareDocumentPosition(username2)).toBe(4); // username2 follows username 1
+        }
+
+        fireEvent.click(wealthHeader);
+        expect(wealthHeader).toHaveTextContent("Total Wealth 🔽");
+
+        for (let i = 1; i < 3; i++) {
+            const username1 = screen.getByText(usersDescending[i - 1]);
+            const username2 = screen.getByText(usersDescending[i]);
+            expect(username1.compareDocumentPosition(username2)).toBe(4); // username2 follows username 1
+        }
+    });
+
     test("Clicking on link navigates to the correct URL", () => {
         const currentUser = currentUserFixtures.adminUser;
 
