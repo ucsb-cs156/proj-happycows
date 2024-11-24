@@ -68,7 +68,12 @@ const PagedAnnouncementTable = () => {
         return page.content.filter((announcement) => {
             const startDate = new Date(announcement.startDate);
             const endDate = new Date(announcement.endDate);
-            return startDate <= now && (!endDate || now <= endDate);
+            if (endDate) {
+                return startDate <= now;
+            } 
+            else {
+                return (startDate <= now) && (now <= endDate);
+            }
         });
     }, [page.content]);
 
