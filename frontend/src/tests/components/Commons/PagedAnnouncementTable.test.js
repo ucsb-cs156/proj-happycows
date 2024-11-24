@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import PagedAnnouncementTable from "main/components/Commons/PagedAnnouncementTable";
@@ -15,7 +15,6 @@ jest.mock('react-router-dom', () => ({
 describe("PagedAnnouncementTable tests", () => {
 
     const queryClient = new QueryClient();
-    // const testId = "PagedAnnouncementTable";
 
     beforeEach(() => {
         jest.spyOn(console, 'error').mockImplementation(() => { });
@@ -108,7 +107,6 @@ describe("PagedAnnouncementTable tests", () => {
             expect(header).toBeInTheDocument();
         });
 
-        // expect(screen.getByRole("table")).toBeInTheDocument();
     });
 
     test("filters future announcements correctly", () => {
@@ -245,7 +243,7 @@ describe("PagedAnnouncementTable tests", () => {
         expect(rows[3].textContent).toContain("Older announcement");
     });
 
-    test("test for current date equal to start date or end date", async () => {
+    test("for current date equal to start date or end date", async () => {
         const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
         mockUseParams.mockReturnValue({ commonsId: 1 });
 
@@ -293,15 +291,13 @@ describe("PagedAnnouncementTable tests", () => {
             </QueryClientProvider>
         );
 
-        await waitFor(() => {
-            expect(screen.getByText("Exact start date")).toBeInTheDocument();
-            expect(screen.getByText("Exact end date")).toBeInTheDocument();
-            expect(screen.queryByText("Future start date")).not.toBeInTheDocument();
-            expect(screen.queryByText("Past end date")).not.toBeInTheDocument();
-        });
+        expect(screen.getByText("Exact start date")).toBeInTheDocument();
+        expect(screen.getByText("Exact end date")).toBeInTheDocument();
+        expect(screen.queryByText("Future start date")).not.toBeInTheDocument();
+        expect(screen.queryByText("Past end date")).not.toBeInTheDocument();
     });
 
-    test("test for endDate accessor", async () => {
+    test("for endDate accessor", async () => {
         const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
         mockUseParams.mockReturnValue({ commonsId: 1 });
     
@@ -341,15 +337,76 @@ describe("PagedAnnouncementTable tests", () => {
             expect(screen.getByText("End Date")).toBeInTheDocument();
         });
     
-        const rows = screen.getAllByRole('row');
-        
-        const firstRowCells = rows[1].getElementsByTagName('td');
-        expect(firstRowCells[1]).toHaveTextContent("");
+        const cells = screen.getAllByRole('cell');
     
-        const secondRowCells = rows[2].getElementsByTagName('td');
-        expect(secondRowCells[1]).toHaveTextContent("2023-01-31");
+        const firstRowData = cells.slice(0, 3);
+        const secondRowData = cells.slice(3, 6);
+
+        expect(firstRowData[0]).toHaveTextContent("2023-01-02");
+        expect(firstRowData[1]).toHaveTextContent("");
+        expect(firstRowData[2]).toHaveTextContent("Test announcement 2");
+
+        expect(secondRowData[0]).toHaveTextContent("2023-01-01");
+        expect(secondRowData[1]).toHaveTextContent("2023-01-31");
+        expect(secondRowData[2]).toHaveTextContent("Test announcement 1");
+    });
+
+    test("for page content render mutiple time", async () => {
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
     
-        expect(firstRowCells[0]).toHaveTextContent("2023-01-02");
-        expect(firstRowCells[2]).toHaveTextContent("Test announcement 2");
+        useBackend.mockReturnValue({
+            data: {
+                content: [{
+                    id: 1,
+                    startDate: "2023-01-01T00:00:00",
+                    endDate: "2023-01-31T00:00:00",
+                    announcementText: "Valid announcement"
+                }],
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    
+        await waitFor(() => {
+            expect(screen.getByText("Valid announcement")).toBeInTheDocument();
+        });
+
+        cleanup();
+
+        useBackend.mockReturnValue({
+            data: {
+                content: [{
+                    id: 2,
+                    startDate: "2023-01-16T00:00:00",
+                    endDate: "2023-01-31T00:00:00",
+                    announcementText: "Future announcement"
+                }],
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    
+        await waitFor(() => {
+            expect(screen.queryByText("Future announcement")).not.toBeInTheDocument();
+        })
     });
 });

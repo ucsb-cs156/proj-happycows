@@ -7,10 +7,7 @@ import { timestampToDate } from "main/utils/dateUtils";
 
 const PagedAnnouncementTable = () => {
 
-    // const testId = "PagedAnnouncementTable";
     const refreshJobsIntervalMilliseconds = 5000;
-
-    // const [selectedPage, setSelectedPage] = React.useState(0);
 
     const { commonsId } = useParams();
 

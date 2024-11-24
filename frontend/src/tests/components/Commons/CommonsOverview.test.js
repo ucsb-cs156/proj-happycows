@@ -124,7 +124,7 @@ describe("CommonsOverview tests", () => {
             name: /Hide Announcements|Show Announcements/
         });
         expect(getButtonState()).toHaveTextContent("Hide Announcements");
-        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+        expect(screen.getByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
 
         fireEvent.click(getButtonState());
         expect(getButtonState()).toHaveTextContent("Show Announcements");
@@ -132,7 +132,7 @@ describe("CommonsOverview tests", () => {
 
         fireEvent.click(getButtonState());
         expect(getButtonState()).toHaveTextContent("Hide Announcements");
-        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+        expect(screen.getByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
 
         fireEvent.click(getButtonState());
         expect(getButtonState()).toHaveTextContent("Show Announcements");
