@@ -18,8 +18,8 @@ public class Students {
   private long id;
 
   private String perm;
-  private String lName;
-  private String fmName;
+  private String lastName;
+  private String firstMiddleName;
   private Long courseId;
   private String email;
 }

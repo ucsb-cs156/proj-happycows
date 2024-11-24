@@ -35,13 +35,13 @@
                   },
                   {
                     "column": {
-                      "name": "LNAME",
+                      "name": "LAST_NAME",
                       "type": "VARCHAR(255)"
                     }
                   },
                   {
                     "column": {
-                      "name": "FMNAME",
+                      "name": "FIRST_MIDDLE_NAME",
                       "type": "VARCHAR(255)"
                     }
                   },
