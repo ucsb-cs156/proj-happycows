@@ -89,8 +89,7 @@ describe("PagedAnnouncementTable tests", () => {
             );
         });
 
-        expect(screen.getByText(announcementFixtures.threeAnnouncements[1].announcementText))
-            .toBeInTheDocument();
+        await screen.findByText(announcementFixtures.threeAnnouncements[1].announcementText);
     });
 
     test("filters future announcements correctly", () => {
