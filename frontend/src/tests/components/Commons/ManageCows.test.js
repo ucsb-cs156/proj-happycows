@@ -85,7 +85,7 @@ describe("ManageCows tests", () => {
         expect(sellButton).toBeNull();
     });
 
-    test('calls setMessage with "buy" when the buy button is clicked', () => {
+    test('calls setMessage with "Buy" when the Buy button is clicked', () => {
         useParams.mockReturnValue({ userId: undefined }); // Replace with your desired mock values
 
         currentUserModule.useCurrentUser.mockReturnValue({
@@ -109,11 +109,11 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("buy-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("buy");
+        expect(mockSetMessage).toHaveBeenCalledWith("Buy");
         expect(mockOpenModal).toHaveBeenCalled();
     });
 
-    test('calls setMessage with "sell" when the sell button is clicked', () => {
+    test('calls setMessage with "Sell" when the Sell button is clicked', () => {
         useParams.mockReturnValue({ userId: undefined }); // Replace with your desired mock values
 
         currentUserModule.useCurrentUser.mockReturnValue({
@@ -137,7 +137,7 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("sell-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("sell");
+        expect(mockSetMessage).toHaveBeenCalledWith("Sell");
         expect(mockOpenModal).toHaveBeenCalled();
     });
 });
