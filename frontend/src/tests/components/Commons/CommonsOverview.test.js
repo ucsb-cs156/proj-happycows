@@ -139,4 +139,63 @@ describe("CommonsOverview tests", () => {
         expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).not.toBeInTheDocument();
     });
 
+
+    test("leaderboard button navigates to correct common's leaderboard", () => {
+        const testCommonsPlus = {
+            ...commonsPlusFixtures.oneCommonsPlus[0],
+            commons: {
+                ...commonsPlusFixtures.oneCommonsPlus[0].commons,
+                id: 2,
+                showLeaderboard: true
+            }
+        };
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={testCommonsPlus}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const leaderboardButton = screen.getByTestId("user-leaderboard-button");
+        fireEvent.click(leaderboardButton);
+
+        expect(mockNavigate).toHaveBeenCalledWith("/leaderboard/2");
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    test("leaderboard button uses correct URL", () => {
+        const testCommonsPlus = {
+            ...commonsPlusFixtures.oneCommonsPlus[0],
+            commons: {
+                ...commonsPlusFixtures.oneCommonsPlus[0].commons,
+                id: 2,
+                showLeaderboard: true
+            }
+        };
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={testCommonsPlus}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const leaderboardButton = screen.getByTestId("user-leaderboard-button");
+        fireEvent.click(leaderboardButton);
+
+        expect(mockNavigate).toHaveBeenCalledWith("/leaderboard/2");
+
+        expect(mockNavigate).not.toHaveBeenCalledWith("2");
+        expect(mockNavigate).not.toHaveBeenCalledWith("/2");
+        expect(mockNavigate).not.toHaveBeenCalledWith("leaderboard/2");
+    });
 });
