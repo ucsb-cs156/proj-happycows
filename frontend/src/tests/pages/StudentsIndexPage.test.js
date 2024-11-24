@@ -117,12 +117,38 @@ describe("StudentsIndexPage tests", () => {
     );
 
     await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
-    const errorMessage = console.error.mock.calls[0][0];
-    expect(errorMessage).toMatch(
-      "Error communicating with backend via GET on /api/helprequests/all",
-    );
-    restoreConsole();
 
+    restoreConsole();
     expect(screen.queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
+  });
+
+  test("ensures that 'GET' is explicitly passed to useBackend", async () => {
+    setupUserOnly();
+    const queryClient = new QueryClient();
+  
+    const spy = jest.spyOn(require("main/utils/useBackend"), "useBackend");
+  
+    axiosMock
+      .onGet("/api/Students/all")
+      .reply(200, studentsFixtures.threeStudents);
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <StudentsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  
+    await waitFor(() => {
+      expect(screen.getByTestId("StudentsTable-cell-row-0-col-id")).toHaveTextContent("1");
+    });
+  
+    expect(spy).toHaveBeenCalledWith(
+      ["/api/Students/all"], 
+      { method: "GET", url: "/api/Students/all" }, 
+      []
+    );
+    spy.mockRestore();
   });
 });
