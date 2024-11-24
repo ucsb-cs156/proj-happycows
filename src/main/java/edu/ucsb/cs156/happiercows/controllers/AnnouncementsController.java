@@ -139,7 +139,7 @@ public class AnnouncementsController extends ApiController{
     }
 
     @Operation(summary = "Edit an announcement", description = "Edit an announcement by its id.")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @PutMapping("/put")
     public ResponseEntity<Object> editAnnouncement(
             @Parameter(name="id") @RequestParam long id,
@@ -178,7 +178,6 @@ public class AnnouncementsController extends ApiController{
                 updated.setEndDate(params.getEndDate());
             }
         }
-        
 
         // The provided announcement text must not be empty or missing.
         if (params.getAnnouncementText() == null || params.getAnnouncementText().equals("")) {
@@ -189,21 +188,14 @@ public class AnnouncementsController extends ApiController{
         }
 
         // At this point we know that the announcement exists. So we can 
-        // also check if the user is in the commons at all. If not, the
-        // request is forbidden
-        User user = getCurrentUser().getUser();
-        Long userId = user.getId();
-        Long commonsId = updated.getCommonsId();
-        // Make sure the user is part of the commons and showChat is true, or user is an admin
+        // also check if the user has admin permissions.
+        // Make sure the user is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
-            log.info("User is not an admin, checking if they're in the relevant commons");
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
-
-            if (!userCommonsLookup.isPresent()) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            log.info("User is not an admin, so they may not edit announcements.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+
         announcementRepository.save(updated);
         return ResponseEntity.ok(updated);
     }

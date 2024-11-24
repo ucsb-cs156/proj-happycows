@@ -496,9 +496,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals(editedExpectedResponseString, editedResponseString);
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void userCanEditAnnouncementWithoutStart() throws Exception {
+    public void adminCanEditAnnouncementWithoutStart() throws Exception {
 
         // arrange
         Long id = 0L;
@@ -544,9 +544,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals(editedExpectedResponseString, editedResponseString);
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void userCanEditAnnouncementWithoutAnyDates() throws Exception {
+    public void adminCanEditAnnouncementWithoutAnyDates() throws Exception {
 
         // arrange
         Long id = 0L;
@@ -591,7 +591,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userCannotEditAnnouncementIfNotInCommons() throws Exception {
+    public void regularUserCannotEditAnnouncement() throws Exception {
 
         // arrange
         Long id = 0L;
@@ -604,11 +604,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
-
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
-
-        //act 
         
+        UserCommons userCommons = UserCommons.builder().build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));        
+       
         //act 
         String requestBody = "{\"endDate\":\"2025-03-03T17:39:43.000-08:00\",\"announcementText\":\"Hello world edited!\"}";
         MvcResult response =
@@ -619,9 +618,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .andExpect(status().isForbidden()).andReturn();
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void userCannotEditAnnouncementThatDoesNotExist() throws Exception {
+    public void adminCannotEditAnnouncementThatDoesNotExist() throws Exception {
 
         // arrange
         Long id = 0L;
@@ -650,9 +649,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void userCannotEditAnnouncementToHaveEmptyStringAsAnnouncement() throws Exception {
+    public void adminCannotEditAnnouncementToHaveEmptyStringAsAnnouncement() throws Exception {
 
         // arrange
         Long id = 0L;
@@ -693,9 +692,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals("Announcement Text cannot be empty.", response.getResolvedException().getMessage());
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void userCannotEditAnnouncementToHaveEndBeforeStart() throws Exception {
+    public void adminCannotEditAnnouncementToHaveEndBeforeStart() throws Exception {
 
         // arrange
         Long id = 0L;
