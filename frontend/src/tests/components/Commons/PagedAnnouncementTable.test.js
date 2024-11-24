@@ -301,40 +301,55 @@ describe("PagedAnnouncementTable tests", () => {
         });
     });
 
-    // test("test for endDate accessor", async () => {
-    //     const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
-    //     mockUseParams.mockReturnValue({ commonsId: 1 });
+    test("test for endDate accessor", async () => {
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
     
-    //     const testAnnouncement = {
-    //         id: 1,
-    //         startDate: "2023-01-01T00:00:00",
-    //         endDate: "2023-01-31T00:00:00",
-    //         announcementText: "Test announcement"
-    //     };
+        const testAnnouncements = [
+            {
+                id: 1,
+                startDate: "2023-01-01T00:00:00",
+                endDate: "2023-01-31T00:00:00",
+                announcementText: "Test announcement 1"
+            },
+            {
+                id: 2,
+                startDate: "2023-01-02T00:00:00",
+                endDate: null,
+                announcementText: "Test announcement 2"
+            }
+        ];
     
-    //     useBackend.mockReturnValue({
-    //         data: {
-    //             content: [testAnnouncement],
-    //             totalPages: 1
-    //         },
-    //         error: null,
-    //         status: "success"
-    //     });
+        useBackend.mockReturnValue({
+            data: {
+                content: testAnnouncements,
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
     
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <MemoryRouter>
-    //                 <PagedAnnouncementTable/>
-    //             </MemoryRouter>
-    //         </QueryClientProvider>
-    //     );
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
     
-    //     await waitFor(() => {
-    //         expect(screen.getByText("1/31/2023")).toBeInTheDocument();
-            
-    //         const cells = screen.getAllByRole('cell');
-            
-    //         expect(cells[1]).toHaveTextContent("1/31/2023");
-    //     });
-    // });
+        await waitFor(() => {
+            expect(screen.getByText("End Date")).toBeInTheDocument();
+        });
+    
+        const rows = screen.getAllByRole('row');
+        
+        const firstRowCells = rows[1].getElementsByTagName('td');
+        expect(firstRowCells[1]).toHaveTextContent("");
+    
+        const secondRowCells = rows[2].getElementsByTagName('td');
+        expect(secondRowCells[1]).toHaveTextContent("2023-01-31");
+    
+        expect(firstRowCells[0]).toHaveTextContent("2023-01-02");
+        expect(firstRowCells[2]).toHaveTextContent("Test announcement 2");
+    });
 });
