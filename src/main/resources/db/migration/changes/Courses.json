@@ -62,8 +62,7 @@
                     "name": "END_DATE",
                     "type": "TIMESTAMP"
                   }
-                },
-                
+                }
               ],
               "tableName": "COURSES"
             }
