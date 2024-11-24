@@ -62,12 +62,6 @@
                     "name": "END_DATE",
                     "type": "TIMESTAMP"
                   }
-                },
-                {
-                  "column": {
-                    "name": "GITHUB_ORG",
-                    "type": "VARCHAR(255)"
-                  }
                 }
               ],
               "tableName": "COURSES"
