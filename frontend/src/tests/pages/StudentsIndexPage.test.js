@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor, screen } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import StudentsIndexPage from "main/pages/StudentsIndexPage";
@@ -99,5 +99,30 @@ describe("StudentsIndexPage tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent(
       "3",
     );
+  });
+  test("renders empty table when backend unavailable, user only", async () => {
+    setupUserOnly();
+
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/Students/all").timeout();
+
+    const restoreConsole = mockConsole();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <StudentsIndexPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => { expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1); });
+    const errorMessage = console.error.mock.calls[0][0];
+    expect(errorMessage).toMatch(
+      "Error communicating with backend via GET on /api/helprequests/all",
+    );
+    restoreConsole();
+
+    expect(screen.queryByTestId(`${testId}-cell-row-0-col-id`)).not.toBeInTheDocument();
   });
 });
