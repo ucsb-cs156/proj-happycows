@@ -87,7 +87,7 @@ describe("CommonsOverview tests", () => {
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
     });
 
-    test("test for announcement table button", async () => {
+    test("for announcement table button", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>

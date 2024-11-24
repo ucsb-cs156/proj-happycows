@@ -207,6 +207,13 @@ describe("PagedAnnouncementTable tests", () => {
             {
                 id: 2,
                 commonsId: 1,
+                startDate: "2023-01-15T12:00:00",
+                endDate: null,
+                announcementText: "Current announcement"
+            },
+            {
+                id: 3,
+                commonsId: 1,
                 startDate: "2022-12-31T00:00:00",
                 endDate: "2026-12-31T00:00:00",
                 announcementText: "Newer announcement"
@@ -233,7 +240,101 @@ describe("PagedAnnouncementTable tests", () => {
 
         // assert
         const rows = screen.getAllByRole("row");
-        expect(rows[1].textContent).toContain("Newer announcement");
-        expect(rows[2].textContent).toContain("Older announcement");
+        expect(rows[1].textContent).toContain("Current announcement");
+        expect(rows[2].textContent).toContain("Newer announcement");
+        expect(rows[3].textContent).toContain("Older announcement");
     });
+
+    test("test for current date equal to start date or end date", async () => {
+        const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+        mockUseParams.mockReturnValue({ commonsId: 1 });
+
+        const testAnnouncements = [
+            {
+                id: 1,
+                startDate: "2023-01-15T12:00:00",
+                endDate: "2023-02-01T00:00:00",
+                announcementText: "Exact start date"
+            },
+            {
+                id: 2,
+                startDate: "2023-01-01T00:00:00",
+                endDate: "2023-01-15T12:00:00",
+                announcementText: "Exact end date"
+            },
+            {
+                id: 3,
+                startDate: "2023-01-15T12:00:01",
+                endDate: "2023-02-01T00:00:00",
+                announcementText: "Future start date"
+            },
+            {
+                id: 4,
+                startDate: "2022-01-15T12:00:01",
+                endDate: "2023-01-01T00:00:00",
+                announcementText: "Past end date"
+            }
+        ];
+
+        useBackend.mockReturnValue({
+            data: {
+                content: testAnnouncements,
+                totalPages: 1
+            },
+            error: null,
+            status: "success"
+        });
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <PagedAnnouncementTable/>
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText("Exact start date")).toBeInTheDocument();
+            expect(screen.getByText("Exact end date")).toBeInTheDocument();
+            expect(screen.queryByText("Future start date")).not.toBeInTheDocument();
+            expect(screen.queryByText("Past end date")).not.toBeInTheDocument();
+        });
+    });
+
+    // test("test for endDate accessor", async () => {
+    //     const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
+    //     mockUseParams.mockReturnValue({ commonsId: 1 });
+    
+    //     const testAnnouncement = {
+    //         id: 1,
+    //         startDate: "2023-01-01T00:00:00",
+    //         endDate: "2023-01-31T00:00:00",
+    //         announcementText: "Test announcement"
+    //     };
+    
+    //     useBackend.mockReturnValue({
+    //         data: {
+    //             content: [testAnnouncement],
+    //             totalPages: 1
+    //         },
+    //         error: null,
+    //         status: "success"
+    //     });
+    
+    //     render(
+    //         <QueryClientProvider client={queryClient}>
+    //             <MemoryRouter>
+    //                 <PagedAnnouncementTable/>
+    //             </MemoryRouter>
+    //         </QueryClientProvider>
+    //     );
+    
+    //     await waitFor(() => {
+    //         expect(screen.getByText("1/31/2023")).toBeInTheDocument();
+            
+    //         const cells = screen.getAllByRole('cell');
+            
+    //         expect(cells[1]).toHaveTextContent("1/31/2023");
+    //     });
+    // });
 });
