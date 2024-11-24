@@ -70,7 +70,7 @@ describe("PagedProfitsTable tests", () => {
     ).toHaveTextContent("5");
     
     const divContainer = screen.getByTestId("PagedProfitsTable-CSS");
-    expect(divContainer).toBeInTheDocument();
+    expect(divContainer).toHaveStyle({display:"flex", overflow: 'auto'});
     expect(screen.getByTestId(`${testId}-header-timestamp-sort-carets`)).toHaveTextContent("🔽");
 
 
