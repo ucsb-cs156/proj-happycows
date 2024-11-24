@@ -75,7 +75,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("F23")
                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .githubOrg("ucsb-cs16-f23")
                 .build();
 
         Courses course2 = Courses.builder()
@@ -84,7 +83,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("W24")
                 .startDate(LocalDateTime.parse("2024-01-08T00:00:00"))
                 .endDate(LocalDateTime.parse("2024-03-22T00:00:00"))
-                .githubOrg("ucsb-cs156-w24")
                 .build();
 
         ArrayList<Courses> expectedCourses = new ArrayList<>();
@@ -115,7 +113,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("F23")
                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .githubOrg("ucsb-cs16-f23")
                 .build();
 
         when(coursesRepository.save(eq(courseBefore)))
@@ -123,7 +120,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?name=CS16&school=UCSB&term=F23&startDate=2023-09-01T00:00:00&endDate=2023-12-31T00:00:00&githubOrg=ucsb-cs16-f23")
+                post("/api/courses/post?name=CS16&school=UCSB&term=F23&startDate=2023-09-01T00:00:00&endDate=2023-12-31T00:00:00")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
