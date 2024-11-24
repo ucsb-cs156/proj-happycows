@@ -232,7 +232,32 @@ const leaderboardFixtures = {
             "cowsSold": 60,
             "cowDeaths": 60
         }
-    ]
+    ],
+    sortingBugCommonsLB:
+    [
+        {
+            "id":1,
+            "userId": 1,
+            "username": "lessWealth",
+            "commonsId": 1,
+            "totalWealth" : 595,
+            "numOfCows": 8,
+            "cowsBought": 8,
+            "cowsSold": 8,
+            "cowDeaths": 8
+        },
+        {
+            "id":2,
+            "userId": 2,
+            "username": "moreWealth",
+            "commonsId": 1,
+            "totalWealth" : 10000,
+            "numOfCows": 5,
+            "cowsBought": 5,
+            "cowsSold": 5,
+            "cowDeaths": 5
+        },
+    ],
 }
 
 export default leaderboardFixtures;
