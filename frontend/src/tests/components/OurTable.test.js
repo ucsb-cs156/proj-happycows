@@ -82,7 +82,7 @@ describe("OurTable tests", () => {
     PlaintextColumn("Log", (cell) => cell.row.original.log),
   ];
 
-  test("The button appears in the table", async () => {
+  test("button appears in the table and triggers callback on click", async () => {
     render(<OurTable columns={columns} data={threeRows} />);
 
     expect(
