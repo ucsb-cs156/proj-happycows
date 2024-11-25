@@ -10,7 +10,7 @@ export default function StudentsTable({ students }) {
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/Students/edit/${cell.row.values.id}`)
+        navigate(`/admin/Students/edit/${cell.row.values.id}`)
     }
 
     // Stryker disable all : hard to test for query caching
