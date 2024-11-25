@@ -165,5 +165,6 @@ describe("ManageCows tests", () => {
                 />
             </QueryClientProvider>
         );
+        expect(screen.getByTestId("ManageCows-ViewOnly")).toHaveTextContent("This page is for viewing only, cannot buy and sell cows.");
     });
 });
