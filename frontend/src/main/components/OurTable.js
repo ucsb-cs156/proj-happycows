@@ -42,9 +42,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
                             <th
-                                {...column.getHeaderProps({
-                                    ...column.getSortByToggleProps() // Include sorting functionality
-                                })}
+                                {...column.getHeaderProps(column.getSortByToggleProps())}
                                 data-testid={`${testid}-header-${column.id}`}
                             >
                                 {column.render('Header')}
