@@ -60,38 +60,38 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
 
                 <Col>
                     <Form.Group className="mb-3" >
-                        <Form.Label htmlFor="lName">Last Name</Form.Label>
+                        <Form.Label htmlFor="lastName">Last Name</Form.Label>
                         <Form.Control
                             // Stryker disable next-line all
-                            data-testid={testIdPrefix + "-lName"}
-                            id="lName"
+                            data-testid={testIdPrefix + "-lastName"}
+                            id="lastName"
                             type="text"
-                            isInvalid={Boolean(errors.lName)}
-                            {...register("lName", {
+                            isInvalid={Boolean(errors.lastName)}
+                            {...register("lastName", {
                                 required: "The last name of the student is required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.lName?.message}
+                            {errors.lastName?.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
 
                 <Col>
                     <Form.Group className="mb-3" >
-                        <Form.Label htmlFor="fmName">First and Middle Name</Form.Label>
+                        <Form.Label htmlFor="firstMiddleName">First and Middle Name</Form.Label>
                         <Form.Control
                             // Stryker disable next-line all
-                            data-testid={testIdPrefix + "-fmName"}
-                            id="fmName"
+                            data-testid={testIdPrefix + "-firstMiddleName"}
+                            id="firstMiddleName"
                             type="text"
-                            isInvalid={Boolean(errors.fmName)}
-                            {...register("fmName", {
+                            isInvalid={Boolean(errors.firstMiddleName)}
+                            {...register("firstMiddleName", {
                                 required: "The first and middle names of the student are required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {errors.fmName?.message}
+                            {errors.firstMiddleName?.message}
                         </Form.Control.Feedback>
                     </Form.Group>
                 </Col>
