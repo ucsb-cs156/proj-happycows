@@ -65,11 +65,9 @@ const AdminCreateAnnouncementsPage = () => {
         mutation.mutate(data);
     }
 
-    // Stryker disable all
     if (mutation.isSuccess) {
         return <Navigate to="/" />
     }
-    // Stryker restore all
 
     return (
         <BasicLayout>

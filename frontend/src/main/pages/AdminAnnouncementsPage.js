@@ -24,7 +24,6 @@ export default function AdminAnnouncementsPage() {
     const commonsName = commonsPlus?.commons.name;
 
     return (
-      // Stryker disable all
         <BasicLayout>
         <div className="pt-2">
           <Row  className="pt-5">
@@ -37,7 +36,6 @@ export default function AdminAnnouncementsPage() {
           </Row>
         </div>
       </BasicLayout>
-      // Stryker restore all
     );
 
 };

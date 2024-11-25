@@ -34,7 +34,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         submitAction(formattedData);
     };
 
-    // Stryker disable all (String and object literals)
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             {initialContents && (
