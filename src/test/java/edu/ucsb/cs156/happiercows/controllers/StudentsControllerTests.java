@@ -47,9 +47,9 @@ public class StudentsControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "USER" })
         @Test
-        public void logged_in_users_can_get_all() throws Exception {
+        public void logged_in_users_cannot_get_all() throws Exception {
                 mockMvc.perform(get("/api/Students/all"))
-                                .andExpect(status().is(200)); // logged
+                                .andExpect(status().is(403)); // logged
         }
 
         @Test
@@ -74,9 +74,9 @@ public class StudentsControllerTests extends ControllerTestCase {
                                 .andExpect(status().is(403)); // only admins can post
         }
 
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_exists() throws Exception {
                 Students student = Students.builder()
                         .lastName("Song")
                         .firstMiddleName("AlecJ")
@@ -99,9 +99,9 @@ public class StudentsControllerTests extends ControllerTestCase {
                 assertEquals(expectedJson, responseString);
         }
 
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_does_not_exist() throws Exception {
 
                 // arrange
 
@@ -121,7 +121,7 @@ public class StudentsControllerTests extends ControllerTestCase {
 
 
         
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
         public void logged_in_user_can_get_all_Students() throws Exception {
                 Students student1 = Students.builder()
@@ -190,7 +190,6 @@ public class StudentsControllerTests extends ControllerTestCase {
                                 .firstMiddleName("AlecJ")
                                 .email("alecsong@ucsb.edu")
                                 .perm("1234567")
-                                .courseId((long)156)
                                 .build();
 
                 Students StudentsEdited = Students.builder()
@@ -198,7 +197,6 @@ public class StudentsControllerTests extends ControllerTestCase {
                                 .firstMiddleName("AlecJ2")
                                 .email("alecsong2@ucsb.edu")
                                 .perm("12345672")
-                                .courseId((long)1562)
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(StudentsEdited);

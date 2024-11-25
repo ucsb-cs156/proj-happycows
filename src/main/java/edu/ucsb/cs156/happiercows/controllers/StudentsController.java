@@ -36,7 +36,7 @@ public class StudentsController extends ApiController {
      * @return an iterable of Students
      */
     @Operation(summary= "List all students")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public Iterable<Students> allStudents() {
         Iterable<Students> students = StudentsRepository.findAll();
@@ -81,7 +81,7 @@ public class StudentsController extends ApiController {
      * @return a Student
      */
     @Operation(summary = "Get a single Student by id")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("")
     public Students getById(
             @Parameter(name = "id") @RequestParam Long id) {
@@ -108,10 +108,9 @@ public class StudentsController extends ApiController {
         Students student = StudentsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
 
-        student.setLName(incoming.getLName());
-        student.setFmName(incoming.getFmName());
+        student.setLastName(incoming.getLastName());
+        student.setFirstMiddleName(incoming.getFirstMiddleName());
         student.setEmail(incoming.getEmail());
-        student.setCourseId(incoming.getCourseId());
         student.setPerm(incoming.getPerm());
 
         StudentsRepository.save(student);
