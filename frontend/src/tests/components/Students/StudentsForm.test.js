@@ -80,11 +80,11 @@ describe("StudentsForm tests", () => {
         const submitButton = screen.getByText(/Create/);
         fireEvent.click(submitButton);
 
-        await screen.findByText(/The last name is required/);
-        await screen.findByText(/The first and middle name are required/);
-        await screen.findByText(/The perm is required/);
-        await screen.findByText(/The Course Id is required/);
-        expect(screen.getByText(/The email is required/)).toBeInTheDocument();
+        await screen.findByText(/The last name of the student is required./);
+        await screen.findByText(/The first and middle names of the student are required./);
+        await screen.findByText(/The perm number of the student is required./);
+        await screen.findByText(/The Course ID is required./);
+        expect(screen.getByText(/The email of the student is required./)).toBeInTheDocument();
     });
 
 });

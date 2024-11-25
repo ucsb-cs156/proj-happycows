@@ -32,6 +32,6 @@ const studentsFixtures = {
             "courseId": "125",
             "email": "test3@hotmail.com"
         },
-    ],
+    ]
 };
 export { studentsFixtures };

@@ -49,7 +49,7 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
                             type="text"
                             isInvalid={Boolean(errors.perm)}
                             {...register("perm", {
-                                required: "The perm is required",
+                                required: "The perm number of the student is required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -68,7 +68,7 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
                             type="text"
                             isInvalid={Boolean(errors.lName)}
                             {...register("lName", {
-                                required: "The last name is required",
+                                required: "The last name of the student is required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -87,7 +87,7 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
                             type="text"
                             isInvalid={Boolean(errors.fmName)}
                             {...register("fmName", {
-                                required: "The first and middle name are required",
+                                required: "The first and middle names of the student are required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -106,7 +106,7 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
                             type="text"
                             isInvalid={Boolean(errors.email)}
                             {...register("email", {
-                                required: "The email is required",
+                                required: "The email of the student is required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
@@ -125,7 +125,7 @@ function StudentsForm({ initialContents, submitAction, buttonLabel = "Create" })
                             type="text"
                             isInvalid={Boolean(errors.courseId)}
                             {...register("courseId", {
-                                required: "The Course Id is required",
+                                required: "The Course ID is required.",
                             })}
                         />
                         <Form.Control.Feedback type="invalid">
