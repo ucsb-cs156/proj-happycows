@@ -1,6 +1,6 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router-dom";
-import StudentsForm from "main/components/Students/StudentsForm";
+import StudentsEditForm from "main/components/Students/StudentsEditForm";
 import { Navigate } from "react-router-dom";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
@@ -66,7 +66,7 @@ export default function StudentsEditPage({ storybook = false }) {
       <div className="pt-2">
         <h1>Edit Student</h1>
         {students && (
-          <StudentsForm
+          <StudentsEditForm
             initialContents={students}
             submitAction={onSubmit}
             buttonLabel="Update"

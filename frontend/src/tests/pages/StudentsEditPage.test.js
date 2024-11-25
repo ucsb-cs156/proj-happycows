@@ -65,7 +65,7 @@ describe("StudentsEditPage tests", () => {
       );
       await screen.findByText("Edit Student");
       expect(
-        screen.queryByTestId("StudentsForm-id"),
+        screen.queryByTestId("StudentsEditForm-id"),
       ).not.toBeInTheDocument();
       restoreConsole();
     });
@@ -111,7 +111,7 @@ describe("StudentsEditPage tests", () => {
         </QueryClientProvider>,
       );
 
-      await screen.findByTestId("StudentsForm-lastName");
+      await screen.findByTestId("StudentsEditForm-lastName");
     });
 
     test("Is populated with the data provided", async () => {
@@ -123,25 +123,21 @@ describe("StudentsEditPage tests", () => {
         </QueryClientProvider>,
       );
 
-      await screen.findByTestId("StudentsForm-perm");
+      await screen.findByTestId("StudentsEditForm-perm");
 
-      const permField = screen.getByTestId("StudentsForm-perm");
-      const lastNameField = screen.getByTestId("StudentsForm-lastName");
+      const permField = screen.getByTestId("StudentsEditForm-perm");
+      const lastNameField = screen.getByTestId("StudentsEditForm-lastName");
       const firstMiddleNameField = screen.getByTestId(
-        "StudentsForm-firstMiddleName",
-      );
-      const courseIdField = screen.getByTestId(
-        "StudentsForm-courseId",
+        "StudentsEditForm-firstMiddleName",
       );
       const emailField = screen.getByTestId(
-        "StudentsForm-email",
+        "StudentsEditForm-email",
       );
-      const submitButton = screen.getByTestId("StudentsForm-submit");
+      const submitButton = screen.getByTestId("StudentsEditForm-submit");
 
       expect(permField).toHaveValue("1234567");
       expect(lastNameField).toHaveValue("Song");
       expect(firstMiddleNameField).toHaveValue("Alec J");
-      expect(courseIdField).toHaveValue("1234");
       expect(emailField).toHaveValue("test@hotmail.com");
       expect(submitButton).toHaveTextContent("Update");
     });
@@ -154,17 +150,17 @@ describe("StudentsEditPage tests", () => {
           </MemoryRouter>
         </QueryClientProvider>,
       );
-      await screen.findByTestId("StudentsForm-email");
+      await screen.findByTestId("StudentsEditForm-email");
 
-      const permField = screen.getByTestId("StudentsForm-perm");
-      const lastNameField = screen.getByTestId("StudentsForm-lastName");
+      const permField = screen.getByTestId("StudentsEditForm-perm");
+      const lastNameField = screen.getByTestId("StudentsEditForm-lastName");
       const firstMiddleNameField = screen.getByTestId(
-        "StudentsForm-firstMiddleName",
+        "StudentsEditForm-firstMiddleName",
       );
       const emailField = screen.getByTestId(
-        "StudentsForm-email",
+        "StudentsEditForm-email",
       );
-      const submitButton = screen.getByTestId("StudentsForm-submit");
+      const submitButton = screen.getByTestId("StudentsEditForm-submit");
 
       fireEvent.change(permField, {
         target: { value: "12345678" },
