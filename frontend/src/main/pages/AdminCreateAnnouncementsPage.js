@@ -7,8 +7,6 @@ import { toast } from "react-toastify"
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
 const AdminCreateAnnouncementsPage = () => {
-
-    // Stryker disable all
     const objectToAxiosParams = (newAnnouncement) => ({
         url:`/api/announcements/post/${commonsId}`,
         method: "POST",
@@ -18,11 +16,10 @@ const AdminCreateAnnouncementsPage = () => {
             endDate: newAnnouncement.endDate,
         }
     });
-    // Stryker restore all
 
     const { commonsId } = useParams(); 
 
-    // Stryker disable all
+    // Stryker disable all (Copied from frontend/src/main/pages/AdminViewPlayPage.js)
     const { data: commonsPlus } = useBackend(
         [`/api/commons/plus?id=${commonsId}`],
         {
@@ -37,7 +34,6 @@ const AdminCreateAnnouncementsPage = () => {
 
     const commonsName = commonsPlus?.commons.name;
 
-    // Stryker disable all
     const onSuccess = (announcement) => {
         toast(
           <div>
@@ -51,9 +47,8 @@ const AdminCreateAnnouncementsPage = () => {
           </div>
         );
       };
-    // Stryker restore all
-   
-    // Stryker disable all
+
+    // Stryker disable all (Copied from frontend/src/main/pages/AdminCreateCommonsPage.js)
     const mutation = useBackendMutation(
         objectToAxiosParams,
         { onSuccess },
@@ -65,11 +60,9 @@ const AdminCreateAnnouncementsPage = () => {
         mutation.mutate(data);
     }
 
-    // Stryker disable all
     if (mutation.isSuccess) {
         return <Navigate to="/" />
     }
-    // Stryker restore all
 
     return (
         <BasicLayout>

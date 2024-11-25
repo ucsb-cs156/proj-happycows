@@ -1,10 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-// import { useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -58,19 +56,29 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         expect(await screen.findByText("Create Announcement for Test Commons")).toBeInTheDocument();
     });
 
-    test("When you fill in form and click submit, the right things happen", async () => {
+    test("ensures correct API call is made with all parameters", async () => {
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "42" });
+
+        const newAnnouncement = {
+            announcementText: "Test announcement",
+            startDate: "2023-11-21",
+            endDate: "2024-11-21",
+        };
+
         axiosMock.onPost("/api/announcements/post/42").reply((config) => {
-            console.log("POST request data:", config.data); 
-            return [200, {
-                id: 42,
-                startDate: "2023-11-21T17:52:33.000-08:00",
-                endDate: "2024-11-21T17:52:33.000-08:00",
-                message: "Test announcement"
-            }];
+            const requestData = JSON.parse(config.data);
+            expect(requestData.announcementText).toBe(newAnnouncement.announcementText);
+            expect(requestData.startDate).toBe(newAnnouncement.startDate);
+            expect(requestData.endDate).toBe(newAnnouncement.endDate);
+            return [
+                200,
+                {
+                    id: 42,
+                    ...newAnnouncement,
+                },
+            ];
         });
 
-        jest.spyOn(require('react-router-dom'), 'useParams').mockReturnValue({ commonsId: "42" });
-    
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter initialEntries={["/admin/announcements/create/42"]}>
@@ -86,14 +94,145 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         const messageField = screen.getByLabelText("Announcement");
         const submitButton = screen.getByTestId("AnnouncementForm-submit");
 
-        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
-        fireEvent.change(endDateField, { target: { value: "2024-11-21T" } });
-        fireEvent.change(messageField, { target: { value: "Test announcement" } });
-    
+        fireEvent.change(startDateField, { target: { value: newAnnouncement.startDate } });
+        fireEvent.change(endDateField, { target: { value: newAnnouncement.endDate } });
+        fireEvent.change(messageField, { target: { value: newAnnouncement.announcementText } });
+
         fireEvent.click(submitButton);
 
-        await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+        await waitFor(() => {
+            expect(axiosMock.history.post.length).toBe(1);
+        });
     });
+
+    test("ensures success toast displays correct data", async () => {
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "42" });
+
+        const announcementResponse = {
+            id: 42,
+            startDate: "2023-11-21",
+            endDate: "2024-11-21",
+            announcementText: "Test announcement",
+        };
+
+        axiosMock.onPost("/api/announcements/post/42").reply(200, announcementResponse);
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/42"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
+        const messageField = screen.getByLabelText("Announcement");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+
+        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-21" } });
+        fireEvent.change(messageField, { target: { value: "Test announcement" } });
+
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(mockToast).toHaveBeenCalledWith(
+                <div>
+                    <p>Announcement successfully created!</p>
+                    <ul>
+                        <li>{`ID: ${announcementResponse.id}`}</li>
+                        <li>{`Start Date: ${announcementResponse.startDate}`}</li>
+                        <li>{`End Date: ${announcementResponse.endDate}`}</li>
+                        <li>{`Announcement: ${announcementResponse.announcementText}`}</li>
+                    </ul>
+                </div>
+            );
+        });
+    });
+
+    test("ensures navigation occurs on success", async () => {
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "42" });
+
+        axiosMock.onPost("/api/announcements/post/42").reply(200, {});
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/42"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const announcementField = screen.getByLabelText("Announcement");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+
+        fireEvent.change(announcementField, { target: { value: "Test announcement" } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(mockedNavigate).toHaveBeenCalledWith({"to": "/"});
+        });
+    });
+
+    test("ensures API call fails if params is empty", async () => {
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "42" });
     
+        const newAnnouncement = {
+            announcementText: "Test announcement",
+            startDate: "2023-11-21",
+            endDate: "2024-11-21",
+        };
+    
+        axiosMock.onPost("/api/announcements/post/42").reply((config) => {
+            const requestData = config.params;
+            if (!requestData.announcementText && !requestData.startDate && !requestData.endDate) {
+                return [400, { message: "Required request parameters are missing" }];
+            }
+            return [200, { id: 42, ...newAnnouncement }];
+        });
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/42"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+    
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
+        const messageField = screen.getByLabelText("Announcement");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+    
+        fireEvent.change(startDateField, { target: { value: newAnnouncement.startDate } });
+        fireEvent.change(endDateField, { target: { value: newAnnouncement.endDate } });
+        fireEvent.change(messageField, { target: { value: newAnnouncement.announcementText } });
+    
+        fireEvent.click(submitButton);
+    
+        await waitFor(() => {
+            expect(axiosMock.history.post.length).toBe(1);
+        });
+
+        const lastRequest = axiosMock.history.post[0];
+        const sentParams = lastRequest.params;
+    
+        expect(sentParams).toEqual({"announcementText": "Test announcement", "endDate": "2024-11-21","startDate": "2023-11-21",});
+
+        await waitFor(() => {
+            expect(mockToast).toHaveBeenCalledWith(
+            <div>
+                <p>Announcement successfully created!</p>
+                <ul>
+                    <li>ID: 42</li>
+                    <li>Start Date: 2023-11-21</li>
+                    <li>End Date: 2024-11-21</li>
+                    <li>Announcement: Test announcement</li>
+                </ul>
+            </div>
+            );
+        });
+    });
     
 });

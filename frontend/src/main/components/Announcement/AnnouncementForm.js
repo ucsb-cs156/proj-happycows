@@ -3,6 +3,14 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
+    const getCurrentDate = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     // Stryker disable all
     const {
         register,
@@ -12,42 +20,24 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         defaultValues: {
             startDate: initialContents?.startDate 
                 ? initialContents.startDate.split("T")[0]
-                : getPSTDate(),
-            endDate: initialContents?.endDate || null,
+                : getCurrentDate(),
+            endDate: initialContents?.endDate,
             announcementText: initialContents?.announcementText || "",
             ...initialContents, 
         },
     });
+    // Stryker restore all 
 
     const navigate = useNavigate();
 
     const testIdPrefix = "AnnouncementForm";
 
-    function getPSTDate() {
-        const now = new Date();
-        const options = {
-            timeZone: 'America/Los_Angeles',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        };
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        const [month, day, year] = formatter.formatToParts(now)
-            .filter(({ type }) => type === 'month' || type === 'day' || type === 'year')
-            .map(({ value }) => value);
-
-        return `${year}-${month}-${day}`;
-    }
-    // Stryker restore all
-
-    // Stryker disable all
     const onSubmit = (data) => {
         if (!data.endDate) {
             data.endDate = null;
         }
         submitAction(data);
     };
-    // Stryker restore all
 
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
