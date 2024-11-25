@@ -155,8 +155,6 @@ describe("ManageCows tests", () => {
             },
         });
         
-        const hasRoleSpy = jest.spyOn(currentUserModule, 'hasRole');
-        
         render(
             <QueryClientProvider client={queryClient}>
                 <ManageCows
