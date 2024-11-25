@@ -252,7 +252,7 @@ public class StudentsControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_can_delete_a_Students() throws Exception {
+        public void admin_can_delete_a_student() throws Exception {
                 Students Students1 = Students.builder()
                                 .lastName("Song")
                                 .firstMiddleName("AlecJ")
@@ -279,7 +279,7 @@ public class StudentsControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
-        public void admin_tries_to_delete_non_existant_Students_and_gets_right_error_message()
+        public void admin_tries_to_delete_non_existent_student_and_gets_right_error_message()
                         throws Exception {
                 // arrange
 
