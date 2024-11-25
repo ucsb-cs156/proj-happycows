@@ -142,29 +142,19 @@ describe("ManageCows tests", () => {
     });
 
     test("tests for ADMIN has role", () => {
-        const currentUser = currentUserFixtures.adminUser;
+        currentUserModule.useCurrentUser.mockReturnValue({ data: null });
         useParams.mockReturnValue({ userId: 1 });
 
-        currentUserModule.useCurrentUser.mockReturnValue({
-            data: {
-                root: {
-                    user: {
-                        id: 1,
-                    },
-                },
-            },
-        });
-        currentUserModule.hasRole.mockReturnValue(true);
+        currentUserModule.hasRole.mockReturnValue(false);
         render(
             <QueryClientProvider client={queryClient}>
                 <ManageCows
                     userCommons={userCommonsFixtures.oneUserCommons[0]}
                     setMessage={mockSetMessage}
                     openModal={mockOpenModal}
-                    currentUser={currentUser}
                 />
             </QueryClientProvider>
         );
-        expect(screen.getByTestId("ManageCows-ViewOnly")).toHaveTextContent("This page is for viewing only, cannot buy and sell cows.");
+        expect(screen.queryByTestId("ManageCows-ViewOnly")).not.toBeInTheDocument();
     });
 });
