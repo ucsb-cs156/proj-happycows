@@ -10,7 +10,7 @@ var tableStyle = {
     "maxWidth": "-moz-fit-content",
     "margin": "0 auto",
     "overflowX": "auto",
-    "whiteSpace": "nowrap",
+    "whiteSpace": "nowrap"
 };
 var paginationStyle = {
     "display": "flex",
@@ -43,7 +43,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                         {headerGroup.headers.map(column => (
                             <th
                                 {...column.getHeaderProps({
-                                    ...column.getSortByToggleProps(), // Include sorting functionality
+                                    ...column.getSortByToggleProps() // Include sorting functionality
                                 })}
                                 data-testid={`${testid}-header-${column.id}`}
                             >
@@ -68,7 +68,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
                             {row.cells.map((cell, _index) => {
                                 return (
                                     <td
-                                        {...cell.getCellProps({})}
+                                        {...cell.getCellProps()}
                                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                                     >
                                         {cell.render('Cell')}
