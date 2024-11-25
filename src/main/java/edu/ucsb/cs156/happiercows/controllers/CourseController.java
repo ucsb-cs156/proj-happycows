@@ -18,7 +18,7 @@ public class CourseController extends ApiController {
     private CourseRepository courseRepository;
 
     /**
-     * THis method returns a list of all courses.
+     * This method returns a list of all courses.
      * 
      * @return a list of all courses
      */
