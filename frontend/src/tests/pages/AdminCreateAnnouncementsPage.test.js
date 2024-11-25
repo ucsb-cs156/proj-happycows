@@ -81,13 +81,13 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
         expect(await screen.findByText("Create Announcement for Test Commons")).toBeInTheDocument();
 
-        const startDateField = screen.getByTestId("startDate");
-        const endDateField = screen.getByTestId("endDate");
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
         const messageField = screen.getByLabelText("Announcement");
         const submitButton = screen.getByTestId("AnnouncementForm-submit");
 
-        fireEvent.change(startDateField, { target: { value: "2023-11-21T17:52:33.000-08:00" } });
-        fireEvent.change(endDateField, { target: { value: "2024-11-21T17:52:33.000-08:00" } });
+        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-21T" } });
         fireEvent.change(messageField, { target: { value: "Test announcement" } });
     
         fireEvent.click(submitButton);

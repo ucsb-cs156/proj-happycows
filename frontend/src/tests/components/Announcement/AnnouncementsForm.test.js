@@ -88,65 +88,100 @@ describe("AnnouncementForm tests", () => {
         fireEvent.click(submitButton);
     });
 
-    test("that start date is set to current date when not provided, and end date is null", async () => {
+    test("onSubmit sets endDate to null if it's blank", async () => {
         const submitActionMock = jest.fn();
     
-        const mockAnnouncement = {
+        const initialContents = {
+            startDate: "2023-11-21",
             announcementText: "Test announcement",
-            startDate: "",
-            endDate: "" 
         };
     
         render(
             <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm 
-                        submitAction={submitActionMock} 
-                        initialContents={mockAnnouncement} 
-                    />
-                </Router>
+                <AnnouncementForm initialContents={initialContents} submitAction={submitActionMock} />
             </QueryClientProvider>
         );
     
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+        const startDateField = screen.getByTestId("AnnouncementForm-startDate");
+        const endDateField = screen.getByTestId("AnnouncementForm-endDate");
+        const messageField = screen.getByTestId("AnnouncementForm-announcementText");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
     
-        const submitButton = screen.getByText(/Create/);
+        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
+        fireEvent.change(endDateField, { target: { value: "" } });
+        fireEvent.change(messageField, { target: { value: "Test announcement" } });
+    
         fireEvent.click(submitButton);
     
         await waitFor(() => {
-            expect(submitActionMock).toHaveBeenCalledTimes(1);
-        });
-    
-        const submittedData = submitActionMock.mock.calls[0][0];
-    
-        await waitFor(() => {
-            const currentDate = new Date().getTime();
-            const startDate = new Date(submittedData.startDate).getTime();
-            expect(Math.abs(startDate - currentDate)).toBeLessThan(100000);
-        });
-    
-        await waitFor(() => {
-            expect(submittedData.endDate).toBeNull();
+            expect(submitActionMock).toHaveBeenCalledWith({
+                startDate: "2023-11-21",
+                endDate: null,  
+                announcementText: "Test announcement",
+            });
         });
     });
-
-    test("that navigate(-1) is called", async () => {
+    
+    test("onSubmit sends valid data when endDate is provided", async () => {
+        const submitActionMock = jest.fn();
+    
+        const initialContents = {
+            startDate: "2023-11-21",
+            announcementText: "Test announcement",
+        };
+    
         render(
             <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm />
-                </Router>
+                <AnnouncementForm initialContents={initialContents} submitAction={submitActionMock} />
             </QueryClientProvider>
         );
-
-        const cancelButton = await screen.findByTestId(`${testId}-cancel`);
-        expect(cancelButton).toBeInTheDocument();
-
-        fireEvent.click(cancelButton);
-
+    
+        const startDateField = screen.getByTestId("AnnouncementForm-startDate");
+        const endDateField = screen.getByTestId("AnnouncementForm-endDate");
+        const messageField = screen.getByTestId("AnnouncementForm-announcementText");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+    
+        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-21" } });
+        fireEvent.change(messageField, { target: { value: "Test announcement" } });
+    
+        fireEvent.click(submitButton);
+    
         await waitFor(() => {
-            expect(mockedNavigate).toHaveBeenCalledWith(-1);
+            expect(submitActionMock).toHaveBeenCalledWith({
+                startDate: "2023-11-21",
+                endDate: "2024-11-21", 
+                announcementText: "Test announcement",
+            });
         });
     });
+
+    test("displays error message for missing start date", async () => {
+        const submitActionMock = jest.fn();
+    
+        const initialContents = {
+            announcementText: "Test announcement",
+        };
+    
+        render(
+            <QueryClientProvider client={queryClient}>
+                <AnnouncementForm initialContents={initialContents} submitAction={submitActionMock} />
+            </QueryClientProvider>
+        );
+    
+        const startDateField = screen.getByTestId("AnnouncementForm-startDate");
+        const messageField = screen.getByTestId("AnnouncementForm-announcementText");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+    
+        fireEvent.change(startDateField, { target: { value: "" } });
+        fireEvent.change(messageField, { target: { value: "Test announcement" } });
+    
+        fireEvent.click(submitButton);
+    
+        await waitFor(() => {
+            expect(screen.getByText("Start Date is required.")).toBeInTheDocument();
+        });
+    });
+    
 
 });

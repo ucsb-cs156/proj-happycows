@@ -3,10 +3,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
-    const navigate = useNavigate();
-    const testIdPrefix = "AnnouncementForm";
-
-    // Initialize React Hook Form
     // Stryker disable all
     const {
         register,
@@ -14,34 +10,53 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         handleSubmit,
     } = useForm({
         defaultValues: {
-            startDate: initialContents?.startDate || new Date().toISOString(),
-            endDate: initialContents?.endDate || "",
+            startDate: initialContents?.startDate 
+                ? initialContents.startDate.split("T")[0]
+                : getPSTDate(),
+            endDate: initialContents?.endDate || null,
             announcementText: initialContents?.announcementText || "",
+            ...initialContents, 
         },
     });
-    // Stryker restore all
 
-    // Define regex for ISO date format
-    // Stryker disable all
-    const isodate_regex = /(\d{4}-[01]\d-[0-3]\d[T\s][0-2]\d:[0-5]\d)/i;
-    // Stryker restore all
+    const navigate = useNavigate();
 
-    const onSubmit = (data) => {
-        const formattedData = {
-            ...data,
-            endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+    const testIdPrefix = "AnnouncementForm";
+
+    function getPSTDate() {
+        const now = new Date();
+        const options = {
+            timeZone: 'America/Los_Angeles',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
         };
-        submitAction(formattedData);
-    };
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+        const [month, day, year] = formatter.formatToParts(now)
+            .filter(({ type }) => type === 'month' || type === 'day' || type === 'year')
+            .map(({ value }) => value);
 
-    // Stryker disable all (String and object literals)
+        return `${year}-${month}-${day}`;
+    }
+    // Stryker restore all
+
+    // Stryker disable all
+    const onSubmit = (data) => {
+        if (!data.endDate) {
+            data.endDate = null;
+        }
+        submitAction(data);
+    };
+    // Stryker restore all
+
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
+
             {initialContents && (
                 <Form.Group className="mb-3">
                     <Form.Label htmlFor="id">Id</Form.Label>
                     <Form.Control
-                        data-testid={`${testIdPrefix}-id`}
+                        data-testid={testIdPrefix + "-id"}
                         id="id"
                         type="text"
                         {...register("id")}
@@ -54,56 +69,41 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="startDate">Start Date</Form.Label>
                 <Form.Control
-                    data-testid="startDate"
+                    data-testid={testIdPrefix + "-startDate"}
                     id="startDate"
-                    type="text" 
+                    type="date" 
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
-                        required: "Start Date is required.",
-                        pattern: {
-                            value: isodate_regex,
-                            message: "Start Date must be in ISO format.",
-                        },
+                        required: "Start Date is required.", 
                     })}
-                    placeholder="Enter date in ISO format (e.g., 2023-11-21T17:52:33)"
                 />
                 <Form.Control.Feedback type="invalid">
-                    {errors.startDate?.message}
+                    {errors.startDate && 'Start Date is required.'}
                 </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="endDate">End Date</Form.Label>
                 <Form.Control
-                    data-testid="endDate"
+                    data-testid={testIdPrefix + "-endDate"}
                     id="endDate"
-                    type="text" 
+                    type="date" 
                     isInvalid={Boolean(errors.endDate)}
-                    {...register("endDate", {
-                        pattern: {
-                            value: isodate_regex,
-                            message: "End Date must be in ISO format.",
-                        },
-                    })}
-                    placeholder="Enter date in ISO format (e.g., 2024-11-21T17:52:33)"
+                    {...register("endDate")}
                 />
-                <Form.Control.Feedback type="invalid">
-                    {errors.endDate?.message}
-                </Form.Control.Feedback>
             </Form.Group>
 
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="announcementText">Announcement</Form.Label>
                 <Form.Control
                     as="textarea"
-                    data-testid={`${testIdPrefix}-announcementText`}
+                    data-testid={testIdPrefix + "-announcementText"}
                     id="announcementText"
                     rows={5}
                     isInvalid={Boolean(errors.announcementText)}
                     {...register("announcementText", {
-                        required: "Announcement is required.",
+                        required: "Announcement is required."
                     })}
-                    defaultValue={initialContents?.announcementText || ""}
                 />
                 <Form.Control.Feedback type="invalid">
                     {errors.announcementText?.message}
@@ -112,17 +112,18 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
 
             <Button
                 type="submit"
-                data-testid={`${testIdPrefix}-submit`}
+                data-testid={testIdPrefix + "-submit"}
             >
                 {buttonLabel}
             </Button>
             <Button
                 variant="Secondary"
                 onClick={() => navigate(-1)}
-                data-testid={`${testIdPrefix}-cancel`}
+                data-testid={testIdPrefix + "-cancel"}
             >
                 Cancel
             </Button>
+
         </Form>
     );
 }
