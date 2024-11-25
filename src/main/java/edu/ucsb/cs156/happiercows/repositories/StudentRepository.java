@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends CrudRepository<Student, Integer> {
     Optional<Student> findById(Long id);
+    Iterable<Student> findAllByCourseId(Long courseId);
 }

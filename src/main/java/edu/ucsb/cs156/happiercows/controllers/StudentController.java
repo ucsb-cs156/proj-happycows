@@ -34,5 +34,14 @@ public class StudentController extends ApiController {
             .orElseThrow(() -> new EntityNotFoundException(Student.class, id));
         return student;
     }
+
+    @Operation(summary = "Get all students by course id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/course")
+    public Iterable<Student> getByCourseId(@RequestParam Long courseId) throws EntityNotFoundException
+    {
+        Iterable<Student> students = studentRepository.findAllByCourseId(courseId);
+        return students;
+    }
 }
 
