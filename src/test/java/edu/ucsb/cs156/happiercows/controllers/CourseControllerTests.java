@@ -29,9 +29,6 @@ public class CourseControllerTests extends ControllerTestCase {
     @MockBean
     UserRepository userRepository;
 
-    // @Autowired
-    // private ObjectMapper objectMapper;
-
     // Logged out users
     @Test
     public void logged_out_users_cannot_get_all() throws Exception {
