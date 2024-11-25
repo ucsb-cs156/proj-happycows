@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-
+import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router-dom";
@@ -139,5 +139,33 @@ describe("ManageCows tests", () => {
         fireEvent.click(screen.getByTestId("sell-cow-button"));
         expect(mockSetMessage).toHaveBeenCalledWith("Sell");
         expect(mockOpenModal).toHaveBeenCalled();
+    });
+
+    test("tests for ADMIN has role", () => {
+        useParams.mockReturnValue({ userId: 1 });
+        const currentUser = currentUserFixtures.adminUser;
+
+        currentUserModule.useCurrentUser.mockReturnValue({
+            data: {
+                root: {
+                    user: {
+                        id: 1,
+                    },
+                },
+            },
+        });
+        
+        const hasRoleSpy = jest.spyOn(currentUserModule, 'hasRole');
+        
+        render(
+            <QueryClientProvider client={queryClient}>
+                <ManageCows
+                    userCommons={userCommonsFixtures.oneUserCommons[0]}
+                    setMessage={mockSetMessage}
+                    openModal={mockOpenModal}
+                    currentUser={currentUser}
+                />
+            </QueryClientProvider>
+        );
     });
 });
