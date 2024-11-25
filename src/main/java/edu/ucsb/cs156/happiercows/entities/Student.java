@@ -19,4 +19,5 @@ public class Student {
   private String lname;
   private String studentId;
   private String email;
+  private User user;
 }
