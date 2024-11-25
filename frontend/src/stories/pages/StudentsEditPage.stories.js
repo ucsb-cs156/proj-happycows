@@ -1,35 +1,32 @@
-import React from 'react';
-import StudentsEditPage from "main/pages/StudentsEditPage";
-
+import React from "react";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { rest } from 'msw';
-import { studentsFixtures } from 'fixtures/studentsFixtures';
+import { studentsFixtures } from "fixtures/studentsFixtures";
+import { rest } from "msw";
+
+import StudentsEditPage from "main/pages/StudentsEditPage";
 
 export default {
-    title: 'pages/StudentsEditPage',
-    component: StudentsEditPage,
+  title: "pages/StudentsEditPage",
+  component: StudentsEditPage,
 };
 
-export const Default = () => {
-    return (
-       <StudentsEditPage />
-    )
-}
+const Template = () => <StudentsEditPage storybook={true} />;
 
+export const Default = Template.bind({});
 Default.parameters = {
-    msw: [
-        rest.get('/api/currentUser', (_req, res, ctx) => {
-            return res(ctx.json(apiCurrentUserFixtures.adminUser));
-        }),
-        rest.get('/api/systemInfo', (_req, res, ctx) => {
-            return res(ctx.json(systemInfoFixtures.showingNeither));
-        }),
-        rest.get('/api/Students/all', (_req, res, ctx) => {
-            return res(ctx.json(studentsFixtures.threeStudents));
-        }),
-        rest.get('/api/Students/all', (_req, res, ctx) => {
-            return res(ctx.json({}, { status: 200 }));
-        }),
-    ]
-}
+  msw: [
+    rest.get("/api/currentUser", (_req, res, ctx) => {
+      return res(ctx.json(apiCurrentUserFixtures.userOnly));
+    }),
+    rest.get("/api/systemInfo", (_req, res, ctx) => {
+      return res(ctx.json(systemInfoFixtures.showingNeither));
+    }),
+    rest.get("/api/Students", (_req, res, ctx) => {
+      return res(ctx.json(studentsFixtures.threeStudents[0]));
+    }),
+    rest.put("/api/Students", (_req, res, ctx) => {
+      return res(ctx.json({}));
+    }),
+  ],
+};
