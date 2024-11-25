@@ -21,10 +21,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import org.springframework.http.MediaType;
 
 @WebMvcTest(controllers = StudentsController.class)
@@ -47,9 +48,9 @@ public class StudentsControllerTests extends ControllerTestCase {
 
         @WithMockUser(roles = { "USER" })
         @Test
-        public void logged_in_users_can_get_all() throws Exception {
+        public void logged_in_users_cannot_get_all() throws Exception {
                 mockMvc.perform(get("/api/Students/all"))
-                                .andExpect(status().is(200)); // logged
+                                .andExpect(status().is(403)); // logged
         }
 
         @Test
@@ -74,16 +75,16 @@ public class StudentsControllerTests extends ControllerTestCase {
                                 .andExpect(status().is(403)); // only admins can post
         }
 
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_exists() throws Exception {
                 Students student = Students.builder()
-                        .lName("Song")
-                        .fmName("AlecJ")
-                        .email("alecsong@ucsb.edu")
-                        .perm("1234567")
-                        .courseId((long)156)
-                        .build();
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long) 156)
+                                .build();
 
                 when(StudentsRepository.findById(eq(7L))).thenReturn(Optional.of(student));
 
@@ -99,9 +100,9 @@ public class StudentsControllerTests extends ControllerTestCase {
                 assertEquals(expectedJson, responseString);
         }
 
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
+        public void test_that_logged_in_admin_can_get_by_id_when_the_id_does_not_exist() throws Exception {
 
                 // arrange
 
@@ -119,26 +120,24 @@ public class StudentsControllerTests extends ControllerTestCase {
                 assertEquals("Students with id 7 not found", json.get("message"));
         }
 
-
-        
-        @WithMockUser(roles = { "USER" })
+        @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void logged_in_user_can_get_all_Students() throws Exception {
+        public void logged_in_admin_can_get_all_Students() throws Exception {
                 Students student1 = Students.builder()
-                        .lName("Song")
-                        .fmName("AlecJ")
-                        .email("alecsong@ucsb.edu")
-                        .perm("1234567")
-                        .courseId((long)156)
-                        .build();
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long) 156)
+                                .build();
 
                 Students student2 = Students.builder()
-                        .lName("Song2")
-                        .fmName("AlecJ2")
-                        .email("alecsong2@ucsb.edu")
-                        .perm("12345672")
-                        .courseId((long)1562)
-                        .build();
+                                .lastName("Song2")
+                                .firstMiddleName("AlecJ2")
+                                .email("alecsong2@ucsb.edu")
+                                .perm("12345672")
+                                .courseId((long) 1562)
+                                .build();
 
                 ArrayList<Students> expectedRequests = new ArrayList<>();
                 expectedRequests.addAll(Arrays.asList(student1, student2));
@@ -161,18 +160,18 @@ public class StudentsControllerTests extends ControllerTestCase {
         @Test
         public void an_admin_user_can_post_a_new_Students() throws Exception {
                 Students student1 = Students.builder()
-                        .lName("Song")
-                        .fmName("AlecJ")
-                        .email("alecsong@ucsb.edu")
-                        .perm("1234567")
-                        .courseId((long)156)
-                        .build();
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long) 156)
+                                .build();
 
                 when(StudentsRepository.save(eq(student1))).thenReturn(student1);
 
                 // act
                 MvcResult response = mockMvc.perform(
-                                post("/api/Students/post?lName=Song&fmName=AlecJ&email=alecsong@ucsb.edu&perm=1234567&courseId=156")
+                                post("/api/Students/post?lastName=Song&firstMiddleName=AlecJ&email=alecsong@ucsb.edu&perm=1234567&courseId=156")
                                                 .with(csrf()))
                                 .andExpect(status().isOk()).andReturn();
 
@@ -182,23 +181,22 @@ public class StudentsControllerTests extends ControllerTestCase {
                 String responseString = response.getResponse().getContentAsString();
                 assertEquals(expectedJson, responseString);
         }
+
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
         public void admin_can_edit_an_existing_Students() throws Exception {
                 Students StudentsOrig = Students.builder()
-                                .lName("Song")
-                                .fmName("AlecJ")
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
                                 .email("alecsong@ucsb.edu")
                                 .perm("1234567")
-                                .courseId((long)156)
                                 .build();
 
                 Students StudentsEdited = Students.builder()
-                                .lName("Song2")
-                                .fmName("AlecJ2")
+                                .lastName("Song2")
+                                .firstMiddleName("AlecJ2")
                                 .email("alecsong2@ucsb.edu")
                                 .perm("12345672")
-                                .courseId((long)1562)
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(StudentsEdited);
@@ -226,11 +224,11 @@ public class StudentsControllerTests extends ControllerTestCase {
         public void admin_cannot_edit_Students_that_does_not_exist() throws Exception {
 
                 Students StudentsEdited = Students.builder()
-                                .lName("Song")
-                                .fmName("AlecJ")
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
                                 .email("alecsong@ucsb.edu")
                                 .perm("1234567")
-                                .courseId((long)156)
+                                .courseId((long) 156)
                                 .build();
 
                 String requestBody = mapper.writeValueAsString(StudentsEdited);
@@ -256,11 +254,11 @@ public class StudentsControllerTests extends ControllerTestCase {
         @Test
         public void admin_can_delete_a_Students() throws Exception {
                 Students Students1 = Students.builder()
-                                .lName("Song")
-                                .fmName("AlecJ")
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
                                 .email("alecsong@ucsb.edu")
                                 .perm("1234567")
-                                .courseId((long)156)
+                                .courseId((long) 156)
                                 .build();
 
                 when(StudentsRepository.findById(eq(15L))).thenReturn(Optional.of(Students1));
@@ -299,4 +297,3 @@ public class StudentsControllerTests extends ControllerTestCase {
                 assertEquals("Students with id 15 not found", json.get("message"));
         }
 }
-
