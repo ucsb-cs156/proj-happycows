@@ -38,11 +38,11 @@ export default function StudentsTable({ students, currentUser }) {
         },
         {
             Header: 'Last Name',
-            accessor: 'lName',
+            accessor: 'lastName',
         },
         {
             Header: 'First and Middle Name',
-            accessor: 'fmName',
+            accessor: 'firstMiddle',
         },
         {
             Header: 'Course Id',

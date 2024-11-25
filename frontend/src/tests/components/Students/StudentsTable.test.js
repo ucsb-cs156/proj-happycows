@@ -16,7 +16,7 @@ describe("StudentsTable tests", () => {
   const queryClient = new QueryClient();
 
   const expectedHeaders = ["id", "Perm", "Last Name", "First and Middle Name", "Course Id", "Email"];
-  const expectedFields = ["id", "perm", "lName", "fmName", "courseId", "email"];
+  const expectedFields = ["id", "perm", "lastName", "firstMiddle", "courseId", "email"];
   const testId = "StudentsTable";
 
   test("renders empty table correctly", () => {
@@ -70,10 +70,10 @@ describe("StudentsTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-lName`)).toHaveTextContent("test2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-lastName`)).toHaveTextContent("test2");
 
     const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
@@ -110,10 +110,10 @@ describe("StudentsTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-lName`)).toHaveTextContent("test2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-lastName`)).toHaveTextContent("test2");
 
     expect(screen.queryByText("Delete")).not.toBeInTheDocument();
     expect(screen.queryByText("Edit")).not.toBeInTheDocument();
@@ -135,7 +135,7 @@ describe("StudentsTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe("StudentsTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
