@@ -156,13 +156,27 @@ describe("StudentsEditPage tests", () => {
       );
       await screen.findByTestId("StudentsForm-email");
 
-      const lastNameField = screen.getByTestId(
-        "StudentsForm-lastName",
+      const permField = screen.getByTestId("StudentsForm-perm");
+      const lastNameField = screen.getByTestId("StudentsForm-lastName");
+      const firstMiddleNameField = screen.getByTestId(
+        "StudentsForm-firstMiddleName",
+      );
+      const emailField = screen.getByTestId(
+        "StudentsForm-email",
       );
       const submitButton = screen.getByTestId("StudentsForm-submit");
 
+      fireEvent.change(permField, {
+        target: { value: "12345678" },
+      });
       fireEvent.change(lastNameField, {
         target: { value: "Song2" },
+      });
+      fireEvent.change(firstMiddleNameField, {
+        target: { value: "Alec J 2" },
+      })
+      fireEvent.change(emailField, {
+        target: { value: "test2@hotmail.com" },
       });
       fireEvent.click(submitButton);
 
@@ -170,17 +184,16 @@ describe("StudentsEditPage tests", () => {
       expect(mockToast).toBeCalledWith(
         "Student Updated - id: 1",
       );
-      expect(mockNavigate).toBeCalledWith({ to: "/Students" });
+      expect(mockNavigate).toBeCalledWith({ to: "/admin/Students" });
 
       expect(axiosMock.history.put.length).toBe(1);
       expect(axiosMock.history.put[0].params).toEqual({ id: 1 });
       expect(axiosMock.history.put[0].data).toBe(
         JSON.stringify({
-          id: 1,
-          perm: "1234567",
+          perm: "12345678",
           lastName: "Song2",
-          firstMiddleName: "Alec J2",
-          courseId: "12342",
+          firstMiddleName: "Alec J 2",
+          courseId: "1234",
           email: "test2@hotmail.com",
         }),
       ); // posted object

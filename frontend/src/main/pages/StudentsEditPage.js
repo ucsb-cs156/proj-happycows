@@ -10,8 +10,6 @@ export default function StudentsEditPage({ storybook = false }) {
 
   const {
     data: students,
-    _error,
-    _status,
   } = useBackend(
     // Stryker disable next-line all : don't test internal caching of React Query
     [`/api/StudentsEdits?id=${id}`],
@@ -42,7 +40,7 @@ export default function StudentsEditPage({ storybook = false }) {
 
   const onSuccess = (students) => {
     toast(
-      `Student Updated - id: ${students.id} Team ID: ${students.teamId}`,
+      `Student Updated - id: ${students.id}`,
     );
   };
 
