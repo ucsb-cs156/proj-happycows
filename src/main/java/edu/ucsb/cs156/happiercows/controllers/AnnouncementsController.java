@@ -24,6 +24,8 @@ import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 
 import org.springframework.security.core.Authentication;
+
+import java.time.ZoneOffset;
 import java.util.Date;
 
 
@@ -70,6 +72,14 @@ public class AnnouncementsController extends ApiController{
             if (!userCommonsLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Commons_id must exist.");
             }
+        }
+
+        if (startDate != null) {
+            startDate = Date.from(startDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
+        }
+
+        if (endDate != null) {
+            endDate = Date.from(endDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
         }
 
         if (startDate == null) { 

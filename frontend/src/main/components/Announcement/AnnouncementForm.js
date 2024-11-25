@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
     const getCurrentDate = () => {
         const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0');
-        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getUTCFullYear();
+        const month = String(today.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(today.getUTCDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
 
@@ -36,6 +36,10 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         if (!data.endDate) {
             data.endDate = null;
         }
+
+        const startDate = new Date(data.startDate).toISOString().split('T')[0];  
+        data.startDate = startDate;
+
         submitAction(data);
     };
 
