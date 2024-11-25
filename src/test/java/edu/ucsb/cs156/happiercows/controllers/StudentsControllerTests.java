@@ -123,7 +123,7 @@ public class StudentsControllerTests extends ControllerTestCase {
         
         @WithMockUser(roles = { "ADMIN" })
         @Test
-        public void logged_in_user_can_get_all_Students() throws Exception {
+        public void logged_in_admin_can_get_all_Students() throws Exception {
                 Students student1 = Students.builder()
                         .lastName("Song")
                         .firstMiddleName("AlecJ")
