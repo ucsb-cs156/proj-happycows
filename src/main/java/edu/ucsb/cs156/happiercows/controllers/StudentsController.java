@@ -4,6 +4,8 @@ import edu.ucsb.cs156.happiercows.entities.Course;
 import edu.ucsb.cs156.happiercows.entities.Student;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
