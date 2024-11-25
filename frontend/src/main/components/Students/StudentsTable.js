@@ -4,12 +4,14 @@ import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/studentsUtils"
 import { useNavigate } from "react-router-dom";
-export default function StudentsTable({ students }) {
+import { hasRole } from "main/utils/currentUser";
+
+export default function StudentsTable({ students, currentUser }) {
 
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/admin/Students/edit/${cell.row.values.id}`)
+        navigate(`/Students/edit/${cell.row.values.id}`)
     }
 
     // Stryker disable all : hard to test for query caching
@@ -36,11 +38,11 @@ export default function StudentsTable({ students }) {
         },
         {
             Header: 'Last Name',
-            accessor: 'lName',
+            accessor: 'lastName',
         },
         {
             Header: 'First and Middle Name',
-            accessor: 'fmName',
+            accessor: 'firstMiddle',
         },
         {
             Header: 'Course Id',
@@ -52,8 +54,10 @@ export default function StudentsTable({ students }) {
         }
     ];
 
-    columns.push(ButtonColumn("Edit", "primary", editCallback, "StudentsTable"));
-    columns.push(ButtonColumn("Delete", "danger", deleteCallback, "StudentsTable"));
+    if (hasRole(currentUser, "ROLE_ADMIN")) {
+        columns.push(ButtonColumn("Edit", "primary", editCallback, "StudentsTable"));
+        columns.push(ButtonColumn("Delete", "danger", deleteCallback, "StudentsTable"));
+    } 
 
     return <OurTable
         data={students}

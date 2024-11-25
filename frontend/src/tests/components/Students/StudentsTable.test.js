@@ -16,7 +16,7 @@ describe("StudentsTable tests", () => {
   const queryClient = new QueryClient();
 
   const expectedHeaders = ["id", "Perm", "Last Name", "First and Middle Name", "Course Id", "Email"];
-  const expectedFields = ["id", "perm", "lName", "fmName", "courseId", "email"];
+  const expectedFields = ["id", "perm", "lastName", "firstMiddle", "courseId", "email"];
   const testId = "StudentsTable";
 
   test("renders empty table correctly", () => {
@@ -70,10 +70,10 @@ describe("StudentsTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
-    expect(screen.getByTestId(`${testId}-cell-row-1-col-lName`)).toHaveTextContent("test2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-lastName`)).toHaveTextContent("test2");
 
     const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
@@ -84,6 +84,41 @@ describe("StudentsTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
 
   });
+
+  test("Has the expected column headers, content for ordinary user", () => {
+    // arrange
+    const currentUser = currentUserFixtures.userOnly;
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <StudentsTable students={studentsFixtures.threeStudents} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    // assert
+    expectedHeaders.forEach((headerText) => {
+      const header = screen.getByText(headerText);
+      expect(header).toBeInTheDocument();
+    });
+
+    expectedFields.forEach((field) => {
+      const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
+      expect(header).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
+
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
+    expect(screen.getByTestId(`${testId}-cell-row-1-col-lastName`)).toHaveTextContent("test2");
+
+    expect(screen.queryByText("Delete")).not.toBeInTheDocument();
+    expect(screen.queryByText("Edit")).not.toBeInTheDocument();
+  });
+
 
   test("Edit button navigates to the edit page", async () => {
     // arrange
@@ -100,7 +135,7 @@ describe("StudentsTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
     expect(editButton).toBeInTheDocument();
@@ -109,7 +144,7 @@ describe("StudentsTable tests", () => {
     fireEvent.click(editButton);
 
     // assert - check that the navigate function was called with the expected path
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/admin/Students/edit/1'));
+    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/Students/edit/1'));
 
   });
 
@@ -128,7 +163,7 @@ describe("StudentsTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-lName`)).toHaveTextContent("test1");
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-lastName`)).toHaveTextContent("test1");
 
     const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
     expect(deleteButton).toBeInTheDocument();
