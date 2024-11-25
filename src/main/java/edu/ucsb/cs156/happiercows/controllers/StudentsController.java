@@ -34,7 +34,7 @@ public class StudentsController extends ApiController {
      * @return an iterable of Students
      */
     @Operation(summary= "List all students")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public Iterable<Students> allStudents() {
         Iterable<Students> students = StudentsRepository.findAll();
@@ -44,8 +44,8 @@ public class StudentsController extends ApiController {
     /**
      * Create new Student
      * 
-     * @param lName        last name
-     * @param fmName       first and middle name
+     * @param lastName        last name
+     * @param firstMiddleName       first and middle name
      * @param email           email
      * @param perm            Perm number
      * @param courseId        course ID
@@ -55,15 +55,15 @@ public class StudentsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/post")
     public Students postStudents(
-            @Parameter(name = "lName") @RequestParam String lName,
-            @Parameter(name = "fmName") @RequestParam String fmName,
+            @Parameter(name = "lastName") @RequestParam String lastName,
+            @Parameter(name = "firstMiddleName") @RequestParam String firstMiddleName,
             @Parameter(name = "email") @RequestParam String email,
             @Parameter(name = "perm") @RequestParam String perm,
             @Parameter(name="courseId") @RequestParam Long courseId)
             throws JsonProcessingException {
         Students student = Students.builder()
-                .lName(lName)
-                .fmName(fmName)
+                .lastName(lastName)
+                .firstMiddleName(firstMiddleName)
                 .email(email)
                 .perm(perm)
                 .courseId(courseId)
@@ -79,7 +79,7 @@ public class StudentsController extends ApiController {
      * @return a Student
      */
     @Operation(summary = "Get a single Student by id")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("")
     public Students getById(
             @Parameter(name = "id") @RequestParam Long id) {
@@ -106,18 +106,16 @@ public class StudentsController extends ApiController {
         Students student = StudentsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
 
-        student.setLName(incoming.getLName());
-        student.setFmName(incoming.getFmName());
+        student.setLastName(incoming.getLastName());
+        student.setFirstMiddleName(incoming.getFirstMiddleName());
         student.setEmail(incoming.getEmail());
-        student.setCourseId(incoming.getCourseId());
         student.setPerm(incoming.getPerm());
 
         StudentsRepository.save(student);
 
         return student;
     }
-
-     /**
+    /**
      * Delete a Student
      * 
      * @param id the id of the Students to delete
