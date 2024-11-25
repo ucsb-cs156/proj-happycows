@@ -142,8 +142,8 @@ describe("ManageCows tests", () => {
     });
 
     test("tests for ADMIN has role", () => {
-        useParams.mockReturnValue({ userId: 1 });
         const currentUser = currentUserFixtures.adminUser;
+        useParams.mockReturnValue({ userId: 1 });
 
         currentUserModule.useCurrentUser.mockReturnValue({
             data: {
@@ -154,7 +154,7 @@ describe("ManageCows tests", () => {
                 },
             },
         });
-        
+        currentUserModule.hasRole.mockReturnValue(true);
         render(
             <QueryClientProvider client={queryClient}>
                 <ManageCows
