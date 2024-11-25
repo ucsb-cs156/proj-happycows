@@ -42,7 +42,7 @@ export default function StudentsTable({ students, currentUser }) {
         },
         {
             Header: 'First and Middle Name',
-            accessor: 'firstMiddle',
+            accessor: 'firstMiddleName',
         },
         {
             Header: 'Course Id',
