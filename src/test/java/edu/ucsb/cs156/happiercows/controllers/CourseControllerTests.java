@@ -146,7 +146,7 @@ public class CourseControllerTests extends ControllerTestCase {
         when(courseRepository.findById(eq(15L))).thenReturn(java.util.Optional.of(course));
 
         // act
-        MvcResult response = mockMvc.perform(delete("/api/courses/delete/delete?id=15").with(csrf()))
+        MvcResult response = mockMvc.perform(delete("/api/courses?id=15").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -164,7 +164,7 @@ public class CourseControllerTests extends ControllerTestCase {
         when(courseRepository.findById(eq(15L))).thenReturn(java.util.Optional.empty());
 
         // act
-        MvcResult response = mockMvc.perform(delete("/api/courses/delete?id=15").with(csrf()))
+        MvcResult response = mockMvc.perform(delete("/api/courses?id=15").with(csrf()))
                 .andExpect(status().isNotFound()).andReturn();
 
         // assert
