@@ -24,6 +24,9 @@ import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 
 import org.springframework.security.core.Authentication;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -61,6 +64,11 @@ public class AnnouncementsController extends ApiController{
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
+        // Timezone difference
+        TimeZone timeZone = TimeZone.getDefault(); 
+        int offsetMilli = timeZone.getOffset(System.currentTimeMillis());
+        int offsetHours = offsetMilli / (1000 * 60 * 60);
+
         // Make sure the user is part of the commons or is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
@@ -75,6 +83,30 @@ public class AnnouncementsController extends ApiController{
         if (startDate == null) { 
             log.info("Start date not specified. Defaulting to current date.");
             startDate = new Date(); 
+        }
+
+        if (startDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(startDate);
+
+            if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
+                calendar.set(Calendar.HOUR_OF_DAY, -offsetHours); 
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                startDate = calendar.getTime();
+            }
+        }
+
+        if (endDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(endDate);
+
+            if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
+                calendar.set(Calendar.HOUR_OF_DAY, -offsetHours); 
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 0);
+                endDate = calendar.getTime();
+            }
         }
 
         if (announcementText == "") {

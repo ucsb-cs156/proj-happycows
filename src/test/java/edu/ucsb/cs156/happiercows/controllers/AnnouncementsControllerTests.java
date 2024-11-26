@@ -67,16 +67,14 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void adminCanPostAnnouncements() throws Exception {
-
         // arrange
         Long commonsId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date start = sdf.parse("2024-03-02T16:00:00.000-08:00");
-        Date end = sdf.parse("2025-03-02T16:00:00.000-08:00");
+        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
+        Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
 
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
@@ -109,7 +107,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date start = sdf.parse("2024-03-02T16:00:00.000-08:00");
+        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
 
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
