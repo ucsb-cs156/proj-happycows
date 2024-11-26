@@ -3,6 +3,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import wiremock.org.checkerframework.checker.units.qual.s;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,10 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 
 import org.springframework.security.core.Authentication;
 import java.util.Date;
+
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.Calendar;
 
 
 import java.util.Optional;
@@ -72,10 +77,6 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
-        if (startDate == null) { 
-            log.info("Start date not specified. Defaulting to current date.");
-            startDate = new Date(); 
-        }
 
         if (announcementText == "") {
             return ResponseEntity.badRequest().body("Announcement cannot be empty.");
