@@ -46,7 +46,7 @@ public class AnnouncementsController extends ApiController{
 
     @Operation(summary = "Create an announcement", description = "Create an announcement associated with a specific commons")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("/post")
+    @PostMapping("/post/{commonsId}")
     public ResponseEntity<Object> createAnnouncement(
         @Parameter(description = "The id of the common") @RequestParam Long commonsId,
         @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) Date startDate,
