@@ -5,37 +5,39 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import static org.mockito.ArgumentMatchers.any;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-import java.util.Calendar;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,6 +51,9 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 
 import lombok.extern.slf4j.Slf4j;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 @Slf4j
 @WebMvcTest(controllers = AnnouncementsController.class)
@@ -134,6 +139,43 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals(expectedResponseString, announcementString);
     }
 
+    // @Autowired
+    // private MockMvc mockMvc;
+
+    // @WithMockUser(roles = {"USER"})
+    // @Test
+    // public void userCannotPostAnnouncementWithStartAfterEnd() throws Exception {
+    //     // arrange
+    //     Long commonsId = 1L;
+    //     Long id = 0L;
+    //     Long userId = 1L;
+    //     String announcement = "Hello world!";
+    //     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    //     Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
+    //     Date end = sdf.parse("2023-03-03T00:00:00.000-08:00");
+
+    //     Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
+
+    //     when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+
+    //     UserCommons userCommons = UserCommons.builder().build();
+    //     when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+
+    //     // act 
+    //     MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, announcement, start, end).with(csrf()))
+    //         .andExpect(status().isBadRequest()).andReturn();
+
+    //     // assert
+    //     verify(announcementRepository, times(0)).save(any(Announcement.class));
+        
+    //     // parse JSON response
+    //     String jsonResponse = response.getResponse().getContentAsString();
+    //     // System.out.println("JSON Response: " + jsonResponse); // Add logging here
+    //     TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+    //     Map<String, Object> json = objectMapper.readValue(jsonResponse, TypeFactory.defaultInstance().constructType(typeRef));
+    //     assertEquals("Start date must be before end date.", json.get("message"));
+    // }
+
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void noCommonsId() throws Exception {
@@ -160,6 +202,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
+        // Map<String, Object> json = responseToJson(response);
+        // assertEquals("Commons_id must exist.", json.get("message"));
     }
 
     @WithMockUser(roles = {"ADMIN"})
@@ -188,6 +232,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     
             // assert
             verify(announcementRepository, times(0)).save(any(Announcement.class));
+            // Map<String, Object> json = responseToJson(response);
+            // assertEquals("Start date must be before end date.", json.get("message"));
     }
 
 
@@ -216,10 +262,11 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
     }
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @WithMockUser(roles = {"USER"})
     @Test
     public void userCannotPostAnnouncementWithEmptyString() throws Exception {
-
         // arrange
         Long commonsId = 1L;
         Long id = 0L;
@@ -232,16 +279,23 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
-        //act 
-        mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, start, announcement).with(csrf()))
+        // ...
+
+        // act 
+        MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
+
+        // parse JSON response
+        // String jsonResponse = response.getResponse().getContentAsString();
+        // TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
+        // Map<String, Object> json = objectMapper.readValue(jsonResponse, TypeFactory.defaultInstance().constructType(typeRef));
+        // assertEquals("Announcement must not be empty.", json.get("message"));
     }
+
 
     @WithMockUser(roles = {"USER"})
     @Test
