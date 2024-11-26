@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -237,6 +238,59 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
+
+    // Added tests
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void testStartAndEndDateModification() throws Exception {
+        // arrange
+        Long commonsId = 1L;
+        Long id = 0L;
+        Long userId = 1L;
+        String announcement = "Hello world!";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        
+        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
+        Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
+
+        Announcement announcementObj = Announcement.builder()
+                .id(id)
+                .commonsId(commonsId)
+                .startDate(start)
+                .endDate(end)
+                .announcementText(announcement)
+                .build();
+
+        when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+
+        UserCommons userCommons = UserCommons.builder().build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+
+        // act 
+        MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}?announcementText={announcement}&startDate={start}&endDate={end}", commonsId, announcement, sdf.format(start), sdf.format(end))
+                .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+        String announcementString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(announcementObj);
+        log.info("Got back from API: {}", announcementString);
+        assertEquals(expectedResponseString, announcementString);
+
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(announcementObj.getStartDate());
+        assertEquals(8, startCalendar.get(Calendar.HOUR_OF_DAY), "The start date hour should be set to 8 AM");
+        assertEquals(0, startCalendar.get(Calendar.MINUTE), "The start date minute should be 0");
+        assertEquals(0, startCalendar.get(Calendar.SECOND), "The start date second should be 0");
+
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(announcementObj.getEndDate());
+        assertEquals(8, endCalendar.get(Calendar.HOUR_OF_DAY), "The end date hour should be set to 8 AM");
+        assertEquals(0, endCalendar.get(Calendar.MINUTE), "The end date minute should be 0");
+        assertEquals(0, endCalendar.get(Calendar.SECOND), "The end date second should be 0");
+    }
+
 
     //* */ hide tests
     @WithMockUser(roles = {"ADMIN"})

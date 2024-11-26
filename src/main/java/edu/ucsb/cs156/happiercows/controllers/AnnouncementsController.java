@@ -64,11 +64,6 @@ public class AnnouncementsController extends ApiController{
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
-        // Timezone difference
-        TimeZone timeZone = TimeZone.getDefault(); 
-        int offsetMilli = timeZone.getOffset(System.currentTimeMillis());
-        int offsetHours = offsetMilli / (1000 * 60 * 60);
-
         // Make sure the user is part of the commons or is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
@@ -85,6 +80,7 @@ public class AnnouncementsController extends ApiController{
             startDate = new Date(); 
         }
 
+        // Fix timezone difference for PST
         if (startDate != null) {
             Calendar calendar = Calendar.getInstance(); 
             calendar.setTime(startDate);
@@ -97,6 +93,7 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
+        // Fix timezone difference for PST
         if (endDate != null) {
             Calendar calendar = Calendar.getInstance(); 
             calendar.setTime(endDate);
