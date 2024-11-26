@@ -1,17 +1,32 @@
 import { Button, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
+
+    const getDate = () => {
+        const number = new Date();
+        const year = number.getFullYear();
+        const month = String(number.getMonth() + 1).padStart(2, '0');
+        const day = String(number.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     // Stryker disable all
     const {
         register,
         formState: { errors },
         handleSubmit,
-    } = useForm(
-        { defaultValues: initialContents || {}, }
-    );
+    } = useForm({
+        defaultValues: {
+            startDate: initialContents?.startDate 
+                ? initialContents.startDate.split("T")[0]
+                : getDate(),
+            endDate: initialContents?.endDate,
+            announcementText: initialContents?.announcementText || "",
+            ...initialContents, 
+        },
+    });
     // Stryker restore all
 
     const navigate = useNavigate();
