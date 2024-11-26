@@ -241,8 +241,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
-        Date start = sdf.parse("2024-03-03T08:00:00.000-08:00");
-        Date end = sdf.parse("2025-03-03T08:00:00.000-08:00");
+        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
+        Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder()
                 .id(id)
