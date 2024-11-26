@@ -78,6 +78,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
                         required: "StartDate is required.",
+                        pattern: { value: isodate_regex, message: "Start Date must be in ISO format." },
                     })}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -91,15 +92,16 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 // Stryker disable next-line all
                     data-testid={testIdPrefix + "-endDate"}
                     id="endDate"
-                    type="date"
-                    isInvalid={Boolean(errors.endDate)}
+                    type="datetime-local"
+                    isInvalid={Boolean(errors.startDate)}
                     {...register("endDate", {
-                        pattern: {
-                            value: isodate_regex,
-                            message: "End Date must be in ISO format.",
-                        },
+                        required: "endDate is required.",
+                        pattern: { value: isodate_regex, message: "End Date must be in ISO format." },
                     })}
                 />
+                <Form.Control.Feedback type="invalid">
+                    {errors.endDate && 'End Date is required and must be provided in ISO format.'}
+                </Form.Control.Feedback>
             </Form.Group>
 
 
