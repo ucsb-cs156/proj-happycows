@@ -160,7 +160,7 @@ public class CoursesControllerTests extends ControllerTestCase {
         verify(coursesRepository, times(1)).delete(any());
 
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 15 deleted", json.get("message"));
+        assertEquals("Course with id 15 deleted", json.get("message"));
     }
     @WithMockUser(roles = {"ADMIN", "USER"})   
     @Test
@@ -228,6 +228,7 @@ public class CoursesControllerTests extends ControllerTestCase {
                                 .term("F24")
                                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+
                                 .build();
 
 
