@@ -90,7 +90,7 @@ public class AnnouncementsController extends ApiController{
             calendar.setTime(startDate);
 
             if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
-                calendar.set(Calendar.HOUR_OF_DAY, -offsetHours); 
+                calendar.set(Calendar.HOUR_OF_DAY, 8); 
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
                 startDate = calendar.getTime();
@@ -102,7 +102,7 @@ public class AnnouncementsController extends ApiController{
             calendar.setTime(endDate);
 
             if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
-                calendar.set(Calendar.HOUR_OF_DAY, -offsetHours); 
+                calendar.set(Calendar.HOUR_OF_DAY, 8); 
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
                 endDate = calendar.getTime();
