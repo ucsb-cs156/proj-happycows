@@ -67,7 +67,7 @@ public class CourseController extends ApiController {
 
     @Operation(summary = "Delete a course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("")
+    @DeleteMapping("/delete")
     public Object deleteCourse(
             @Parameter(description = "ID of the Course to delete") @RequestParam Long id) {
         Course course = courseRepository.findById(id)
