@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Map;
 
+import org.springframework.http.MediaType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -77,7 +78,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("F23")
                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .githubOrg("ucsb-cs16-f23")
                 .build();
 
         Courses course2 = Courses.builder()
@@ -86,7 +86,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("W24")
                 .startDate(LocalDateTime.parse("2024-01-08T00:00:00"))
                 .endDate(LocalDateTime.parse("2024-03-22T00:00:00"))
-                .githubOrg("ucsb-cs156-w24")
                 .build();
 
         ArrayList<Courses> expectedCourses = new ArrayList<>();
@@ -117,7 +116,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("F23")
                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .githubOrg("ucsb-cs16-f23")
                 .build();
 
         when(coursesRepository.save(eq(courseBefore)))
@@ -125,7 +123,7 @@ public class CoursesControllerTests extends ControllerTestCase {
 
         // act
         MvcResult response = mockMvc.perform(
-                post("/api/courses/post?name=CS16&school=UCSB&term=F23&startDate=2023-09-01T00:00:00&endDate=2023-12-31T00:00:00&githubOrg=ucsb-cs16-f23")
+                post("/api/courses/post?name=CS16&school=UCSB&term=F23&startDate=2023-09-01T00:00:00&endDate=2023-12-31T00:00:00")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
@@ -145,7 +143,6 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .term("F23")
                 .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
                 .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .githubOrg("ucsb-cs16-f23")
                 .build();
         
         
@@ -178,4 +175,79 @@ public class CoursesControllerTests extends ControllerTestCase {
         assertEquals("Courses with id 20 not found", json.get("message"));
     }
 
+    //edit
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_Course() throws Exception {
+                // arrange
+
+                Courses courseOrig = Courses.builder().id(67L)
+                                .name("CS16")
+                                .school("UCSB")
+                                .term("F23")
+                                .startDate(LocalDateTime.parse("2023-09-05T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-19T00:00:00"))
+                                .build();
+
+                Courses courseEdited = Courses.builder().id(67L)
+                                .name("CS32")
+                                .school("UCLA")
+                                .term("F24")
+                                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+                                .build();
+
+                String requestBody = mapper.writeValueAsString(courseEdited);
+
+                when(coursesRepository.findById(eq(67L))).thenReturn(Optional.of(courseOrig));
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/courses?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                // assert
+                verify(coursesRepository, times(1)).findById(67L);
+                verify(coursesRepository, times(1)).save(courseEdited); // should be saved with correct user
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(requestBody, responseString);
+        }
+
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_cannot_edit_course_that_does_not_exist() throws Exception {
+                // arrange
+
+               Courses courseEdited = Courses.builder().id(67L)
+                                .name("CS32")
+                                .school("UCSB")
+                                .term("F24")
+                                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+                                .build();
+
+
+                String requestBody = mapper.writeValueAsString(courseEdited);
+
+                when(coursesRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/courses?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                // assert
+                verify(coursesRepository, times(1)).findById(67L);
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Courses with id 67 not found", json.get("message"));
+
+        }
 }
