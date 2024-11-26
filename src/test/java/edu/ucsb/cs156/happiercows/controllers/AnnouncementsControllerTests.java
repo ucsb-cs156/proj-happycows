@@ -155,7 +155,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
         //act 
-        mockMvc.perform(post("/api/announcements/post/{commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -183,7 +183,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
     
             //act 
-            mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, announcement, start, end).with(csrf()))
+            MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, announcement, start, end).with(csrf()))
                 .andExpect(status().isBadRequest()).andReturn();
     
             // assert
