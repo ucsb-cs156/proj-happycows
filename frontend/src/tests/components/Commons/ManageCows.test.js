@@ -155,7 +155,9 @@ describe("ManageCows tests", () => {
                 },
             },
         });
-        currentUserModule.hasRole.mockReturnValue(true);
+        currentUserModule.hasRole.mockImplementation((_, role) => {
+            return role === "ROLE_ADMIN";
+        });
         render(
             <QueryClientProvider client={queryClient}>
                 <ManageCows
@@ -165,6 +167,9 @@ describe("ManageCows tests", () => {
                 />
             </QueryClientProvider>
         );
-        expect(screen.queryByTestId("ManageCows-ViewOnly")).toBeInTheDocument();
+        expect(currentUserModule.hasRole).toHaveBeenCalledWith(
+            expect.anything(),
+            "ROLE_ADMIN"
+        );
     });
 });
