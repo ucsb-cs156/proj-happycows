@@ -38,6 +38,6 @@ describe("PlaceholderEditPage tests", () => {
     );
 
     // assert
-    await screen.findByText("Edit page not yet implemented");
+    expect(await screen.findByText("Edit page not yet implemented")).toBeInTheDocument();
   });
 });

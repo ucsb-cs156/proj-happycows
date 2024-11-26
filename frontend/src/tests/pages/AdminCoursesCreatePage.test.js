@@ -39,6 +39,6 @@ describe("AdminCoursesCreatePage tests", () => {
 
     // assert
 
-    await screen.findByText("Create page not yet implemented");
+    expect(await screen.findByText("Create page not yet implemented")).toBeInTheDocument();
   });
 });
