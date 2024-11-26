@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 
-@Tag(name = "Courses")
+@Tag(name = "courses")
 @RequestMapping("/api/courses")
 @RestController
 @Slf4j
