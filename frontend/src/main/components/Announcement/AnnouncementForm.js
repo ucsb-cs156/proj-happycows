@@ -74,7 +74,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 // Stryker disable next-line all
                     data-testid={testIdPrefix + "-startDate"}
                     id="startDate"
-                    type="date"
+                    type="datetime-local"
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
                         required: "StartDate is required.",
@@ -92,7 +92,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 // Stryker disable next-line all
                     data-testid={testIdPrefix + "-endDate"}
                     id="endDate"
-                    type="date"
+                    type="datetime-local"
                     isInvalid={Boolean(errors.startDate)}
                     {...register("endDate", {
                         required: "endDate is required.",
