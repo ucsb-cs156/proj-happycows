@@ -1,35 +1,10 @@
-// Course.java
-// package edu.ucsb.cs156.happiercows.entities;
-
-// import lombok.*;
-
-// import javax.persistence.*;
-
-// import java.time.LocalDateTime;
-
-// @Data
-// @AllArgsConstructor
-// @NoArgsConstructor(access = AccessLevel.PROTECTED)
-// @Builder
-// @Entity(name = "courses")
-// public class Course {
-//   @Id
-//   @GeneratedValue(strategy = GenerationType.IDENTITY)
-//   private long id;
-
-//   private String name;
-//   private String school;
-//   private String term;
-//   private LocalDateTime startDate;
-//   private LocalDateTime endDate;  
-// }
-
-//Based on the code snippet provided, complete CourseController.java
-
-
 package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Course;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -88,4 +64,5 @@ public class CourseController extends ApiController {
     
         return courseRepository.save(course);
     }
-}
+}   
+
