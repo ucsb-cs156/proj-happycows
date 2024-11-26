@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router-dom";
@@ -139,5 +138,39 @@ describe("ManageCows tests", () => {
         fireEvent.click(screen.getByTestId("sell-cow-button"));
         expect(mockSetMessage).toHaveBeenCalledWith("Sell");
         expect(mockOpenModal).toHaveBeenCalled();
+    });
+
+    test("tests for ADMIN has role", () => {
+        useParams.mockReturnValue({ userId: 1 });
+
+        currentUserModule.useCurrentUser.mockReturnValue({
+            data: {
+                root: {
+                    user: {
+                        id: 1,
+                    },
+                    roles: [{
+                        "authority": "ROLE_ADMIN"
+                    }]
+                },
+            },
+        });
+        currentUserModule.hasRole.mockImplementation((_, role) => {
+            return role === "ROLE_ADMIN";
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <ManageCows
+                    userCommons={userCommonsFixtures.oneUserCommons[0]}
+                    setMessage={mockSetMessage}
+                    openModal={mockOpenModal}
+                />
+            </QueryClientProvider>
+        );
+        // the use of expect.anything is documented in the link: https://jsr.io/@std/expect/doc/~/expect.anything
+        expect(currentUserModule.hasRole).toHaveBeenCalledWith(
+            expect.anything(),
+            "ROLE_ADMIN"
+        );
     });
 });
