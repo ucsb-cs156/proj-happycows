@@ -75,22 +75,19 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
-        if (startDate == null) { 
-            log.info("Start date not specified. Defaulting to current date.");
-            startDate = new Date(); 
-        }
-
         // Fix timezone difference for PST
         if (startDate != null) {
             Calendar calendar = Calendar.getInstance(); 
             calendar.setTime(startDate);
 
-            if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
-                calendar.set(Calendar.HOUR_OF_DAY, 8); 
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                startDate = calendar.getTime();
-            }
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            startDate = calendar.getTime();
+        }
+        else {
+            log.info("Start date not specified. Defaulting to current date.");
+            startDate = new Date(); 
         }
 
         // Fix timezone difference for PST
@@ -98,12 +95,10 @@ public class AnnouncementsController extends ApiController{
             Calendar calendar = Calendar.getInstance(); 
             calendar.setTime(endDate);
 
-            if (calendar.get(Calendar.HOUR_OF_DAY) == 0 && calendar.get(Calendar.MINUTE) == 0) {
-                calendar.set(Calendar.HOUR_OF_DAY, 8); 
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                endDate = calendar.getTime();
-            }
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            endDate = calendar.getTime();
         }
 
         if (announcementText == "") {

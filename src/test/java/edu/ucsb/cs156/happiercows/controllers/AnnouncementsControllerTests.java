@@ -76,7 +76,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
         Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
-
+        // Revert to 0 
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
 
@@ -107,9 +107,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
-
+        // Revert to 0
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
 
@@ -250,6 +249,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         
+        // Revert to 0
         Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
         Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
 
@@ -290,7 +290,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals(0, endCalendar.get(Calendar.MINUTE), "The end date minute should be 0");
         assertEquals(0, endCalendar.get(Calendar.SECOND), "The end date second should be 0");
     }
-
 
     //* */ hide tests
     @WithMockUser(roles = {"ADMIN"})
