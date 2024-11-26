@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router-dom";
@@ -142,10 +141,21 @@ describe("ManageCows tests", () => {
     });
 
     test("tests for ADMIN has role", () => {
-        currentUserModule.useCurrentUser.mockReturnValue({ data: null });
         useParams.mockReturnValue({ userId: 1 });
 
-        currentUserModule.hasRole.mockReturnValue(false);
+        currentUserModule.useCurrentUser.mockReturnValue({
+            data: {
+                root: {
+                    user: {
+                        id: 1,
+                    },
+                    roles: [{
+                        "authority": "ROLE_ADMIN"
+                    }]
+                },
+            },
+        });
+        currentUserModule.hasRole.mockReturnValue(true);
         render(
             <QueryClientProvider client={queryClient}>
                 <ManageCows
@@ -155,6 +165,6 @@ describe("ManageCows tests", () => {
                 />
             </QueryClientProvider>
         );
-        expect(screen.queryByTestId("ManageCows-ViewOnly")).not.toBeInTheDocument();
+        expect(screen.queryByTestId("ManageCows-ViewOnly")).toBeInTheDocument();
     });
 });
