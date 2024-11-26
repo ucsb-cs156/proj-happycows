@@ -167,6 +167,7 @@ describe("ManageCows tests", () => {
                 />
             </QueryClientProvider>
         );
+        // the use of expect.anything is documented in the link: https://jsr.io/@std/expect/doc/~/expect.anything
         expect(currentUserModule.hasRole).toHaveBeenCalledWith(
             expect.anything(),
             "ROLE_ADMIN"
