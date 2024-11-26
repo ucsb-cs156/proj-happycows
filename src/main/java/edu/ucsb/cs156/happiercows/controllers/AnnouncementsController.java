@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+
 
 
 import edu.ucsb.cs156.happiercows.entities.Announcement;
@@ -30,6 +32,9 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
 import org.springframework.security.core.Authentication;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -55,13 +60,17 @@ public class AnnouncementsController extends ApiController{
 
     @Operation(summary = "Create an announcement", description = "Create an announcement associated with a specific commons")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @PostMapping("/post")
+    @PostMapping("/post/{commonsId}")
     public ResponseEntity<Object> createAnnouncement(
-        @Parameter(description = "The id of the common") @RequestParam Long commonsId,
-        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) Date startDate,
-        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) Date endDate,
+        @Parameter(description = "The id of the common") @PathVariable Long commonsId,
+        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") 
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date startDate,
+        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") 
+        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
-
+        
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
@@ -76,9 +85,26 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
-        if (startDate == null) { 
+        // Fix timezone difference for PST
+        if (startDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(startDate);
+
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            startDate = calendar.getTime();
+        }
+        else {
             log.info("Start date not specified. Defaulting to current date.");
             startDate = new Date(); 
+        }
+
+        // Fix timezone difference for PST
+        if (endDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(endDate);
+
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            endDate = calendar.getTime();
         }
 
         if (announcementText == "") {

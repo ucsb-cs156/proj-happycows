@@ -8,7 +8,7 @@ import { useBackend } from "main/utils/useBackend";
 export default function AdminAnnouncementsPage() {
     const { commonsId } = useParams();
 
-    // Stryker disable all
+    // Stryker disable all (Copied from frontend/src/main/pages/AdminViewPlayPage.js)
     const { data: commonsPlus } = useBackend(
         [`/api/commons/plus?id=${commonsId}`],
         {
