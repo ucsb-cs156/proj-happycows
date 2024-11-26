@@ -37,9 +37,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             data.endDate = null;
         }
 
-        const startDate = new Date(data.startDate).toISOString().split('T')[0];  
-        data.startDate = startDate;
-
         submitAction(data);
     };
 
