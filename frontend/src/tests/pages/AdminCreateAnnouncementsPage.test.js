@@ -25,8 +25,11 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+        axiosMock.onGet("/api/commons/plus").reply(200, {
+            commons: { name: "Test" },
+        });
     });
 
     test("renders page without crashing", async () => {
@@ -38,7 +41,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             </QueryClientProvider>
         );
 
-        expect(await screen.findByText("Create Announcement")).toBeInTheDocument();
+        expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
 
     });
 

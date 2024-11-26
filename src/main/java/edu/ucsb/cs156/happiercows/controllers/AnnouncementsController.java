@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import edu.ucsb.cs156.happiercows.entities.Announcement;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementRepository;
@@ -48,9 +49,13 @@ public class AnnouncementsController extends ApiController{
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PostMapping("/post/{commonsId}")
     public ResponseEntity<Object> createAnnouncement(
-        @Parameter(description = "The id of the common") @RequestParam Long commonsId,
-        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) Date startDate,
-        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) Date endDate,
+        @Parameter(description = "The id of the common") @PathVariable Long commonsId,
+        @Parameter(description = "The datetime at which the announcement will be shown (current time)") 
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date startDate,
+        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") 
+        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
 
         User user = getCurrentUser().getUser();
