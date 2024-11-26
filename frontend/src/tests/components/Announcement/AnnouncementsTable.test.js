@@ -276,12 +276,6 @@ describe('Modal tests', () => {
   test('Clicking Permanently Delete button deletes the announcement', async () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendMutationSpy = jest.spyOn(
-      useBackendModule,
-      'useBackendMutation'
-    );
-
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
