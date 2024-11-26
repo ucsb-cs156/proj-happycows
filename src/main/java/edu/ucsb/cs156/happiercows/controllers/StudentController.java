@@ -34,5 +34,17 @@ public class StudentController extends ApiController {
             .orElseThrow(() -> new EntityNotFoundException(Student.class, id));
         return student;
     }
+
+    @Operation(summary= "Delete a student")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteArticle(
+            @RequestParam Long id) throws EntityNotFoundException {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Student.class, id));
+
+        studentRepository.delete(student);
+        return genericMessage("Student with id %s deleted".formatted(id));
+    }
+
 }
 
