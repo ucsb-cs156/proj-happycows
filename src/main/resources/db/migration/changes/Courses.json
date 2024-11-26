@@ -1,0 +1,62 @@
+{
+    "databaseChangeLog": [
+        {
+            "changeSet": {
+                "id": "COURSES-1",
+                "author": "r0ckwav3",
+                "preConditions": [
+                    {
+                    "onFail": "MARK_RAN"
+                    },
+                    {
+                    "not": [
+                        {
+                            "tableExists": {
+                                "tableName": "courses"
+                            }
+                        }
+                    ]
+                    }
+                ],
+                "changes": [
+                    {
+                        "createTable": {
+                            "tableName": "courses",
+                            "columns": [
+                                {
+                                    "column": {
+                                        "name": "ID",
+                                        "type": "BIGINT",
+                                        "autoIncrement": true,
+                                        "constraints": {
+                                            "primaryKey": true,
+                                            "primaryKeyName": "COURSES-PK"
+                                        }
+                                    }
+                                },
+                                {
+                                    "column": {
+                                        "name": "CODE",
+                                        "type": "VARCHAR(255)"
+                                    }
+                                },
+                                {
+                                    "column": {
+                                        "name": "NAME",
+                                        "type": "VARCHAR(255)"
+                                    }
+                                },
+                                {
+                                    "column": {
+                                        "name": "TERM",
+                                        "type": "VARCHAR(255)"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
