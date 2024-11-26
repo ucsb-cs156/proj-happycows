@@ -6,8 +6,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
-import AdminListCommonsPage from "main/pages/AdminListCommonPage";
-import commonsPlusFixtures from "fixtures/commonsPlusFixtures"
 
 const mockedNavigate = jest.fn();
 
@@ -16,7 +14,7 @@ jest.mock("react-router-dom", () => ({
     useParams: () => ({
         commonsId: 1,
     }),
-    useNavigate: () => mockedNavigate
+    useNavigate: () => mockedNavigate,
 }));
 
 describe("AdminAnnouncementsPage tests", () => {
@@ -38,7 +36,6 @@ describe("AdminAnnouncementsPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
-
     });
 
     test("renders announcements with correct commons name", async () => {
@@ -63,25 +60,30 @@ describe("AdminAnnouncementsPage tests", () => {
         );
 
         expect(await screen.findByText("Announcements for Commons: Sample Commons")).toBeInTheDocument();
-
     });
 
-    test("correct href for announcements button as an admin", async () => {
-        const testId = "CommonsTable";
-        axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    test("ensures correct create announcement button", async () => {
+        axiosMock
+            .onGet("/api/currentUser")
+            .reply(200, apiCurrentUserFixtures.adminUser);
+        axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+            commons: {
+                id: 1,
+                name: "Sample Commons",
+            },
+            totalPlayers: 5,
+            totalCows: 5,
+        });
 
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
-                    <AdminListCommonsPage />
+                    <AdminAnnouncementsPage />
                 </MemoryRouter>
             </QueryClientProvider>
         );
 
-        expect(await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`)).toHaveTextContent("1");
-      
-        const announcementsButton = screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`);
-        expect(announcementsButton).toHaveAttribute("href", "/admin/announcements/1");
-
+        const button = await screen.findByRole("button", { name: /Create Announcement/i });
+        expect(button).toHaveAttribute("href", "/admin/announcements/1/create");
     });
 });
