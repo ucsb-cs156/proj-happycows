@@ -9,10 +9,10 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
     const { data: currentUser } = useCurrentUser();
     let { userId } = useParams();
     userId = userId ? parseInt(userId, 10) : NaN;
-    // Stryker disable all
+    
     const isViewOnly = hasRole(currentUser, "ROLE_ADMIN") && !isNaN(userId);
 
-    // Stryker restore all
+    
     return (
         <Card>
             <Card.Header as="h5" className= "woodenboardtable" >Manage Cows</Card.Header>
