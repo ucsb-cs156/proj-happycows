@@ -40,6 +40,11 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
         const startDate = new Date(data.startDate).toISOString().split('T')[0];  
         data.startDate = startDate;
 
+        if (data.endDate) {
+            const endDate = new Date(data.endDate).toISOString().split('T')[0];
+            data.endDate = endDate;
+        }
+        
         submitAction(data);
     };
 

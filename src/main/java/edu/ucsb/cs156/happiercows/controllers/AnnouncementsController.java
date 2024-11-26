@@ -53,10 +53,10 @@ public class AnnouncementsController extends ApiController{
     public ResponseEntity<Object> createAnnouncement(
         @Parameter(description = "The id of the common") @PathVariable Long commonsId,
         @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") 
-        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         Date startDate,
         @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") 
-        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
         
@@ -74,33 +74,29 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
-        if (startDate != null) {
-            startDate = Date.from(startDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
-        }
-
-        if (endDate != null) {
-            endDate = Date.from(endDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
-        }
-
         if (startDate == null) { 
             log.info("Start date not specified. Defaulting to current date.");
             startDate = new Date(); 
         }
+        startDate = Date.from(startDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
 
-        if (announcementText == "") {
+        if (announcementText.isEmpty()) {
             return ResponseEntity.badRequest().body("Announcement cannot be empty.");
         }
         if (endDate != null && startDate.after(endDate)) {
             return ResponseEntity.badRequest().body("Start date must be before end date.");
         }
+        if (endDate != null) {
+            endDate = Date.from(endDate.toInstant().atZone(ZoneOffset.UTC).toInstant());
+        }
 
         // Create the announcement
         Announcement announcementObj = Announcement.builder()
-        .commonsId(commonsId)
-        .startDate(startDate)
-        .endDate(endDate)
-        .announcementText(announcementText)
-        .build();
+            .commonsId(commonsId)
+            .startDate(Date.from(startDate.toInstant().atZone(ZoneOffset.UTC).toInstant()))
+            .endDate(endDate != null ? Date.from(endDate.toInstant().atZone(ZoneOffset.UTC).toInstant()) : null)
+            .announcementText(announcementText)
+            .build();
 
         // Save the announcement
         announcementRepository.save(announcementObj);
