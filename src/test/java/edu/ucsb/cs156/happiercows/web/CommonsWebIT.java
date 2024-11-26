@@ -21,13 +21,40 @@ import edu.ucsb.cs156.happiercows.WebTestCase;
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class CommonsWebIT extends WebTestCase {
     @Test
-    public void adminCreateCommonsTest() throws Exception {
+    public void adminCreateCommonsSimpleTest() throws Exception {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByText("Create Commons").click();
 
         page.getByTestId("CommonsForm-name").fill("Web Test Commons");
+        page.getByTestId("CommonsForm-Submit-Button").click();
+
+        assertThat(page.getByTestId("commonsCard-name-1")).hasText("Web Test Commons");
+    }
+
+    @Test
+    public void adminCreateCommonsComplexTest() throws Exception {
+        setupUser(true);
+
+        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
+        page.getByText("Create Commons").click();
+
+        page.getByTestId("CommonsForm-name").fill("Web Test Commons 2");
+        page.getByTestId("CommonsForm-startingBalance").fill("9000");
+        page.getByTestId("CommonsForm-cowPrice").fill("50");
+        page.getByTestId("CommonsForm-milkPrice").fill("2");
+        page.getByTestId("CommonsForm-degradationRate").fill("0.002");
+        page.getByTestId("CommonsForm-carryingCapacity").fill("200");
+        page.getByTestId("CommonsForm-capacityPerUser").fill("100");
+        // page.getByTestId("CommonsForm-startingDate").fill("9000");
+        // page.getByTestId("CommonsForm-lastDate").fill("9000");
+        // page.getByTestId("aboveCapacityHealthUpdateStrategy-select").fill("9000");
+        // page.getByTestId("aboveCapacityHealthUpdateStrategy-select").fill("9000");
+        page.getByTestId("CommonsForm-showLeaderboard").click();
+        page.getByTestId("CommonsForm-showChat").click();
+
+
         page.getByTestId("CommonsForm-Submit-Button").click();
 
         assertThat(page.getByTestId("commonsCard-name-1")).hasText("Web Test Commons");
