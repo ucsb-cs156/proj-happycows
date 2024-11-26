@@ -48,7 +48,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                     }}
                                     data-testid={"buy-cow-button"}
                                 >
-                                    Buy cows
+                                    Buy Cows
                                 </Button>
                             </Col>
                             <Col className="text-center">
@@ -60,7 +60,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                     }}
                                     data-testid={"sell-cow-button"}
                                 >
-                                    Sell cows
+                                    Sell Cows
                                 </Button>
                             </Col>
                         </Row>
