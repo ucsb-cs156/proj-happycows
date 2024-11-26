@@ -35,7 +35,7 @@ describe("CommonsPlay tests", () => {
             expect(screen.getByTestId("commons-card")).toBeInTheDocument();
         });
     });
-    test("Tests for Optional Chaining change root", async () => {
+    test("Tests for not logged in", async () => {
         render(
             <CommonsPlay currentUser={currentUserFixtures.notLoggedIn } commons={commonsFixtures.oneCommons[0]} />
         );
@@ -43,12 +43,4 @@ describe("CommonsPlay tests", () => {
             expect(screen.getByTestId("commons-card")).toBeInTheDocument();
         });
     });
-    // test("Tests for Optional Chaining change user", async () => {
-    //     render(
-    //         <CommonsPlay currentUser={currentUserFixtures.notLoggedIn } commons={commonsFixtures.oneCommons[0]} />
-    //     );
-    //     await waitFor(()=>{
-    //         expect(screen.getByTestId("commons-card")).toBeInTheDocument();
-    //     });
-    // });
 });
