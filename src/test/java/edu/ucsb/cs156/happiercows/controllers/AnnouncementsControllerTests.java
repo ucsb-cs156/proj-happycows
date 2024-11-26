@@ -74,9 +74,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
-        Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
-        // Revert to 0 
+        Date start = sdf.parse("2024-03-03T08:00:00.000-08:00");
+        Date end = sdf.parse("2025-03-03T08:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
 
@@ -85,7 +84,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         UserCommons userCommons = UserCommons.builder().build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
-        //act 
+        // act 
         MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}?announcementText={announcement}&startDate={start}&endDate={end}", commonsId, announcement, sdf.format(start), sdf.format(end)).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
@@ -100,15 +99,13 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void userInCommonsCanPostAnnouncements() throws Exception {
-
         // arrange
         Long commonsId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
-        // Revert to 0
+        Date start = sdf.parse("2024-03-03T08:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
 
@@ -132,7 +129,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void userCanPostAnnouncementWithoutStartAndEndTime() throws Exception {
-
         // arrange
         Long commonsId = 1L;
         Long id = 0L;
@@ -164,7 +160,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-02T00:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
@@ -192,7 +187,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Announcement";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
         Date end = sdf.parse("2022-03-03T00:00:00.000-08:00");
 
@@ -221,7 +215,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
@@ -238,7 +231,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 
-    // Added tests
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void testStartAndEndDateModification() throws Exception {
@@ -248,10 +240,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        
-        // Revert to 0
-        Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
-        Date end = sdf.parse("2025-03-03T00:00:00.000-08:00");
+
+        Date start = sdf.parse("2024-03-03T08:00:00.000-08:00");
+        Date end = sdf.parse("2025-03-03T08:00:00.000-08:00");
 
         Announcement announcementObj = Announcement.builder()
                 .id(id)
@@ -281,14 +272,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTime(announcementObj.getStartDate());
         assertEquals(8, startCalendar.get(Calendar.HOUR_OF_DAY), "The start date hour should be set to 8 AM");
-        assertEquals(0, startCalendar.get(Calendar.MINUTE), "The start date minute should be 0");
-        assertEquals(0, startCalendar.get(Calendar.SECOND), "The start date second should be 0");
 
         Calendar endCalendar = Calendar.getInstance();
         endCalendar.setTime(announcementObj.getEndDate());
         assertEquals(8, endCalendar.get(Calendar.HOUR_OF_DAY), "The end date hour should be set to 8 AM");
-        assertEquals(0, endCalendar.get(Calendar.MINUTE), "The end date minute should be 0");
-        assertEquals(0, endCalendar.get(Calendar.SECOND), "The end date second should be 0");
     }
 
     //* */ hide tests

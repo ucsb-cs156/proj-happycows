@@ -81,8 +81,6 @@ public class AnnouncementsController extends ApiController{
             calendar.setTime(startDate);
 
             calendar.set(Calendar.HOUR_OF_DAY, 8); 
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
             startDate = calendar.getTime();
         }
         else {
@@ -96,8 +94,6 @@ public class AnnouncementsController extends ApiController{
             calendar.setTime(endDate);
 
             calendar.set(Calendar.HOUR_OF_DAY, 8); 
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
             endDate = calendar.getTime();
         }
 
