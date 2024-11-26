@@ -19,7 +19,7 @@ var paginationStyle = {
 // Stryker restore all
 export default function OurTable({ columns, data, testid = "testid", ...rest }) {
     const [pageIndex, setPageIndex] = React.useState(0);
-    const pageSize = 10;
+    const pageSize = (rest.pageSize || 10);
 
     const {
         getTableProps,
