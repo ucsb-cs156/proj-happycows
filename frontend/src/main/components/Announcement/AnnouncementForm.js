@@ -42,9 +42,16 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
     // Stryker disable next-line all
     //const yyyyq_regex = /((19)|(20))\d{2}[1-4]/i; // Accepts from 1900-2099 followed by 1-4.  Close enough.
 
+    const onSubmit = (data) => {
+        if (!data.endDate) {
+            data.endDate = null;
+        }
+        submitAction(data);
+    };
+
     return (
 
-        <Form onSubmit={handleSubmit(submitAction)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
 
             {initialContents && (
                 <Form.Group className="mb-3" >
@@ -61,7 +68,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 </Form.Group>
             )}
 
-            <Form.Group className="mb-3" >
+            <Form.Group className="mb-3">
                 <Form.Label htmlFor="startDate">Start Date</Form.Label>
                 <Form.Control
                 // Stryker disable next-line all
@@ -71,7 +78,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
                         required: "StartDate is required.",
-                        pattern: isodate_regex
                     })}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -79,17 +85,19 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                 </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3" >
+            <Form.Group className="mb-3">
                 <Form.Label htmlFor="endDate">End Date</Form.Label>
                 <Form.Control
                 // Stryker disable next-line all
                     data-testid={testIdPrefix + "-endDate"}
                     id="endDate"
-                    type="datetime-local"
+                    type="date"
                     isInvalid={Boolean(errors.endDate)}
-                    // Stryker disable next-line all
                     {...register("endDate", {
-                        pattern: isodate_regex
+                        pattern: {
+                            value: isodate_regex,
+                            message: "End Date must be in ISO format.",
+                        },
                     })}
                 />
             </Form.Group>
@@ -130,7 +138,7 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
             </Button>
 
         </Form>
-    )
+    );
 }
 
 export default AnnouncementForm;
