@@ -5,9 +5,9 @@ import { Card } from "react-bootstrap";
 export default function CommonsPlay({ currentUser }) {
   // Stryker disable  all 
   const firstName = currentUser?.root ? currentUser?.root?.user?.givenName : "";
-
-  const [welcomeText, _]= useState(greetingsList[Math.floor(Math.random() * greetingsList.length)]);
   // Stryker restore all
+  const [welcomeText, _]= useState(greetingsList[Math.floor(Math.random() * greetingsList.length)]);
+
 
   return (
     <div data-testid="CommonsPlay">
