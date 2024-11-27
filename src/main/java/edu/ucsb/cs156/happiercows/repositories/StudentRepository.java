@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudentRepository extends CrudRepository<Student, Integer> {
+    Optional<Student> findById(Long id);
 }
