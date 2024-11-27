@@ -68,8 +68,9 @@ describe("PagedProfitsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-numCows`)
     ).toHaveTextContent("5");
-
-
+    
+    const divContainer = screen.getByTestId("PagedProfitsTable-CSS");
+    expect(divContainer).toHaveStyle({display:"flex", overflow: 'auto'});
     expect(screen.getByTestId(`${testId}-header-timestamp-sort-carets`)).toHaveTextContent("🔽");
 
 
@@ -147,8 +148,6 @@ describe("PagedProfitsTable tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBe(1);
     });
-
-
 
     expectedFields.forEach((field) => {
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);
