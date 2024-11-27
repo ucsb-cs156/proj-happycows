@@ -11,24 +11,29 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = StudentController.class)
@@ -41,6 +46,8 @@ public class StudentControllerTests extends ControllerTestCase {
 
     @MockBean
     UserRepository userRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @WithMockUser(roles = { "USER" })
     @Test
@@ -78,5 +85,38 @@ public class StudentControllerTests extends ControllerTestCase {
         when(studentRepository.findById(1L)).thenReturn(Optional.empty());
         mockMvc.perform(get("/api/students?id=1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_users_can_post_student() throws Exception {
+        Student student = new Student();
+        student.setId(0L);
+        student.setCourseId(1L);
+        student.setFname("John");
+        student.setLname("Doe");
+        student.setStudentId("12345");
+        student.setEmail("8TbGZ@example.com");
+
+        when(studentRepository.save(student)).thenReturn(student);
+        
+        MvcResult response = mockMvc.perform(post("/api/students")
+            .param("courseId", "1")
+            .param("fname", "John")
+            .param("lname", "Doe")
+            .param("studentId", "12345")
+            .param("email", "8TbGZ@example.com")
+            .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        verify(studentRepository, times(1)).save(student);
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("John", json.get("fname"));
+        assertEquals("Doe", json.get("lname"));
+        assertEquals("12345", json.get("studentId"));
+        assertEquals("8TbGZ@example.com", json.get("email"));
+        assertEquals(1, (Integer)json.get("courseId"));   
     }
 }
