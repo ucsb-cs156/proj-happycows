@@ -35,6 +35,7 @@ public class StudentController extends ApiController {
         return student;
     }
 
+
     @Operation(summary= "Delete a student")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
