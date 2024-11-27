@@ -11,7 +11,9 @@ import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
 import AdminViewReportPage from "main/pages/AdminViewReportPage";
-
+import AdminCoursesIndexPage from "main/pages/AdminCoursesIndexPage";
+import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
+import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
@@ -60,6 +62,18 @@ function App() {
             <Route
                 path="/admin/editstudents/:id"
                 element={<AdminStudentsEditPage />}
+            />
+            <Route
+                path="/admin/listcourses"
+                element={<AdminCoursesIndexPage />}
+            />
+            <Route
+                path="/admin/createcourses"
+                element={<AdminCoursesCreatePage />}
+            />
+            <Route
+                path="/admin/editcourses/:id"
+                element={<AdminCoursesEditPage />}
             />
             <Route
                 path="/admin/play/:commonsId/user/:userId"
