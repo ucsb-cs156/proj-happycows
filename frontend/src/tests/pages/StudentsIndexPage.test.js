@@ -100,6 +100,7 @@ describe("StudentsIndexPage tests", () => {
       "3",
     );
   });
+
   test("renders empty table when backend unavailable, user only", async () => {
     setupUserOnly();
 
