@@ -1,6 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router-dom";
@@ -85,7 +84,7 @@ describe("ManageCows tests", () => {
         expect(sellButton).toBeNull();
     });
 
-    test('calls setMessage with "buy" when the buy button is clicked', () => {
+    test('calls setMessage with "Buy" when the Buy button is clicked', () => {
         useParams.mockReturnValue({ userId: undefined }); // Replace with your desired mock values
 
         currentUserModule.useCurrentUser.mockReturnValue({
@@ -109,11 +108,11 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("buy-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("buy");
+        expect(mockSetMessage).toHaveBeenCalledWith("Buy");
         expect(mockOpenModal).toHaveBeenCalled();
     });
 
-    test('calls setMessage with "sell" when the sell button is clicked', () => {
+    test('calls setMessage with "Sell" when the Sell button is clicked', () => {
         useParams.mockReturnValue({ userId: undefined }); // Replace with your desired mock values
 
         currentUserModule.useCurrentUser.mockReturnValue({
@@ -137,7 +136,41 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("sell-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("sell");
+        expect(mockSetMessage).toHaveBeenCalledWith("Sell");
         expect(mockOpenModal).toHaveBeenCalled();
+    });
+
+    test("tests for ADMIN has role", () => {
+        useParams.mockReturnValue({ userId: 1 });
+
+        currentUserModule.useCurrentUser.mockReturnValue({
+            data: {
+                root: {
+                    user: {
+                        id: 1,
+                    },
+                    roles: [{
+                        "authority": "ROLE_ADMIN"
+                    }]
+                },
+            },
+        });
+        currentUserModule.hasRole.mockImplementation((_, role) => {
+            return role === "ROLE_ADMIN";
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <ManageCows
+                    userCommons={userCommonsFixtures.oneUserCommons[0]}
+                    setMessage={mockSetMessage}
+                    openModal={mockOpenModal}
+                />
+            </QueryClientProvider>
+        );
+        // the use of expect.anything is documented in the link: https://jsr.io/@std/expect/doc/~/expect.anything
+        expect(currentUserModule.hasRole).toHaveBeenCalledWith(
+            expect.anything(),
+            "ROLE_ADMIN"
+        );
     });
 });

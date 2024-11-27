@@ -210,4 +210,35 @@ describe("LeaderboardTable tests", () => {
         // Assert the expected URL based on your data
         expect(window.location.href).toBe("http://localhost/");
     });
+
+    test("Sort by wealth should have rows appear in the correct order", async () => {
+        const testId = "LeaderboardTable";
+        const currentUser = currentUserFixtures.adminUser;
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <LeaderboardTable
+                        leaderboardUsers={leaderboardFixtures.sortingBugCommonsLB}
+                        currentUser={currentUser}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const wealthHeader = screen.getByTestId(`${testId}-header-totalWealth`)
+
+        fireEvent.click(wealthHeader);
+        expect(await screen.findByText("🔼")).toBeInTheDocument();
+        const rows = screen.getAllByTestId(/^LeaderboardTable-cell-row-\d+-col-Farmer$/);
+        const rowTexts = rows.map((row) => row.textContent);
+        expect(rowTexts).toEqual(["lessWealth", "moreWealth"]);
+
+
+        fireEvent.click(wealthHeader);
+        expect(await screen.findByText("🔽")).toBeInTheDocument();
+        const rowsAfterDescSort = screen.getAllByTestId(/^LeaderboardTable-cell-row-\d+-col-Farmer$/);
+        const rowTextsDesc = rowsAfterDescSort.map((row) => row.textContent);
+        expect(rowTextsDesc).toEqual(["moreWealth", "lessWealth"]);
+
+    });
 });
