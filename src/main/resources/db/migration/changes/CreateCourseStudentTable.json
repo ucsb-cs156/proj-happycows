@@ -1,0 +1,73 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "Student-1",
+        "author": "Abby",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "tableExists": {
+                  "tableName": "STUDENT"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "constraints": {
+                      "primaryKey": true,
+                      "primaryKeyName": "STUDENT_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COURSE_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "EMAIL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "FNAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LNAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "STUDENT_ID",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ],
+              "tableName": "STUDENTS"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
