@@ -9,10 +9,10 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
     const { data: currentUser } = useCurrentUser();
     let { userId } = useParams();
     userId = userId ? parseInt(userId, 10) : NaN;
-    // Stryker disable all
+    
     const isViewOnly = hasRole(currentUser, "ROLE_ADMIN") && !isNaN(userId);
 
-    // Stryker restore all
+    
     return (
         <Card>
             <Card.Header as="h5" className= "woodenboardtable" >Manage Cows</Card.Header>
@@ -43,7 +43,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-success"
                                     onClick={() => {
-                                        setMessage("buy");
+                                        setMessage("Buy");
                                         openModal();
                                     }}
                                     data-testid={"buy-cow-button"}
@@ -55,7 +55,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 <Button
                                     variant="outline-danger"
                                     onClick={() => {
-                                        setMessage("sell");
+                                        setMessage("Sell");
                                         openModal();
                                     }}
                                     data-testid={"sell-cow-button"}
@@ -64,11 +64,12 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
                                 </Button>
                             </Col>
                         </Row>
-                        <p>
-                            Note: Buying cows buys at the current cow price, but
-                            selling cows sells at the current cow price times
-                            the average health of cows as a percentage!
-                        </p>
+                        <h3>Note:</h3>
+
+                        <ul>
+                            <li>Buying cows buys at the current cow price.</li>
+                            <li>Selling cows sells at the current cow price multiplied by the average health of cows (as a percentage)</li>
+                        </ul>
                     </>
                 )}
             </Card.Body>
