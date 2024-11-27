@@ -21,6 +21,9 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+import StudentsIndexPage from "main/pages/StudentsIndexPage"
+import StudentsCreatePage from "main/pages/StudentsCreatePage"
+import StudentsEditPage from "main/pages/StudentsEditPage"
 
 function App() {
     const { data: currentUser } = useCurrentUser();
@@ -57,6 +60,18 @@ function App() {
             <Route
                 path="/admin/announcements/:commonsId/create"
                 element={<AdminCreateAnnouncementsPage />}
+            />
+            <Route
+                path="/admin/Students"
+                element={<StudentsIndexPage />}
+            />
+            <Route
+                path="/admin/Students/edit/:id"
+                element={<StudentsEditPage />}
+            />
+            <Route
+                path="/admin/Students/create"
+                element={<StudentsCreatePage />}
             />
         </>
     ) : null;
