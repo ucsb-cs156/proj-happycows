@@ -55,20 +55,24 @@ const PagedProfitsTable = () => {
                 Header: "Profit",
                 accessor: "amount",
                 Cell: ({value}) => `$${value.toFixed(2)}`,
+                width: 200,
             },
             {
                 Header: "Date",
                 accessor: "timestamp",
                 Cell: ({ value }) => timestampToDate(value),
+                width: 200,
             },
             {
                 Header: "Health",
                 accessor: "avgCowHealth",
-                Cell: ({value}) => `${value.toFixed(2) + '%'}`
+                Cell: ({value}) => `${value.toFixed(2) + '%'}`,
+                width: 200,
             },
             {
                 Header: "Cows",
                 accessor: "numCows",
+                width: 200,
             },
         ];
 
@@ -90,13 +94,21 @@ const PagedProfitsTable = () => {
             <p>Page: {selectedPage + 1}</p>
             <Button data-testid={`${testId}-previous-button`}onClick={previousPageCallback()} disabled={ selectedPage === 0}>Previous</Button>
             <Button data-testid={`${testId}-next-button`} onClick={nextPageCallback()} disabled={page.totalPages===0 || selectedPage === page.totalPages-1}>Next</Button>
-            < OurTable
-                data={page.content}
-                columns={columns}
-                testid={testid}
-                initialState={{ sortBy: sortees }}
+            <div
+                data-testid="PagedProfitsTable-CSS"
+                style={{
+                    display:"flex",
+                    overflow: 'auto',
+                }}
+            >
+                < OurTable
+                    data={page.content}
+                    columns={columns}
+                    testid={testid}
+                    initialState={{ sortBy: sortees }}
 
-            />
+                />
+            </div>  
         </>
     );
 }; 
