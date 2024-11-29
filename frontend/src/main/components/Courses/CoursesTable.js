@@ -9,9 +9,6 @@ import React from "react";
 
      const navigate = useNavigate();
 
-     const joinCallback = (cell) => {
-        navigate(`/courses/join/${cell.row.values.id}`);
-    };
 
      const editCallback = (cell) => {
          navigate(`/courses/edit/${cell.row.values.id}`);
