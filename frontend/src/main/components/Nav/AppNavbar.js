@@ -52,6 +52,7 @@ export default function AppNavbar({ currentUser, systemInfo, doLogout, currentUr
                     <NavDropdown.Item href="/admin/users">Users</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/jobs">Manage Jobs</NavDropdown.Item>
                     <NavDropdown.Item href="/admin/reports">Instructor Reports</NavDropdown.Item>
+                    <NavDropdown.Item href="/admin/Students">Students</NavDropdown.Item>
                   </NavDropdown>
                 )
               }
