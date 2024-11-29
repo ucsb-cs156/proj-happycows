@@ -10,6 +10,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -20,6 +22,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -126,5 +130,48 @@ public class CourseControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(courseBefore);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+    }
+
+    
+    @Test
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    public void admin_can_delete_a_course() throws Exception {
+        Course course = Course.builder()
+                .id(15L)
+                .name("CS156")
+                .school("UCSB")
+                .term("F23")
+                .startDate(LocalDateTime.parse("2023-10-11T00:00:00"))
+                .endDate(LocalDateTime.parse("2024-11-30T00:00:00"))
+                .build();
+
+        when(courseRepository.findById(eq(15L))).thenReturn(java.util.Optional.of(course));
+
+        // act
+        MvcResult response = mockMvc.perform(delete("/api/courses?id=15").with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(15L);
+        verify(courseRepository, times(1)).delete(any());
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 15 deleted", json.get("message"));
+    }
+
+    @Test
+    @WithMockUser(roles = { "ADMIN", "USER" })
+    public void admin_tries_to_delete_non_existant_course_and_gets_right_error_message() throws Exception {
+        // arrange
+        when(courseRepository.findById(eq(15L))).thenReturn(java.util.Optional.empty());
+
+        // act
+        MvcResult response = mockMvc.perform(delete("/api/courses?id=15").with(csrf()))
+                .andExpect(status().isNotFound()).andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(15L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 15 not found", json.get("message"));
     }
 }
