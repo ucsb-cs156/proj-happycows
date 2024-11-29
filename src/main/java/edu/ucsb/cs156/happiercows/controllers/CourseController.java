@@ -76,5 +76,6 @@ public class CourseController extends ApiController {
         courseRepository.delete(course);
         return genericMessage(String.format("Course with id %s deleted", id));
     }
+
 }   
 
