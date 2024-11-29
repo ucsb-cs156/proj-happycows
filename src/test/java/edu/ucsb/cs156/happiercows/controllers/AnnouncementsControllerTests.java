@@ -206,9 +206,39 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // assertEquals("Commons_id must exist.", json.get("message"));
     }
 
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(roles = {"USER"})
     @Test
     public void userCannotPostAnnouncementWithStartAfterEnd() throws Exception {
+            
+            // arrange
+            Long commonsId = 1L;
+            Long id = 0L;
+            Long userId = 1L;
+            String announcement = "Hello world!";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+            Date start = sdf.parse("2024-03-03T00:00:00.000-08:00");
+            Date end = sdf.parse("2023-03-03T00:00:00.000-08:00");
+    
+            Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
+    
+            when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+    
+            UserCommons userCommons = UserCommons.builder().build();
+            when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+    
+            //act 
+            MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, announcement, start, end).with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+    
+            // assert
+            verify(announcementRepository, times(0)).save(any(Announcement.class));
+            // Map<String, Object> json = responseToJson(response);
+            // assertEquals("Start date must be before end date.", json.get("message"));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotPostAnnouncementWithStartAfterEnd() throws Exception {
             
             // arrange
             Long commonsId = 1L;
@@ -283,21 +313,50 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // ...
 
         // act 
+        mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotPostAnnouncementWithEmptyString() throws Exception {
+        // arrange
+        Long commonsId = 1L;
+        Long id = 0L;
+        Long userId = 1L;
+        String announcement = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        Date start = sdf.parse("2024-03-02T00:00:00.000-08:00");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+
+        when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+
+
+        // ...
+
+        // act 
         MvcResult response = mockMvc.perform(post("/api/announcements/post/{commonsId}", commonsId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
 
+
         // parse JSON response
-        // String jsonResponse = response.getResponse().getContentAsString();
+        String jsonResponse = response.getResponse().getContentAsString();
+        //debug pring
+        // System.out.println("JSON Response: " + jsonResponse); // Add logging here
         // TypeReference<Map<String, Object>> typeRef = new TypeReference<Map<String, Object>>() {};
         // Map<String, Object> json = objectMapper.readValue(jsonResponse, TypeFactory.defaultInstance().constructType(typeRef));
         // assertEquals("Announcement must not be empty.", json.get("message"));
     }
 
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
     public void userCannotPostAnnouncementWithEndBeforeStart() throws Exception {
 
