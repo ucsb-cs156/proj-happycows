@@ -43,6 +43,17 @@ public class StudentController extends ApiController {
 
 
 
+    @Operation(summary = "Get all students by course id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/course")
+    public Iterable<Student> getByCourseId(@RequestParam Long courseId) throws EntityNotFoundException 
+    {
+        Iterable<Student> students = studentRepository.findAllByCourseId(courseId);
+        return students;
+    }
+
+
+
     @Operation(summary= "Delete a student")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
@@ -76,6 +87,7 @@ public class StudentController extends ApiController {
         student.setEmail(email);
         
         return studentRepository.save(student);
+
     }
 }
 
