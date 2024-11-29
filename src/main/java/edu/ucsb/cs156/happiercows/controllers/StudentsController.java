@@ -14,11 +14,9 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import java.time.LocalDateTime;
 import javax.validation.Valid;
 
 @Tag(name = "Students")
@@ -116,5 +114,22 @@ public class StudentsController extends ApiController {
         StudentsRepository.save(student);
 
         return student;
+    }
+    /**
+     * Delete a Student
+     * 
+     * @param id the id of the Students to delete
+     * @return a message indicating the Students was deleted
+     */
+    @Operation(summary = "Delete a Student")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteStudents(
+            @Parameter(name = "id") @RequestParam Long id) {
+        Students student = StudentsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
+
+        StudentsRepository.delete(student);
+        return genericMessage("Student with id %s deleted".formatted(id));
     }
 }
