@@ -94,9 +94,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     test("calls toast with correct message", () => {
         const announcement = {
-            id: 42,
-            startDate: "2023-11-21",
-            endDate: "2024-11-21",
+            id: 13,
+            startDate: "2024-11-28",
+            endDate: "2024-11-29",
             announcementText: "Test announcement",
         };
 
@@ -120,9 +120,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             <div>
                 <p>Announcement successfully created!</p>
                 <ul>
-                    <li>{`ID: 42`}</li>
-                    <li>{`Start Date: 2023-11-21`}</li>
-                    <li>{`End Date: 2024-11-21`}</li>
+                    <li>{`ID: 13`}</li>
+                    <li>{`Start Date: 2024-11-28`}</li>
+                    <li>{`End Date: 2024-11-29`}</li>
                     <li>{`Announcement: Test announcement`}</li>
                 </ul>
             </div>
@@ -140,9 +140,9 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
 
     test("calls toast with correct message on success", async () => {
         const announcementResponse = {
-            id: 42,
-            startDate: "2023-11-21",
-            endDate: "2024-11-21",
+            id: 13,
+            startDate: "2024-11-28",
+            endDate: "2024-11-29",
             announcementText: "Test announcement",
         };
 
@@ -161,8 +161,8 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
         const messageField = screen.getByLabelText("Announcement");
         const submitButton = screen.getByTestId("AnnouncementForm-submit");
 
-        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
-        fireEvent.change(endDateField, { target: { value: "2024-11-21" } });
+        fireEvent.change(startDateField, { target: { value: "2024-11-28" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-29" } });
         fireEvent.change(messageField, { target: { value: "Test announcement" } });
 
         fireEvent.click(submitButton);
@@ -172,9 +172,9 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
                 <div>
                     <p>Announcement successfully created!</p>
                     <ul>
-                        <li>{`ID: 42`}</li>
-                        <li>{`Start Date: 2023-11-21`}</li>
-                        <li>{`End Date: 2024-11-21`}</li>
+                        <li>{`ID: 13`}</li>
+                        <li>{`Start Date: 2024-11-28`}</li>
+                        <li>{`End Date: 2024-11-29`}</li>
                         <li>{`Announcement: Test announcement`}</li>
                     </ul>
                 </div>
