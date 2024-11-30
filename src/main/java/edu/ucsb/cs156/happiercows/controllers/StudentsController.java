@@ -1,6 +1,8 @@
 package edu.ucsb.cs156.happiercows.controllers;
+import edu.ucsb.cs156.happiercows.entities.Courses;
 import edu.ucsb.cs156.happiercows.entities.Students;
 import edu.ucsb.cs156.happiercows.repositories.StudentsRepository;
+import edu.ucsb.cs156.happiercows.repositories.CoursesRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +30,8 @@ public class StudentsController extends ApiController {
     @Autowired
     StudentsRepository StudentsRepository;
 
+    @Autowired
+    CoursesRepository coursesRepository;
     /**
      * List all students
      * 
@@ -61,6 +65,7 @@ public class StudentsController extends ApiController {
             @Parameter(name = "perm") @RequestParam String perm,
             @Parameter(name="courseId") @RequestParam Long courseId)
             throws JsonProcessingException {
+        coursesRepository.findById(courseId).orElseThrow(() -> new EntityNotFoundException(Courses.class, courseId));
         Students student = Students.builder()
                 .lastName(lastName)
                 .firstMiddleName(firstMiddleName)
@@ -105,7 +110,7 @@ public class StudentsController extends ApiController {
 
         Students student = StudentsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Students.class, id));
-
+        
         student.setLastName(incoming.getLastName());
         student.setFirstMiddleName(incoming.getFirstMiddleName());
         student.setEmail(incoming.getEmail());
