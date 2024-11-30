@@ -52,7 +52,7 @@ export default function StudentsTable({ students }) {
             accessor: 'email',
         }
     ];
-  
+
     columns.push(ButtonColumn("Edit", "primary", editCallback, "StudentsTable"));
     columns.push(ButtonColumn("Delete", "danger", deleteCallback, "StudentsTable"));
 
