@@ -7,11 +7,23 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 import {apiCurrentUserFixtures} from "fixtures/currentUserFixtures";
 import {systemInfoFixtures} from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
-import { useParams } from 'react-router-dom';
 
 import { toast } from "react-toastify";
 import React from "react";
 
+
+const mockedNavigate = jest.fn();
+jest.mock("react-router-dom", () => {
+    const originalModule = jest.requireActual("react-router-dom");
+    return {
+        __esModule: true,
+        ...originalModule,
+        Navigate: (x) => {
+            mockedNavigate(x);
+            return null;
+        },
+    };
+});
 
 jest.mock("react-toastify", () => ({
     toast: jest.fn(),
@@ -31,10 +43,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     beforeEach(() => {
         axiosMock.reset();
         axiosMock.resetHistory();
-        axiosMock.onGet("/api/currentUser").reply(200, {
-            root: { user: { email: "admin@example.com" } },
-            loggedIn: true,
-          });
+        axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
         axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
         axiosMock.onGet("/api/commons/plus").reply(200, {
             commons: { name: "Test" },
@@ -73,10 +82,10 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         axiosMock
             .onGet("/api/currentUser")
             .reply(200, apiCurrentUserFixtures.playerUser);
-        axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+        axiosMock.onGet("/api/commons/plus", { params: { id: 13 } }).reply(200, {
             commons: {
-                id: 1,
-                name: "Sample Commons",
+                id: 13,
+                name: "Test",
             },
             totalPlayers: 5,
             totalCows: 5,
@@ -139,7 +148,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
         expect(axiosMock.history.post[0].data).toEqual( JSON.stringify(expectedAnnouncement) );
 
-        expect(mockToast).toBeCalledWith(<div>Announcement successfully created!
+        expect(toast).toBeCalledWith(<div>Announcement successfully created!
             <br />id: 13
             <br />startDate: 2024-11-28
             <br />endDate: 2024-11-29
