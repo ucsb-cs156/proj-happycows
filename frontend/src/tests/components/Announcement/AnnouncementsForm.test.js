@@ -90,13 +90,40 @@ describe("AnnouncementForm tests", () => {
         await screen.findByText(/Start Date is required and must be provided in ISO format./);
         expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
 
-        // const endInput = screen.getByTestId(`${testId}-end`);
-        // fireEvent.change(endInput, { target: { value: "a" } });
-        // fireEvent.click(submitButton);
-
-        // await waitFor(() => {
-        //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
-        // });
     });
+
+    // test("current date is set as the default value for startDate", async () => {
+    //     const mock_submit = jest.fn();
+    //     const current_date = new Date(2024, 10, 29);
+    //     global.Date = jest.fn(() => current_date);
+
+    //     const initialContents = {
+    //         announcementText: "This is a test announcement",
+    //     };
+
+    //     render(
+    //         <QueryClientProvider client={queryClient}>
+    //             <Router>
+    //                 <AnnouncementForm initialContents={initialContents} submitAction={mock_submit} />
+    //             </Router>
+    //         </QueryClientProvider>
+    //     );
+
+    //     await waitFor(() => {
+    //         const startDateField = screen.getByTestId("AnnouncementForm-startDate");
+    //         expect(startDateField.value).toBe("2024-11-29");
+    //     });
+
+    //     const submitButton = screen.getByTestId("AnnouncementForm-submit");
+    //     fireEvent.click(submitButton);
+
+    //     await waitFor(() => {
+    //         expect(submitActionMock).toHaveBeenCalledWith({
+    //             startDate: "2024-11-29",
+    //             endDate: null,
+    //             announcementText: "This is a test announcement",
+    //         });
+    //     });   
+    // });
 
 });

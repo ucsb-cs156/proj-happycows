@@ -4,29 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create" }) {
 
-    const getDate = () => {
-        const number = new Date();
-        const year = number.getFullYear();
-        const month = String(number.getMonth() + 1).padStart(2, '0');
-        const day = String(number.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
     // Stryker disable all
     const {
         register,
         formState: { errors },
         handleSubmit,
-    } = useForm({
-        defaultValues: {
-            startDate: initialContents?.startDate 
-                ? initialContents.startDate.split("T")[0]
-                : getDate(),
-            endDate: initialContents?.endDate,
-            announcementText: initialContents?.announcementText || "",
-            ...initialContents, 
-        },
-    });
+    } = useForm(
+        { defaultValues: initialContents || {}, }
+    );
     // Stryker restore all
 
     const navigate = useNavigate();
@@ -42,16 +27,9 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
     // Stryker disable next-line all
     //const yyyyq_regex = /((19)|(20))\d{2}[1-4]/i; // Accepts from 1900-2099 followed by 1-4.  Close enough.
 
-    const onSubmit = (data) => {
-        if (!data.endDate) {
-            data.endDate = null;
-        }
-        submitAction(data);
-    };
-
     return (
 
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(submitAction)}>
 
             {initialContents && (
                 <Form.Group className="mb-3" >
