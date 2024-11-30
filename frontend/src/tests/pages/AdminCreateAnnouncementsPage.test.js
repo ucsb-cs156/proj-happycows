@@ -131,12 +131,24 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
 });
 
-jest.mock("react-toastify", () => ({
-    toast: jest.fn(),
-}));
+// mock the toast
+const mockToast = jest.fn();
+jest.mock("react-toastify", () => {
+    const originalModule = jest.requireActual("react-toastify");
+    return {
+        __esModule: true,
+        ...originalModule,
+        toast: (x) => mockToast(x),
+    };
+});
 
 describe("AdminCreateAnnouncementsPage tests - test", () => {
     const axiosMock = new AxiosMockAdapter(axios);
+
+    axiosMock.onGet("/api/systemInfo").reply(200, { showingNeither: true });
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+        commons: { name: "Test" },
+    });
 
     test("calls toast with correct message on success", async () => {
         const announcementResponse = {
@@ -146,11 +158,11 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
             announcementText: "Test announcement",
         };
 
-        axiosMock.onPost("/api/announcements/post/1").reply(200, announcementResponse);
+        axiosMock.onPost("/api/announcements/post/13").reply(200, announcementResponse);
 
         render(
             <QueryClientProvider client={new QueryClient()}>
-                <MemoryRouter initialEntries={["/admin/announcements/create/1"]}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/13"]}>
                     <AdminCreateAnnouncementsPage />
                 </MemoryRouter>
             </QueryClientProvider>
@@ -168,7 +180,7 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
         fireEvent.click(submitButton);
 
         await waitFor(() => {
-            expect(toast).toHaveBeenCalledWith(
+            expect(mockToast).toHaveBeenCalledWith(
                 <div>
                     <p>Announcement successfully created!</p>
                     <ul>
@@ -181,5 +193,4 @@ describe("AdminCreateAnnouncementsPage tests - test", () => {
             );
         });
     });
-
 });
