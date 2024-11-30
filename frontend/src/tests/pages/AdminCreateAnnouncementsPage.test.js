@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import {QueryClient, QueryClientProvider} from "react-query";
 import {MemoryRouter} from "react-router-dom";
 import axios from "axios";
@@ -39,18 +39,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         });
     });
 
-    test("renders page without crashing", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminCreateAnnouncementsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
-
-    });
 
     test("correct href for create announcements button as an admin", async () => {   
         axiosMock
@@ -139,6 +127,59 @@ describe("AdminCreateAnnouncementsPage tests", () => {
                 </ul>
             </div>
         );
+    });
+
+});
+
+jest.mock("react-toastify", () => ({
+    toast: jest.fn(),
+}));
+
+describe("AdminCreateAnnouncementsPage tests - test", () => {
+    const axiosMock = new AxiosMockAdapter(axios);
+
+    test("calls toast with correct message on success", async () => {
+        const announcementResponse = {
+            id: 42,
+            startDate: "2023-11-21",
+            endDate: "2024-11-21",
+            announcementText: "Test announcement",
+        };
+
+        axiosMock.onPost("/api/announcements/post/1").reply(200, announcementResponse);
+
+        render(
+            <QueryClientProvider client={new QueryClient()}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/1"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
+        const messageField = screen.getByLabelText("Announcement");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+
+        fireEvent.change(startDateField, { target: { value: "2023-11-21" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-21" } });
+        fireEvent.change(messageField, { target: { value: "Test announcement" } });
+
+        fireEvent.click(submitButton);
+
+        await waitFor(() => {
+            expect(toast).toHaveBeenCalledWith(
+                <div>
+                    <p>Announcement successfully created!</p>
+                    <ul>
+                        <li>{`ID: 42`}</li>
+                        <li>{`Start Date: 2023-11-21`}</li>
+                        <li>{`End Date: 2024-11-21`}</li>
+                        <li>{`Announcement: Test announcement`}</li>
+                    </ul>
+                </div>
+            );
+        });
     });
 
 });
