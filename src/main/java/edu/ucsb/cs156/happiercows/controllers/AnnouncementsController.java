@@ -56,9 +56,11 @@ public class AnnouncementsController extends ApiController{
     public ResponseEntity<Object> createAnnouncement(
         @Parameter(description = "The id of the common") @PathVariable Long commonsId,
         @Parameter(description = "The datetime at which the announcement will be shown (current time)") 
-        @RequestParam(required = false) Date startDate,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date startDate,
         @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") 
-        @RequestParam(required = false) Date endDate,
+        @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd")
+        Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
 
         User user = getCurrentUser().getUser();
