@@ -484,30 +484,6 @@ describe("OurTable tests", () => {
         expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("1");
 
         expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
-
-
-        // expect(await screen.findByTestId("testid-last-page-button")).toBeInTheDocument();
-        // const lastButton = screen.getByTestId("testid-last-page-button");
-        // fireEvent.click(lastButton);
-        // expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("10");
-        // expect(await screen.findByTestId("testid-back-two-page-button")).toContainHTML("8");
-        // const backTwoButton = screen.getByTestId("testid-back-two-page-button");
-        // fireEvent.click(backTwoButton);
-        // expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("8");
-        // expect(await screen.findByTestId("testid-back-two-page-button")).toContainHTML("6");
-        // fireEvent.click(backTwoButton);
-        // expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("6");
-        // var tester = true;
-        // try {
-        //     await screen.findByTestId("testid-right-ellipsis");
-        //     tester = false;
-        // } catch (e) { }
-        // expect(tester).toBe(true);
-        // expect(await screen.findByTestId("testid-back-one-page-button")).toContainHTML("5");
-        // const backOneButton = screen.getByTestId("testid-back-one-page-button");
-        // fireEvent.click(backOneButton);
-        // expect(await screen.findByTestId("testid-current-page-button")).toContainHTML("5");
-        // expect(await screen.findByTestId("testid-right-ellipsis")).toBeInTheDocument();
     });
 
     test("renders a table with 50 rows and tests the first page button visibility", async () => {
