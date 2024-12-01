@@ -7,7 +7,6 @@ import React, { useEffect, useState } from "react";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
 const AdminCreateAnnouncementsPage = () => {
-    const [isSuccess, setIsSuccess] = useState(false); // Define the state for success tracking
     const objectToAxiosParams = (newAnnouncement) => ({
         url:`/api/announcements/post/${commonsId}`,
         method: "POST",
@@ -63,6 +62,7 @@ const AdminCreateAnnouncementsPage = () => {
 
     useEffect(() => {
         if (mutation.isSuccess) {
+            Navigate({ to: "/" });
             return <Navigate to="/" />
         }
     });

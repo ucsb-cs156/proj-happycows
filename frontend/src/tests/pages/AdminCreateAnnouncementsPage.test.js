@@ -8,6 +8,8 @@ import {apiCurrentUserFixtures} from "fixtures/currentUserFixtures";
 import {systemInfoFixtures} from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import { BrowserRouter as Router } from "react-router-dom";
+import { act } from '@testing-library/react';
+import { Navigate } from 'react-router-dom';
 
 
 import { navigate } from "react-router-dom";
@@ -24,7 +26,10 @@ jest.mock('react-router-dom', () => {
     return {
         __esModule: true,
         ...originalModule,
-        Navigate: (x) => { mockedNavigate(x); return null; }
+        Navigate: (props) => {
+            mockedNavigate(props); // Log props for debugging
+            return null;
+        },
     };
 });
 
@@ -126,7 +131,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     test("When you fill in form and click submit, the navigation happens", async () => {
         jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
-        // Mock useBackendMutation
         axiosMock.onPost("/api/announcements/post/13").reply(200, {
             "id": 13,
             "startDate": "2024-11-28T00:00",
@@ -158,7 +162,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     // UNCOMMENT THE TEST BELOW AND FIX THE CODE
     // ERROR IN THIS TEST!! -  Should cover last frontend mutations
 
-/*
+
     test("When you fill in form and click submit, the navigation happens", async () => {
         // Mock dependencies
         jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
@@ -169,12 +173,16 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             isLoading: false,
             isError: false,
         };
-
         jest.mock("main/utils/useBackend", () => ({
             useBackendMutation: () => mockMutation,
         }));
-
-        // Render component
+        
+        axiosMock.onPost("/api/announcements/post/13").reply(200, {
+            "id": 13,
+            "startDate": "2024-11-28T00:00",
+            "endDate": "2024-11-29T00:00",
+            "announcementText": "Test",
+        });
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter initialEntries={["/admin/announcements/create/13"]}>
@@ -183,11 +191,19 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             </QueryClientProvider>
         );
 
+        expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
+
+
         // Simulate user interaction
-        const announcementField = screen.getByLabelText("Announcement");
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
+        const messageField = screen.getByLabelText("Announcement");
         const submitButton = screen.getByTestId("AnnouncementForm-submit");
 
-        fireEvent.change(announcementField, { target: { value: "Test announcement" } });
+        fireEvent.change(startDateField, { target: { value: "2024-11-28T00:00" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-29T00:00" } });
+        fireEvent.change(messageField, { target: { value: "Test" } });
+
         fireEvent.click(submitButton);
 
         // Wait for navigation to be triggered
@@ -195,6 +211,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             expect(mockedNavigate).toHaveBeenCalledWith({ to: "/" });
         });
     });
-*/
+
 
 });
