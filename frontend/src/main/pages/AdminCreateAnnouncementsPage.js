@@ -62,11 +62,12 @@ const AdminCreateAnnouncementsPage = () => {
     }
 
     useEffect(() => {
-        if (isSuccess) {
-            // Delay the navigation only when the success state is true
-            return <Navigate to="/" />;
+        console.log("Mutation success:", mutation.isSuccess);
+        if (mutation.isSuccess) {
+            console.log("Success!, navigate to /");
+            return <Navigate to="/" />
         }
-    }, [isSuccess]);
+    });
 
     return (
         <BasicLayout>
