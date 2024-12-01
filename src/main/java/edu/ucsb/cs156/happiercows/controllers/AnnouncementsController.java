@@ -77,6 +77,26 @@ public class AnnouncementsController extends ApiController{
             }
         }
 
+        // Fix timezone difference for PST
+        if (startDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(startDate);
+
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            startDate = calendar.getTime();
+        }
+        else {
+            log.info("Start date not specified. Defaulting to current date.");
+            startDate = new Date(); 
+        }
+        if (endDate != null) {
+            Calendar calendar = Calendar.getInstance(); 
+            calendar.setTime(endDate);
+
+            calendar.set(Calendar.HOUR_OF_DAY, 8); 
+            endDate = calendar.getTime();
+        }
+
 
         if (announcementText == "") {
             return ResponseEntity.badRequest().body("Announcement cannot be empty.");
