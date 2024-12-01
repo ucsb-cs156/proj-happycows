@@ -12,6 +12,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import React from "react";
+import * as useBackendModule from 'main/utils/useBackend'; // Import the module to mock functions
 
 
 const mockedNavigate = jest.fn();
@@ -73,7 +74,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             "endDate": "2024-11-29T00:00",
             "announcementText": "Test",
         });
-        console.log("before render");
         render(
             <QueryClientProvider client={queryClient}>
                 <MemoryRouter>
@@ -81,7 +81,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
                 </MemoryRouter>
             </QueryClientProvider>
         );
-        console.log("after render");
 
         expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
 
@@ -100,21 +99,12 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         expect(messageField.value).toBe("Test");
 
         fireEvent.click(submitButton);
-       // Debugging: Check if the mutation is triggered
-        console.log("Mutation triggered? axiosMock.history.post:", axiosMock.history.post);
 
         // Use waitFor to wait for the axios mock to capture the request
         await waitFor(() => {
             console.log("Waiting for POST request...");
             expect(axiosMock.history.post.length).toBe(1);
         });
-
-        // Debugging: Check the content of the POST request
-        console.log("axiosMock.history.post:", axiosMock.history.post);
-
-        // The Date object is initialized from the form without time information. I believe React
-        // Query calls toISOString() before stuffing it into the body of the POST request, so the
-        // POST contains the suffix .000Z, which Java's LocalDateTime.parse ignores. [1]
 
         const expectedAnnouncement = {
             startDate: "2024-11-28T00:00",
@@ -138,5 +128,5 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             );
         });
     });
-    
+
 });
