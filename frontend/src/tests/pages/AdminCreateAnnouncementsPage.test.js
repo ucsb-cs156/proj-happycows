@@ -19,15 +19,12 @@ import * as useBackendModule from 'main/utils/useBackend'; // Import the module 
 
 
 const mockedNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-    const originalModule = jest.requireActual("react-router-dom");
+jest.mock('react-router-dom', () => {
+    const originalModule = jest.requireActual('react-router-dom');
     return {
         __esModule: true,
         ...originalModule,
-        Navigate: (x) => {
-            mockedNavigate(x);
-            return null;
-        },
+        Navigate: (x) => { mockedNavigate(x); return null; }
     };
 });
 
@@ -165,4 +162,47 @@ describe("AdminCreateAnnouncementsPage tests", () => {
             expect(mockedNavigate).toHaveBeenCalled();
         });
     });
+
+    // UNCOMMENT THE TEST BELOW AND FIX THE CODE
+    // ERROR IN THIS TEST!! -  Should cover last frontend mutations
+
+/*
+    test("When you fill in form and click submit, the navigation happens", async () => {
+        // Mock dependencies
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
+
+        const mockMutation = {
+            mutate: jest.fn((data, { onSuccess }) => onSuccess()),
+            isSuccess: true,
+            isLoading: false,
+            isError: false,
+        };
+
+        jest.mock("main/utils/useBackend", () => ({
+            useBackendMutation: () => mockMutation,
+        }));
+
+        // Render component
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/13"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        // Simulate user interaction
+        const announcementField = screen.getByLabelText("Announcement");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+
+        fireEvent.change(announcementField, { target: { value: "Test announcement" } });
+        fireEvent.click(submitButton);
+
+        // Wait for navigation to be triggered
+        await waitFor(() => {
+            expect(mockedNavigate).toHaveBeenCalledWith({ to: "/" });
+        });
+    });
+*/
+
 });
