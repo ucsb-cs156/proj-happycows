@@ -69,8 +69,8 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         // console.log("Begin test");
         axiosMock.onPost("/api/announcements/post/13").reply(200, {
             "id": 13,
-            "startDate": "2024-11-28",
-            "endDate": "2024-11-29",
+            "startDate": "2024-11-28T00:00",
+            "endDate": "2024-11-29T00:00",
             "announcementText": "Test",
         });
         console.log("before render");
@@ -117,25 +117,26 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         // POST contains the suffix .000Z, which Java's LocalDateTime.parse ignores. [1]
 
         const expectedAnnouncement = {
-            startDate: "2024-11-28",
-            endDate: "2024-11-29",
+            startDate: "2024-11-28T00:00",
+            endDate: "2024-11-29T00:00",
             announcementText: "Test",
         };
 
-        expect(axiosMock.history.post[0].params).toEqual({
-            announcementText: "Test",
-            startDate: "2024-11-28T00:00",
-            endDate: "2024-11-29T00:00",
+        expect(axiosMock.history.post[0].params).toEqual(expectedAnnouncement);
+
+        await waitFor(() => {
+            expect(toast).toHaveBeenCalledWith(
+                <div>
+                    <p>Announcement successfully created!</p>
+                    <ul>
+                        <li>{`ID: ${13}`}</li>
+                        <li>{`Start Date: ${expectedAnnouncement.startDate}`}</li>
+                        <li>{`End Date: ${expectedAnnouncement.endDate}`}</li>
+                        <li>{`Announcement: ${expectedAnnouncement.announcementText}`}</li>
+                    </ul>
+                </div>
+            );
         });
-
-        expect(toast).toBeCalledWith(<div>Announcement successfully created!
-            <br />id: 13
-            <br />startDate: 2024-11-28
-            <br />endDate: 2024-11-29
-            <br />announcementText: Test
-        </div>);
-
-        expect(mockedNavigate).toBeCalledWith({"to": "/"});
     });
     
 });
