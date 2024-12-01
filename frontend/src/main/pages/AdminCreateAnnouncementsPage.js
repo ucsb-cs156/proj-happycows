@@ -62,9 +62,7 @@ const AdminCreateAnnouncementsPage = () => {
     }
 
     useEffect(() => {
-        console.log("Mutation success:", mutation.isSuccess);
         if (mutation.isSuccess) {
-            console.log("Success!, navigate to /");
             return <Navigate to="/" />
         }
     });
