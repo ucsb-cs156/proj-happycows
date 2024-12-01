@@ -4,6 +4,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { announcementFixtures } from "fixtures/announcementFixtures"
 
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const mockedNavigate = jest.fn();
@@ -92,38 +94,24 @@ describe("AnnouncementForm tests", () => {
 
     });
 
-    // test("current date is set as the default value for startDate", async () => {
-    //     const mock_submit = jest.fn();
-    //     const current_date = new Date(2024, 10, 29);
-    //     global.Date = jest.fn(() => current_date);
+    test("no input for start or end date", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementForm />
+                </Router>
+            </QueryClientProvider>
+        );
 
-    //     const initialContents = {
-    //         announcementText: "This is a test announcement",
-    //     };
+        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+        const submitButton = screen.getByText(/Create/);
 
-    //     render(
-    //         <QueryClientProvider client={queryClient}>
-    //             <Router>
-    //                 <AnnouncementForm initialContents={initialContents} submitAction={mock_submit} />
-    //             </Router>
-    //         </QueryClientProvider>
-    //     );
+        fireEvent.click(submitButton);
 
-    //     await waitFor(() => {
-    //         const startDateField = screen.getByTestId("AnnouncementForm-startDate");
-    //         expect(startDateField.value).toBe("2024-11-29");
-    //     });
+        expect(await screen.findByText(/Start Date is required and must be provided in ISO format./)).toBeInTheDocument();
+        expect(await screen.findByText(/End Date is required and must be provided in ISO format./)).toBeInTheDocument();
+        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
 
-    //     const submitButton = screen.getByTestId("AnnouncementForm-submit");
-    //     fireEvent.click(submitButton);
-
-    //     await waitFor(() => {
-    //         expect(submitActionMock).toHaveBeenCalledWith({
-    //             startDate: "2024-11-29",
-    //             endDate: null,
-    //             announcementText: "This is a test announcement",
-    //         });
-    //     });   
-    // });
+    });
 
 });
