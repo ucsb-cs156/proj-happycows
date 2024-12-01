@@ -56,7 +56,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     isInvalid={Boolean(errors.startDate)}
                     {...register("startDate", {
                         required: "StartDate is required.",
-                        pattern: { value: isodate_regex, message: "Start Date must be in ISO format." },
                     })}
                 />
                 <Form.Control.Feedback type="invalid">
@@ -74,7 +73,6 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     isInvalid={Boolean(errors.startDate)}
                     {...register("endDate", {
                         required: "endDate is required.",
-                        pattern: { value: isodate_regex, message: "End Date must be in ISO format." },
                     })}
                 />
                 <Form.Control.Feedback type="invalid">

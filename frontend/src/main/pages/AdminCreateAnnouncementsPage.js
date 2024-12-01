@@ -1,12 +1,13 @@
-import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { useParams, Navigate } from 'react-router-dom'
 import { toast } from "react-toastify"
+import React, { useEffect, useState } from "react";
 
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
 const AdminCreateAnnouncementsPage = () => {
+    const [isSuccess, setIsSuccess] = useState(false); // Define the state for success tracking
     const objectToAxiosParams = (newAnnouncement) => ({
         url:`/api/announcements/post/${commonsId}`,
         method: "POST",
@@ -60,9 +61,12 @@ const AdminCreateAnnouncementsPage = () => {
         mutation.mutate(data);
     }
 
-    if (mutation.isSuccess) {
-        return <Navigate to="/" />
-    }
+    useEffect(() => {
+        if (isSuccess) {
+            // Delay the navigation only when the success state is true
+            return <Navigate to="/" />;
+        }
+    }, [isSuccess]);
 
     return (
         <BasicLayout>
