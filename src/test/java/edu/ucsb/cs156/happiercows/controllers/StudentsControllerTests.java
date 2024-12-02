@@ -2,7 +2,9 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Students;
+import edu.ucsb.cs156.happiercows.entities.Courses;
 import edu.ucsb.cs156.happiercows.repositories.StudentsRepository;
+import edu.ucsb.cs156.happiercows.repositories.CoursesRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,9 @@ public class StudentsControllerTests extends ControllerTestCase {
 
         @MockBean
         StudentsRepository StudentsRepository;
+
+        @MockBean
+        CoursesRepository coursesRepository;
 
         @MockBean
         UserRepository userRepository;
@@ -167,7 +172,10 @@ public class StudentsControllerTests extends ControllerTestCase {
                                 .courseId((long) 156)
                                 .build();
 
+                Courses course1 = new Courses();
+                course1.setId((long)156);
                 when(StudentsRepository.save(eq(student1))).thenReturn(student1);
+                when(coursesRepository.findById((long)156)).thenReturn(Optional.of(course1));
 
                 // act
                 MvcResult response = mockMvc.perform(
@@ -295,5 +303,27 @@ public class StudentsControllerTests extends ControllerTestCase {
                 verify(StudentsRepository, times(1)).findById(15L);
                 Map<String, Object> json = responseToJson(response);
                 assertEquals("Students with id 15 not found", json.get("message"));
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void entity_not_found_exception_when_creating_student_with_invalid_couse_id() throws Exception {
+                Students Students1 = Students.builder()
+                                .lastName("Song")
+                                .firstMiddleName("AlecJ")
+                                .email("alecsong@ucsb.edu")
+                                .perm("1234567")
+                                .courseId((long) 1562)
+                                .build();
+
+                Courses course1 = new Courses();
+                course1.setId((long)1562);
+
+                when(StudentsRepository.save(Students1)).thenReturn(Students1);
+                when(coursesRepository.findById((long) 1562)).thenReturn(Optional.empty());
+
+                mockMvc.perform(post("/api/Students/post?lastName=Song&firstMiddleName=AlecJ&email=alecsong@ucsb.edu&perm=1234567&courseId=1562")
+                        .with(csrf()))
+                        .andExpect(status().isNotFound());
         }
 }
