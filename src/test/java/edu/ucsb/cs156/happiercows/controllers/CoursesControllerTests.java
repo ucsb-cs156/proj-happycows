@@ -5,7 +5,6 @@ import edu.ucsb.cs156.happiercows.entities.Courses;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.repositories.CoursesRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import java.time.LocalDateTime;
@@ -24,9 +23,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static org.mockito.ArgumentMatchers.any;
-
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(TestConfig.class)
 @AutoConfigureDataJpa
 public class CoursesControllerTests extends ControllerTestCase {
-
     @MockBean
     CoursesRepository coursesRepository;
 
@@ -44,6 +39,7 @@ public class CoursesControllerTests extends ControllerTestCase {
     UserRepository userRepository;
 
     // Authorization tests for /api/courses/admin/all
+
     @Test
     public void logged_out_users_cannot_get_all() throws Exception {
         mockMvc.perform(get("/api/courses/all"))
@@ -54,7 +50,7 @@ public class CoursesControllerTests extends ControllerTestCase {
     @Test
     public void logged_in_users_can_get_all() throws Exception {
         mockMvc.perform(get("/api/courses/all"))
-                .andExpect(status().is(200));
+                .andExpect(status().is(200)); // logged
     }
 
     @Test
@@ -73,7 +69,9 @@ public class CoursesControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "USER" })
     @Test
     public void logged_in_user_can_get_all_courses() throws Exception {
+
         // arrange
+
         Courses course1 = Courses.builder()
                 .name("CS16")
                 .school("UCSB")
@@ -100,6 +98,7 @@ public class CoursesControllerTests extends ControllerTestCase {
                 .andExpect(status().isOk()).andReturn();
 
         // assert
+
         verify(coursesRepository, times(1)).findAll();
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
@@ -110,6 +109,7 @@ public class CoursesControllerTests extends ControllerTestCase {
     @Test
     public void an_admin_user_can_post_a_new_course() throws Exception {
         // arrange
+
         Courses courseBefore = Courses.builder()
                 .name("CS16")
                 .school("UCSB")
@@ -133,75 +133,80 @@ public class CoursesControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+    //edit
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_can_edit_an_existing_Course() throws Exception {
+                // arrange
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
-    @Test
-    public void admin_can_edit_an_existing_course() throws Exception {
-        // arrange
-        Courses courseOrig = Courses.builder().id(67L)
-                .name("CS16")
-                .school("UCSB")
-                .term("F23")
-                .startDate(LocalDateTime.parse("2023-09-05T00:00:00"))
-                .endDate(LocalDateTime.parse("2023-12-19T00:00:00"))
-                .build();
+                Courses courseOrig = Courses.builder().id(67L)
+                                .name("CS16")
+                                .school("UCSB")
+                                .term("F23")
+                                .startDate(LocalDateTime.parse("2023-09-05T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-19T00:00:00"))
+                                .build();
 
-        Courses courseEdited = Courses.builder().id(67L)
-                .name("CS32")
-                .school("UCLA")
-                .term("F24")
-                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
-                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .build();
+                Courses courseEdited = Courses.builder().id(67L)
+                                .name("CS32")
+                                .school("UCLA")
+                                .term("F24")
+                                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
+                                .build();
 
-        String requestBody = mapper.writeValueAsString(courseEdited);
+                String requestBody = mapper.writeValueAsString(courseEdited);
 
-        when(coursesRepository.findById(eq(67L))).thenReturn(Optional.of(courseOrig));
+                when(coursesRepository.findById(eq(67L))).thenReturn(Optional.of(courseOrig));
 
-        // act
-        MvcResult response = mockMvc.perform(
-                put("/api/courses?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isOk()).andReturn();
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/courses?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
 
-        // assert
-        verify(coursesRepository, times(1)).findById(67L);
-        verify(coursesRepository, times(1)).save(courseEdited);
-        String responseString = response.getResponse().getContentAsString();
-        assertEquals(requestBody, responseString);
-    }
+                // assert
+                verify(coursesRepository, times(1)).findById(67L);
+                verify(coursesRepository, times(1)).save(courseEdited); // should be saved with correct user
+                String responseString = response.getResponse().getContentAsString();
+                assertEquals(requestBody, responseString);
+        }
 
-    @WithMockUser(roles = { "ADMIN", "USER" })
-    @Test
-    public void admin_cannot_edit_course_that_does_not_exist() throws Exception {
-        // arrange
-        Courses courseEdited = Courses.builder().id(67L)
-                .name("CS32")
-                .school("UCSB")
-                .term("F24")
-                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
-                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .build();
+        @WithMockUser(roles = { "ADMIN", "USER" })
+        @Test
+        public void admin_cannot_edit_course_that_does_not_exist() throws Exception {
+                // arrange
 
-        String requestBody = mapper.writeValueAsString(courseEdited);
+               Courses courseEdited = Courses.builder().id(67L)
+                                .name("CS32")
+                                .school("UCSB")
+                                .term("F24")
+                                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
+                                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
 
-        when(coursesRepository.findById(eq(67L))).thenReturn(Optional.empty());
+                                .build();
 
-        // act
-        MvcResult response = mockMvc.perform(
-                put("/api/courses?id=67")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("utf-8")
-                        .content(requestBody)
-                        .with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
 
-        // assert
-        verify(coursesRepository, times(1)).findById(67L);
-        Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 67 not found", json.get("message"));
-    }
+                String requestBody = mapper.writeValueAsString(courseEdited);
+
+                when(coursesRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+                // act
+                MvcResult response = mockMvc.perform(
+                                put("/api/courses?id=67")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .characterEncoding("utf-8")
+                                                .content(requestBody)
+                                                .with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                // assert
+                verify(coursesRepository, times(1)).findById(67L);
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Courses with id 67 not found", json.get("message"));
+
+        }
 }
