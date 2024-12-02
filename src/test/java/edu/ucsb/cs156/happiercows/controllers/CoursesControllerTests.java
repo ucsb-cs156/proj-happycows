@@ -133,48 +133,6 @@ public class CoursesControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-    //delete
-    @WithMockUser(roles = {"ADMIN", "USER"})
-    @Test
-    public void admin_can_delete_existing_courses() throws Exception {
-        Courses course1 = Courses.builder()
-                .name("CS16")
-                .school("UCSB")
-                .term("F23")
-                .startDate(LocalDateTime.parse("2023-09-01T00:00:00"))
-                .endDate(LocalDateTime.parse("2023-12-31T00:00:00"))
-                .build();
-        
-        
-        when(coursesRepository.findById(eq(15L))).thenReturn(Optional.of(course1));
-
-
-      // act
-        MvcResult response = mockMvc.perform(
-                        delete("/api/courses?id=15")
-                                        .with(csrf()))
-                        .andExpect(status().isOk()).andReturn();
-
-
-        verify(coursesRepository, times(1)).findById(15L);
-        verify(coursesRepository, times(1)).delete(any());
-
-        Map<String, Object> json = responseToJson(response);
-        assertEquals("Course with id 15 deleted", json.get("message"));
-    }
-    @WithMockUser(roles = {"ADMIN", "USER"})   
-    @Test
-    public void admin_cannot_delete_non_existing_courses() throws Exception {
-        when(coursesRepository.findById(eq(20L))).thenReturn(Optional.empty());
-
-        MvcResult response = mockMvc.perform(delete("/api/courses?id=20").with(csrf()))
-                .andExpect(status().isNotFound()).andReturn();
-
-        verify(coursesRepository, times(1)).findById(20L);
-        Map<String, Object> json = responseToJson(response);
-        assertEquals("Courses with id 20 not found", json.get("message"));
-    }
-
     //edit
         @WithMockUser(roles = { "ADMIN", "USER" })
         @Test
