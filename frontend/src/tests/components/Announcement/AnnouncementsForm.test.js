@@ -107,7 +107,6 @@ describe("AnnouncementForm tests", () => {
         fireEvent.click(submitButton);
 
         expect(await screen.findByText(/Start Date is required and must be provided in ISO format./)).toBeInTheDocument();
-        expect(await screen.findByText(/End Date is required and must be provided in ISO format./)).toBeInTheDocument();
         expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
 
     });

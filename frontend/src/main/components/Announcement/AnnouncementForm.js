@@ -63,12 +63,8 @@ function AnnouncementForm({ initialContents, submitAction, buttonLabel = "Create
                     type="datetime-local"
                     isInvalid={Boolean(errors.startDate)}
                     {...register("endDate", {
-                        required: "endDate is required.",
                     })}
                 />
-                <Form.Control.Feedback type="invalid">
-                    {errors.endDate && 'End Date is required and must be provided in ISO format.'}
-                </Form.Control.Feedback>
             </Form.Group>
 
 
