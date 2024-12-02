@@ -3,11 +3,9 @@ package edu.ucsb.cs156.happiercows.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import wiremock.org.checkerframework.checker.units.qual.s;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +25,6 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import org.springframework.security.core.Authentication;
 import java.util.Date;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 import java.util.Calendar;
 
 
