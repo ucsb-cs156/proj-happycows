@@ -90,13 +90,25 @@ describe("AnnouncementForm tests", () => {
         await screen.findByText(/Start Date is required and must be provided in ISO format./);
         expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
 
-        // const endInput = screen.getByTestId(`${testId}-end`);
-        // fireEvent.change(endInput, { target: { value: "a" } });
-        // fireEvent.click(submitButton);
+    });
 
-        // await waitFor(() => {
-        //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
-        // });
+    test("no input for start or end date", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementForm />
+                </Router>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+        const submitButton = screen.getByText(/Create/);
+
+        fireEvent.click(submitButton);
+
+        expect(await screen.findByText(/Start Date is required and must be provided in ISO format./)).toBeInTheDocument();
+        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
+
     });
 
 });
