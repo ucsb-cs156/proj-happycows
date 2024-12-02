@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
-import { announcementFixtures } from "fixtures/announcementFixtures"
+import StudentsForm from "main/components/Students/StudentsForm";
+import { studentsFixtures } from "fixtures/studentsFixtures"
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -13,35 +13,29 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedNavigate
 }));
 
-describe("AnnouncementForm tests", () => {
+describe("StudentsForm tests", () => {
     const queryClient = new QueryClient();
 
-    const expectedHeaders = ["Start Date", "End Date", "Announcement"];
-    const testId = "AnnouncementForm";
+    const expectedHeaders = ["Perm", "Last Name", "First and Middle Name", "Email", "Course Id"];
+    const testId = "StudentsForm";
 
     test("renders correctly with no initialContents", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementForm />
+                    <StudentsForm />
                 </Router>
             </QueryClientProvider>
         );
 
         expect(await screen.findByText(/Create/)).toBeInTheDocument();
-
-        expectedHeaders.forEach((headerText) => {
-            const header = screen.getByText(headerText);
-            expect(header).toBeInTheDocument();
-        });
-
     });
 
     test("renders correctly when passing in initialContents", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementForm initialContents={announcementFixtures.oneAnnouncement} />
+                    <StudentsForm initialContents={studentsFixtures.oneStudent} />
                 </Router>
             </QueryClientProvider>
         );
@@ -57,12 +51,11 @@ describe("AnnouncementForm tests", () => {
         expect(screen.getByText(`Id`)).toBeInTheDocument();
     });
 
-
     test("that navigate(-1) is called when Cancel is clicked", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementForm />
+                    <StudentsForm />
                 </Router>
             </QueryClientProvider>
         );
@@ -78,7 +71,7 @@ describe("AnnouncementForm tests", () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementForm />
+                    <StudentsForm />
                 </Router>
             </QueryClientProvider>
         );
@@ -87,28 +80,11 @@ describe("AnnouncementForm tests", () => {
         const submitButton = screen.getByText(/Create/);
         fireEvent.click(submitButton);
 
-        await screen.findByText(/Start Date is required and must be provided in ISO format./);
-        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
-
-    });
-
-    test("no input for start or end date", async () => {
-        render(
-            <QueryClientProvider client={queryClient}>
-                <Router>
-                    <AnnouncementForm />
-                </Router>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByText(/Create/)).toBeInTheDocument();
-        const submitButton = screen.getByText(/Create/);
-
-        fireEvent.click(submitButton);
-
-        expect(await screen.findByText(/Start Date is required and must be provided in ISO format./)).toBeInTheDocument();
-        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
-
+        await screen.findByText(/The last name of the student is required./);
+        await screen.findByText(/The first and middle names of the student are required./);
+        await screen.findByText(/The perm number of the student is required./);
+        await screen.findByText(/The Course ID is required./);
+        expect(screen.getByText(/The email of the student is required./)).toBeInTheDocument();
     });
 
 });
