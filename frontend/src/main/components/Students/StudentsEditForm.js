@@ -18,8 +18,6 @@ function StudentsEditForm({ initialContents, submitAction, buttonLabel = "Create
 
     const testIdPrefix = "StudentsEditForm";
 
-    // For explanation, see: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
-    // Note that even this complex regex may still need some tweaks
     return (
 
         <Form onSubmit={handleSubmit(submitAction)}>
