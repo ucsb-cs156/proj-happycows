@@ -4,8 +4,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { announcementFixtures } from "fixtures/announcementFixtures"
 
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-
 import { QueryClient, QueryClientProvider } from "react-query";
 
 const mockedNavigate = jest.fn();

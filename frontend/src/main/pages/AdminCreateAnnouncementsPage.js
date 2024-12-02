@@ -2,7 +2,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { useParams, Navigate } from 'react-router-dom'
 import { toast } from "react-toastify"
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 
@@ -60,10 +60,11 @@ const AdminCreateAnnouncementsPage = () => {
         mutation.mutate(data);
     }
 
+    // Avoids constant string of output
     useEffect(() => {
         if (mutation.isSuccess) {
             Navigate({ to: "/" });
-            return <Navigate to="/" />
+            return
         }
     });
 

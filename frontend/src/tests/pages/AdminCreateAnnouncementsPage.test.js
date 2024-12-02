@@ -6,20 +6,14 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import {apiCurrentUserFixtures} from "fixtures/currentUserFixtures";
 import {systemInfoFixtures} from "fixtures/systemInfoFixtures";
-import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
-import { BrowserRouter as Router } from "react-router-dom";
-import { act } from '@testing-library/react';
-import { Navigate } from 'react-router-dom';
 
 
-import { navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 
 import React from "react";
-import * as useBackendModule from 'main/utils/useBackend'; // Import the module to mock functions
 
-
+// Mock Navigate component
 const mockedNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
     const originalModule = jest.requireActual('react-router-dom');
@@ -33,6 +27,7 @@ jest.mock('react-router-dom', () => {
     };
 });
 
+// Mock toast component
 jest.mock("react-toastify", () => ({
     toast: jest.fn(),
 }));
@@ -129,46 +124,13 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     });
 
-    test("When you fill in form and click submit, the navigation happens", async () => {
-        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
-        axiosMock.onPost("/api/announcements/post/13").reply(200, {
-            "id": 13,
-            "startDate": "2024-11-28T00:00",
-            "endDate": "2024-11-29T00:00",
-            "announcementText": "Test",
-        });
-        render(
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <AdminCreateAnnouncementsPage />
-                </MemoryRouter>
-            </QueryClientProvider>
-        );
-
-        expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
-
-        const startDateField = screen.getByLabelText("Start Date");
-        const endDateField = screen.getByLabelText("End Date");
-        const messageField = screen.getByLabelText("Announcement");
-        const submitButton = screen.getByTestId("AnnouncementForm-submit");
-
-        fireEvent.change(startDateField, { target: { value: "2024-11-28T00:00" } });
-        fireEvent.change(endDateField, { target: { value: "2024-11-29T00:00" } });
-        fireEvent.change(messageField, { target: { value: "Test" } });
-
-        fireEvent.click(submitButton);
-    });
-
-    // UNCOMMENT THE TEST BELOW AND FIX THE CODE
-    // ERROR IN THIS TEST!! -  Should cover last frontend mutations
-
 
     test("When you fill in form and click submit, the navigation happens", async () => {
         // Mock dependencies
         jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
 
         const mockMutation = {
-            mutate: jest.fn((data, { onSuccess }) => onSuccess()),
+            mutate: jest.fn(( { onSuccess }) => onSuccess()),
             isSuccess: true,
             isLoading: false,
             isError: false,
@@ -209,6 +171,54 @@ describe("AdminCreateAnnouncementsPage tests", () => {
         // Wait for navigation to be triggered
         await waitFor(() => {
             expect(mockedNavigate).toHaveBeenCalledWith({ to: "/" });
+        });
+    });
+
+    test("When you dont fill in form and click submit, the navigation doesnt happen", async () => {
+        // Mock dependencies
+        jest.spyOn(require("react-router-dom"), "useParams").mockReturnValue({ commonsId: "13" });
+
+        const mockMutation = {
+            mutate: jest.fn(( { onSuccess }) => onSuccess()),
+            isSuccess: true,
+            isLoading: false,
+            isError: false,
+        };
+        jest.mock("main/utils/useBackend", () => ({
+            useBackendMutation: () => mockMutation,
+        }));
+        
+        axiosMock.onPost("/api/announcements/post/13").reply(200, {
+            "id": 13,
+            "startDate": "2024-11-28T00:00",
+            "endDate": "2024-11-29T00:00",
+            "announcementText": "Test",
+        });
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter initialEntries={["/admin/announcements/create/13"]}>
+                    <AdminCreateAnnouncementsPage />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(await screen.findByText("Create Announcement for Test")).toBeInTheDocument();
+
+
+        // Simulate user interaction
+        const startDateField = screen.getByLabelText("Start Date");
+        const endDateField = screen.getByLabelText("End Date");
+        const submitButton = screen.getByTestId("AnnouncementForm-submit");
+
+        fireEvent.change(startDateField, { target: { value: "2024-11-28T00:00" } });
+        fireEvent.change(endDateField, { target: { value: "2024-11-29T00:00" } });
+        // Intentionaly leave messageField empty
+
+        fireEvent.click(submitButton);
+
+        // Wait for navigation to be triggered
+        await waitFor(() => {
+            expect(mockedNavigate).not.toHaveBeenCalled();
         });
     });
 
