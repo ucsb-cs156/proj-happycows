@@ -326,4 +326,6 @@ public class StudentsControllerTests extends ControllerTestCase {
                         .with(csrf()))
                         .andExpect(status().isNotFound());
         }
+
 }
+
