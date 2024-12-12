@@ -128,7 +128,7 @@ describe("LeaderboardTable tests", () => {
         ).toHaveTextContent("9");
     });
 
-    test("Total wealth is formatted correctly", () => {
+    test("Total wealth is formatted correctly", () => { 
         const currentUser = currentUserFixtures.adminUser;
 
         render(
@@ -153,6 +153,38 @@ describe("LeaderboardTable tests", () => {
         expect(screen.getAllByText("10")[0]).toHaveStyle("text-align: right;");
         expect(screen.getAllByText("9")[0]).toHaveStyle("text-align: right;");
     });
+
+    test("Correctly sorts by Total Wealth", () => {
+        const currentUser = currentUserFixtures.adminUser;
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <LeaderboardTable
+                        leaderboardUsers={leaderboardFixtures.fiveUserCommonsLB}
+                        currentUser={currentUser}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const wealthHeader = screen.getByText("Total Wealth");
+
+        //unsorted
+        const rowsUnsorted = screen.getAllByTestId(/LeaderboardTable-cell-row-\d+-col-totalWealth/).map(cell => cell.textContent);
+        expect(rowsUnsorted).toEqual(["$1,000.00", "$1,000.00", "$100,000.00", "$50.00", "$800.00"]);
+
+        //sorted by ascending
+        fireEvent.click(wealthHeader);
+        const rowsAscending = screen.getAllByTestId(/LeaderboardTable-cell-row-\d+-col-totalWealth/).map(cell => cell.textContent);
+        expect(rowsAscending).toEqual(["$50.00", "$800.00", "$1,000.00", "$1,000.00", "$100,000.00"]);
+
+        //sorted by descending
+        fireEvent.click(wealthHeader);
+        const rowsDescending = screen.getAllByTestId(/LeaderboardTable-cell-row-\d+-col-totalWealth/).map(cell => cell.textContent);
+        expect(rowsDescending).toEqual(["$100,000.00", "$1,000.00", "$1,000.00", "$800.00", "$50.00"]);
+    });
+
     test("Clicking on link navigates to the correct URL", () => {
         const currentUser = currentUserFixtures.adminUser;
 

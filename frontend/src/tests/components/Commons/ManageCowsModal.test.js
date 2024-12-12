@@ -64,7 +64,7 @@ describe('ManageCowsModal', () => {
   test('calls onBuy with correct arguments when buy button is clicked', async () => {
     const number = 5;
     render(
-        <ManageCowsModal isOpen={true} onClose={mockOnClose} message="buy" userCommons={userCommonsFixtures.oneUserCommons[0]} number={number} onBuy={mockOnBuy} setNumber={mockSetNumber} />
+        <ManageCowsModal isOpen={true} onClose={mockOnClose} message="Buy" userCommons={userCommonsFixtures.oneUserCommons[0]} number={number} onBuy={mockOnBuy} setNumber={mockSetNumber} />
     );
 
     fireEvent.click(screen.getByTestId('buy-sell-cow-modal-submit'));

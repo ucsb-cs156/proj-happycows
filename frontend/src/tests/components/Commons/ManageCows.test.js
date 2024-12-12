@@ -109,7 +109,7 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("buy-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("buy");
+        expect(mockSetMessage).toHaveBeenCalledWith("Buy");
         expect(mockOpenModal).toHaveBeenCalled();
     });
 
@@ -137,7 +137,7 @@ describe("ManageCows tests", () => {
         );
 
         fireEvent.click(screen.getByTestId("sell-cow-button"));
-        expect(mockSetMessage).toHaveBeenCalledWith("sell");
+        expect(mockSetMessage).toHaveBeenCalledWith("Sell");
         expect(mockOpenModal).toHaveBeenCalled();
     });
 });

@@ -4,7 +4,6 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useBackend } from "main/utils/useBackend";
-
 export default function AdminAnnouncementsPage() {
     const { commonsId } = useParams();
 
@@ -20,9 +19,7 @@ export default function AdminAnnouncementsPage() {
         }
     );
     // Stryker restore all
-
     const commonsName = commonsPlus?.commons.name;
-
     return (
         <BasicLayout>
         <div className="pt-2">
@@ -37,5 +34,4 @@ export default function AdminAnnouncementsPage() {
         </div>
       </BasicLayout>
     );
-
 };
