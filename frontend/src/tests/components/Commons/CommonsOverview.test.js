@@ -34,7 +34,9 @@ describe("CommonsOverview tests", () => {
 
     test("renders without crashing", () => {
         render(
-            <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} />
+            <QueryClientProvider client={queryClient}>
+                <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} />
+            </QueryClientProvider>
         );
     });
 
@@ -83,5 +85,117 @@ describe("CommonsOverview tests", () => {
             expect(axiosMock.history.get.length).toEqual(3);
         });
         expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
+    });
+
+    test("for announcement table button", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]} currentUser={apiCurrentUserFixtures.userOnly} />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText("Hide Announcements")).toBeInTheDocument();
+        
+        const changeButton = screen.getByText("Hide Announcements");
+        fireEvent.click(changeButton);
+        
+        expect(screen.getByText("Show Announcements")).toBeInTheDocument();
+        
+        fireEvent.click(changeButton);
+        
+        expect(screen.getByText("Hide Announcements")).toBeInTheDocument();
+    });
+
+    test("changing button for multiples times works correctly", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const getButtonState = () => screen.getByRole('button', { 
+            name: /Hide Announcements|Show Announcements/
+        });
+        expect(getButtonState()).toHaveTextContent("Hide Announcements");
+        expect(screen.getByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Show Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).not.toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Hide Announcements");
+        expect(screen.getByTestId("PagedAnnouncementTable-header-startDate")).toBeInTheDocument();
+
+        fireEvent.click(getButtonState());
+        expect(getButtonState()).toHaveTextContent("Show Announcements");
+        expect(screen.queryByTestId("PagedAnnouncementTable-header-startDate")).not.toBeInTheDocument();
+    });
+
+
+    test("leaderboard button navigates to correct common's leaderboard", () => {
+        const testCommonsPlus = {
+            ...commonsPlusFixtures.oneCommonsPlus[0],
+            commons: {
+                ...commonsPlusFixtures.oneCommonsPlus[0].commons,
+                id: 2,
+                showLeaderboard: true
+            }
+        };
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={testCommonsPlus}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const leaderboardButton = screen.getByTestId("user-leaderboard-button");
+        fireEvent.click(leaderboardButton);
+
+        expect(mockNavigate).toHaveBeenCalledWith("/leaderboard/2");
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    test("leaderboard button uses correct URL", () => {
+        const testCommonsPlus = {
+            ...commonsPlusFixtures.oneCommonsPlus[0],
+            commons: {
+                ...commonsPlusFixtures.oneCommonsPlus[0].commons,
+                id: 2,
+                showLeaderboard: true
+            }
+        };
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemoryRouter>
+                    <CommonsOverview 
+                        commonsPlus={testCommonsPlus}
+                        currentUser={apiCurrentUserFixtures.userOnly}
+                    />
+                </MemoryRouter>
+            </QueryClientProvider>
+        );
+
+        const leaderboardButton = screen.getByTestId("user-leaderboard-button");
+        fireEvent.click(leaderboardButton);
+
+        expect(mockNavigate).toHaveBeenCalledWith("/leaderboard/2");
+
+        expect(mockNavigate).not.toHaveBeenCalledWith("2");
+        expect(mockNavigate).not.toHaveBeenCalledWith("/2");
+        expect(mockNavigate).not.toHaveBeenCalledWith("leaderboard/2");
     });
 });
