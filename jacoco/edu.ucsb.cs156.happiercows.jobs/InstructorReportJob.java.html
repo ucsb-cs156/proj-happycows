@@ -3,33 +3,33 @@
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.services.ReportService;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.happiercows.services.ReportService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 public class InstructorReportJob implements JobContextConsumer {
 
-  @Getter private ReportService reportService;
+    @Getter
+    private ReportService reportService;
 
-  @Getter private CommonsRepository commonsRepository;
+    @Getter
+    private CommonsRepository commonsRepository;
 
-  @Override
-  public void accept(JobContext ctx) throws Exception {
-<span class="fc" id="L21">    ctx.log(&quot;Starting instructor report...&quot;);</span>
-<span class="fc" id="L22">    Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
+    @Override
+    public void accept(JobContext ctx) throws Exception {
+<span class="fc" id="L23">        ctx.log(&quot;Starting instructor report...&quot;);</span>
+<span class="fc" id="L24">        Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
 
-<span class="fc bfc" id="L24" title="All 2 branches covered.">    for (Commons commons : allCommons) {</span>
-<span class="fc" id="L25">      ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
-<span class="fc" id="L26">      Report report = reportService.createReport(commons.getId());</span>
-<span class="fc" id="L27">      ctx.log(</span>
-<span class="fc" id="L28">          String.format(</span>
-              &quot;Report %d for commons id=%d (%s) finished.&quot;,
-<span class="fc" id="L30">              report.getId(), commons.getId(), commons.getName()));</span>
-<span class="fc" id="L31">    }</span>
-<span class="fc" id="L32">    ctx.log(&quot;Instructor report done!&quot;);</span>
-<span class="fc" id="L33">  }</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
+<span class="fc" id="L27">            ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
+<span class="fc" id="L28">            Report report = reportService.createReport(commons.getId());</span>
+<span class="fc" id="L29">            ctx.log(String.format(&quot;Report %d for commons id=%d (%s) finished.&quot;, report.getId(), commons.getId(),</span>
+<span class="fc" id="L30">                    commons.getName()));</span>
+<span class="fc" id="L31">        }</span>
+<span class="fc" id="L32">        ctx.log(&quot;Instructor report done!&quot;);</span>
+<span class="fc" id="L33">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
