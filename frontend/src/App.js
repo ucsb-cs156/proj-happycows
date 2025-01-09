@@ -11,9 +11,14 @@ import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
 import AdminViewReportPage from "main/pages/AdminViewReportPage";
-
+import AdminCoursesIndexPage from "main/pages/AdminCoursesIndexPage";
+import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
+import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
+import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
+import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
+import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
@@ -45,6 +50,30 @@ function App() {
             <Route
                 path="/admin/editcommons/:id"
                 element={<AdminEditCommonsPage />}
+            />
+            <Route
+                path="/admin/liststudents"
+                element={<AdminStudentsIndexPage />}
+            />
+            <Route
+                path="/admin/createstudents"
+                element={<AdminStudentsCreatePage />}
+            />
+            <Route
+                path="/admin/editstudents/:id"
+                element={<AdminStudentsEditPage />}
+            />
+            <Route
+                path="/admin/listcourses"
+                element={<AdminCoursesIndexPage />}
+            />
+            <Route
+                path="/admin/createcourses"
+                element={<AdminCoursesCreatePage />}
+            />
+            <Route
+                path="/admin/editcourses/:id"
+                element={<AdminCoursesEditPage />}
             />
             <Route
                 path="/admin/play/:commonsId/user/:userId"
