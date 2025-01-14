@@ -53,10 +53,9 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
             double excess = totalCows - commonsPlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;
             double x = (excess / commonsPlus.getEffectiveCapacity());
-            if (excess > 0) {
-                adjustmentFactor = 1.0 - x * x;
-            } else {
-                adjustmentFactor = 1.0 + x * x;
+            if(excess != 0){
+                double sign = -1 * excess / Math.abs(excess);
+                adjustmentFactor = 1.0 + sign * x * x;
             }
             adjustmentFactor = Math.max(0.0, adjustmentFactor);
             return uC.getCowHealth() * adjustmentFactor;
@@ -70,10 +69,9 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
             double excess = totalCows - commonsPlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;
             double x = (excess / commonsPlus.getEffectiveCapacity()) * commonsPlus.getCommons().getDegradationRate();
-            if (excess > 0) {
-                adjustmentFactor = 1 - x * x;
-            } else {
-                adjustmentFactor = 1 + x * x;
+            if(excess != 0){
+                double sign = -1 * excess / Math.abs(excess);
+                adjustmentFactor = 1.0 + sign * x * x;
             }
             adjustmentFactor = Math.max(0.0, adjustmentFactor);
             return uC.getCowHealth() * adjustmentFactor;

@@ -95,11 +95,12 @@ class CowHealthUpdateStrategyTests {
         var formula = CowHealthUpdateStrategies.Milan;
         assertEquals(62.5, formula.calculateNewCowHealth(commonsPlus1, uc1, 500));
         assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 1000));
+        assertEquals(37.5, formula.calculateNewCowHealth(commonsPlus1, uc1, 1500));
         assertEquals(0.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 2000));
     }
 
     @Test
-    void mattanhah_calculates_correctly() {
+    void mattanjah_calculates_correctly() {
         var formula = CowHealthUpdateStrategies.Mattanjah;
         double tolerance = 1E-12;
 
