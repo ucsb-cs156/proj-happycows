@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
@@ -49,14 +51,15 @@ public class CommonStatsCSVHelper {
     CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);
 
     csvPrinter.printRecord(headers);
-
+    ZoneId pst = ZoneId.of("America/Los_Angeles");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(pst);
     for (CommonStats line : stats) {
       List<String> data = Arrays.asList(
           String.valueOf(line.getId()),
           String.valueOf(line.getCommonsId()),
           String.valueOf(line.getNumCows()),
           String.valueOf(line.getAvgHealth()),
-          String.valueOf(line.getCreateDate()));
+          formatter.format(line.getCreateDate()));
       csvPrinter.printRecord(data);
     }
 

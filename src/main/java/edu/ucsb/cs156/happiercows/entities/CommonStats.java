@@ -1,6 +1,6 @@
 package edu.ucsb.cs156.happiercows.entities;
 
-import java.util.Date;
+import java.time.Instant;
 
 import javax.persistence.*;
 
@@ -26,8 +26,7 @@ public class CommonStats {
     private double avgHealth;
     
     @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
-    private Date createDate;
+    private Instant createDate;
 
 }
