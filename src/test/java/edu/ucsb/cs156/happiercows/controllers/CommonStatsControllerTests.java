@@ -28,6 +28,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
         .commonsId(17L)
         .numCows(20)
         .avgHealth(10)
+        .createDate(Instant.parse("2004-03-11T08:00:00Z"))
         .build();
 
     CommonStats expectedStats2 = CommonStats
@@ -92,6 +94,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
         .commonsId(42L)
         .numCows(120)
         .avgHealth(20)
+        .createDate(Instant.parse("2004-03-27T08:00:00Z"))
         .build();
 
     @WithMockUser(roles = { "ADMIN" })
@@ -144,7 +147,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
 
             String expected = 
                     "id,commonsId,numCows,avgHealth,createDate\r\n" +
-                    "0,17,20,10.0,null\r\n";
+                    "0,17,20,10.0,2004-03-11 00:00:00\r\n";
                                         
             assertEquals(expected, responseString);
     }
@@ -164,8 +167,8 @@ public class CommonStatsControllerTests extends ControllerTestCase {
 
             String expected = 
                     "id,commonsId,numCows,avgHealth,createDate\r\n" +
-                    "0,17,20,10.0,null\r\n" +
-                    "0,42,120,20.0,null\r\n";
+                    "0,17,20,10.0,2004-03-11 00:00:00\r\n" +
+                    "0,42,120,20.0,2004-03-27 00:00:00\r\n";
                                         
             assertEquals(expected, responseString);
     }
