@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
@@ -29,39 +31,40 @@ public class CommonStatsCSVHelper {
    */
 
   public static void flush_and_close_noPitest(ByteArrayOutputStream out, CSVPrinter csvPrinter) throws IOException {
-<span class="fc" id="L32">    csvPrinter.flush();</span>
-<span class="fc" id="L33">    csvPrinter.close();</span>
-<span class="fc" id="L34">    out.flush();</span>
-<span class="fc" id="L35">    out.close();</span>
-<span class="fc" id="L36">  }</span>
+<span class="fc" id="L34">    csvPrinter.flush();</span>
+<span class="fc" id="L35">    csvPrinter.close();</span>
+<span class="fc" id="L36">    out.flush();</span>
+<span class="fc" id="L37">    out.close();</span>
+<span class="fc" id="L38">  }</span>
   
   public static ByteArrayInputStream toCSV(Iterable&lt;CommonStats&gt; stats) throws IOException {
-<span class="fc" id="L39">    final CSVFormat format = CSVFormat.DEFAULT;</span>
+<span class="fc" id="L41">    final CSVFormat format = CSVFormat.DEFAULT;</span>
 
-<span class="fc" id="L41">    List&lt;String&gt; headers = Arrays.asList(</span>
+<span class="fc" id="L43">    List&lt;String&gt; headers = Arrays.asList(</span>
         &quot;id&quot;,
         &quot;commonsId&quot;,
         &quot;numCows&quot;,
         &quot;avgHealth&quot;,
         &quot;createDate&quot;);
 
-<span class="fc" id="L48">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
-<span class="fc" id="L49">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
+<span class="fc" id="L50">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L51">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
 
-<span class="fc" id="L51">    csvPrinter.printRecord(headers);</span>
+<span class="fc" id="L53">    csvPrinter.printRecord(headers);</span>
+<span class="fc" id="L54">    ZoneId pst = ZoneId.of(&quot;America/Los_Angeles&quot;);</span>
+<span class="fc" id="L55">    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;).withZone(pst);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    for (CommonStats line : stats) {</span>
+<span class="fc" id="L57">      List&lt;String&gt; data = Arrays.asList(</span>
+<span class="fc" id="L58">          String.valueOf(line.getId()),</span>
+<span class="fc" id="L59">          String.valueOf(line.getCommonsId()),</span>
+<span class="fc" id="L60">          String.valueOf(line.getNumCows()),</span>
+<span class="fc" id="L61">          String.valueOf(line.getAvgHealth()),</span>
+<span class="fc" id="L62">          formatter.format(line.getCreateDate()));</span>
+<span class="fc" id="L63">      csvPrinter.printRecord(data);</span>
+<span class="fc" id="L64">    }</span>
 
-<span class="fc bfc" id="L53" title="All 2 branches covered.">    for (CommonStats line : stats) {</span>
-<span class="fc" id="L54">      List&lt;String&gt; data = Arrays.asList(</span>
-<span class="fc" id="L55">          String.valueOf(line.getId()),</span>
-<span class="fc" id="L56">          String.valueOf(line.getCommonsId()),</span>
-<span class="fc" id="L57">          String.valueOf(line.getNumCows()),</span>
-<span class="fc" id="L58">          String.valueOf(line.getAvgHealth()),</span>
-<span class="fc" id="L59">          String.valueOf(line.getCreateDate()));</span>
-<span class="fc" id="L60">      csvPrinter.printRecord(data);</span>
-<span class="fc" id="L61">    }</span>
-
-<span class="fc" id="L63">    flush_and_close_noPitest(out, csvPrinter);</span>
-<span class="fc" id="L64">    return new ByteArrayInputStream(out.toByteArray());</span>
+<span class="fc" id="L66">    flush_and_close_noPitest(out, csvPrinter);</span>
+<span class="fc" id="L67">    return new ByteArrayInputStream(out.toByteArray());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
