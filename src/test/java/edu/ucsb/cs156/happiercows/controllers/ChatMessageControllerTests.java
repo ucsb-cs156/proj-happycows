@@ -65,15 +65,13 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         // arrange
         Long commonsId = 1L;
         Long userId = 1L;
-        int page = 0;
-        int size = 10;
 
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByCommonsId(commonsId)).thenReturn(chatMessages);
         
         UserCommons userCommons = UserCommons.builder()
                 .commons(Commons.builder().build())
@@ -82,13 +80,13 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}", commonsId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId);
         String responseString = response.getResponse().getContentAsString();
-        String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
+        String expectedResponseString = mapper.writeValueAsString(chatMessages);
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
     }
@@ -100,24 +98,22 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         // arrange
         Long commonsId = 1L;
         Long userId = 1L;
-        int page = 0;
-        int size = 10;
 
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByCommonsId(commonsId)).thenReturn(chatMessages);
         
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}", commonsId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId);
         String responseString = response.getResponse().getContentAsString();
-        String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
+        String expectedResponseString = mapper.writeValueAsString(chatMessages);
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
     }
@@ -129,24 +125,22 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         // arrange
         Long commonsId = 1L;
         Long userId = 1L;
-        int page = 0;
-        int size = 10;
 
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> pageOfChatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByCommonsId(commonsId)).thenReturn(pageOfChatMessages);
         
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
-        mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/get?commonsId={commonsId}", commonsId))
             .andExpect(status().isForbidden()).andReturn();
         
         // assert
-        verify(chatMessageRepository, times(0)).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findByCommonsId(commonsId);
 
     }
     
@@ -163,18 +157,18 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findAllByCommonsId(commonsId)).thenReturn(chatMessages);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}", commonsId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findAllByCommonsId(commonsId);
         String responseString = response.getResponse().getContentAsString();
-        String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
+        String expectedResponseString = mapper.writeValueAsString(chatMessages);
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
     }
@@ -185,22 +179,19 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         
         // arrange
         Long commonsId = 1L;
-        int page = 0;
-        int size = 10;
-
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findAllByCommonsId(commonsId)).thenReturn(chatMessages);
 
         // act
-        mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}", commonsId))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
-        verify(chatMessageRepository, times(0)).findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findAllByCommonsId(commonsId);
     }
 
     //* */ admin/hidden tests
@@ -210,24 +201,22 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         
         // arrange
         Long commonsId = 1L;
-        int page = 0;
-        int size = 10;
 
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).hidden(true).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).hidden(true).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId)).thenReturn(chatMessages);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}", commonsId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByCommonsIdAndHidden(commonsId);
         String responseString = response.getResponse().getContentAsString();
-        String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
+        String expectedResponseString = mapper.writeValueAsString(chatMessages);
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
     }
@@ -238,22 +227,20 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         
         // arrange
         Long commonsId = 1L;
-        int page = 0;
-        int size = 10;
 
         ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).hidden(true).build();
         ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).hidden(true).build();
 
-        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+        Iterable<ChatMessage> chatMessages = Arrays.asList(chatMessage1, chatMessage2);
 
-        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId)).thenReturn(chatMessages);
 
         // act
-        mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}", commonsId))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
-        verify(chatMessageRepository, times(0)).findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findByCommonsIdAndHidden(commonsId);
     }
 
     //* */ post tests
