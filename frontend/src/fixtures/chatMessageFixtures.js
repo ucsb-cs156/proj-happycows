@@ -165,4 +165,21 @@ export const chatMessageFixtures = {
             "hidden": false
         },
     ],
+    oneHundredMessages:[
+    ]
+}
+
+    chatMessageFixtures.oneHundredMessages=chatMessageFixtures.oneHundredMessages.concat(chatMessageFixtures.twelveChatMessages)
+
+for(let i = 0; i < 90; i++){
+    chatMessageFixtures.oneHundredMessages.push({
+        "id": 13 + i,
+        "userId": 1,
+        "commonsId": 1,
+        "timestamp": "2023-08-24T23:57:46.576+00:00",
+        "message": "More chat testing...",
+        "dm": false,
+        "toUserId": 0,
+        "hidden": false
+    },)
 }

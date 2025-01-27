@@ -155,5 +155,51 @@ describe("ChatDisplay tests", () => {
 
   });
 
+  test("displays cuts off at 100 messages", async () => {
+
+    //arrange
+
+      console.log(chatMessageFixtures.oneHundredMessages);
+
+    axiosMock.onGet("/api/chat/get").reply(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, userCommonsFixtures.threeUserCommons);
+
+    //act
+    render(
+        <QueryClientProvider client={queryClient}>
+            <MemoryRouter>
+                <ChatDisplay commonsId={commonsId} />
+            </MemoryRouter>
+        </QueryClientProvider>
+    );
+    
+    //assert
+    await waitFor(() => {
+        expect(axiosMock.history.get.length).toBe(3);
+    });
+    expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
+    expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
+    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1, page: 0, size: 100 });
+    expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
+
+    await waitFor(() => {
+        expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
+        
+    });
+
+    expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
+    expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
+
+    expect(screen.queryByTestId("ChatMessageDisplay-1")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("ChatMessageDisplay-2")).not.toBeInTheDocument();
+    
+    expect(screen.queryByText("This should not appear")).not.toBeInTheDocument();
+    expect(screen.queryByText("This should also be cut off")).not.toBeInTheDocument();
+
+    expect(screen.getByText("This should appear, though")).toBeInTheDocument();
+    expect(screen.getByText("This one too!")).toBeInTheDocument();
+
+  });
 
 });
