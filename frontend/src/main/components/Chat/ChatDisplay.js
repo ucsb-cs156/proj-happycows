@@ -5,7 +5,7 @@ import { useBackend } from "main/utils/useBackend";
 // Props for storybook manual injection
 
 const ChatDisplay = ({ commonsId }) => {
-    const initialMessagePageSize = 10;
+    const initialMessagePageSize = 100;
     const refreshRate = 2000;
 
     // Stryker disable all
