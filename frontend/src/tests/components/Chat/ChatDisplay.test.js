@@ -159,8 +159,6 @@ describe("ChatDisplay tests", () => {
 
     //arrange
 
-      console.log(chatMessageFixtures.oneHundredMessages);
-
     axiosMock.onGet("/api/chat/get").reply(200, { content: chatMessageFixtures.oneHundredMessages });
     axiosMock.onGet("/api/usercommons/commons/all").reply(200, userCommonsFixtures.threeUserCommons);
 
