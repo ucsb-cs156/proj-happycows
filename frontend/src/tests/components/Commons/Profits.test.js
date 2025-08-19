@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import Profits from "main/components/Commons/Profits"; 
 import userCommonsFixtures from "fixtures/userCommonsFixtures"; 
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 describe("Profits tests", () => {
     

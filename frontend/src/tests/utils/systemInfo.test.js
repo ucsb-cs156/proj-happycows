@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { useSystemInfo } from "main/utils/systemInfo";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";

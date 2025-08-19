@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import SetCowHealthForm from "main/components/Jobs/SetCowHealthForm";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import commonsFixtures from "fixtures/commonsFixtures";

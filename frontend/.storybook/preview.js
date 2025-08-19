@@ -3,7 +3,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../src/index.css";
 import { initialize, mswDecorator } from 'msw-storybook-addon';
 
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 
 export const parameters = {

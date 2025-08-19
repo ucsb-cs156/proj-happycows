@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import ChatMessageCreate from "main/components/Chat/ChatMessageCreate";
 import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 

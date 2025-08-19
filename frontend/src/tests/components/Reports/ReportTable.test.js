@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import ReportTable from "main/components/Reports/ReportTable";
 import reportFixtures from "fixtures/reportFixtures";

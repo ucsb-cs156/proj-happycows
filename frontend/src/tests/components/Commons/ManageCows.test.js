@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
 
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import * as currentUserModule from "main/utils/currentUser";
 
