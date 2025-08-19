@@ -1,19 +1,30 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
 import { act } from 'react-dom/test-utils';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, MemoryRouter } from "react-router-dom";
+import { vi } from 'vitest';
 
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
 import { apiCurrentUserFixtures, currentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-jest.mock('react-router-dom');
-const { MemoryRouter } = jest.requireActual('react-router-dom');
+vi.mock('react-router-dom', async () => {
+    const actual = await vi.importActual('react-router-dom');
+    return {
+        ...actual,
+        useNavigate: () => mockNavigate,
+    };
+});
+
+const mockNavigate = vi.fn();
 
 describe("utils/currentUser tests", () => {
+    beforeEach(() => {
+        vi.mocked(useNavigate).mockReturnValue(mockNavigate);
+    });
     describe("useCurrentUser tests", () => {
         test("useCurrentUser retrieves initial data", async () => {
             const queryClient = new QueryClient();

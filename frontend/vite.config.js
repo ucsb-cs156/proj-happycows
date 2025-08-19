@@ -42,6 +42,10 @@ export default defineConfig({
       },
       reporter: ["html", "text-summary"],
     },
+    esbuild: {
+      target: "node14",
+      loader: "jsx",
+    },
   },
   resolve: {
     alias: {
