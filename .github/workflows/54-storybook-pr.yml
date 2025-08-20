@@ -27,7 +27,7 @@ jobs:
       branch_name: ${{ steps.get-branch-name.outputs.branch_name }}
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 1
         token: ${{ github.token }}
@@ -62,16 +62,16 @@ jobs:
         echo "branch_name=${{needs.get-pr-num.outputs.branch_name}}"
 
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ needs.get-pr-num.outputs.branch_name }}
         fetch-depth: 1
         token: ${{ github.token }}
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version-file: 'frontend/package.json'
         cache: 'npm'
         cache-dependency-path: frontend/package-lock.json
 

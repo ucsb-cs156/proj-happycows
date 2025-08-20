@@ -14,10 +14,10 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: szenius/set-timezone@v1.2
+      - uses: szenius/set-timezone@v2
         with:
           timezoneLinux: "America/Los_Angeles"
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v4
         with: 
           fetch-depth: 2
 
@@ -34,7 +34,7 @@ jobs:
           echo "pr_number=${pr_number}" >> "$GITHUB_ENV"
                 
       - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4
         with:
           node-version-file: 'frontend/package.json'
           cache: 'npm'
@@ -46,7 +46,7 @@ jobs:
         working-directory: ./frontend
       - name: Upload jest coverage report to Artifacts
         if: always() # always upload artifacts, even if tests fail
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: jest-coverage
           path: frontend/coverage/lcov-report/*

@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Get Pull Requests from Github api
       id: get-prs
       run: |
@@ -31,7 +31,7 @@ jobs:
          echo "pull_requests=${pull_requests}"
          echo "pull_requests=${pull_requests}" >> "$GITHUB_OUTPUT"
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -45,9 +45,9 @@ jobs:
       destination: target/site/apidocs   
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -56,7 +56,7 @@ jobs:
       run: mvn -DskipTests javadoc:javadoc
 
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: javadoc
           path: ${{ env.destination }}
@@ -70,10 +70,10 @@ jobs:
 
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -87,7 +87,7 @@ jobs:
         npx build-storybook --docs -o storybook_static
 
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: storybook
           path: ${{ env.destination }}
@@ -101,9 +101,9 @@ jobs:
       destination: target/site/jacoco  
 
     steps:
-    - uses: actions/checkout@v3.5.2
+    - uses: actions/checkout@v4
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -115,7 +115,7 @@ jobs:
       run: mvn -B test jacoco:report verify
 
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: jacoco
           path: ${{ env.destination }}
@@ -130,9 +130,9 @@ jobs:
       history_destination: target/pit-history
 
     steps:
-    - uses: actions/checkout@v3.5.2
+    - uses: actions/checkout@v4
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -143,7 +143,7 @@ jobs:
 
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -169,13 +169,13 @@ jobs:
 
     - name: Upload Pitest History to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: pitest-main-history.bin
         path: ${{ env.history_destination}}/history.bin
 
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: pitest
           path: ${{ env.destination }}
@@ -188,14 +188,14 @@ jobs:
     env:
       destination: frontend/coverage/lcov-report
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2
       with:
         timezoneLinux: "America/Los_Angeles"
-    - uses: actions/checkout@v3.5.2
+    - uses: actions/checkout@v4
       with: 
         fetch-depth: 2
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -207,7 +207,7 @@ jobs:
       working-directory: ./frontend
     - name: Upload jest coverage report to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: coverage
         path: ${{ env.destination }}
@@ -219,14 +219,14 @@ jobs:
     needs: [initialize]
    
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2
       with:
         timezoneLinux: "America/Los_Angeles"
-    - uses: actions/checkout@v3.5.2
+    - uses: actions/checkout@v4
       with: 
         fetch-depth: 2
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -240,7 +240,7 @@ jobs:
 
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -257,14 +257,14 @@ jobs:
         npx stryker run --incremental --incrementalFile history/stryker-incremental-main.json
      
     - name: Upload stryker incremental file to Artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: stryker-incremental-main.json
         path: frontend/history
 
     - name: Upload report to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: stryker
         path: frontend/reports/mutation/mutation.html
@@ -284,14 +284,14 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 1
         token: ${{ github.token }}
 
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -301,7 +301,7 @@ jobs:
  
     - name: Upload javadoc to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: prs-${{ matrix.value.number }}-javadoc
         path: ${{ env.destination }}
@@ -327,14 +327,14 @@ jobs:
         echo "matrix.value.headRefName:  ${{ matrix.value.headRefName }}"
 
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 1
         token: ${{ github.token }}
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -349,7 +349,7 @@ jobs:
  
     - name: Upload Storybook to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: prs-${{ matrix.value.number }}-storybook
         path: frontend/storybook_static_${{ matrix.value.number }} 
@@ -367,14 +367,14 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 1
         token: ${{ github.token }}
 
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -386,7 +386,7 @@ jobs:
       run: mvn -B test jacoco:report verify
  
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: prs-${{ matrix.value.number }}-jacoco
           path: target/site/jacoco
@@ -409,7 +409,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 1
@@ -426,14 +426,14 @@ jobs:
           echo "branch_name=${BRANCH}"
           echo "branch_name=${BRANCH}" >> "$GITHUB_ENV"
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
 
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -459,13 +459,13 @@ jobs:
 
     - name: Upload Pitest History to Artifacts
       if: always() # always upload artifacts, even if tests fail
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: pitest-${{ matrix.value.number }}-history.bin
         path: ${{ env.history_destination}}/history.bin
 
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
           name: prs-${{ matrix.value.number }}-pitest
           path: ${{ env.destination }}
@@ -486,7 +486,7 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 1
@@ -496,7 +496,7 @@ jobs:
          mkdir -p ${{ env.destination }}
       
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -510,7 +510,7 @@ jobs:
       working-directory: ./frontend
       
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: prs-${{ matrix.value.number }}-coverage
         path: ${{ env.destination }}
@@ -533,11 +533,11 @@ jobs:
         value: ${{ fromJSON(needs.initialize.outputs.pull_requests)}}
 
     steps:
-    - uses: szenius/set-timezone@v1.2
+    - uses: szenius/set-timezone@v2
       with:
         timezoneLinux: "America/Los_Angeles"
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
       with:
         ref: ${{ matrix.value.headRefName }}
         fetch-depth: 2
@@ -547,7 +547,7 @@ jobs:
          mkdir -p ${{ env.destination }}
          mkdir -p ${{ env.history_destination}}
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'
@@ -558,7 +558,7 @@ jobs:
 
     - name: Download artifact
       id: download-artifact
-      uses: dawidd6/action-download-artifact@v2.27.0
+      uses: dawidd6/action-download-artifact@v6
       with:
         workflow: 02-gh-pages-rebuild-part-1.yml
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -573,12 +573,12 @@ jobs:
       run: |
         npx stryker run --incremental --incrementalFile history/stryker-incremental-${{ matrix.value.number }}.json
     - name: Upload stryker incremental file to Artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: stryker-incremental-${{ matrix.value.number }}.json
         path: ${{ env.history_destination }}
     - name: Upload to artifacts
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v4
       with:
         name: prs-${{ matrix.value.number }}-stryker
         path: ${{ env.destination }}/mutation.html
