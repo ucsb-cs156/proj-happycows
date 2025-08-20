@@ -25,4 +25,4 @@ COPY . /home/app
 ENV PRODUCTION=true
 RUN mvn -B -ntp -DskipTests -Pproduction -f /home/app/pom.xml clean package
 
-ENTRYPOINT ["sh", "-c", "java -jar /home/app/target/*.jar"]
+ENTRYPOINT ["/home/app/startup.sh","/home/app/target/*.jar"]
