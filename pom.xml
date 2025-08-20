@@ -283,6 +283,7 @@
                         <param>edu.ucsb.cs156.happiercows.HappierCowsApplication</param>
                         <param>edu.ucsb.cs156.happiercows.config.SecurityConfig</param>
                         <param>edu.ucsb.cs156.happiercows.config.SecurityConfig.MyCsrfRequestMatcher</param>
+                        <param>edu.ucsb.cs156.happiercows.config.SpaCsrfTokenRequestHandler</param>
                         <param>edu.ucsb.cs156.happiercows.config.SpringFoxConfig</param>
                         <param>edu.ucsb.cs156.happiercows.services.wiremock.WiremockService</param>
                         <param>edu.ucsb.cs156.happiercows.services.wiremock.WiremockServiceDummy</param>

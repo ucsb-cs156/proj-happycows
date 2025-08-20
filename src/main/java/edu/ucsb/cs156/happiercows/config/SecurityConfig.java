@@ -61,7 +61,6 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.exceptionHandling(
             handling -> handling.authenticationEntryPoint(new Http403ForbiddenEntryPoint()))
-        .headers((headers) -> headers.frameOptions((frame) -> frame.sameOrigin())) // for h2-console
         .oauth2Login(
             oauth2 ->
                 oauth2.userInfoEndpoint(

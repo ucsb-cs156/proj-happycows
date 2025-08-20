@@ -65,7 +65,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         UserCommons expectedUserCommons = getTestUserCommons();
         when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
@@ -82,7 +82,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
         when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
                 .andExpect(status().is(404)).andReturn();
 
         verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
