@@ -16,6 +16,7 @@ HappyCows/HappierCows is a Spring Boot (Java) + React (JavaScript) web applicati
    ```bash
    # Java 17 is required (check with java -version)
    # The project is configured for Java 17 in .java-version and pom.xml
+   # The only exception to this is if you are told, in a specific issue, to migrate the code base to another version of Java (e.g. Java 21), in which case you should update this instruction to refer to, for example, Java 21 instead of Java 17.
    ```
 
 2. **Install Node.js 16.20.0 exactly**:
@@ -25,7 +26,8 @@ HappyCows/HappierCows is a Spring Boot (Java) + React (JavaScript) web applicati
    cd /tmp && tar -xf node-v16.20.0-linux-x64.tar.xz
    export PATH="/tmp/node-v16.20.0-linux-x64/bin:$PATH"
    # Verify: node -v should show v16.20.0
-   ```
+   The only exception to this is if/when you are instructed to migrate the code base to a new version of node.
+   In that case, you should use the current LTS version of node, and update these instructions to reflect that.
 
 3. **Setup OAuth configuration**:
    ```bash
