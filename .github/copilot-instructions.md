@@ -26,6 +26,7 @@ HappyCows/HappierCows is a Spring Boot (Java) + React (JavaScript) web applicati
    cd /tmp && tar -xf node-v22.18.0-linux-x64.tar.xz
    export PATH="/tmp/node-v22.18.0-linux-x64/bin:$PATH"
    # Verify: node -v should show v22.18.0
+
    The only exception to this is if/when you are instructed to migrate the code base to a new version of node.
    In that case, you should use the current LTS version of node, and update these instructions to reflect that.
 
