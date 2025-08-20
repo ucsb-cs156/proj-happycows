@@ -1,0 +1,1 @@
+const o={showingAll:{springH2ConsoleEnabled:!0,showSwaggerUILink:!0,sourceRepo:"https://github.com/ucsb-cs156/proj-happycows",oauthLogin:"/oauth2/authorization/google"},showingNeither:{springH2ConsoleEnabled:!1,showSwaggerUILink:!1,sourceRepo:"",oauthLogin:"/oauth2/authorization/google"}};export{o as s};
