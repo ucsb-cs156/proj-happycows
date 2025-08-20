@@ -19,13 +19,13 @@ HappyCows/HappierCows is a Spring Boot (Java) + React (JavaScript) web applicati
    # The only exception to this is if you are told, in a specific issue, to migrate the code base to another version of Java (e.g. Java 21), in which case you should update this instruction to refer to, for example, Java 21 instead of Java 17.
    ```
 
-2. **Install Node.js 16.20.0 exactly**:
+2. **Install Node.js 22.18.0 exactly**:
    ```bash
-   # Download and install Node.js 16.20.0 (EXACT VERSION REQUIRED)
-   curl -fsSL https://nodejs.org/dist/v16.20.0/node-v16.20.0-linux-x64.tar.xz -o /tmp/node-v16.20.0-linux-x64.tar.xz
-   cd /tmp && tar -xf node-v16.20.0-linux-x64.tar.xz
-   export PATH="/tmp/node-v16.20.0-linux-x64/bin:$PATH"
-   # Verify: node -v should show v16.20.0
+   # Download and install Node.js 22.18.0 (EXACT VERSION REQUIRED)
+   curl -fsSL https://nodejs.org/dist/v22.18.0/node-v22.18.0-linux-x64.tar.xz -o /tmp/node-v22.18.0-linux-x64.tar.xz
+   cd /tmp && tar -xf node-v22.18.0-linux-x64.tar.xz
+   export PATH="/tmp/node-v22.18.0-linux-x64/bin:$PATH"
+   # Verify: node -v should show v22.18.0
    The only exception to this is if/when you are instructed to migrate the code base to a new version of node.
    In that case, you should use the current LTS version of node, and update these instructions to reflect that.
 
@@ -47,7 +47,7 @@ HappyCows/HappierCows is a Spring Boot (Java) + React (JavaScript) web applicati
 
 ### Frontend Commands
 
-**All frontend commands must use Node.js 16.20.0:**
+**All frontend commands must use Node.js 22.18.0:**
 
 - **Install dependencies**: `cd frontend && npm install` - takes ~22 seconds (first time)
 - **Start dev server**: `cd frontend && npm start` - compiles in ~10 seconds, runs on http://localhost:3000
@@ -101,7 +101,7 @@ cd frontend && npx stryker run
 2. **Terminal 2 - Frontend**:
    ```bash
    cd frontend
-   export PATH="/tmp/node-v16.20.0-linux-x64/bin:$PATH"  # Use exact Node version
+   export PATH="/tmp/node-v22.18.0-linux-x64/bin:$PATH"  # Use exact Node version
    npm start
    # Wait for "Compiled successfully!" message (~10 seconds)
    ```
@@ -152,7 +152,7 @@ After making changes, always test these user workflows:
 
 ### Environment Issues
 
-- **Node version mismatch**: Always use exactly Node.js 16.20.0. Check with `node -v`.
+- **Node version mismatch**: Always use exactly Node.js 22.18.0. Check with `node -v`.
 - **OAuth errors**: Ensure `.env` file exists and contains valid Google OAuth credentials
 - **Port conflicts**: Default ports are 8080 (backend), 3000 (frontend), 6006 (Storybook)
 
