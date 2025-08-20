@@ -3,9 +3,9 @@ import axios from "axios";
 import { useBackendMutation } from "./useBackend";
 
 export function useUsers() {
-  return useQuery(
-    "users",
-    async () => {
+  return useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
       const uri = "/api/admin/users";
       try {
         const response = await axios.get(uri);
@@ -15,10 +15,8 @@ export function useUsers() {
         return [];
       }
     },
-    {
-      initialData: [],
-    }
-  );
+    initialData: []
+  });
 }
 
 export function useSuspendUser() {
@@ -30,7 +28,7 @@ export function useSuspendUser() {
     }),
     {},
     // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
-    "users"
+    ["users"]
   );
 }
 
@@ -43,6 +41,6 @@ export function useRestoreUser() {
     }),
     {},
     // Stryker disable next-line all : hard to set up test for query key invalidation for mutations
-    "users"
+    ["users"]
   );
 }

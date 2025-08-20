@@ -4,21 +4,23 @@ import { useNavigate } from "react-router-dom"
 
 export function useCurrentUser() {
   let rolesList = ["ERROR_GETTING_ROLES"];
-  return useQuery("/api/currentUser", async () => {
-    try {
-      const response = await axios.get("/api/currentUser");
+  return useQuery({
+    queryKey: ["/api/currentUser"],
+    queryFn: async () => {
       try {
-        rolesList = response.data.roles.map((r) => r.authority);
+        const response = await axios.get("/api/currentUser");
+        try {
+          rolesList = response.data.roles.map((r) => r.authority);
+        } catch (e) {
+          console.error("Error getting roles: ", e);
+        }
+        response.data = { ...response.data, rolesList: rolesList }
+        return { loggedIn: true, root: response.data };
       } catch (e) {
-        console.error("Error getting roles: ", e);
+        console.error("Error invoking axios.get: ", e);
+        return { loggedIn: false, root: null };
       }
-      response.data = { ...response.data, rolesList: rolesList }
-      return { loggedIn: true, root: response.data };
-    } catch (e) {
-      console.error("Error invoking axios.get: ", e);
-      return { loggedIn: false, root: null };
-    }
-  }, {
+    },
     initialData: { loggedIn: false, root: null, initialData:true }
   });
 }
@@ -26,11 +28,13 @@ export function useCurrentUser() {
 export function useLogout() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const mutation = useMutation(async () => {
-    await axios.post("/logout");
-    await queryClient.resetQueries("/api/currentUser", { exact: true });
-    navigate("/");
-  })
+  const mutation = useMutation({
+    mutationFn: async () => {
+      await axios.post("/logout");
+      await queryClient.resetQueries({ queryKey: ["/api/currentUser"], exact: true });
+      navigate("/");
+    }
+  });
   return mutation;
 }
 

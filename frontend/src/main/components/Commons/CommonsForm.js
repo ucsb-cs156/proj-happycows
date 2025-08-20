@@ -25,7 +25,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
     
     // Stryker disable all
     const {data: healthUpdateStrategies} = useBackend(
-        "/api/commons/all-health-update-strategies", {
+        ["/api/commons/all-health-update-strategies"], {
             method: "GET",
             url: "/api/commons/all-health-update-strategies",
         },
@@ -33,7 +33,7 @@ function CommonsForm({initialCommons, submitAction, buttonLabel = "Create"}) {
     // Stryker restore all
 
     // Stryker disable all
-    const { data: defaultValuesData } = useBackend("/api/commons/defaults", {
+    const { data: defaultValuesData } = useBackend(["/api/commons/defaults"], {
         method: "GET",
         url: "/api/commons/defaults",
       });

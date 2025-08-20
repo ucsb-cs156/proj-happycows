@@ -1,13 +1,12 @@
-module.exports = {
+export default {
   framework: {
     name: '@storybook/react-vite',
     options: {},
   },
-  "stories": [
-    "../src/**/*.stories.mdx",
+  stories: [
     "../src/**/*.stories.@(js|jsx|ts|tsx)"
   ],
-  "addons": [
+  addons: [
     "@storybook/addon-links",
     "@storybook/addon-docs",
     "@storybook/addon-onboarding"
@@ -15,4 +14,4 @@ module.exports = {
   docs: {
     autodocs: 'tag',
   },
-}
+};

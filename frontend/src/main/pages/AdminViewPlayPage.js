@@ -17,7 +17,7 @@ const AdminViewPlayPage = () => {
     const { data: currentUser } = useCurrentUser();
 
     // Stryker disable all
-    const { data: userCommons } = useBackend("/api/usercommons", {
+    const { data: userCommons } = useBackend(["/api/usercommons"], {
         method: "GET",
         url: "/api/usercommons",
         params: {
