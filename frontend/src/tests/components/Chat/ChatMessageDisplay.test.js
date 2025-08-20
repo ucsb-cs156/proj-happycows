@@ -55,7 +55,6 @@ describe("ChatMessageDisplay tests", () => {
         expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveStyle("margin: 0px");
         expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveStyle("margin: 0px");
 
-        /* eslint-disable-next-line testing-library/no-node-access */
         const styleDiv = screen.getByTestId("ChatMessageDisplay-1-User").parentElement;
 
         expect(styleDiv).toHaveStyle("display: flex; justify-content: space-between; align-items: center");
@@ -176,7 +175,6 @@ describe("ChatMessageDisplay tests", () => {
         expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveStyle("margin: 0px");
         expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveStyle("margin: 0px");
 
-        /* eslint-disable-next-line testing-library/no-node-access */
         const styleDiv = screen.getByTestId("ChatMessageDisplay-1-User").parentElement;
 
         expect(styleDiv).toHaveStyle("display: flex; justify-content: space-between; align-items: center");
