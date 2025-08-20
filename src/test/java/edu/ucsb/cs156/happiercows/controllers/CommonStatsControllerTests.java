@@ -3,6 +3,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CommonStatsController.class)
-@Import(CommonStatsController.class)
+@Import({SecurityConfig.class})
 @AutoConfigureDataJpa
 public class CommonStatsControllerTests extends ControllerTestCase {
 

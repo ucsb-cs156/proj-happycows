@@ -39,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementRepository;
 import edu.ucsb.cs156.happiercows.entities.Announcement;
 
@@ -49,7 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @WebMvcTest(controllers = AnnouncementsController.class)
-@Import(AnnouncementsController.class)
+@Import({SecurityConfig.class})
 @AutoConfigureDataJpa
 public class AnnouncementsControllerTests extends ControllerTestCase {
 

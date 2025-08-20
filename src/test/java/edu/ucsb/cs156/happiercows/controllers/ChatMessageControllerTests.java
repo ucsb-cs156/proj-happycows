@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import edu.ucsb.cs156.happiercows.repositories.ChatMessageRepository;
 import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 
@@ -43,7 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @WebMvcTest(controllers = ChatMessageController.class)
-@Import(ChatMessageController.class)
+@Import({SecurityConfig.class})
 @AutoConfigureDataJpa
 public class ChatMessageControllerTests extends ControllerTestCase {
     

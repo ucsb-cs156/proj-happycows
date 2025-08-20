@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
@@ -30,7 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @WebMvcTest(controllers = UsersController.class)
-@Import(TestConfig.class)
+@Import({TestConfig.class, SecurityConfig.class})
 @AutoConfigureDataJpa
 public class UsersControllerTests extends ControllerTestCase {
 
