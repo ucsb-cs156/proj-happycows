@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserCommonsController.class)
+@Import(SecurityConfig.class)
 @AutoConfigureDataJpa
 public class UserCommonsControllerTests extends ControllerTestCase {
 
@@ -66,7 +68,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         UserCommons expectedUserCommons = getTestUserCommons();
         when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
@@ -83,7 +85,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
         when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
                 .andExpect(status().is(404)).andReturn();
 
         verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));

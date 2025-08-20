@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -18,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("development")
 @WebMvcTest(controllers = CSRFController.class)
-@Import(TestConfig.class)
+@Import({TestConfig.class, SecurityConfig.class})
 @AutoConfigureDataJpa
 public class CSRFControllerTests extends ControllerTestCase {
 

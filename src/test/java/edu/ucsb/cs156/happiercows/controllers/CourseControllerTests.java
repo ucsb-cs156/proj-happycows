@@ -5,6 +5,7 @@ import edu.ucsb.cs156.happiercows.entities.Course;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureDataJpa
 @WebMvcTest(controllers = CourseController.class)
-@Import(TestConfig.class)
+@Import({TestConfig.class, SecurityConfig.class})
 public class CourseControllerTests extends ControllerTestCase {
     @MockBean
     CourseRepository courseRepository;

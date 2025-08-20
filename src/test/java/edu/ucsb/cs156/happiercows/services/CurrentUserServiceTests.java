@@ -16,6 +16,7 @@ class CurrentUserServiceTests extends ControllerTestCase {
   void test_isLoggedIn_returns_false() {
     CurrentUserService currentUserService = mock(CurrentUserService.class);
     when(currentUserService.getUser()).thenReturn(null);
+    when(currentUserService.isLoggedIn()).thenCallRealMethod();
     assertFalse(currentUserService.isLoggedIn());
   }
 
@@ -23,6 +24,7 @@ class CurrentUserServiceTests extends ControllerTestCase {
   void test_isLoggedIn_returns_true() {
     CurrentUserService currentUserService = mock(CurrentUserService.class);
     when(currentUserService.getUser()).thenReturn(User.builder().build());
+    when(currentUserService.isLoggedIn()).thenCallRealMethod();
     assertTrue(currentUserService.isLoggedIn());
   }
 

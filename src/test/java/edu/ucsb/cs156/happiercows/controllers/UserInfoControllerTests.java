@@ -12,6 +12,7 @@ import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.models.CurrentUser;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
+import edu.ucsb.cs156.happiercows.config.SecurityConfig;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.time.Instant;
 
 @WebMvcTest(controllers = UserInfoController.class)
-@Import(TestConfig.class)
+@Import({TestConfig.class, SecurityConfig.class})
 @AutoConfigureDataJpa
 public class UserInfoControllerTests extends ControllerTestCase {
   @Captor
