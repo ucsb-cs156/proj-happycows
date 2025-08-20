@@ -188,7 +188,7 @@ jobs:
     env:
       destination: frontend/coverage/lcov-report
     steps:
-    - uses: szenius/set-timezone@v2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
@@ -219,7 +219,7 @@ jobs:
     needs: [initialize]
    
     steps:
-    - uses: szenius/set-timezone@v2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
@@ -533,7 +533,7 @@ jobs:
         value: ${{ fromJSON(needs.initialize.outputs.pull_requests)}}
 
     steps:
-    - uses: szenius/set-timezone@v2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - name: Checkout repo

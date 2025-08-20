@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-    - uses: szenius/set-timezone@v2
+    - uses: szenius/set-timezone@v2.0
       with:
         timezoneLinux: "America/Los_Angeles"
     - uses: actions/checkout@v4
