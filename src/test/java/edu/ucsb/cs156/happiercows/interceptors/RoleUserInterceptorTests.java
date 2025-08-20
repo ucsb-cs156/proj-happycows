@@ -9,6 +9,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,8 +43,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureDataJpa
-public class RoleUserInterceptorTests {
+public class RoleUserInterceptorTests  extends ControllerTestCase {
   @MockBean
   UserRepository userRepository;
 
