@@ -1,4 +1,5 @@
 import { padWithZero, timestampToDate, daysSinceTimestamp, formatTime } from "main/utils/dateUtils";
+import { vi } from 'vitest';
 
 
 describe("dateUtils tests", () => {
@@ -27,8 +28,10 @@ describe("dateUtils tests", () => {
 
   describe("daysSinceTimestamp tests", () => {
     it("calculates days properly", () => {
-      jest.useFakeTimers().setSystemTime(new Date('2022-06-01'));
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date('2022-06-01'));
       expect(daysSinceTimestamp(1653346250816)).toBe(9);
+      vi.useRealTimers();
     });
   });
 

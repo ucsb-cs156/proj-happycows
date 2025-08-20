@@ -25,10 +25,10 @@ jobs:
 
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3.6.0
+      uses: actions/setup-node@v4
       with:
         node-version-file: 'frontend/package.json'
         cache: 'npm'

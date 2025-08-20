@@ -1,5 +1,5 @@
 import React from 'react';
-import { rest } from 'msw';
+import { http } from 'msw';
 
 import ChatPanel from 'main/components/Chat/ChatPanel';
 import {chatMessageFixtures} from 'fixtures/chatMessageFixtures';
@@ -25,11 +25,11 @@ Empty.args = {
 Empty.parameters = {
     msw: [
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
+        http.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({ }));
         }),
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
+        http.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({ }));
         }),
     ]
@@ -44,14 +44,14 @@ OneMessage.args = {
 OneMessage.parameters = {
     msw: [
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
+        http.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({
                 content: chatMessageFixtures.oneChatMessage,
                 totalPages: 1,
             }));
         }),
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
+        http.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json(userCommonsFixtures.oneUserCommons));
         }),
     ]
@@ -66,14 +66,14 @@ ThreeMessages.args = {
 ThreeMessages.parameters = {
     msw: [
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
+        http.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({
                 content: chatMessageFixtures.threeChatMessages,
                 totalPages: 1,
             }));
         }),
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
+        http.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json(userCommonsFixtures.threeUserCommons));
         }),
     ]
@@ -88,14 +88,14 @@ TwelveMessages.args = {
 TwelveMessages.parameters = {
     msw: [
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
+        http.get('/api/chat/get?page=0&size=10&commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({
                 content: chatMessageFixtures.twelveChatMessages,
                 totalPages: 2,
             }));
         }),
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
+        http.get('/api/usercommons/all?commonsId=1', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json(userCommonsFixtures.tenUserCommons));
         }),
     ]

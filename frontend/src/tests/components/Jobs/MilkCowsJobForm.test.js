@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import MilkTheCowsForm from "main/components/Jobs/MilkCowsJobForm";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import commonsFixtures from "fixtures/commonsFixtures";

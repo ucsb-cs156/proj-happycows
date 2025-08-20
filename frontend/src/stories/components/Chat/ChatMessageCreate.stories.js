@@ -1,5 +1,5 @@
 import React from 'react';
-import { rest } from 'msw';
+import { http } from 'msw';
 import ChatMessageCreate from "main/components/Chat/ChatMessageCreate";
 
 export default {
@@ -21,7 +21,7 @@ Message.args = {
 
 Message.parameters = {
     msw: [
-        rest.post('/api/chat/post', (req, res, ctx) => {
+        http.post('/api/chat/post', (req, res, ctx) => {
             window.alert("POST: " + JSON.stringify(req.url));
             return res(ctx.status(200),ctx.json({}));
         }),

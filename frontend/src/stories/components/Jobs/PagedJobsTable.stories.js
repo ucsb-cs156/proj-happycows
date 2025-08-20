@@ -1,5 +1,5 @@
 import React from 'react';
-import { rest } from "msw";
+import { http } from "msw";
 
 import PagedJobsTable from "main/components/Jobs/PagedJobsTable";
 import jobsFixtures from "fixtures/jobsFixtures";
@@ -32,7 +32,7 @@ SixJobs.args = {
 SixJobs.parameters = {
     msw: [
         /* eslint-disable-next-line no-unused-vars */
-        rest.get('/api/jobs/all/pageable', (req, res, ctx) => {
+        http.get('/api/jobs/all/pageable', (req, res, ctx) => {
             return res(ctx.status(200),ctx.json({
                 content: jobsFixtures.sixJobs,
                 totalPages: 1,

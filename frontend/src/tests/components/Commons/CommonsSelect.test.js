@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import CommonsSelect from "main/components/Commons/CommonsSelect";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import commonsFixtures from "fixtures/commonsFixtures"
 
 describe("CommonsSelect tests", () => {

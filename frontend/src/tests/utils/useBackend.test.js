@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 import { useBackend, useBackendMutation } from "main/utils/useBackend";

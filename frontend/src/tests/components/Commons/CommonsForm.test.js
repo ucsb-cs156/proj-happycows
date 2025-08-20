@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor} from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import CommonsForm from "main/components/Commons/CommonsForm";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import commonsFixtures from "fixtures/commonsFixtures"
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
