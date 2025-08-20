@@ -9,7 +9,7 @@ on:
     paths: [src/**, pom.xml, lombok.config, .github/workflows/13-backend-incremental-pitest.yml]
   push:
     branches: [ main ]
-    paths: [src/**, pom.xml, lombok.config]
+    paths: [src/**, pom.xml, lombok.config, .github/workflows/13-backend-incremental-pitest.yml]
 
 jobs:
   build:
