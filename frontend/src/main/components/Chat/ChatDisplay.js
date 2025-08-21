@@ -58,17 +58,15 @@ const ChatDisplay = ({ commonsId }) => {
       data-testid="ChatDisplay"
     >
       {Array.isArray(sortedMessages) &&
-        sortedMessages
-          .slice(0, initialMessagePageSize)
-          .map((message) => (
-            <ChatMessageDisplay
-              key={message.id}
-              message={{
-                ...message,
-                username: userIdToUsername[message.userId],
-              }}
-            />
-          ))}
+        sortedMessages.slice(0, initialMessagePageSize).map((message) => (
+          <ChatMessageDisplay
+            key={message.id}
+            message={{
+              ...message,
+              username: userIdToUsername[message.userId],
+            }}
+          />
+        ))}
     </div>
   );
 };

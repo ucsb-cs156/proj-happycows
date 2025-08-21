@@ -95,11 +95,12 @@ describe("utils/systemInfo tests", () => {
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
 
-      expect(result.current.data).toEqual({
-        initialData: true,
-        springH2ConsoleEnabled: false,
-        showSwaggerUILink: false,
-      });
+      await waitFor(() =>
+        expect(result.current.data).toEqual({
+          springH2ConsoleEnabled: false,
+          showSwaggerUILink: false,
+        }),
+      );
       queryClient.clear();
     });
   });

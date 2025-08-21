@@ -75,7 +75,6 @@ function SetCowHealthForm({
           step="1"
           value={healthValue}
           {...register("healthValue", {
-            valueAsNumber: true,
             required: "Health Value is required",
             min: { value: 0, message: "Health Value must be ≥ 0" },
             max: { value: 100, message: "Health Value must be ≤ 100" },

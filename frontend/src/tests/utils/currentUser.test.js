@@ -80,6 +80,7 @@ describe("utils/currentUser tests", () => {
 
       expect(result.current.data).toEqual(currentUserFixtures.userOnly);
       queryClient.clear();
+      axiosMock.restore();
     });
 
     test("useCurrentUser when API unreachable", async () => {
@@ -104,8 +105,11 @@ describe("utils/currentUser tests", () => {
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
 
-      expect(result.current.data).toEqual({initialData: true, loggedIn: false, root: null });
+      await waitFor(() =>
+        expect(result.current.data).toEqual({ loggedIn: false, root: null }),
+      );
       queryClient.clear();
+      axiosMock.restore();
     });
 
     test("useCurrentUser handles missing roles correctly", async () => {
@@ -135,7 +139,7 @@ describe("utils/currentUser tests", () => {
         loggedIn: true,
         root: { ...apiResult, rolesList: ["ERROR_GETTING_ROLES"] },
       };
-      expect(result.current.data).toEqual(expectedResult);
+      await waitFor(() => expect(result.current.data).toEqual(expectedResult));
       queryClient.clear();
     });
   });

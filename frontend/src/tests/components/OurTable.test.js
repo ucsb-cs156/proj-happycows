@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import OurTable, {
   ButtonColumn,
   DateColumn,
@@ -165,9 +171,9 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
-    const item = screen.getAllByRole("listitem").filter(
-      (item) => within(item).queryByText("Previous"),
-    )[0];
+    const item = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Previous"))[0];
     expect(item).toHaveClass("disabled");
     const nextButtonItem = screen
       .getAllByRole("listitem")
@@ -183,9 +189,9 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button"),
     ).toContainHTML("2");
-    const newPrevious = screen.getAllByRole("listitem").filter(
-      (item) => within(item).queryByText("Previous"),
-    )[0];
+    const newPrevious = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Previous"))[0];
     expect(newPrevious).not.toHaveClass("disabled");
     const newNext = screen
       .getAllByRole("listitem")
@@ -231,9 +237,9 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-forward-one-page-button"),
     ).toBeInTheDocument();
-    const item = screen.getAllByRole("listitem").filter(
-      (item) => within(item).queryByText("Previous"),
-    )[0];
+    const item = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Previous"))[0];
     expect(item).toHaveClass("disabled");
     const nextButtonItem = screen
       .getAllByRole("listitem")
@@ -265,9 +271,9 @@ describe("OurTable tests", () => {
     ).toContainHTML("2");
     const lastButton = screen.getByTestId("testid-last-page-button");
     fireEvent.click(lastButton);
-    const newPrevious = screen.getAllByRole("listitem").filter(
-      (item) => within(item).queryByText("Previous"),
-    )[0];
+    const newPrevious = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Previous"))[0];
     expect(newPrevious).not.toHaveClass("disabled");
     const newNext = screen
       .getAllByRole("listitem")
@@ -289,9 +295,9 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
-    const item = screen.getAllByRole("listitem").filter(
-      (item) => within(item).queryByText("Previous"),
-    )[0];
+    const item = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Previous"))[0];
     expect(item).toHaveClass("disabled");
     const nextButtonItem = screen
       .getAllByRole("listitem")

@@ -66,7 +66,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Milk <br /> Price
         </span>
       ),
@@ -76,7 +75,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Start <br /> Bal
         </span>
       ),
@@ -86,7 +84,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Starting <br /> Date
         </span>
       ),
@@ -96,7 +93,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Last <br /> Date
         </span>
       ),
@@ -106,7 +102,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Degrad <br /> Rate
         </span>
       ),
@@ -116,7 +111,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Show <br /> LrdrBrd?
         </span>
       ),
@@ -126,7 +120,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Show <br /> Chat?
         </span>
       ),
@@ -136,7 +129,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Tot <br /> Cows
         </span>
       ),
@@ -145,7 +137,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Cap / <br /> User
         </span>
       ),
@@ -155,7 +146,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Carry <br /> Cap
         </span>
       ),
@@ -165,7 +155,6 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          
           Eff <br /> Cap
         </span>
       ),

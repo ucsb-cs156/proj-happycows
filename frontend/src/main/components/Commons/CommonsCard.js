@@ -47,7 +47,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
                     buttonText === "Join" &&
                     isFutureDate(commons.startingDate)
                   ) {
-                    // Stryker disable next-line all: unable to read alert text in tests
+                    // Stryker disable all: unable to read alert text in tests
                     alert(
                       "This commons has not started yet and cannot be joined.\nThe starting date is " +
                         parseInt(commons.startingDate.substring(5, 7)) +
@@ -56,6 +56,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
                         "/" +
                         parseInt(commons.startingDate),
                     );
+                    // Stryker restore all
                   } else {
                     buttonLink(commons.id);
                   }

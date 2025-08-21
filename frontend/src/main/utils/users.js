@@ -12,7 +12,7 @@ export function useUsers() {
         return response.data;
       } catch (e) {
         console.error(`Error getting data from ${uri}:`, e);
-        throw (e)
+        throw e;
       }
     },
     {

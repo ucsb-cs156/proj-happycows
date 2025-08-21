@@ -78,12 +78,13 @@ const CommonsList = (props) => {
           <Container>
             <Row
               style={
-                // Stryker disable next-line all: don't test CSS params
+                // Stryker disable all: don't test CSS params
                 {
                   justifyContent: "center",
                   fontFamily: "Sancreek",
                   paddingBottom: "10px",
                 }
+                // Stryker restore all
               }
               data-testid="commonsList-default-message"
             >

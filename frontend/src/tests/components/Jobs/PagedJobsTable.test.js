@@ -16,6 +16,7 @@ describe("PagedJobsTable tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    queryClient.clear();
   });
 
   test("renders correct content", async () => {
@@ -43,7 +44,7 @@ describe("PagedJobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    await screen.findByTestId(`${testId}-cell-row-0-col-id`)
+    await screen.findByTestId(`${testId}-cell-row-0-col-id`);
 
     expectedFields.forEach((field) => {
       const header = screen.getByTestId(`${testId}-cell-row-0-col-${field}`);

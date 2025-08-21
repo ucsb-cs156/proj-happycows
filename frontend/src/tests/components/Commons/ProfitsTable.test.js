@@ -25,6 +25,8 @@ describe("ProfitsTable tests", () => {
     expect(screen.getByText("$58.20")).toBeInTheDocument();
     expect(screen.getByText("2023-05-15T20:50:00.043225")).toBeInTheDocument();
     expect(screen.getByText("97%")).toBeInTheDocument();
-    expect(screen.getByTestId("ProfitsTable-cell-row-2-col-numCows")).toHaveTextContent("6");
+    expect(
+      screen.getByTestId("ProfitsTable-cell-row-2-col-numCows"),
+    ).toHaveTextContent("6");
   });
 });
