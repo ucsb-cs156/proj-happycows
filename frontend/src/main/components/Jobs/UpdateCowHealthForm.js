@@ -4,26 +4,23 @@ import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
 import CommonsSelect from "main/components/Commons/CommonsSelect";
 
-function UpdateCowHealthForm( { submitAction, testid = "UpdateCowHealthForm" } ) {
-
+function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
   // Stryker restore all
 
   const { data: commonsAll } = useBackend(
     ["/api/commons/all"],
     { url: "/api/commons/all" },
-    []
+    [],
   );
 
-  const allCommonsProp = {"id":0,"name":"All Commons"}
-  
-  const commons = [allCommonsProp, ...commonsAll]
+  const allCommonsProp = { id: 0, name: "All Commons" };
+
+  const commons = [allCommonsProp, ...commonsAll];
 
   const [selectedCommons, setSelectedCommons] = useState(null);
   const [selectedCommonsName, setSelectedCommonsName] = useState(null);
 
-  const {
-    handleSubmit,
-  } = useForm();
+  const { handleSubmit } = useForm();
 
   const handleCommonsSelection = (id, name) => {
     setSelectedCommons(id);
@@ -48,15 +45,18 @@ function UpdateCowHealthForm( { submitAction, testid = "UpdateCowHealthForm" } )
         </Form.Text>
       </Form.Group>
 
-      <CommonsSelect commons={commons} selectedCommons={selectedCommons} handleCommonsSelection={handleCommonsSelection} testid={testid} />
+      <CommonsSelect
+        commons={commons}
+        selectedCommons={selectedCommons}
+        handleCommonsSelection={handleCommonsSelection}
+        testid={testid}
+      />
 
       <Button type="submit" data-testid="UpdateCowHealthForm-Submit-Button">
         Update
       </Button>
-     
-  </Form>
+    </Form>
   );
 }
-  
+
 export default UpdateCowHealthForm;
-  

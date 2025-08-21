@@ -53,31 +53,31 @@ describe("UserTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1"
+      "1",
     );
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-admin`)
+      screen.getByTestId(`${testId}-cell-row-0-col-admin`),
     ).toHaveTextContent("true");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-lastOnline`)
+      screen.getByTestId(`${testId}-cell-row-0-col-lastOnline`),
     ).toHaveTextContent(formatTime(usersFixtures.threeUsers[0].lastOnline));
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-suspended`)
+      screen.getByTestId(`${testId}-cell-row-0-col-suspended`),
     ).toHaveTextContent("false");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Suspend-button`)
+      screen.getByTestId(`${testId}-cell-row-0-col-Suspend-button`),
     ).toHaveClass("btn-danger");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Restore-button`)
+      screen.getByTestId(`${testId}-cell-row-0-col-Restore-button`),
     ).toHaveClass("btn-primary");
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
-      "2"
+      "2",
     );
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-admin`)
+      screen.getByTestId(`${testId}-cell-row-1-col-admin`),
     ).toHaveTextContent("false");
     expect(
-      screen.getByTestId(`${testId}-cell-row-2-col-suspended`)
+      screen.getByTestId(`${testId}-cell-row-2-col-suspended`),
     ).toHaveTextContent("true");
   });
 });
@@ -106,8 +106,8 @@ describe("Modal tests", () => {
         screen.getByText(
           "Are you sure you want to suspend " +
             usersFixtures.threeUsers[0].email +
-            "?"
-        )
+            "?",
+        ),
       ).toBeInTheDocument();
     });
   });
@@ -194,8 +194,8 @@ describe("Modal tests", () => {
         screen.getByText(
           "Are you sure you want to restore " +
             usersFixtures.threeUsers[0].email +
-            "?"
-        )
+            "?",
+        ),
       ).toBeInTheDocument();
     });
   });
