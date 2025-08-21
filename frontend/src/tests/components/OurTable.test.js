@@ -159,7 +159,7 @@ describe("OurTable tests", () => {
     ).toBeInTheDocument();
   });
 
-  test.only("renders a table with 11 rows and clicks on the next page button and previous page button", async () => {
+  test("renders a table with 11 rows and clicks on the next page button and previous page button", async () => {
     render(<OurTable columns={columns} data={elevenRows} />);
 
     expect(
@@ -231,16 +231,14 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-forward-one-page-button"),
     ).toBeInTheDocument();
-    expect(
-      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(true);
-    expect(
-      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(false);
+    const item = screen.getAllByRole("listitem").filter(
+      (item) => within(item).queryByText("Previous"),
+    )[0];
+    expect(item).toHaveClass("disabled");
+    const nextButtonItem = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Next"))[0];
+    expect(nextButtonItem).not.toHaveClass("disabled");
     const forwardOneButton = screen.getByTestId(
       "testid-forward-one-page-button",
     );
@@ -267,16 +265,14 @@ describe("OurTable tests", () => {
     ).toContainHTML("2");
     const lastButton = screen.getByTestId("testid-last-page-button");
     fireEvent.click(lastButton);
-    expect(
-      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(false);
-    expect(
-      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(true);
+    const newPrevious = screen.getAllByRole("listitem").filter(
+      (item) => within(item).queryByText("Previous"),
+    )[0];
+    expect(newPrevious).not.toHaveClass("disabled");
+    const newNext = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Next"))[0];
+    expect(newNext).toHaveClass("disabled");
     expect(
       await screen.findByTestId("testid-current-page-button"),
     ).toContainHTML("6");
@@ -293,16 +289,14 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
-    expect(
-      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(true);
-    expect(
-      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(false);
+    const item = screen.getAllByRole("listitem").filter(
+      (item) => within(item).queryByText("Previous"),
+    )[0];
+    expect(item).toHaveClass("disabled");
+    const nextButtonItem = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Next"))[0];
+    expect(nextButtonItem).not.toHaveClass("disabled");
     const lastButton = screen.getByTestId("testid-last-page-button");
     const rightEllipsis = screen.getByTestId("testid-right-ellipsis");
     fireEvent.click(lastButton);

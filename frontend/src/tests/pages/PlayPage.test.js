@@ -572,9 +572,7 @@ describe("PlayPage tests", () => {
       expect(screen.getByText("Announcements")).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByText("You have yet to join this commons!"),
-    ).toBeInTheDocument();
+    await screen.findByText("You have yet to join this commons!");
   });
 
   test("User not allowed to access a commons that does not exist", async () => {

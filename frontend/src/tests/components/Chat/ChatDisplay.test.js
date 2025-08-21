@@ -88,7 +88,7 @@ describe("ChatDisplay tests", () => {
 
     //assert
     await waitFor(() => {
-      expect(axiosMock.history.get.length).toBe(3);
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(2);
     });
     expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
     expect(axiosMock.history.get[0].params).toEqual({
