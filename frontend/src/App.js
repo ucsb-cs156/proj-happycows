@@ -7,6 +7,9 @@ import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
 import LeaderboardPage from "main/pages/LeaderboardPage";
 
+import "bootstrap/dist/css/bootstrap.css";
+import "react-toastify/dist/ReactToastify.css";
+
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
