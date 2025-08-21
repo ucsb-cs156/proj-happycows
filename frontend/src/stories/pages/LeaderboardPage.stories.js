@@ -3,7 +3,7 @@ import LeaderboardPage from "main/pages/LeaderboardPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import userCommonsFixtures from 'fixtures/userCommonsFixtures';
 import commonsFixtures from 'fixtures/commonsFixtures';
 
@@ -18,17 +18,17 @@ export const OrdinaryUserShowLeaderboardTrue = () => {
 
 OrdinaryUserShowLeaderboardTrue.parameters = {
     msw: [
-        rest.get('/api/currentUser', (_req, res, ctx) => {
-            return res(ctx.json(apiCurrentUserFixtures.userOnly));
+        http.get('/api/currentUser', () => {
+            return HttpResponse.json(apiCurrentUserFixtures.userOnly, { status: 200 });
         }),
-        rest.get('/api/systemInfo', (_req, res, ctx) => {
-            return res(ctx.json(systemInfoFixtures.showingNeither));
+        http.get('/api/systemInfo', () => {
+            return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
         }),
-        rest.get('/api/commons', (_req, res, ctx) => {
-            return res(ctx.json(commonsFixtures.threeCommons[0]));
+        http.get('/api/commons', () => {
+            return HttpResponse.json(commonsFixtures.threeCommons[0], { status: 200 });
         }),
-        rest.get('/api/usercommons/commons/all', (_req, res, ctx) => {
-            return res(ctx.json(userCommonsFixtures.tenUserCommons));
+        http.get('/api/usercommons/commons/all', () => {
+            return HttpResponse.json(userCommonsFixtures.tenUserCommons, { status: 200 });
         }),
     ]
 }
@@ -39,17 +39,17 @@ export const OrdinaryUserShowLeaderboardFalse = () => {
 
 OrdinaryUserShowLeaderboardFalse.parameters = {
     msw: [
-        rest.get('/api/currentUser', (_req, res, ctx) => {
-            return res(ctx.json(apiCurrentUserFixtures.userOnly));
+        http.get('/api/currentUser', () => {
+            return HttpResponse.json(apiCurrentUserFixtures.userOnly, { status: 200 });
         }),
-        rest.get('/api/systemInfo', (_req, res, ctx) => {
-            return res(ctx.json(systemInfoFixtures.showingNeither));
+        http.get('/api/systemInfo', () => {
+            return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
         }),
-        rest.get('/api/commons', (_req, res, ctx) => {
-            return res(ctx.json({...commonsFixtures.threeCommons[0], showLeaderboard: false}));
+        http.get('/api/commons', () => {
+            return HttpResponse.json({ ...commonsFixtures.threeCommons[0], showLeaderboard: false }, { status: 200 });
         }),
-        rest.get('/api/usercommons/commons/all', (_req, res, ctx) => {
-            return res(ctx.json(userCommonsFixtures.tenUserCommons));
+        http.get('/api/usercommons/commons/all', () => {
+            return HttpResponse.json(userCommonsFixtures.tenUserCommons, { status: 200 });
         }),
     ]
 }
@@ -62,17 +62,17 @@ export const AdminUser = () => {
 
 AdminUser.parameters = {
     msw: [
-        rest.get('/api/currentUser', (_req, res, ctx) => {
-            return res(ctx.json(apiCurrentUserFixtures.adminUser));
+        http.get('/api/currentUser', () => {
+            return HttpResponse.json(apiCurrentUserFixtures.adminUser, { status: 200 });
         }),
-        rest.get('/api/systemInfo', (_req, res, ctx) => {
-            return res(ctx.json(systemInfoFixtures.showingNeither));
+        http.get('/api/systemInfo', () => {
+            return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
         }),
-        rest.get('/api/usercommons/commons/all', (_req, res, ctx) => {
-            return res(ctx.json(userCommonsFixtures.tenUserCommons));
+        http.get('/api/usercommons/commons/all', () => {
+            return HttpResponse.json(userCommonsFixtures.tenUserCommons, { status: 200 });
         }),
-        rest.get('/api/commons', (_req, res, ctx) => {
-            return res(ctx.json(commonsFixtures.threeCommons[0]));
+        http.get('/api/commons', () => {
+            return HttpResponse.json(commonsFixtures.threeCommons[0], { status: 200 });
         }),
     ]
 }

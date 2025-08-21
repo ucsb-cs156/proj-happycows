@@ -2,7 +2,7 @@ import React from 'react';
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { announcementFixtures } from 'fixtures/announcementFixtures';
 import { currentUserFixtures } from 'fixtures/currentUserFixtures';
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 
 export default {
     title: 'components/Announcement/AnnouncementTable',
@@ -36,9 +36,9 @@ ThreeItemsAdminUser.args = {
 
 ThreeItemsAdminUser.parameters = {
     msw: [
-        rest.delete('/api/announcements', (req, res, ctx) => {
-            window.alert("DELETE: " + JSON.stringify(req.url));
-            return res(ctx.status(200),ctx.json({}));
+        http.delete('/api/announcements', ({ request }) => {
+            window.alert("DELETE: " + JSON.stringify(request.url));
+            return HttpResponse.json({}, { status: 200 });
         }),
     ]
 };

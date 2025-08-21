@@ -1,6 +1,6 @@
 import React from 'react';
 import HomePage from "main/pages/HomePage";
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
@@ -15,11 +15,11 @@ export const normal = () => {
 
 normal.parameters = {
   msw: [
-    rest.get('/api/currentUser', (_req, res, ctx) => {
-        return res(ctx.json(apiCurrentUserFixtures.userOnly));    
+    http.get('/api/currentUser', () => {
+        return HttpResponse.json(apiCurrentUserFixtures.userOnly, { status: 200 });    
     }),
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get('/api/systemInfo', () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
     }),
   ]
 }
@@ -29,8 +29,8 @@ export const noUser = () => {
 }
 noUser.parameters = {
   msw: [
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get('/api/systemInfo', () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
     }),
   ]
 }
@@ -40,11 +40,11 @@ export const userWithNoGivenName = () => {
 }
 userWithNoGivenName.parameters = {
   msw: [
-    rest.get('/api/currentUser', (_req, res, ctx) => {
-        return res(ctx.json(apiCurrentUserFixtures.userNoGivenName));
+    http.get('/api/currentUser', () => {
+        return HttpResponse.json(apiCurrentUserFixtures.userNoGivenName, { status: 200 });
     }),
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get('/api/systemInfo', () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
     }),
   ]
 }

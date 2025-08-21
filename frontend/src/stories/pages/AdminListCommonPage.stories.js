@@ -3,7 +3,7 @@ import AdminListCommonPage from "main/pages/AdminListCommonPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import commonsPlusFixtures from 'fixtures/commonsPlusFixtures';
 
 export default {
@@ -15,14 +15,14 @@ export const adminListPage = () => <AdminListCommonPage />;
 
 adminListPage.parameters = {
     msw: [
-        rest.get('/api/currentUser', (_req, res, ctx) => {
-            return res(ctx.json(apiCurrentUserFixtures.adminUser));
+        http.get('/api/currentUser', () => {
+            return HttpResponse.json(apiCurrentUserFixtures.adminUser, { status: 200 });
         }),
-        rest.get('/api/systemInfo', (_req, res, ctx) => {
-            return res(ctx.json(systemInfoFixtures.showingNeither));
+        http.get('/api/systemInfo', () => {
+            return HttpResponse.json(systemInfoFixtures.showingNeither, { status: 200 });
         }),
-        rest.get('/api/commons/allplus', (_req, res, ctx) => {
-            return res(ctx.json(commonsPlusFixtures.threeCommonsPlus));
+        http.get('/api/commons/allplus', () => {
+            return HttpResponse.json(commonsPlusFixtures.threeCommonsPlus, { status: 200 });
         }),
     ]
 }
