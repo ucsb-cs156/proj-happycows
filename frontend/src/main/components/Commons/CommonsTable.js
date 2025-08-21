@@ -66,8 +66,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Milk <br /> Price{" "}
+          
+          Milk <br /> Price
         </span>
       ),
       accessor: (row) => row.commons.milkPrice,
@@ -76,8 +76,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Start <br /> Bal{" "}
+          
+          Start <br /> Bal
         </span>
       ),
       accessor: (row) => row.commons.startingBalance,
@@ -86,8 +86,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Starting <br /> Date{" "}
+          
+          Starting <br /> Date
         </span>
       ),
       accessor: (row) => String(row.commons.startingDate).slice(0, 10),
@@ -96,8 +96,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Last <br /> Date{" "}
+          
+          Last <br /> Date
         </span>
       ),
       accessor: (row) => String(row.commons.lastDate).slice(0, 10),
@@ -106,8 +106,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Degrad <br /> Rate{" "}
+          
+          Degrad <br /> Rate
         </span>
       ),
       accessor: (row) => row.commons.degradationRate,
@@ -116,8 +116,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Show <br /> LrdrBrd?{" "}
+          
+          Show <br /> LrdrBrd?
         </span>
       ),
       id: "commons.showLeaderboard", // needed for tests
@@ -126,8 +126,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Show <br /> Chat?{" "}
+          
+          Show <br /> Chat?
         </span>
       ),
       id: "commons.showChat",
@@ -136,8 +136,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Tot <br /> Cows{" "}
+          
+          Tot <br /> Cows
         </span>
       ),
       accessor: "totalCows",
@@ -145,8 +145,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Cap / <br /> User{" "}
+          
+          Cap / <br /> User
         </span>
       ),
       accessor: (row) => row.commons.capacityPerUser,
@@ -155,8 +155,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Carry <br /> Cap{" "}
+          
+          Carry <br /> Cap
         </span>
       ),
       accessor: (row) => row.commons.carryingCapacity,
@@ -165,8 +165,8 @@ export default function CommonsTable({ commons, currentUser }) {
     {
       Header: (
         <span>
-          {" "}
-          Eff <br /> Cap{" "}
+          
+          Eff <br /> Cap
         </span>
       ),
       accessor: "effectiveCapacity",

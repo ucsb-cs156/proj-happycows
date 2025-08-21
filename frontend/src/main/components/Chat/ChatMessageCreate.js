@@ -18,10 +18,11 @@ const ChatMessageCreate = ({ commonsId, submitAction }) => {
   const mutation = useBackendMutation(
     objectToAxiosParams,
     {},
-    // Stryker disable next-line all : hard to set up test for caching
+    // Stryker disable all : hard to set up test for caching
     [
       `/api/chat/get?page=0&size=${initialMessagePageSize}&commonsId=${commonsId}`,
     ],
+    // Stryker restore all
   );
 
   submitAction =

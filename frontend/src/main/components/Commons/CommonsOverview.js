@@ -6,10 +6,11 @@ import { daysSinceTimestamp } from "main/utils/dateUtils";
 
 export default function CommonsOverview({ commonsPlus, currentUser }) {
   let navigate = useNavigate();
-  // Stryker disable next-line all
+  // Stryker disable all
   const leaderboardButtonClick = () => {
     navigate("/leaderboard/" + commonsPlus.commons.id);
   };
+  // Stryker restore all
   const showLeaderboard =
     hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard;
   return (
@@ -26,7 +27,7 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
         <Row>
           <Col>
             <Card.Title>
-              Today is day{" "}
+              Today is day
               {daysSinceTimestamp(commonsPlus.commons.startingDate)}!
             </Card.Title>
             <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>

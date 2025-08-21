@@ -20,8 +20,8 @@ export default function AppNavbarLocalhost({ url }) {
                 <p>
                   Running on <code>{url}</code> with no backend.
                   <br />
-                  You probably want{" "}
-                  <a href="http://localhost:8080">http://localhost:8080</a>{" "}
+                  You probably want
+                  <a href="http://localhost:8080">http://localhost:8080</a>
                   instead.
                 </p>
               </Nav.Item>
