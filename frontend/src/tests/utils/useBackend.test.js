@@ -1,4 +1,5 @@
-import { renderHook, act } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
+import { act } from "react";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -38,7 +39,7 @@ describe("utils/useBackend tests", () => {
         .onGet("/api/admin/users")
         .reply(404, { message: "Error: Request failed with status code 404" });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useBackend(
             ["/api/admin/users"],
@@ -82,7 +83,7 @@ describe("utils/useBackend tests", () => {
 
       axiosMock.onGet("/api/admin/users").reply(404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useBackend(
             ["/api/admin/users"],
@@ -145,7 +146,7 @@ describe("utils/useBackend tests", () => {
         );
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useBackendMutation(objectToAxiosParams, { onSuccess }, [
             "/api/ucsbdates/all",
@@ -208,7 +209,7 @@ describe("utils/useBackend tests", () => {
         );
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useBackendMutation(objectToAxiosParams, { onSuccess }),
         { wrapper },
       );
@@ -267,7 +268,7 @@ describe("utils/useBackend tests", () => {
         );
       });
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useBackendMutation(objectToAxiosParams, { onSuccess }),
         { wrapper },
       );

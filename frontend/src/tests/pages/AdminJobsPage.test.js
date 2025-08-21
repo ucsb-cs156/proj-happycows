@@ -379,9 +379,9 @@ describe("AdminJobsPage tests", () => {
     expect(InstructorReportJobButton).toBeInTheDocument();
     InstructorReportJobButton.click();
 
-    expect(
+    await waitFor(() => expect(
       screen.queryByText("There are no commons on which to run this job."),
-    ).not.toBeInTheDocument();
+    ).not.toBeInTheDocument());
 
     const submitButton = await screen.findByTestId(
       "InstructorReportSpecificCommonsForm-Submit-Button",

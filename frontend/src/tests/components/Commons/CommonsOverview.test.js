@@ -99,6 +99,6 @@ describe("CommonsOverview tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toEqual(3);
     });
-    expect(() => screen.getByTestId("user-leaderboard-button")).toThrow();
+    await waitFor(() => expect(screen.queryByTestId("user-leaderboard-button")).not.toBeInTheDocument());
   });
 });

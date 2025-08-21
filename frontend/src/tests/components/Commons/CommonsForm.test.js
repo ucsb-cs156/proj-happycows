@@ -320,9 +320,7 @@ describe("CommonsForm tests", () => {
       commonsFixtures.threeCommons[0].cowPrice,
     );
 
-    expect(
-      screen.getByTestId("aboveCapacityHealthUpdateStrategy-Noop"),
-    ).toBeInTheDocument();
+    await screen.findByTestId("aboveCapacityHealthUpdateStrategy-Noop")
     expect(
       screen.getByTestId("belowCapacityHealthUpdateStrategy-Noop"),
     ).toBeInTheDocument();

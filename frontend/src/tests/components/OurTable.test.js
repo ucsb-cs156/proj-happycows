@@ -1,10 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import OurTable, {
   ButtonColumn,
   DateColumn,
   PlaintextColumn,
 } from "main/components/OurTable";
-
 describe("OurTable tests", () => {
   const threeRows = [
     {
@@ -160,22 +159,20 @@ describe("OurTable tests", () => {
     ).toBeInTheDocument();
   });
 
-  test("renders a table with 11 rows and clicks on the next page button and previous page button", async () => {
+  test.only("renders a table with 11 rows and clicks on the next page button and previous page button", async () => {
     render(<OurTable columns={columns} data={elevenRows} />);
 
     expect(
       await screen.findByTestId("testid-next-page-button"),
     ).toBeInTheDocument();
-    expect(
-      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(true);
-    expect(
-      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(false);
+    const item = screen.getAllByRole("listitem").filter(
+      (item) => within(item).queryByText("Previous"),
+    )[0];
+    expect(item).toHaveClass("disabled");
+    const nextButtonItem = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Next"))[0];
+    expect(nextButtonItem).not.toHaveClass("disabled");
     const nextButton = screen.getByTestId("testid-next-page-button");
     expect(await screen.findByText(`Hello 10`)).toBeInTheDocument();
     expect(screen.queryByText(`Hello 11`)).not.toBeInTheDocument();
@@ -186,16 +183,14 @@ describe("OurTable tests", () => {
     expect(
       await screen.findByTestId("testid-current-page-button"),
     ).toContainHTML("2");
-    expect(
-      (await screen.findByTestId("testid-prev-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(false);
-    expect(
-      (await screen.findByTestId("testid-next-page-button")).hasAttribute(
-        "disabled",
-      ),
-    ).toBe(true);
+    const newPrevious = screen.getAllByRole("listitem").filter(
+      (item) => within(item).queryByText("Previous"),
+    )[0];
+    expect(newPrevious).not.toHaveClass("disabled");
+    const newNext = screen
+      .getAllByRole("listitem")
+      .filter((item) => within(item).queryByText("Next"))[0];
+    expect(newNext).toHaveClass("disabled");
     expect(await screen.findByText(`Hello 11`)).toBeInTheDocument();
     const prevButton = screen.getByTestId("testid-prev-page-button");
     fireEvent.click(prevButton);

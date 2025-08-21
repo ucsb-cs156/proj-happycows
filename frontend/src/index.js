@@ -1,24 +1,21 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
+import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ToastContainer } from "react-toastify";
 
-import "bootstrap/dist/css/bootstrap.css";
-import "react-toastify/dist/ReactToastify.css";
-import "../src/index.css";
-
 const queryClient = new QueryClient();
 
-ReactDOM.render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ToastContainer />
-      <App />
-    </QueryClientProvider>
-  </React.StrictMode>,
-  document.getElementById("root"),
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <ToastContainer />
+            <App />
+        </QueryClientProvider>
+    </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function
