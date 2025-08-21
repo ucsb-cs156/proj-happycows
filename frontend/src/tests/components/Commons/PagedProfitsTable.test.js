@@ -16,6 +16,7 @@ describe("PagedProfitsTable tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    queryClient.clear();
   });
 
   test("renders correct content", async () => {

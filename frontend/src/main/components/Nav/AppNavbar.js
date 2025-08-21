@@ -27,9 +27,13 @@ export default function AppNavbar({
           <Navbar.Brand
             as={Link}
             to="/"
-            /*Stryker disable next-line all : don't mutation test CSS */ style={{
-              fontFamily: "Rye",
-            }}
+            style={
+              // Stryker disable all : don't mutation test CSS
+              {
+                fontFamily: "Rye",
+              }
+              // Stryker restore all
+            }
           >
             Happy Cows
           </Navbar.Brand>

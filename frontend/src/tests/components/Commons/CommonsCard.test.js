@@ -42,9 +42,9 @@ describe("CommonsCard tests", () => {
       />,
     );
 
-    expect(() => screen.getByTestId("commonsCard-button-Join-5")).toThrow(
-      "Unable to find an element",
-    );
+    expect(
+      screen.queryByTestId(/commonsCard-button-\w+-5/),
+    ).not.toBeInTheDocument();
 
     const name = screen.getByTestId("commonsCard-name-5");
     expect(name).toBeInTheDocument();
@@ -141,6 +141,32 @@ describe("CommonsCard tests", () => {
     expect(button).toBeInTheDocument();
     expect(typeof button.textContent).toBe("string");
     expect(button.textContent).toEqual("Join");
+    fireEvent.click(button);
+    expect(click).toBeCalledTimes(1);
+  });
+
+  test("can visit even if wrong future date", async () => {
+    const futureCommon = commonsFixtures.threeCommons[2];
+    futureCommon.startingDate = new Date(
+      curr.getFullYear(),
+      curr.getMonth() + 2,
+      curr.getDate(),
+    )
+      .toISOString()
+      .substring(0, 10);
+    const click = jest.fn();
+    render(
+      <CommonsCard
+        commons={futureCommon}
+        buttonText={"Visit"}
+        buttonLink={click}
+      />,
+    );
+
+    const button = screen.getByTestId("commonsCard-button-Visit-1");
+    expect(button).toBeInTheDocument();
+    expect(typeof button.textContent).toBe("string");
+    expect(button.textContent).toEqual("Visit");
     fireEvent.click(button);
     expect(click).toBeCalledTimes(1);
   });
