@@ -3,12 +3,13 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
-
 import { useRestoreUser, useSuspendUser, useUsers } from "main/utils/users";
 import usersFixtures from "fixtures/usersFixtures";
 import { act } from "react";
+import { vi } from "vitest";
 
-jest.mock("react-router-dom");
+
+vi.mock("react-router-dom");
 
 describe("utils/users tests", () => {
   describe("useUsers tests", () => {
@@ -79,7 +80,7 @@ describe("utils/users tests", () => {
   describe("suspendUser tests", () => {
     var axiosMock;
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation();
+      vi.spyOn(console, "error").mockImplementation();
       axiosMock = new AxiosMockAdapter(axios);
       queryClient.prefetchQuery("users", async () => {
         return [];
@@ -121,7 +122,7 @@ describe("utils/users tests", () => {
   describe("restoreUser tests", () => {
     var axiosMock;
     beforeEach(() => {
-      jest.spyOn(console, "error").mockImplementation();
+      vi.spyOn(console, "error").mockImplementation();
       axiosMock = new AxiosMockAdapter(axios);
       queryClient.prefetchQuery("users", async () => {
         return [];

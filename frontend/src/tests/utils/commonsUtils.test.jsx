@@ -1,14 +1,15 @@
+import mockConsole from "tests/testutils/mockConsole";
+import commonsFixtures from "fixtures/commonsFixtures";
+import { vi } from "vitest";
 import {
   cellToAxiosParamsDelete,
   commonsNotJoined,
   onDeleteSuccess,
 } from "main/utils/commonsUtils";
-import mockConsole from "tests/testutils/mockConsole";
-import commonsFixtures from "fixtures/commonsFixtures";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,

@@ -2,10 +2,11 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import UsersTable from "main/components/Users/UsersTable";
 import { formatTime } from "main/utils/dateUtils";
 import usersFixtures from "fixtures/usersFixtures";
+import { vi } from "vitest";
 
-const mockMutate = jest.fn();
+const mockMutate = vi.fn();
 
-jest.mock("main/utils/users", () => ({
+vi.mock("main/utils/users", async () => ({
   useSuspendUser: () => ({ mutate: mockMutate }),
   useRestoreUser: () => ({ mutate: mockMutate }),
 }));
@@ -84,7 +85,7 @@ describe("UserTable tests", () => {
 
 describe("Modal tests", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("Clicking Suspend button opens the modal for suspendUser", async () => {

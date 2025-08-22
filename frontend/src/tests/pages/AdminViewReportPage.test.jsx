@@ -3,17 +3,18 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import AdminViewReportPage from "main/pages/AdminViewReportPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import reportFixtures from "fixtures/reportFixtures";
 import reportLineFixtures from "fixtures/reportLineFixtures";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
   useParams: () => ({
     reportId: 17,

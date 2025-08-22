@@ -1,13 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import CommonsCard from "main/components/Commons/CommonsCard";
 import commonsFixtures from "fixtures/commonsFixtures";
+import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
 const curr = new Date();
 
 describe("CommonsCard tests", () => {
   test("renders without crashing when button text is set", async () => {
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={commonsFixtures.threeCommons[0]}
@@ -66,8 +67,8 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
-    window.alert = jest.fn();
+    const click = vi.fn();
+    window.alert = vi.fn();
     render(
       <CommonsCard
         commons={futureYearCommon}
@@ -98,7 +99,7 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={futureCommon}
@@ -128,7 +129,7 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={futureCommon}
@@ -154,7 +155,7 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={futureCommon}
@@ -180,7 +181,7 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={futureCommon}
@@ -210,7 +211,7 @@ describe("CommonsCard tests", () => {
     )
       .toISOString()
       .substring(0, 10);
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={futureCommon}
@@ -228,7 +229,7 @@ describe("CommonsCard tests", () => {
   });
 
   test("can join commons with past start date", async () => {
-    const click = jest.fn();
+    const click = vi.fn();
     render(
       <CommonsCard
         commons={commonsFixtures.threeCommons[0]}

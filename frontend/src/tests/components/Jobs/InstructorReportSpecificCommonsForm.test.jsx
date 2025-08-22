@@ -5,14 +5,15 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import commonsFixtures from "fixtures/commonsFixtures";
+import { vi } from "vitest";
 
 // Next line uses technique from https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
 import * as useBackendModule from "main/utils/useBackend";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -36,10 +37,10 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
   });
 
   test("user can sucessfully submit the job", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
     axiosMock
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
@@ -82,7 +83,7 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
   });
 
   test("the first item in commons array is selected by default", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) =>
       key === "InstructorReportSpecificCommonsForm-health" ? 42 : null,
     );
@@ -111,7 +112,7 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
 
   test("the correct parameters are passed to useBackend", async () => {
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>

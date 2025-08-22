@@ -2,11 +2,12 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import TestJobsForm from "main/components/Jobs/TestJobForm";
 import jobsFixtures from "fixtures/jobsFixtures";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -26,7 +27,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("validates that sleepMs is present", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -51,7 +52,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("validates that sleepMs is >= 0", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>
@@ -75,7 +76,7 @@ describe("TestJobsForm tests", () => {
   });
 
   it("validates that sleepMs is <= 60000", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     render(
       <Router>

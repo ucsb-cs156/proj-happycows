@@ -3,10 +3,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import ReportTable from "main/components/Reports/ReportTable";
 import reportFixtures from "fixtures/reportFixtures";
+import { vi } from "vitest";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useParams: () => ({
     commonsId: 1,
   }),
@@ -104,7 +105,7 @@ describe("ReportTable tests", () => {
   test("When on storybook, calls window.alert", async () => {
     // arrange
 
-    const mockAlert = jest.spyOn(window, "alert").mockImplementation(() => {});
+    const mockAlert = vi.spyOn(window, "alert").mockImplementation(() => {});
 
     // act
     render(

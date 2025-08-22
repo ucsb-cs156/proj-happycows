@@ -3,10 +3,11 @@ import { MemoryRouter as Router } from "react-router-dom";
 import CommonsSelect from "main/components/Commons/CommonsSelect";
 import { QueryClient, QueryClientProvider } from "react-query";
 import commonsFixtures from "fixtures/commonsFixtures";
+import { vi } from "vitest";
 
 describe("CommonsSelect tests", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   const defaultTestId = "CommonsSelect";

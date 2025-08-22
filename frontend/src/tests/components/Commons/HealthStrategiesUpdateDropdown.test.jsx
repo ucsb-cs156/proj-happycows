@@ -2,12 +2,13 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrategiesUpdateDropdown";
-
 import healthUpdateStrategyListFixtures from "fixtures/healthUpdateStrategyListFixtures";
+import { vi } from "vitest";
+
 
 describe("HealthUpdateStrategiesDropdown tests", () => {
   it("renders correctly, with initial value strat1", async () => {
-    const register = jest.fn();
+    const register = vi.fn();
     const healthUpdateStrategies = healthUpdateStrategyListFixtures.simple;
 
     render(
@@ -43,7 +44,7 @@ describe("HealthUpdateStrategiesDropdown tests", () => {
   });
 
   it("renders correctly, with initial value strat2", async () => {
-    const register = jest.fn();
+    const register = vi.fn();
     const healthUpdateStrategies = healthUpdateStrategyListFixtures.simple;
 
     render(

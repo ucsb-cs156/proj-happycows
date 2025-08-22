@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import CommonsOverview from "main/components/Commons/CommonsOverview";
 import PlayPage from "main/pages/PlayPage";
 import commonsFixtures from "fixtures/commonsFixtures";
@@ -11,10 +10,12 @@ import leaderboardFixtures from "fixtures/leaderboardFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
+import { vi } from "vitest";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useParams: () => ({
     commonsId: 1,
   }),

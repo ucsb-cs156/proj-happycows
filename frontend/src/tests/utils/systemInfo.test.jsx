@@ -3,12 +3,12 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
-
 import { useSystemInfo } from "main/utils/systemInfo";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { vi } from "vitest";
 
-jest.mock("react-router-dom");
-const { _MemoryRouter } = jest.requireActual("react-router-dom");
+
+vi.mock("react-router-dom");
 
 describe("utils/systemInfo tests", () => {
   describe("useSystemInfo tests", () => {

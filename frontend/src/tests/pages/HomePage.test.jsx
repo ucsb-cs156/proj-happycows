@@ -3,17 +3,18 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import HomePage from "main/pages/HomePage";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import "main/pages/HomePage.css";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
+import { vi } from "vitest";
 
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+import "main/pages/HomePage.css";
+
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useParams: () => ({
     commonsId: 1,
   }),
@@ -25,7 +26,7 @@ describe("HomePage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock

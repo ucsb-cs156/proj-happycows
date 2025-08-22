@@ -5,18 +5,24 @@ import mockConsole from "tests/testutils/mockConsole";
 import { act } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useNavigate } from "react-router-dom";
-
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { vi } from "vitest";
+
 import {
   apiCurrentUserFixtures,
   currentUserFixtures,
 } from "fixtures/currentUserFixtures";
-import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-jest.mock("react-router-dom");
-const { MemoryRouter } = jest.requireActual("react-router-dom");
+vi.mock("react-router-dom");
 
 describe("utils/currentUser tests", () => {
+  let MemoryRouter;
+  
+  beforeAll(async () => {
+    const module = await vi.importActual("react-router-dom");
+    MemoryRouter = module.MemoryRouter;
+  });
   describe("useCurrentUser tests", () => {
     test("useCurrentUser retrieves initial data", async () => {
       const queryClient = new QueryClient();
@@ -156,10 +162,10 @@ describe("utils/currentUser tests", () => {
       var axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onPost("/logout").reply(200);
 
-      const navigateSpy = jest.fn();
+      const navigateSpy = vi.fn();
       useNavigate.mockImplementation(() => navigateSpy);
 
-      const resetQueriesSpy = jest.spyOn(queryClient, "resetQueries");
+      const resetQueriesSpy = vi.spyOn(queryClient, "resetQueries");
 
       const { result } = renderHook(() => useLogout(), { wrapper });
 

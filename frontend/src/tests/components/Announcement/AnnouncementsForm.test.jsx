@@ -1,15 +1,16 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
-
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { announcementFixtures } from "fixtures/announcementFixtures";
-
 import { QueryClient, QueryClientProvider } from "react-query";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
