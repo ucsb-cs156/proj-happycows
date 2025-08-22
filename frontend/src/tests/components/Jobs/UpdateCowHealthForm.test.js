@@ -1,4 +1,3 @@
-
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
@@ -7,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import commonsFixtures from "fixtures/commonsFixtures";
-
 
 import * as useBackendModule from "main/utils/useBackend";
 
@@ -22,8 +20,7 @@ describe("UpdateCowHealthForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("user can sucessfully submit the job", async () => {
-
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -34,20 +31,20 @@ describe("UpdateCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <UpdateCowHealthForm
-            submitAction={submitAction}
-          />
+          <UpdateCowHealthForm submitAction={submitAction} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const commonsRadio = await screen.findByTestId(
-      "UpdateCowHealthForm-commons-1"
+      "UpdateCowHealthForm-commons-1",
     );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
 
-    const submitButton = screen.getByTestId("UpdateCowHealthForm-Submit-Button");
+    const submitButton = screen.getByTestId(
+      "UpdateCowHealthForm-Submit-Button",
+    );
 
     expect(submitButton).toBeInTheDocument();
 
@@ -58,16 +55,13 @@ describe("UpdateCowHealthForm tests", () => {
       expect(submitAction).toHaveBeenCalled();
     });
 
-    expect(submitAction).toHaveBeenCalledWith(
-      {
-        "selectedCommons": 1,
-        "selectedCommonsName": "Anika's Commons"
-      }
-    );
+    expect(submitAction).toHaveBeenCalledWith({
+      selectedCommons: 1,
+      selectedCommonsName: "Anika's Commons",
+    });
   });
 
   test("the first item in commons array is selected by default", async () => {
-
     axiosMock
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
@@ -75,9 +69,9 @@ describe("UpdateCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <UpdateCowHealthForm  />
+          <UpdateCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const defaultId = 0;
@@ -88,28 +82,26 @@ describe("UpdateCowHealthForm tests", () => {
 
     const commons = screen.getByTestId(testIdForFirstItem);
     expect(commons).toHaveAttribute("checked", "");
-
   });
 
   test("the correct parameters are passed to useBackend", async () => {
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, 'useBackend');
+    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
           <UpdateCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(useBackendSpy).toHaveBeenCalledWith(
         ["/api/commons/all"],
         { url: "/api/commons/all" },
-        []
+        [],
       );
     });
   });
-
 });

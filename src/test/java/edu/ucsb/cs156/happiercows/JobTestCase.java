@@ -8,6 +8,7 @@ import edu.ucsb.cs156.happiercows.services.wiremock.WiremockService;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 
 
+@ActiveProfiles("test")
 public abstract class JobTestCase {
 
   @MockBean

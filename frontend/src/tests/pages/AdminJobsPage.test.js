@@ -11,13 +11,13 @@ import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
 import commonsFixtures from "../../fixtures/commonsFixtures";
 
 const mockToast = jest.fn();
-jest.mock('react-toastify', () => {
-    const originalModule = jest.requireActual('react-toastify');
-    return {
-        __esModule: true,
-        ...originalModule,
-        toast: (x) => mockToast(x)
-    };
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
 });
 
 describe("AdminJobsPage tests", () => {
@@ -34,18 +34,19 @@ describe("AdminJobsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/jobs/all/pageable").reply(200, pagedJobsFixtures.onePage);
+    axiosMock
+      .onGet("/api/jobs/all/pageable")
+      .reply(200, pagedJobsFixtures.onePage);
 
     // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red
-    jest.spyOn(console, 'error')
+    jest.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
   afterEach(() => {
-     // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red
-    console.error.mockRestore()
-  })
-
+    // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red
+    console.error.mockRestore();
+  });
 
   test("renders without crashing", async () => {
     render(
@@ -53,16 +54,18 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
     expect(await screen.findByText("Launch Jobs")).toBeInTheDocument();
     expect(await screen.findByText("Job Status")).toBeInTheDocument();
 
     expect(await screen.findByText("Test Job")).toBeInTheDocument();
-    expect(await screen.findByText("Set Cow Health for a Specific Commons")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Set Cow Health for a Specific Commons"),
+    ).toBeInTheDocument();
     expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
     expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
-    expect(await screen.findByText("Instructor Report")).toBeInTheDocument();  
+    expect(await screen.findByText("Instructor Report")).toBeInTheDocument();
   });
 
   test("user can submit a test job", async () => {
@@ -71,7 +74,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Test Job")).toBeInTheDocument();
@@ -94,16 +97,18 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/testjob?fail=false&sleepMs=0"
+      "/api/jobs/launch/testjob?fail=false&sleepMs=0",
     );
 
     expect(mockToast).toHaveBeenCalledWith("Submitted job: Test Job");
   });
 
   test("user can submit a set cow health job", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -111,14 +116,18 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
-    const setCowHealthButton = await screen.findByText("Set Cow Health for a Specific Commons")
+    const setCowHealthButton = await screen.findByText(
+      "Set Cow Health for a Specific Commons",
+    );
     expect(setCowHealthButton).toBeInTheDocument();
     setCowHealthButton.click();
 
-    const commonsRadio = await screen.findByTestId("SetCowHealthForm-commons-1");
+    const commonsRadio = await screen.findByTestId(
+      "SetCowHealthForm-commons-1",
+    );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
 
@@ -133,18 +142,21 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/setcowhealth?commonsID=1&health=10`
+        `/api/jobs/launch/setcowhealth?commonsID=1&health=10`,
       );
-    })
+    });
 
-    expect(mockToast).toHaveBeenCalledWith(`Submitted Job: Set Cow Health (Commons: Anika's Commons, Health: 10)`);
-
+    expect(mockToast).toHaveBeenCalledWith(
+      `Submitted Job: Set Cow Health (Commons: Anika's Commons, Health: 10)`,
+    );
   });
 
   test("user can submit update cow health job", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -152,7 +164,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
@@ -160,31 +172,38 @@ describe("AdminJobsPage tests", () => {
     const UpdateCowHealthJobButton = screen.getByText("Update Cow Health");
     expect(UpdateCowHealthJobButton).toBeInTheDocument();
     UpdateCowHealthJobButton.click();
-    
-    const commonsRadio = await screen.findByTestId("UpdateCowHealthForm-commons-1");
+
+    const commonsRadio = await screen.findByTestId(
+      "UpdateCowHealthForm-commons-1",
+    );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
-    
-    const submitButton = screen.getByTestId("UpdateCowHealthForm-Submit-Button");
+
+    const submitButton = screen.getByTestId(
+      "UpdateCowHealthForm-Submit-Button",
+    );
 
     expect(submitButton).toBeInTheDocument();
-    
+
     submitButton.click();
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/updatecowhealthsinglecommons?commonsId=1`
+        `/api/jobs/launch/updatecowhealthsinglecommons?commonsId=1`,
       );
-    })
+    });
 
-    expect(mockToast).toHaveBeenCalledWith(`Submitted Job: Update Cow Health (Commons: Anika's Commons)`);
-
+    expect(mockToast).toHaveBeenCalledWith(
+      `Submitted Job: Update Cow Health (Commons: Anika's Commons)`,
+    );
   });
 
   test("user can submit update cow health job for all commons", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -192,7 +211,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
@@ -200,31 +219,36 @@ describe("AdminJobsPage tests", () => {
     const UpdateCowHealthJobButton = screen.getByText("Update Cow Health");
     expect(UpdateCowHealthJobButton).toBeInTheDocument();
     UpdateCowHealthJobButton.click();
-    
-    const commonsRadio = await screen.findByTestId("UpdateCowHealthForm-commons-0");
+
+    const commonsRadio = await screen.findByTestId(
+      "UpdateCowHealthForm-commons-0",
+    );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
-    
-    const submitButton = screen.getByTestId("UpdateCowHealthForm-Submit-Button");
+
+    const submitButton = screen.getByTestId(
+      "UpdateCowHealthForm-Submit-Button",
+    );
 
     expect(submitButton).toBeInTheDocument();
-    
+
     submitButton.click();
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/updatecowhealth`
+        `/api/jobs/launch/updatecowhealth`,
       );
-    })
+    });
 
     expect(mockToast).toHaveBeenCalledWith(`Submitted Job: Update Cow Health`);
-
   });
 
   test("user can submit milk the cows job", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -232,7 +256,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
@@ -251,17 +275,21 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/milkthecowjobsinglecommons?commonsId=1`
+        `/api/jobs/launch/milkthecowjobsinglecommons?commonsId=1`,
       );
-    })
+    });
 
-    expect(mockToast).toHaveBeenCalledWith(`Submitted Job: Milk The Cows! (Commons: Anika's Commons)`);
+    expect(mockToast).toHaveBeenCalledWith(
+      `Submitted Job: Milk The Cows! (Commons: Anika's Commons)`,
+    );
   });
 
   test("user can submit milk the cows job for all commons", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -269,7 +297,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
@@ -288,13 +316,12 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/milkthecowjob`
+        `/api/jobs/launch/milkthecowjob`,
       );
-    })
+    });
 
     expect(mockToast).toHaveBeenCalledWith("Submitted Job: Milk The Cows!");
   });
-
 
   test("user can submit instructor report job", async () => {
     render(
@@ -302,7 +329,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Instructor Report")).toBeInTheDocument();
@@ -319,20 +346,21 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/instructorreport"
+      "/api/jobs/launch/instructorreport",
     );
 
-
-    await waitFor( () => {
-      expect(mockToast).toHaveBeenCalledWith('Submitted Job: Instructor Report');
-      }
-    );
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith(
+        "Submitted Job: Instructor Report",
+      );
+    });
   });
 
   test("user can submit instructor report (specific commons) job", async () => {
-    
     // arrange
-    axiosMock.onGet("/api/commons/all").reply(200, commonsFixtures.threeCommons);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
 
     // act
     render(
@@ -340,7 +368,7 @@ describe("AdminJobsPage tests", () => {
         <MemoryRouter>
           <AdminJobsPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     // assert
@@ -351,9 +379,15 @@ describe("AdminJobsPage tests", () => {
     expect(InstructorReportJobButton).toBeInTheDocument();
     InstructorReportJobButton.click();
 
-    expect(screen.queryByText("There are no commons on which to run this job.")).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.queryByText("There are no commons on which to run this job."),
+      ).not.toBeInTheDocument(),
+    );
 
-    const submitButton = await screen.findByTestId("InstructorReportSpecificCommonsForm-Submit-Button");
+    const submitButton = await screen.findByTestId(
+      "InstructorReportSpecificCommonsForm-Submit-Button",
+    );
     expect(submitButton).toBeInTheDocument();
     submitButton.click();
 
@@ -361,13 +395,14 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`
+        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`,
       );
-    })
+    });
 
-    await waitFor( () => {
-      expect(mockToast).toHaveBeenCalledWith('Submitted Job: Instructor Report (Specific Commons)');
-      }
-    );
+    await waitFor(() => {
+      expect(mockToast).toHaveBeenCalledWith(
+        "Submitted Job: Instructor Report (Specific Commons)",
+      );
+    });
   });
 });

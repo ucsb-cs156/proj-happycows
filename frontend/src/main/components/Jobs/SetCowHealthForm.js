@@ -4,15 +4,17 @@ import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
 import CommonsSelect from "main/components/Commons/CommonsSelect";
 
-function SetCowHealthForm({ submitAction=()=>{}, testid = "SetCowHealthForm" }) {
-
+function SetCowHealthForm({
+  submitAction = () => {},
+  testid = "SetCowHealthForm",
+}) {
   const localHealthValue = localStorage.getItem(`${testid}-health`);
   const [healthValue, setHealthValue] = useState(localHealthValue || 100);
 
   const { data: commons } = useBackend(
     ["/api/commons/all"],
     { url: "/api/commons/all" },
-    []
+    [],
   );
 
   const [selectedCommons, setSelectedCommons] = useState(null);
@@ -57,8 +59,13 @@ function SetCowHealthForm({ submitAction=()=>{}, testid = "SetCowHealthForm" }) 
         </Form.Text>
       </Form.Group>
 
-      <CommonsSelect commons={commons} selectedCommons={selectedCommons} handleCommonsSelection={handleCommonsSelection} testid={testid} />
-      
+      <CommonsSelect
+        commons={commons}
+        selectedCommons={selectedCommons}
+        handleCommonsSelection={handleCommonsSelection}
+        testid={testid}
+      />
+
       <Form.Group className="mb-3">
         <Form.Label htmlFor="healthValue">Health [0-100]</Form.Label>
         <Form.Control
@@ -68,7 +75,6 @@ function SetCowHealthForm({ submitAction=()=>{}, testid = "SetCowHealthForm" }) 
           step="1"
           value={healthValue}
           {...register("healthValue", {
-            valueAsNumber: true,
             required: "Health Value is required",
             min: { value: 0, message: "Health Value must be ≥ 0" },
             max: { value: 100, message: "Health Value must be ≤ 100" },

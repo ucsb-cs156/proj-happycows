@@ -7,6 +7,9 @@ import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
 import LeaderboardPage from "main/pages/LeaderboardPage";
 
+import "bootstrap/dist/css/bootstrap.css";
+import "react-toastify/dist/ReactToastify.css";
+
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
@@ -28,127 +31,99 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 
 function App() {
-    const { data: currentUser } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser();
 
-    const adminRoutes = hasRole(currentUser, "ROLE_ADMIN") ? (
-        <>
-            <Route path="/admin/users" element={<AdminUsersPage />} />
-            <Route path="/admin/jobs" element={<AdminJobsPage />} />
-            <Route path="/admin/reports" element={<AdminReportsPage />} />
-            <Route
-                path="/admin/report/:reportId"
-                element={<AdminViewReportPage />}
-            />
-            <Route
-                path="/admin/createcommons"
-                element={<AdminCreateCommonsPage />}
-            />
-            <Route
-                path="/admin/listcommons"
-                element={<AdminListCommonsPage />}
-            />
-            <Route
-                path="/admin/editcommons/:id"
-                element={<AdminEditCommonsPage />}
-            />
-            <Route
-                path="/admin/liststudents"
-                element={<AdminStudentsIndexPage />}
-            />
-            <Route
-                path="/admin/createstudents"
-                element={<AdminStudentsCreatePage />}
-            />
-            <Route
-                path="/admin/editstudents/:id"
-                element={<AdminStudentsEditPage />}
-            />
-            <Route
-                path="/admin/listcourses"
-                element={<AdminCoursesIndexPage />}
-            />
-            <Route
-                path="/admin/createcourses"
-                element={<AdminCoursesCreatePage />}
-            />
-            <Route
-                path="/admin/editcourses/:id"
-                element={<AdminCoursesEditPage />}
-            />
-            <Route
-                path="/admin/play/:commonsId/user/:userId"
-                element={<AdminViewPlayPage />}
-            />
-            <Route
-                path="/admin/announcements/:commonsId"
-                element={<AdminAnnouncementsPage />}
-            />
-            <Route
-                path="/admin/announcements/:commonsId/create"
-                element={<AdminCreateAnnouncementsPage />}
-            />
-        </>
-    ) : null;
+  const adminRoutes = hasRole(currentUser, "ROLE_ADMIN") ? (
+    <>
+      <Route path="/admin/users" element={<AdminUsersPage />} />
+      <Route path="/admin/jobs" element={<AdminJobsPage />} />
+      <Route path="/admin/reports" element={<AdminReportsPage />} />
+      <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
+      <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
+      <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
+      <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
+      <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
+      <Route
+        path="/admin/createstudents"
+        element={<AdminStudentsCreatePage />}
+      />
+      <Route
+        path="/admin/editstudents/:id"
+        element={<AdminStudentsEditPage />}
+      />
+      <Route path="/admin/listcourses" element={<AdminCoursesIndexPage />} />
+      <Route path="/admin/createcourses" element={<AdminCoursesCreatePage />} />
+      <Route path="/admin/editcourses/:id" element={<AdminCoursesEditPage />} />
+      <Route
+        path="/admin/play/:commonsId/user/:userId"
+        element={<AdminViewPlayPage />}
+      />
+      <Route
+        path="/admin/announcements/:commonsId"
+        element={<AdminAnnouncementsPage />}
+      />
+      <Route
+        path="/admin/announcements/:commonsId/create"
+        element={<AdminCreateAnnouncementsPage />}
+      />
+    </>
+  ) : null;
 
-    const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
-        <>
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route
-                path="/leaderboard/:commonsId"
-                element={<LeaderboardPage />}
-            />
-            <Route path="/play/:commonsId" element={<PlayPage />} />
-        </>
-    ) : null;
+  const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
+    <>
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
+      <Route path="/play/:commonsId" element={<PlayPage />} />
+    </>
+  ) : null;
 
-    const homeRoute =
-        hasRole(currentUser, "ROLE_ADMIN") ||
-        hasRole(currentUser, "ROLE_USER") ? (
-            <Route path="/" element={<HomePage />} />
-        ) : (
-            <Route path="/" element={<LoginPage />} />
-        );
+  const homeRoute =
+    hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
+      <Route path="/" element={<HomePage />} />
+    ) : (
+      <Route path="/" element={<LoginPage />} />
+    );
 
-    /*  Display the LoadingPage while awaiting currentUser 
+  /*  Display the LoadingPage while awaiting currentUser 
       response to prevent the NotFoundPage from displaying */
-    const updateLastOnlineMutation = useBackendMutation(
-        () => ({ method: "POST", url: "/api/currentUser/last-online" }),
-        {}
-    );
+  const updateLastOnlineMutation = useBackendMutation(
+    () => ({ method: "POST", url: "/api/currentUser/last-online" }),
+    {},
+  );
 
-    const updatedOnlineOnMount = useRef(false);
+  const updatedOnlineOnMount = useRef(false);
 
-    useEffect(() => {
-        if (currentUser && currentUser.loggedIn) {
-            if (!updatedOnlineOnMount.current) {
-                updatedOnlineOnMount.current = true;
-                updateLastOnlineMutation.mutate();
-            }
+  useEffect(() => {
+    if (currentUser && currentUser.loggedIn) {
+      if (!updatedOnlineOnMount.current) {
+        updatedOnlineOnMount.current = true;
+        updateLastOnlineMutation.mutate();
+      }
 
-            const interval = setInterval(() => {
-                updateLastOnlineMutation.mutate();
-            }, 60000);
+      const interval = setInterval(() => {
+        updateLastOnlineMutation.mutate();
+      }, 60000);
 
-            return () => {
-                clearInterval(interval);
-            };
-        }
-    }, [currentUser, updateLastOnlineMutation]);
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [currentUser, updateLastOnlineMutation]);
 
-    return (
-        <BrowserRouter>
-            {currentUser?.initialData ? (
-                <LoadingPage />
-            ) : (
-                <Routes>
-                    {homeRoute}
-                    {adminRoutes}
-                    {userRoutes}
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            )}
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      {currentUser?.initialData ? (
+        <LoadingPage />
+      ) : (
+        <Routes>
+          {homeRoute}
+          {adminRoutes}
+          {userRoutes}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      )}
+    </BrowserRouter>
+  );
 }
 
 export default App;

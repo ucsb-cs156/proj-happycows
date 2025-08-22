@@ -1,72 +1,82 @@
-import React from 'react';
+import React from "react";
 import HomePage from "main/pages/HomePage";
-import { rest } from 'msw';
+import { http, HttpResponse } from "msw";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
 export default {
-    title: 'pages/HomePage',
-    component: HomePage,
+  title: "pages/HomePage",
+  component: HomePage,
 };
 
 export const normal = () => {
-    return (<HomePage />)
-}
+  return <HomePage />;
+};
 
 normal.parameters = {
   msw: [
-    rest.get('/api/currentUser', (_req, res, ctx) => {
-        return res(ctx.json(apiCurrentUserFixtures.userOnly));    
+    http.get("/api/currentUser", () => {
+      return HttpResponse.json(apiCurrentUserFixtures.userOnly, {
+        status: 200,
+      });
     }),
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, {
+        status: 200,
+      });
     }),
-  ]
-}
+  ],
+};
 
 export const noUser = () => {
-    return (<HomePage />)
-}
+  return <HomePage />;
+};
 noUser.parameters = {
   msw: [
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, {
+        status: 200,
+      });
     }),
-  ]
-}
+  ],
+};
 
 export const userWithNoGivenName = () => {
-  return (<HomePage />)
-}
+  return <HomePage />;
+};
 userWithNoGivenName.parameters = {
   msw: [
-    rest.get('/api/currentUser', (_req, res, ctx) => {
-        return res(ctx.json(apiCurrentUserFixtures.userNoGivenName));
+    http.get("/api/currentUser", () => {
+      return HttpResponse.json(apiCurrentUserFixtures.userNoGivenName, {
+        status: 200,
+      });
     }),
-    rest.get('/api/systemInfo', (_req, res, ctx) => {
-      return res(ctx.json(systemInfoFixtures.showingNeither));
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, {
+        status: 200,
+      });
     }),
-  ]
-}
+  ],
+};
 
-const Template = (args) => <HomePage  {...args} />;
+const Template = (args) => <HomePage {...args} />;
 
 export const Morning = Template.bind({});
 Morning.args = {
-  hour: 8
+  hour: 8,
 };
 
 export const Day = Template.bind({});
 Day.args = {
-  hour: 10
+  hour: 10,
 };
 
 export const Evening = Template.bind({});
 Evening.args = {
-  hour: 19
-}
+  hour: 19,
+};
 
 export const Night = Template.bind({});
 Night.args = {
-  hour: 2
-}
+  hour: 2,
+};
