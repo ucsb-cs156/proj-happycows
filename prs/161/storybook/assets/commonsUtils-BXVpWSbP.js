@@ -1,1 +1,0 @@
-import{y as s}from"./useBackend-CbiZWCPX.js";function c(o){console.log(o),s(o)}function r(o){return{url:"/api/commons",method:"DELETE",params:{id:o.row.values["commons.id"]}}}function m(o,e){const i=e.map(n=>n.id);return o.filter(n=>!i.includes(n.id))}export{m as a,r as c,c as o};

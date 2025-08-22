@@ -1,3 +1,0 @@
-import{j as r}from"./jsx-runtime-BC85tlZo.js";import"./iframe-BTuJcAs9.js";import{F as t}from"./Footer-CkaGO9C0.js";import{s}from"./systemInfoFixtures-juM-f7VO.js";import"./preload-helper-D9Z9MdNV.js";import"./Container-DxFu-v-g.js";import"./ThemeProvider-BdPtjSDM.js";const l={title:"layouts/BasicLayout/Footer",component:t},e=()=>r.jsx(t,{systemInfo:s.showingAll}),o=e.bind({});o.parameters={...o.parameters,docs:{...o.parameters?.docs,source:{originalSource:`() => {
-  return <Footer systemInfo={systemInfoFixtures.showingAll} />;
-}`,...o.parameters?.docs?.source}}};const f=["Default"];export{o as Default,f as __namedExportsOrder,l as default};

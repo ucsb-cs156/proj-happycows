@@ -1,1 +1,0 @@
-import{r as m}from"./iframe-BTuJcAs9.js";import{c as o}from"./ThemeProvider-BdPtjSDM.js";import{j as t}from"./jsx-runtime-BC85tlZo.js";const f=(a=>m.forwardRef((s,r)=>t.jsx("div",{...s,ref:r,className:o(s.className,a)})));export{f as d};
