@@ -16,9 +16,3 @@ export const Emptytable = Template.bind({});
 Emptytable.args = {
   profits: [],
 };
-
-export const BadInput = Template.bind({});
-
-BadInput.args = {
-  profits: ["stryker-was-here"],
-};
