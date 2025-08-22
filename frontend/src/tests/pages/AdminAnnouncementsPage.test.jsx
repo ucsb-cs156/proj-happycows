@@ -8,16 +8,20 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: () => ({
-    commonsId: 1,
-  }),
-  useNavigate: () => mockedNavigate,
-}));
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useParams: () => ({
+      commonsId: 1,
+    }),
+    useNavigate: () => mockedNavigate,
+  };
+});
 
 describe("AdminAnnouncementsPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
