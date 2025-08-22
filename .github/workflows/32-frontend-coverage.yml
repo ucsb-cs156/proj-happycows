@@ -17,7 +17,7 @@ jobs:
       - uses: szenius/set-timezone@v1.2
         with:
           timezoneLinux: "America/Los_Angeles"
-      - uses: actions/checkout@v3.5.2
+      - uses: actions/checkout@v4
         with: 
           fetch-depth: 2
 
@@ -34,7 +34,7 @@ jobs:
           echo "pr_number=${pr_number}" >> "$GITHUB_ENV"
                 
       - name: Setup Node.js
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4
         with:
           node-version-file: 'frontend/package.json'
           cache: 'npm'
@@ -46,7 +46,7 @@ jobs:
         working-directory: ./frontend
       - name: Upload jest coverage report to Artifacts
         if: always() # always upload artifacts, even if tests fail
-        uses: actions/upload-artifact@v3.1.2
+        uses: actions/upload-artifact@v4
         with:
           name: jest-coverage
           path: frontend/coverage/lcov-report/*
@@ -64,12 +64,16 @@ jobs:
       
       - name: Deploy 🚀
         if: always() # always upload artifacts, even if tests fail
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: Wandalen/wretry.action@master
         with:
-          branch: gh-pages # The branch the action should deploy to.
-          folder: frontend/coverage/lcov-report # The folder where the javadoc files are located
-          clean: true # Automatically remove deleted files from the deploy branch
-          target-folder: ${{env.prefix}}coverage # The folder that we serve our javadoc files from
+          action: JamesIves/github-pages-deploy-action@v4
+          attempt_limit: 3
+          attempt_delay: 5000
+          with: |
+            branch: gh-pages # The branch the action should deploy to.
+            folder: frontend/coverage/lcov-report # The folder where the javadoc files are located
+            clean: true # Automatically remove deleted files from the deploy branch
+            target-folder: ${{env.prefix}}coverage # The folder that we serve our javadoc files from
 
 
   

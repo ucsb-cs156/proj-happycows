@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "jest-mock-console";
@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 
 import { useRestoreUser, useSuspendUser, useUsers } from "main/utils/users";
 import usersFixtures from "fixtures/usersFixtures";
-import { act } from "react-dom/test-utils";
+import { act } from "react";
 
 jest.mock("react-router-dom");
 
@@ -25,7 +25,7 @@ describe("utils/users tests", () => {
 
       const restoreConsole = mockConsole();
 
-      const { result, waitFor } = renderHook(() => useUsers(), { wrapper });
+      const { result } = renderHook(() => useUsers(), { wrapper });
 
       await waitFor(() => result.current.isSuccess);
       expect(result.current.data).toEqual([]);
@@ -52,7 +52,7 @@ describe("utils/users tests", () => {
 
       const restoreConsole = mockConsole();
 
-      const { result, waitFor } = renderHook(() => useUsers(), { wrapper });
+      const { result } = renderHook(() => useUsers(), { wrapper });
       await waitFor(() => result.current.isFetched);
       expect(console.error).toHaveBeenCalled();
       restoreConsole();
@@ -70,7 +70,7 @@ describe("utils/users tests", () => {
       var axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/admin/users").reply(200, usersFixtures.threeUsers);
 
-      const { result, waitFor } = renderHook(() => useUsers(), { wrapper });
+      const { result } = renderHook(() => useUsers(), { wrapper });
       await waitFor(() => result.current.isFetched);
       expect(result.current.data).toEqual(usersFixtures.threeUsers);
     });
@@ -102,7 +102,7 @@ describe("utils/users tests", () => {
         .reply(200, "User with id 1 suspended");
 
       const userCell = { row: { values: { id: 1 } } };
-      const { result, waitFor } = renderHook(() => useSuspendUser(), {
+      const { result } = renderHook(() => useSuspendUser(), {
         wrapper,
       });
 
@@ -144,7 +144,7 @@ describe("utils/users tests", () => {
         .reply(200, "User with id 1 restored");
 
       const userCell = { row: { values: { id: 1 } } };
-      const { result, waitFor } = renderHook(() => useRestoreUser(), {
+      const { result } = renderHook(() => useRestoreUser(), {
         wrapper,
       });
 

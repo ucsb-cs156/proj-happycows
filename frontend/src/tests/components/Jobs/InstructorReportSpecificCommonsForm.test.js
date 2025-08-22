@@ -20,27 +20,23 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("renders the fallback text correctlyl", async () => {
-
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, []);
+    axiosMock.onGet("/api/commons/all").reply(200, []);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <InstructorReportSpecificCommonsForm  />
+          <InstructorReportSpecificCommonsForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(
-      await screen.findByText("There are no commons on which to run this job.")
+      await screen.findByText("There are no commons on which to run this job."),
     ).toBeInTheDocument();
   });
 
   test("user can sucessfully submit the job", async () => {
-
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -51,22 +47,24 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <InstructorReportSpecificCommonsForm
-            submitAction={submitAction}
-          />
+          <InstructorReportSpecificCommonsForm submitAction={submitAction} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const commonsRadio = await screen.findByTestId(
-      "InstructorReportSpecificCommonsForm-commons-1"
+      "InstructorReportSpecificCommonsForm-commons-1",
     );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
 
-    expect(screen.queryByText("There are no commons on which to run this job.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("There are no commons on which to run this job."),
+    ).not.toBeInTheDocument();
 
-    const submitButton = screen.getByTestId("InstructorReportSpecificCommonsForm-Submit-Button");
+    const submitButton = screen.getByTestId(
+      "InstructorReportSpecificCommonsForm-Submit-Button",
+    );
 
     expect(submitButton).toBeInTheDocument();
 
@@ -77,18 +75,17 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
       expect(submitAction).toHaveBeenCalled();
     });
 
-    expect(submitAction).toHaveBeenCalledWith(
-      {
-        "selectedCommons": 1,
-        "selectedCommonsName": "Anika's Commons"
-      }
-    );
+    expect(submitAction).toHaveBeenCalledWith({
+      selectedCommons: 1,
+      selectedCommonsName: "Anika's Commons",
+    });
   });
 
-
   test("the first item in commons array is selected by default", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-    getItemSpy.mockImplementation((key) => (key === "InstructorReportSpecificCommonsForm-health" ? 42 : null));
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) =>
+      key === "InstructorReportSpecificCommonsForm-health" ? 42 : null,
+    );
 
     axiosMock
       .onGet("/api/commons/all")
@@ -97,9 +94,9 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <InstructorReportSpecificCommonsForm  />
+          <InstructorReportSpecificCommonsForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const defaultId = commonsFixtures.threeCommons[0].id;
@@ -110,28 +107,26 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
 
     const commons = screen.getByTestId(testIdForFirstItem);
     expect(commons).toHaveAttribute("checked", "");
-
   });
 
   test("the correct parameters are passed to useBackend", async () => {
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, 'useBackend');
+    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <InstructorReportSpecificCommonsForm  />
+          <InstructorReportSpecificCommonsForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(useBackendSpy).toHaveBeenCalledWith(
         ["/api/commons/all"],
         { url: "/api/commons/all" },
-        []
+        [],
       );
     });
   });
-
 });

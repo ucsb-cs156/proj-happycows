@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
 import AdminReportsPage from "main/pages/AdminReportsPage";
 
 export default {
-    title: 'pages/AdminReportsPage',
-    component: AdminReportsPage
+  title: "pages/AdminReportsPage",
+  component: AdminReportsPage,
 };
 
 const Template = () => <AdminReportsPage />;

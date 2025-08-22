@@ -4,15 +4,13 @@ import { useState } from "react";
 import { useBackend } from "main/utils/useBackend";
 import CommonsSelect from "main/components/Commons/CommonsSelect";
 
-
-function InstructorReportSpecificCommonsForm({  submitAction }) {
-
+function InstructorReportSpecificCommonsForm({ submitAction }) {
   const testid = "InstructorReportSpecificCommonsForm";
 
   const { data: commons } = useBackend(
     ["/api/commons/all"],
     { url: "/api/commons/all" },
-    []
+    [],
   );
 
   const [selectedCommons, setSelectedCommons] = useState(null);
@@ -44,9 +42,22 @@ function InstructorReportSpecificCommonsForm({  submitAction }) {
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <CommonsSelect commons={commons} selectedCommons={selectedCommons} handleCommonsSelection={handleCommonsSelection} testid={testid} />
-      <p>Click this button to generate an instructor report for the selected commons.</p>
-      <Button type="submit" data-testid="InstructorReportSpecificCommonsForm-Submit-Button">Generate</Button>
+      <CommonsSelect
+        commons={commons}
+        selectedCommons={selectedCommons}
+        handleCommonsSelection={handleCommonsSelection}
+        testid={testid}
+      />
+      <p>
+        Click this button to generate an instructor report for the selected
+        commons.
+      </p>
+      <Button
+        type="submit"
+        data-testid="InstructorReportSpecificCommonsForm-Submit-Button"
+      >
+        Generate
+      </Button>
     </Form>
   );
 }

@@ -20,21 +20,18 @@ describe("SetCowHealthForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("renders the fallback text correctlyl", async () => {
-
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, []);
+    axiosMock.onGet("/api/commons/all").reply(200, []);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(
-      await screen.findByText("There are no commons on which to run this job.")
+      await screen.findByText("There are no commons on which to run this job."),
     ).toBeInTheDocument();
   });
 
@@ -47,13 +44,15 @@ describe("SetCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <SetCowHealthForm  />
+          <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -72,7 +71,7 @@ describe("SetCowHealthForm tests", () => {
   });
 
   it("validates health ≥ 0", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -83,13 +82,15 @@ describe("SetCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <SetCowHealthForm  />
+          <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -108,7 +109,7 @@ describe("SetCowHealthForm tests", () => {
   });
 
   it("validates health ≤ 100", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -121,11 +122,13 @@ describe("SetCowHealthForm tests", () => {
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -138,15 +141,15 @@ describe("SetCowHealthForm tests", () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText(/Health Value must be ≤ 100/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Health Value must be ≤ 100/i),
+      ).toBeInTheDocument();
     });
     expect(submitAction).not.toBeCalled();
   });
 
-
   it("validates health is required", async () => {
-
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -159,11 +162,13 @@ describe("SetCowHealthForm tests", () => {
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -181,10 +186,8 @@ describe("SetCowHealthForm tests", () => {
     expect(submitAction).not.toBeCalled();
   });
 
-
   it("user can sucessfully submit the job", async () => {
-
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = jest.fn();
@@ -195,15 +198,13 @@ describe("SetCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <SetCowHealthForm
-            submitAction={submitAction}
-          />
+          <SetCowHealthForm submitAction={submitAction} />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const commonsRadio = await screen.findByTestId(
-      "SetCowHealthForm-commons-1"
+      "SetCowHealthForm-commons-1",
     );
     expect(commonsRadio).toBeInTheDocument();
     fireEvent.click(commonsRadio);
@@ -222,17 +223,15 @@ describe("SetCowHealthForm tests", () => {
       expect(submitAction).toHaveBeenCalled();
     });
 
-    expect(submitAction).toHaveBeenCalledWith(
-      {
-        "healthValue": "10",
-        "selectedCommons": 1,
-        "selectedCommonsName": "Anika's Commons"
-      }
-    );
+    expect(submitAction).toHaveBeenCalledWith({
+      healthValue: "10",
+      selectedCommons: 1,
+      selectedCommonsName: "Anika's Commons",
+    });
   });
 
   test("when localstorage has no value, the default value of healthValue is 100", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
     axiosMock
       .onGet("/api/commons/all")
@@ -243,21 +242,24 @@ describe("SetCowHealthForm tests", () => {
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const healthInput = screen.getByTestId("SetCowHealthForm-healthValue");
     expect(healthInput).toHaveValue(100);
-
   });
 
   test("healthValue can be loaded from localstorage", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-    getItemSpy.mockImplementation((key) => (key === "SetCowHealthForm-health" ? 42 : null));
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) =>
+      key === "SetCowHealthForm-health" ? 42 : null,
+    );
     axiosMock
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
@@ -267,23 +269,26 @@ describe("SetCowHealthForm tests", () => {
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const healthInput = screen.getByTestId("SetCowHealthForm-healthValue");
     expect(healthInput).toHaveValue(42);
   });
 
-
   test("healthValue is saved in localstorage", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-    const setItemSpy = jest.spyOn(Storage.prototype, 'setItem');
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const setItemSpy = jest.spyOn(Storage.prototype, "setItem");
 
-    getItemSpy.mockImplementation((key) => (key === "SetCowHealthForm-health" ? 42 : null));
+    getItemSpy.mockImplementation((key) =>
+      key === "SetCowHealthForm-health" ? 42 : null,
+    );
 
     axiosMock
       .onGet("/api/commons/all")
@@ -292,20 +297,21 @@ describe("SetCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <SetCowHealthForm  />
+          <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("SetCowHealthForm-healthValue")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("SetCowHealthForm-healthValue"),
+      ).toBeInTheDocument();
     });
 
     const healthInput = screen.getByTestId("SetCowHealthForm-healthValue");
     expect(healthInput).toHaveValue(42);
 
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
-
 
     fireEvent.change(healthInput, { target: { value: "24" } });
     fireEvent.click(submitButton);
@@ -316,8 +322,10 @@ describe("SetCowHealthForm tests", () => {
   });
 
   test("the first item in commons array is selected by default", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, 'getItem');
-    getItemSpy.mockImplementation((key) => (key === "SetCowHealthForm-health" ? 42 : null));
+    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation((key) =>
+      key === "SetCowHealthForm-health" ? 42 : null,
+    );
 
     axiosMock
       .onGet("/api/commons/all")
@@ -326,9 +334,9 @@ describe("SetCowHealthForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <SetCowHealthForm  />
+          <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const defaultId = commonsFixtures.threeCommons[0].id;
@@ -339,28 +347,26 @@ describe("SetCowHealthForm tests", () => {
 
     const commons = screen.getByTestId(testIdForFirstItem);
     expect(commons).toHaveAttribute("checked", "");
-
   });
 
   test("the correct parameters are passed to useBackend", async () => {
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, 'useBackend');
+    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
           <SetCowHealthForm />
         </Router>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(useBackendSpy).toHaveBeenCalledWith(
         ["/api/commons/all"],
         { url: "/api/commons/all" },
-        []
+        [],
       );
     });
   });
-
 });
