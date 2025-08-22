@@ -24,7 +24,13 @@ Empty.parameters = {
   msw: [
     /* eslint-disable-next-line no-unused-vars */
     http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
-      return HttpResponse.json([], { status: 200 });
+      return HttpResponse.json(
+        {
+          content: [],
+          totalPages: 1,
+        },
+        { status: 200 },
+      );
     }),
     /* eslint-disable-next-line no-unused-vars */
     http.get("/api/usercommons/all?commonsId=1", () => {
