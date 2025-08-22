@@ -15,9 +15,14 @@ import {
 } from "fixtures/currentUserFixtures";
 
 vi.mock("react-router-dom");
-const { MemoryRouter } = vi.importActual("react-router-dom");
 
 describe("utils/currentUser tests", () => {
+  let MemoryRouter;
+  
+  beforeAll(async () => {
+    const module = await vi.importActual("react-router-dom");
+    MemoryRouter = module.MemoryRouter;
+  });
   describe("useCurrentUser tests", () => {
     test("useCurrentUser retrieves initial data", async () => {
       const queryClient = new QueryClient();

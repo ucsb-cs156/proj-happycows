@@ -9,7 +9,6 @@ import { vi } from "vitest";
 
 
 vi.mock("react-router-dom");
-const { _MemoryRouter } = vi.importActual("react-router-dom");
 
 describe("utils/systemInfo tests", () => {
   describe("useSystemInfo tests", () => {

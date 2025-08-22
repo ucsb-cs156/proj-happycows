@@ -11,8 +11,8 @@ import { vi } from "vitest";
 
 
 const mockToast = vi.fn();
-vi.mock("react-toastify", () => {
-  const originalModule = vi.importActual("react-toastify");
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -21,8 +21,8 @@ vi.mock("react-toastify", () => {
 });
 
 const mockNavigate = vi.fn();
-vi.mock("react-router-dom", () => {
-  const originalModule = vi.importActual("react-router-dom");
+vi.mock("react-router-dom", async () => {
+  const originalModule = await vi.importActual("react-router-dom");
   return {
     __esModule: true,
     ...originalModule,

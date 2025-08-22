@@ -6,8 +6,8 @@ import { vi } from "vitest";
 import "@testing-library/jest-dom";
 
 const mockToast = vi.fn();
-vi.mock("react-toastify", () => {
-  const originalModule = vi.importActual("react-toastify");
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
