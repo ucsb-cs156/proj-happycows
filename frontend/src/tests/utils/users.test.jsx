@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import { useRestoreUser, useSuspendUser, useUsers } from "main/utils/users";

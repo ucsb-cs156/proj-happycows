@@ -3,7 +3,7 @@ import {
   commonsNotJoined,
   onDeleteSuccess,
 } from "main/utils/commonsUtils";
-import mockConsole from "jest-mock-console";
+import mockConsole from "tests/testutils/mockConsole";
 import commonsFixtures from "fixtures/commonsFixtures";
 
 const mockToast = jest.fn();
