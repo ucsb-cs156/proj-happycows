@@ -7,11 +7,12 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useParams: () => ({
     commonsId: 1,
   }),

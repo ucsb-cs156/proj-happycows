@@ -4,11 +4,12 @@ import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

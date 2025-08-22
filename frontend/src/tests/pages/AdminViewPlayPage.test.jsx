@@ -3,22 +3,23 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { vi } from "vitest";
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useParams: () => ({
     userId: 1,
     commonsId: 1,
   }),
 }));
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,

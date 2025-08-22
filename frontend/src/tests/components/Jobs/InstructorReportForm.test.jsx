@@ -2,11 +2,12 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router-dom";
 import InstructorReportForm from "main/components/Jobs/InstructorReportForm";
 import jobsFixtures from "fixtures/jobsFixtures";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 

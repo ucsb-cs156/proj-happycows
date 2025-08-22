@@ -4,17 +4,18 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { toast } from "react-toastify";
-
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
+import { vi } from "vitest";
 
-jest.mock("react-router-dom");
 
-const mockToast = jest.spyOn(toast, "error").mockImplementation();
+vi.mock("react-router-dom");
+
+const mockToast = vi.spyOn(toast, "error").mockImplementation();
 
 describe("utils/useBackend tests", () => {
   describe("utils/useBackend useBackend tests", () => {
     test("useBackend handles 404 error correctly", async () => {
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       // See: https://react-query.tanstack.com/guides/testing#turn-off-retries
@@ -61,7 +62,7 @@ describe("utils/useBackend tests", () => {
     });
 
     test("useBackend handles 404 error with no message", async () => {
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       // See: https://react-query.tanstack.com/guides/testing#turn-off-retries
@@ -140,7 +141,7 @@ describe("utils/useBackend tests", () => {
         },
       });
 
-      const onSuccess = jest.fn().mockImplementation((ucsbDate) => {
+      const onSuccess = vi.fn().mockImplementation((ucsbDate) => {
         mockToast(
           `New ucsbDate Created - id: ${ucsbDate.id} name: ${ucsbDate.name}`,
         );
@@ -170,7 +171,7 @@ describe("utils/useBackend tests", () => {
     });
 
     test("useBackendMutation handles error correctly with response message", async () => {
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       // See: https://react-query.tanstack.com/guides/testing#turn-off-retries
@@ -203,7 +204,7 @@ describe("utils/useBackend tests", () => {
         },
       });
 
-      const onSuccess = jest.fn().mockImplementation((ucsbDate) => {
+      const onSuccess = vi.fn().mockImplementation((ucsbDate) => {
         mockToast(
           `New ucsbDate Created - id: ${ucsbDate.id} name: ${ucsbDate.name}`,
         );
@@ -231,7 +232,7 @@ describe("utils/useBackend tests", () => {
     });
 
     test("useBackendMutation handles error correctly with no response message", async () => {
-      jest.spyOn(console, "error");
+      vi.spyOn(console, "error");
       console.error.mockImplementation(() => null);
 
       // See: https://react-query.tanstack.com/guides/testing#turn-off-retries
@@ -262,7 +263,7 @@ describe("utils/useBackend tests", () => {
         },
       });
 
-      const onSuccess = jest.fn().mockImplementation((ucsbDate) => {
+      const onSuccess = vi.fn().mockImplementation((ucsbDate) => {
         mockToast(
           `New ucsbDate Created - id: ${ucsbDate.id} name: ${ucsbDate.name}`,
         );

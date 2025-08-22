@@ -3,16 +3,17 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
 import commonsFixtures from "../../fixtures/commonsFixtures";
+import { vi } from "vitest";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -39,7 +40,7 @@ describe("AdminJobsPage tests", () => {
       .reply(200, pagedJobsFixtures.onePage);
 
     // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red
-    jest.spyOn(console, "error");
+    vi.spyOn(console, "error");
     console.error.mockImplementation(() => null);
   });
 
@@ -108,7 +109,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -156,7 +157,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -203,7 +204,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -248,7 +249,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(
@@ -289,7 +290,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
 
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
     render(

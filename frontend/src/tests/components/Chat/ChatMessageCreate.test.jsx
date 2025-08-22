@@ -5,6 +5,7 @@ import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import { vi } from "vitest";
 
 describe("ChatMessageCreate", () => {
   const commonsId = 1;
@@ -22,7 +23,7 @@ describe("ChatMessageCreate", () => {
 
   test("renders without crashing", async () => {
     // arrange
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     //act
     render(
@@ -53,7 +54,7 @@ describe("ChatMessageCreate", () => {
 
   test("shows an error when the message input is empty", async () => {
     // arrange
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     //act
     render(
@@ -74,7 +75,7 @@ describe("ChatMessageCreate", () => {
 
   test("calls the correct submit action on successful submission", async () => {
     // arrange
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
     const messageText = "Hello, World!";
 
     //act

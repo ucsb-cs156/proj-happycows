@@ -4,18 +4,19 @@ import { MemoryRouter } from "react-router-dom";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
+import * as useBackendModule from "main/utils/useBackend";
+import { vi } from "vitest";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/commonsUtils";
 
 // Next line uses technique from https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-import * as useBackendModule from "main/utils/useBackend";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -181,7 +182,7 @@ describe("Modal tests", () => {
   const queryClient = new QueryClient();
 
   // Mocking the delete mutation function
-  const mockMutate = jest.fn();
+  const mockMutate = vi.fn();
   const mockUseBackendMutation = {
     mutate: mockMutate,
   };
@@ -193,7 +194,7 @@ describe("Modal tests", () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   test("Clicking Delete button opens the modal for adminUser", async () => {
@@ -230,7 +231,7 @@ describe("Modal tests", () => {
     const currentUser = currentUserFixtures.adminUser;
 
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendMutationSpy = jest.spyOn(
+    const useBackendMutationSpy = vi.spyOn(
       useBackendModule,
       "useBackendMutation",
     );

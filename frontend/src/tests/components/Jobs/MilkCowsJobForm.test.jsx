@@ -5,13 +5,14 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import commonsFixtures from "fixtures/commonsFixtures";
-
 import * as useBackendModule from "main/utils/useBackend";
+import { vi } from "vitest";
 
-const mockedNavigate = jest.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -19,10 +20,10 @@ describe("MilkTheCowsForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("user can sucessfully submit the job", async () => {
-    const getItemSpy = jest.spyOn(Storage.prototype, "getItem");
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
 
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
     axiosMock
       .onGet("/api/commons/all")
       .reply(200, commonsFixtures.threeCommons);
@@ -81,7 +82,7 @@ describe("MilkTheCowsForm tests", () => {
 
   test("the correct parameters are passed to useBackend", async () => {
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>

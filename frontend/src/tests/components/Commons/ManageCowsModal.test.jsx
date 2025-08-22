@@ -1,12 +1,13 @@
 import React from "react";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
 import ManageCowsModal from "main/components/Commons/ManageCowsModal";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import { vi } from "vitest";
+import "@testing-library/jest-dom";
 
-const mockToast = jest.fn();
-jest.mock("react-toastify", () => {
-  const originalModule = jest.requireActual("react-toastify");
+const mockToast = vi.fn();
+vi.mock("react-toastify", () => {
+  const originalModule = vi.importActual("react-toastify");
   return {
     __esModule: true,
     ...originalModule,
@@ -18,11 +19,11 @@ jest.mock("react-toastify", () => {
 });
 
 describe("ManageCowsModal", () => {
-  const mockOnClose = jest.fn();
-  const mockSetNumber = jest.fn();
-  const mockOnBuy = jest.fn();
-  const mockOnSell = jest.fn();
-  window.alert = jest.fn();
+  const mockOnClose = vi.fn();
+  const mockSetNumber = vi.fn();
+  const mockOnBuy = vi.fn();
+  const mockOnSell = vi.fn();
+  window.alert = vi.fn();
 
   test("renders the modal when isOpen is true", () => {
     render(

@@ -1,27 +1,28 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router-dom";
 import * as currentUserModule from "main/utils/currentUser";
+import { vi } from "vitest";
+
 
 const queryClient = new QueryClient();
 
 // Mock the useCurrentUser and hasRole functions
-jest.mock("main/utils/currentUser", () => ({
-  ...jest.requireActual("main/utils/currentUser"),
-  useCurrentUser: jest.fn(),
-  hasRole: jest.fn(),
+vi.mock("main/utils/currentUser", async () => ({
+  ...await vi.importActual("main/utils/currentUser"),
+  useCurrentUser: vi.fn(),
+  hasRole: vi.fn(),
 }));
 // mock useparams
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: jest.fn(),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
+  useParams: vi.fn(),
 }));
 describe("ManageCows tests", () => {
-  const mockSetMessage = jest.fn();
-  const mockOpenModal = jest.fn();
+  const mockSetMessage = vi.fn();
+  const mockOpenModal = vi.fn();
 
   test("renders without crashing", () => {
     useParams.mockReturnValue({ userId: 1 }); // Replace with your desired mock values
@@ -58,8 +59,8 @@ describe("ManageCows tests", () => {
       },
     });
     currentUserModule.hasRole.mockReturnValue(true);
-    const mockBuy = jest.fn();
-    const mockSell = jest.fn();
+    const mockBuy = vi.fn();
+    const mockSell = vi.fn();
 
     render(
       <QueryClientProvider client={queryClient}>
