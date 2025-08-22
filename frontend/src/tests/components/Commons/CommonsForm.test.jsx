@@ -6,14 +6,15 @@ import commonsFixtures from "fixtures/commonsFixtures";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import healthUpdateStrategyListFixtures from "fixtures/healthUpdateStrategyListFixtures";
+import { vi } from "vitest";
 
 // Next line uses technique from https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
 import * as useBackendModule from "main/utils/useBackend";
 
-const mockedNavigate = jest.fn();
+const mockedNavigate = vi.fn();
 
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
+vi.mock("react-router-dom", async () => ({
+  ...await vi.importActual("react-router-dom"),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -21,11 +22,11 @@ describe("CommonsForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("renders correctly", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     axiosMock
       .onGet("/api/commons/all-health-update-strategies")
@@ -63,7 +64,7 @@ describe("CommonsForm tests", () => {
   });
 
   it("has validation errors for required fields", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     axiosMock
       .onGet("/api/commons/all-health-update-strategies")
@@ -239,7 +240,7 @@ describe("CommonsForm tests", () => {
   });
 
   it("has validation errors for values out of range", async () => {
-    const submitAction = jest.fn();
+    const submitAction = vi.fn();
 
     axiosMock
       .onGet("/api/commons/all-health-update-strategies")
@@ -417,7 +418,7 @@ describe("CommonsForm tests", () => {
       .reply(200, healthUpdateStrategyListFixtures.real);
 
     // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
-    const useBackendSpy = jest.spyOn(useBackendModule, "useBackend");
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -460,11 +461,11 @@ describe("CommonsForm tests", () => {
       lastDate: nextMonth,
     };
 
-    jest
+    vi
       .spyOn(useBackendModule, "useBackend")
       .mockReturnValue({ data: defaultValuesData });
 
-    jest
+    vi
       .spyOn(useBackendModule, "useBackend")
       .mockReturnValue({ data: healthUpdateStrategyListFixtures.real });
 
