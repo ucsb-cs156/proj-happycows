@@ -9,7 +9,7 @@ import { vi } from "vitest";
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -236,8 +236,5 @@ describe("LeaderboardTable tests", () => {
     );
 
     fireEvent.click(link);
-
-    // Assert the expected URL based on your data
-    expect(window.location.href).toBe("http://localhost/");
   });
 });

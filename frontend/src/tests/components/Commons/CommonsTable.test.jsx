@@ -16,7 +16,7 @@ import {
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -188,9 +188,9 @@ describe("Modal tests", () => {
   };
 
   beforeEach(() => {
-    jest
-      .spyOn(useBackendModule, "useBackendMutation")
-      .mockReturnValue(mockUseBackendMutation);
+    vi.spyOn(useBackendModule, "useBackendMutation").mockReturnValue(
+      mockUseBackendMutation,
+    );
   });
 
   afterEach(() => {

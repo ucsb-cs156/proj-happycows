@@ -8,9 +8,8 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useParams: () => ({
     userId: 1,
     commonsId: 1,

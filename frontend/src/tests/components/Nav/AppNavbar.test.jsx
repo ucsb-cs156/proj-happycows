@@ -6,7 +6,6 @@ import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-
 describe("AppNavbar tests", () => {
   const queryClient = new QueryClient();
 

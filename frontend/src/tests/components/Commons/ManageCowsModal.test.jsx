@@ -25,6 +25,10 @@ describe("ManageCowsModal", () => {
   const mockOnSell = vi.fn();
   window.alert = vi.fn();
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test("renders the modal when isOpen is true", () => {
     render(
       <ManageCowsModal

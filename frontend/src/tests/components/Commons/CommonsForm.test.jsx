@@ -14,7 +14,7 @@ import * as useBackendModule from "main/utils/useBackend";
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 
@@ -461,13 +461,13 @@ describe("CommonsForm tests", () => {
       lastDate: nextMonth,
     };
 
-    vi
-      .spyOn(useBackendModule, "useBackend")
-      .mockReturnValue({ data: defaultValuesData });
+    vi.spyOn(useBackendModule, "useBackend").mockReturnValue({
+      data: defaultValuesData,
+    });
 
-    vi
-      .spyOn(useBackendModule, "useBackend")
-      .mockReturnValue({ data: healthUpdateStrategyListFixtures.real });
+    vi.spyOn(useBackendModule, "useBackend").mockReturnValue({
+      data: healthUpdateStrategyListFixtures.real,
+    });
 
     render(
       <QueryClientProvider client={new QueryClient()}>

@@ -10,7 +10,6 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");
@@ -24,7 +23,7 @@ vi.mock("react-toastify", async () => {
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 

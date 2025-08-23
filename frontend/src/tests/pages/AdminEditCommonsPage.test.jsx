@@ -9,7 +9,6 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import healthUpdateStrategyListFixtures from "../../fixtures/healthUpdateStrategyListFixtures";
 import { vi } from "vitest";
 
-
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");

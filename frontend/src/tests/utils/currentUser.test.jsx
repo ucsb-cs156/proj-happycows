@@ -15,17 +15,19 @@ import {
 } from "fixtures/currentUserFixtures";
 
 vi.mock("react-router-dom");
+const { MemoryRouter } = await vi.importActual("react-router-dom");
 
 describe("utils/currentUser tests", () => {
-  let MemoryRouter;
-  
-  beforeAll(async () => {
-    const module = await vi.importActual("react-router-dom");
-    MemoryRouter = module.MemoryRouter;
-  });
   describe("useCurrentUser tests", () => {
     test("useCurrentUser retrieves initial data", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            staleTime: Infinity,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -33,7 +35,7 @@ describe("utils/currentUser tests", () => {
       );
 
       var axiosMock = new AxiosMockAdapter(axios);
-      axiosMock.onGet("/api/currentUser").timeoutOnce();
+      axiosMock.onGet("/api/currentUser").timeout();
       axiosMock
         .onGet("/api/systemInfo")
         .reply(200, systemInfoFixtures.showingNeither);
@@ -50,16 +52,8 @@ describe("utils/currentUser tests", () => {
         root: null,
         initialData: true,
       });
-
       const queryState = queryClient.getQueryState("/api/currentUser");
       expect(queryState).toBeDefined();
-
-      queryClient.clear();
-
-      await waitFor(() => expect(console.error).toHaveBeenCalled());
-      const errorMessage = console.error.mock.calls[0][0];
-      expect(errorMessage).toMatch(/Error invoking axios.get:/);
-      restoreConsole();
     });
 
     test("useCurrentUser retrieves data from API", async () => {

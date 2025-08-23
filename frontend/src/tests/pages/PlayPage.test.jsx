@@ -8,9 +8,8 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useParams: () => ({
     commonsId: 1,
   }),
@@ -156,7 +155,7 @@ describe("PlayPage tests", () => {
     expect(div).toHaveAttribute(
       "style",
       expect.stringContaining(
-        "background-size: cover; background-image: url(PlayPageBackground.jpg);",
+        "background-size: cover; background-image: url(/src/assets/PlayPageBackground.jpg);",
       ),
     );
   });

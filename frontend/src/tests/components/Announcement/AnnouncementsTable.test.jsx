@@ -9,7 +9,7 @@ import { vi } from "vitest";
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
 }));
 

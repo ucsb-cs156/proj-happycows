@@ -10,7 +10,6 @@ import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
 import commonsFixtures from "../../fixtures/commonsFixtures";
 import { vi } from "vitest";
 
-
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");

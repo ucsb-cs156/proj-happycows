@@ -7,12 +7,14 @@ import { toast } from "react-toastify";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { vi } from "vitest";
 
-
 vi.mock("react-router-dom");
 
 const mockToast = vi.spyOn(toast, "error").mockImplementation();
 
 describe("utils/useBackend tests", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   describe("utils/useBackend useBackend tests", () => {
     test("useBackend handles 404 error correctly", async () => {
       vi.spyOn(console, "error");

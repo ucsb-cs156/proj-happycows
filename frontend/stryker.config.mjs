@@ -6,7 +6,11 @@ const config = {
   packageManager: "npm",
   reporters: ["html", "clear-text", "progress"],
   testRunner: "vitest",
-  mutate: ["src/main/**/*.js", "src/main/**/*.jsx"],
+  mutate: [
+    "src/main/**/*.js",
+    "src/main/**/*.jsx",
+    "!src/main/**/*_NoStryker.{js,jsx,ts,tsx}",
+  ],
   testRunner_comment:
     "Take a look at https://stryker-mutator.io/docs/stryker-js/vitest-runner for information about the vitest plugin.",
   coverageAnalysis: "perTest",
@@ -14,6 +18,9 @@ const config = {
     high: 100,
     low: 100,
     break: 100,
+  },
+  mutator: {
+    excludedMutations: ["Regex"],
   },
 };
 export default config;

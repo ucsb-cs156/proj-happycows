@@ -5,7 +5,6 @@ import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrate
 import healthUpdateStrategyListFixtures from "fixtures/healthUpdateStrategyListFixtures";
 import { vi } from "vitest";
 
-
 describe("HealthUpdateStrategiesDropdown tests", () => {
   it("renders correctly, with initial value strat1", async () => {
     const register = vi.fn();

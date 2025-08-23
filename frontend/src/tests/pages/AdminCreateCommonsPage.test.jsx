@@ -9,7 +9,6 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import healthUpdateStrategyListFixtures from "../../fixtures/healthUpdateStrategyListFixtures";
 import { vi } from "vitest";
 
-
 const mockedNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const originalModule = await vi.importActual("react-router-dom");

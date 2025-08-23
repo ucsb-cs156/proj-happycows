@@ -6,18 +6,17 @@ import { useParams } from "react-router-dom";
 import * as currentUserModule from "main/utils/currentUser";
 import { vi } from "vitest";
 
-
 const queryClient = new QueryClient();
 
 // Mock the useCurrentUser and hasRole functions
 vi.mock("main/utils/currentUser", async () => ({
-  ...await vi.importActual("main/utils/currentUser"),
+  ...(await vi.importActual("main/utils/currentUser")),
   useCurrentUser: vi.fn(),
   hasRole: vi.fn(),
 }));
 // mock useparams
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useParams: vi.fn(),
 }));
 describe("ManageCows tests", () => {

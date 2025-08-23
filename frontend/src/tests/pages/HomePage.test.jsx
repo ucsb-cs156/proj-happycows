@@ -14,7 +14,7 @@ import "main/pages/HomePage.css";
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useParams: () => ({
     commonsId: 1,
   }),

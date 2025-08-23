@@ -8,8 +8,6 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-
-
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");
@@ -93,7 +91,7 @@ describe("LeaderboardPage tests", () => {
     );
     expect(leaderboard_main_div).toHaveAttribute(
       "style",
-      "background-size: cover; background-image: url(PlayPageBackground.png);",
+      "background-size: cover; background-image: url(/src/assets/PlayPageBackground.png);",
     );
 
     expect(leaderboard_back_button).toBeInTheDocument();

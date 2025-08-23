@@ -10,11 +10,10 @@ import reportFixtures from "fixtures/reportFixtures";
 import reportLineFixtures from "fixtures/reportLineFixtures";
 import { vi } from "vitest";
 
-
 const mockedNavigate = vi.fn();
 
 vi.mock("react-router-dom", async () => ({
-  ...await vi.importActual("react-router-dom"),
+  ...(await vi.importActual("react-router-dom")),
   useNavigate: () => mockedNavigate,
   useParams: () => ({
     reportId: 17,
