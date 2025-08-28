@@ -14,7 +14,7 @@ import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
 
 @RestClientTest(RecordCommonStatsJobFactory.class)
-@AutoConfigureDataJpa
+
 public class RecordCommonStatsJobFactoryTests extends JobTestCase {
 
     @MockBean
