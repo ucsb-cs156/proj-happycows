@@ -1,9 +1,5 @@
 import OurTable from "main/components/OurTable";
-
-export const formatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
+import { formatter } from "./ReportFormatterUtil";
 
 // should take in a players list from a commons
 export default function ReportLineTable({ reportLines }) {

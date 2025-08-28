@@ -132,7 +132,7 @@ const AdminViewPlayPage = () => {
           onClick={toggleChatWindow}
           data-testid="adminviewplaypage-chat-toggle"
         >
-          {!!isChatOpen ? "▼" : "▲"}
+          {isChatOpen ? "▼" : "▲"}
         </Button>
       </div>
     </div>

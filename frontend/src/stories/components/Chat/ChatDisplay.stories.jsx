@@ -22,11 +22,10 @@ Empty.args = {
 
 Empty.parameters = {
   msw: [
-    /* eslint-disable-next-line no-unused-vars */
     http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
       return HttpResponse.json({ content: [] }, { status: 200 });
     }),
-    /* eslint-disable-next-line no-unused-vars */
+
     http.get("/api/usercommons/all?commonsId=1", () => {
       return HttpResponse.json([], { status: 200 });
     }),
@@ -41,7 +40,6 @@ OneMessage.args = {
 
 OneMessage.parameters = {
   msw: [
-    /* eslint-disable-next-line no-unused-vars */
     http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
       return HttpResponse.json(
         {
@@ -51,7 +49,7 @@ OneMessage.parameters = {
         { status: 200 },
       );
     }),
-    /* eslint-disable-next-line no-unused-vars */
+
     http.get("/api/usercommons/all?commonsId=1", () => {
       return HttpResponse.json(userCommonsFixtures.oneUserCommons, {
         status: 200,
@@ -68,7 +66,6 @@ ThreeMessages.args = {
 
 ThreeMessages.parameters = {
   msw: [
-    /* eslint-disable-next-line no-unused-vars */
     http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
       return HttpResponse.json(
         {
@@ -78,7 +75,7 @@ ThreeMessages.parameters = {
         { status: 200 },
       );
     }),
-    /* eslint-disable-next-line no-unused-vars */
+
     http.get("/api/usercommons/all?commonsId=1", () => {
       return HttpResponse.json(userCommonsFixtures.threeUserCommons, {
         status: 200,
@@ -95,7 +92,6 @@ TwelveMessages.args = {
 
 TwelveMessages.parameters = {
   msw: [
-    /* eslint-disable-next-line no-unused-vars */
     http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
       return HttpResponse.json(
         {
@@ -105,7 +101,7 @@ TwelveMessages.parameters = {
         { status: 200 },
       );
     }),
-    /* eslint-disable-next-line no-unused-vars */
+
     http.get("/api/usercommons/all?commonsId=1", () => {
       return HttpResponse.json(userCommonsFixtures.tenUserCommons, {
         status: 200,

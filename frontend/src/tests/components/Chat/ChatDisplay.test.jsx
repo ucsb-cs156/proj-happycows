@@ -101,8 +101,6 @@ describe("ChatDisplay tests", () => {
 
     const container = screen.getByTestId("ChatDisplay");
 
-    /* eslint-disable testing-library/no-node-access */
-
     await waitFor(() => {
       expect(container.children[2].getAttribute("data-testid")).toBe(
         "ChatMessageDisplay-1",
@@ -114,8 +112,6 @@ describe("ChatDisplay tests", () => {
     expect(container.children[0].getAttribute("data-testid")).toBe(
       "ChatMessageDisplay-3",
     );
-
-    /* eslint-enable testing-library/no-node-access */
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
       "George Washington",

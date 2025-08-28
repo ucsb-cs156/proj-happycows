@@ -1,5 +1,6 @@
 import OurTable from "main/components/OurTable";
-import { formatter } from "./ReportLineTable";
+
+import { formatter } from "./ReportFormatterUtil";
 
 // should take in a players list from a commons
 export default function ReportHeaderTable({ report }) {
