@@ -282,6 +282,8 @@
                         <param>edu.ucsb.cs156.happiercows.services.CurrentUserServiceImpl</param>
                         <param>edu.ucsb.cs156.happiercows.HappierCowsApplication</param>
                         <param>edu.ucsb.cs156.happiercows.config.SecurityConfig</param>
+                        <param>edu.ucsb.cs156.happiercows.config.RunnerConfiguration</param>
+                        <param>edu.ucsb.cs156.happiercows.config.JpaConfiguration</param>
                         <param>edu.ucsb.cs156.happiercows.config.SecurityConfig.MyCsrfRequestMatcher</param>
                         <param>edu.ucsb.cs156.happiercows.config.SpaCsrfTokenRequestHandler</param>
                         <param>edu.ucsb.cs156.happiercows.config.SpringFoxConfig</param>

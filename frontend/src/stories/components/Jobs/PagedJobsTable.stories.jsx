@@ -29,7 +29,6 @@ SixJobs.args = {
 
 SixJobs.parameters = {
   msw: [
-    /* eslint-disable-next-line no-unused-vars */
     http.get("/api/jobs/all/pageable", () => {
       return HttpResponse.json(
         {

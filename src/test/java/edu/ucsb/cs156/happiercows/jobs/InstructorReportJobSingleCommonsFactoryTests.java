@@ -14,7 +14,7 @@ import edu.ucsb.cs156.happiercows.services.ReportService;
 import edu.ucsb.cs156.happiercows.services.wiremock.WiremockService;
 
 @RestClientTest(InstructorReportJobSingleCommonsFactory.class)
-@AutoConfigureDataJpa
+
 public class InstructorReportJobSingleCommonsFactoryTests extends JobTestCase {
 
     @MockBean

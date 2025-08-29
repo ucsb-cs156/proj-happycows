@@ -40,8 +40,6 @@ describe("utils/currentUser tests", () => {
         .onGet("/api/systemInfo")
         .reply(200, systemInfoFixtures.showingNeither);
 
-      const restoreConsole = mockConsole();
-
       const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });

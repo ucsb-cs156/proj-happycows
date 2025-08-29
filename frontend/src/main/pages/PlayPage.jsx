@@ -218,7 +218,7 @@ export default function PlayPage() {
             onClick={toggleChatWindow}
             data-testid="playpage-chat-toggle"
           >
-            {!!isChatOpen ? (
+            {isChatOpen ? (
               <span style={emojiStyle} data-testid="close-icon">
                 ❌
               </span>

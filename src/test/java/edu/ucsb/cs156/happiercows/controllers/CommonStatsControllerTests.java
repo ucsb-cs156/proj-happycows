@@ -19,6 +19,7 @@ import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
+import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
@@ -43,8 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CommonStatsController.class)
-@Import(CommonStatsController.class)
-@AutoConfigureDataJpa
 public class CommonStatsControllerTests extends ControllerTestCase {
 
     @Autowired
