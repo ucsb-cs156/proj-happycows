@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";

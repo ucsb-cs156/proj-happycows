@@ -2,14 +2,14 @@ import { fireEvent, render, waitFor, screen } from "@testing-library/react";
 import { announcementFixtures } from "fixtures/announcementFixtures";
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
 }));
 

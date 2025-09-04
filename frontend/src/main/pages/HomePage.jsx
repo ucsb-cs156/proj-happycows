@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsList from "main/components/Commons/CommonsList";

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter as Router } from "react-router-dom";
+import { MemoryRouter as Router } from "react-router";
 import InstructorReportSpecificCommonsForm from "main/components/Jobs/InstructorReportSpecificCommonsForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -12,8 +12,8 @@ import * as useBackendModule from "main/utils/useBackend";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
 }));
 

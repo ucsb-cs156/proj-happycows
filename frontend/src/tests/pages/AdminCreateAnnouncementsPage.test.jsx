@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
@@ -11,8 +11,8 @@ import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useParams: () => ({
     commonsId: 1,
   }),

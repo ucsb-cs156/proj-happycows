@@ -1,12 +1,12 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import ReportTable from "main/components/Reports/ReportTable";
 import ReportHeaderTable from "main/components/Reports/ReportHeaderTable";
 import ReportLineTable from "main/components/Reports/ReportLineTable";
 import { useBackend } from "main/utils/useBackend";
 import { Button, Row, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export default function AdminViewReportPage() {
   const { reportId } = useParams();

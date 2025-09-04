@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import ReportHeaderTable from "main/components/Reports/ReportHeaderTable";
 import reportFixtures from "fixtures/reportFixtures";
 

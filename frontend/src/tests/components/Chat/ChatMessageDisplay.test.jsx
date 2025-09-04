@@ -1,6 +1,6 @@
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 

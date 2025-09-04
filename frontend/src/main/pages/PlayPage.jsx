@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsOverview from "main/components/Commons/CommonsOverview";

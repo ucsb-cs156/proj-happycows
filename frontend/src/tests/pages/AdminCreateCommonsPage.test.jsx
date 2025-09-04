@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
@@ -10,8 +10,8 @@ import healthUpdateStrategyListFixtures from "../../fixtures/healthUpdateStrateg
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const originalModule = await vi.importActual("react-router-dom");
+vi.mock("react-router", async () => {
+  const originalModule = await vi.importActual("react-router");
   return {
     __esModule: true,
     ...originalModule,

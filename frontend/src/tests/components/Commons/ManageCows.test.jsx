@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import * as currentUserModule from "main/utils/currentUser";
 import { vi } from "vitest";
 
@@ -15,8 +15,8 @@ vi.mock("main/utils/currentUser", async () => ({
   hasRole: vi.fn(),
 }));
 // mock useparams
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useParams: vi.fn(),
 }));
 describe("ManageCows tests", () => {

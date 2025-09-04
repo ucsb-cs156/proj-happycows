@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import AppNavbar from "main/components/Nav/AppNavbar";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";

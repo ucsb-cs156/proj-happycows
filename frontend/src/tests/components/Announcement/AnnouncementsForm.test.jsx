@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { announcementFixtures } from "fixtures/announcementFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -7,8 +7,8 @@ import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
 }));
 

@@ -1,5 +1,5 @@
 import OurTable, { ButtonColumn } from "main/components/OurTable";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 // should take in a players list from a commons
 export default function ReportTable({

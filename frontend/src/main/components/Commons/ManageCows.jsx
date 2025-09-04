@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Button, Row, Col } from "react-bootstrap";
 import { useCurrentUser, hasRole } from "main/utils/currentUser";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 // add parameters
 const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
