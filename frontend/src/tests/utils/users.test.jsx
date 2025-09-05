@@ -8,7 +8,7 @@ import usersFixtures from "fixtures/usersFixtures";
 import { act } from "react";
 import { vi } from "vitest";
 
-vi.mock("react-router-dom");
+vi.mock("react-router");
 
 describe("utils/users tests", () => {
   describe("useUsers tests", () => {

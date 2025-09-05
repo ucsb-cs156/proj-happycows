@@ -1,13 +1,13 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { MemoryRouter as Router } from "react-router-dom";
+import { MemoryRouter as Router } from "react-router";
 import TestJobsForm from "main/components/Jobs/TestJobForm";
 import jobsFixtures from "fixtures/jobsFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
 }));
 

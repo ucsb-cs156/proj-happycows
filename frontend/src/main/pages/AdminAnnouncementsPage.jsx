@@ -2,7 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
 
 export default function AdminAnnouncementsPage() {

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { Card, Container, CardGroup, Button } from "react-bootstrap";
 import CommonsOverview from "main/components/Commons/CommonsOverview";
 import CommonsPlay from "main/components/Commons/CommonsPlay";

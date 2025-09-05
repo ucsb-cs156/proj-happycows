@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
 import LeaderboardTable from "main/components/Leaderboard/LeaderboardTable";
@@ -10,7 +10,7 @@ import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.png";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { Button } from "react-bootstrap";
 
 import "./LeaderboardPage.css";

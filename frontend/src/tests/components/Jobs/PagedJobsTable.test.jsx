@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import PagedJobsTable from "main/components/Jobs/PagedJobsTable";
 import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
 import axios from "axios";

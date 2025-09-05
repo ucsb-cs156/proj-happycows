@@ -7,7 +7,7 @@ import { useSystemInfo } from "main/utils/systemInfo";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-vi.mock("react-router-dom");
+vi.mock("react-router");
 
 describe("utils/systemInfo tests", () => {
   describe("useSystemInfo tests", () => {

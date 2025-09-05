@@ -4,7 +4,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import mockConsole from "tests/testutils/mockConsole";
 import { act } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
@@ -14,8 +14,8 @@ import {
   currentUserFixtures,
 } from "fixtures/currentUserFixtures";
 
-vi.mock("react-router-dom");
-const { MemoryRouter } = await vi.importActual("react-router-dom");
+vi.mock("react-router");
+const { MemoryRouter } = await vi.importActual("react-router");
 
 describe("utils/currentUser tests", () => {
   describe("useCurrentUser tests", () => {

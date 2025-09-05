@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
@@ -15,8 +15,8 @@ import {
 
 const mockedNavigate = vi.fn();
 
-vi.mock("react-router-dom", async () => ({
-  ...(await vi.importActual("react-router-dom")),
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
 }));
 

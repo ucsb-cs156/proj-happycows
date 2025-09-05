@@ -1,7 +1,7 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsForm from "main/components/Commons/CommonsForm";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";

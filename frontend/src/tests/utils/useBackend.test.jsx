@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { vi } from "vitest";
 
-vi.mock("react-router-dom");
+vi.mock("react-router");
 
 const mockToast = vi.spyOn(toast, "error").mockImplementation();
 

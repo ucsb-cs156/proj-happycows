@@ -1,6 +1,6 @@
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import LeaderboardPage from "main/pages/LeaderboardPage";
@@ -19,8 +19,8 @@ vi.mock("react-toastify", async () => {
 });
 
 const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const originalModule = await vi.importActual("react-router-dom");
+vi.mock("react-router", async () => {
+  const originalModule = await vi.importActual("react-router");
   return {
     __esModule: true,
     ...originalModule,
