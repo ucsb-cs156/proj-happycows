@@ -15,6 +15,7 @@ import static org.awaitility.Awaitility.await;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -61,7 +62,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @WebMvcTest(controllers = JobsController.class)
 @Import(JobService.class)
-@AutoConfigureDataJpa
 public class JobsControllerTests extends ControllerTestCase {
 
         @MockBean

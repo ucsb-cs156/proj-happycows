@@ -18,8 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("development")
 @WebMvcTest(controllers = CSRFController.class)
-@Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class CSRFControllerTests extends ControllerTestCase {
 
   @MockBean

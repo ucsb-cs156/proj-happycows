@@ -7,7 +7,6 @@ on:
     paths:
       - 'src/**'
       - 'pom.xml'
-      - '.github/workflows/56-javadoc-main-branch.yml'
 
 env:
   GH_TOKEN: ${{ github.token }}
@@ -23,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout local code to establish repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
     - name: Set up Java (version from .java-version file)
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
          distribution: semeru # See: https://github.com/actions/setup-java#supported-distributions
          java-version-file: ./.java-version
@@ -33,12 +32,15 @@ jobs:
     - name: Build javadoc
       run: mvn -DskipTests javadoc:javadoc
 
-    - name: Deploy 🚀
-      uses: JamesIves/github-pages-deploy-action@v4
+    - name: Deploy 🚀    
+      if: always() # always upload artifacts, even if tests fail
+      uses: Wandalen/wretry.action@master
       with:
-        branch: gh-pages # The branch the action should deploy to.
-        folder: target/site/apidocs # The folder where the javadoc files are located
-        clean: true # Automatically remove deleted files from the deploy branch
-        target-folder: javadoc # The folder that we serve our javadoc files from
-
-  
+        action: JamesIves/github-pages-deploy-action@v4
+        attempt_limit: 3
+        attempt_delay: 5000
+        with: |        
+          branch: gh-pages # The branch the action should deploy to.
+          folder: target/reports/apidocs # The folder where mvn javadoc:javadoc outputs the javadoc files
+          clean: true # Automatically remove deleted files from the deploy branch
+          target-folder: prs/${{ needs.get-pr-num.outputs.pr_number }}/javadoc # The folder that we serve our javadoc files from 

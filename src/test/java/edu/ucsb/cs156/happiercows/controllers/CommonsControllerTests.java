@@ -14,6 +14,7 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import lombok.With;
 
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
@@ -41,7 +43,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CommonsController.class)
-@AutoConfigureDataJpa
 public class CommonsControllerTests extends ControllerTestCase {
 
     @MockBean

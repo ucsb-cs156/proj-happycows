@@ -19,9 +19,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureDataJpa
+
 @WebMvcTest(controllers = CourseController.class)
-@Import(TestConfig.class)
 public class CourseControllerTests extends ControllerTestCase {
     @MockBean
     CourseRepository courseRepository;

@@ -30,7 +30,6 @@ import java.time.Instant;
 
 @WebMvcTest(controllers = UserInfoController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class UserInfoControllerTests extends ControllerTestCase {
   @Captor
   ArgumentCaptor<User> userCaptor;
