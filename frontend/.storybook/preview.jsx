@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { ToastContainer } from "react-toastify";
 
 const queryClient = new QueryClient();
