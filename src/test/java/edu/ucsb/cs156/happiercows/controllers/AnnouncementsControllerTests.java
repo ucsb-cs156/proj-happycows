@@ -8,6 +8,8 @@ import static org.mockito.Mockito.when;
 
 import static org.mockito.ArgumentMatchers.any;
 
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -49,8 +51,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @WebMvcTest(controllers = AnnouncementsController.class)
-@Import(AnnouncementsController.class)
-@AutoConfigureDataJpa
 public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @MockBean
@@ -58,6 +58,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @MockBean
     UserCommonsRepository userCommonsRepository;
+
+    @MockBean
+    UserRepository userRepository;
 
     @Autowired
     ObjectMapper mapper;

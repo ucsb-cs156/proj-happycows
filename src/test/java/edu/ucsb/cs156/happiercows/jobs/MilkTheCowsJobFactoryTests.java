@@ -16,7 +16,7 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 
 @RestClientTest(MilkTheCowsJobFactory.class)
-@AutoConfigureDataJpa
+
 public class MilkTheCowsJobFactoryTests extends JobTestCase {
 
     @MockBean

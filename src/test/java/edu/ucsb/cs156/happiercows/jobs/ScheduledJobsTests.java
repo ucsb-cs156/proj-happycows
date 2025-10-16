@@ -18,7 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 @RestClientTest(ScheduledJobs.class)
-@AutoConfigureDataJpa
+
 public class ScheduledJobsTests extends JobTestCase {
 
     private class MockJobContextConsumer implements JobContextConsumer {

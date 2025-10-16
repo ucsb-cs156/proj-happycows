@@ -31,7 +31,6 @@ import java.util.Optional;
 
 @WebMvcTest(controllers = UsersController.class)
 @Import(TestConfig.class)
-@AutoConfigureDataJpa
 public class UsersControllerTests extends ControllerTestCase {
 
   @MockBean
