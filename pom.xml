@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.4.3</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.ucsb.cs156</groupId>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-gateway-mvc</artifactId>
-            <version>4.1.8</version>
+            <version>4.2.0</version>
         </dependency>
         <dependency>
             <groupId>me.paulschwarz</groupId>
@@ -129,6 +129,12 @@
             <artifactId>commons-csv</artifactId>
             <version>1.10.0</version>
         </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+      </dependency>
+
 
     </dependencies>
 
