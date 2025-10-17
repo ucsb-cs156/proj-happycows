@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.cloud.gateway.mvc.ProxyExchange;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,14 @@ import java.net.ConnectException;
 @RestController
 public class FrontendProxyController {
   @GetMapping({"/", "/{path:^(?!api|oauth2|swagger-ui).*}/**"})
-  public ResponseEntity<?> proxy(ProxyExchange<byte []> proxy) {
+  public ResponseEntity<?> proxy(ProxyExchange<byte []> proxy, HttpServletRequest request) {
     String path = proxy.path("/");
+    String query = "";
+    if (request.getQueryString() != null) {
+      query = "?" + request.getQueryString();
+    }
     try {
-      return proxy.uri("http://localhost:3000/" + path).get();
+      return proxy.uri("http://localhost:3000/" + path + query).get();
     } catch (ResourceAccessException e) {
       if (e.getCause() instanceof ConnectException) {
         String instructions = """
