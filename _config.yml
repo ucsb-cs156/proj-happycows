@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-spike-feature-flags","number":123,"title":"pc - spike for implementing feature flags; testing coming soon","url":"https://github.com/ucsb-cs156/proj-happycows/pull/123"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjI2MzQ3ODk3","is_bot":false,"login":"Division7","name":"Daniel Jensen"},"headRefName":"dj-actualMacFix","number":182,"title":"Mac Localhost development fix","url":"https://github.com/ucsb-cs156/proj-happycows/pull/182"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-spike-feature-flags","number":123,"title":"pc - spike for implementing feature flags; testing coming soon","url":"https://github.com/ucsb-cs156/proj-happycows/pull/123"}]
