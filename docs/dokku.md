@@ -29,10 +29,10 @@ Note that you may need to modify:
 dokku apps:create happycows
 dokku git:set happycows keep-git-dir true
 dokku config:set --no-restart happycows PRODUCTION=true
-dokku config:set --no-restart happycows SOURCE_REPO=https://github.com/ucsb-cs156/proj-happycows
+dokku config:set --no-restart happycows SOURCE_REPO=https://github.com/ucsb-cs156-f25/proj-happycows-f25-xx
 dokku postgres:create happycows-db
 dokku postgres:link happycows-db happycows
-dokku git:sync happycows https://github.com/ucsb-cs156/proj-happycows main
+dokku git:sync happycows https://github.com/ucsb-cs156-f25/proj-happycows-f25-xx main
 dokku ps:rebuild happycows
 dokku letsencrypt:set happycows email yourEmail@ucsb.edu
 dokku letsencrypt:enable happycows
@@ -46,10 +46,10 @@ dokku config:set happycows --no-restart GOOGLE_CLIENT_SECRET=get-value-from-goog
 dokku apps:create happycows-qa
 dokku git:set happycows-qa keep-git-dir true
 dokku config:set --no-restart happycows-qa PRODUCTION=true
-dokku config:set --no-restart happycows-qa SOURCE_REPO=https://github.com/ucsb-cs156/proj-happycows
+dokku config:set --no-restart happycows-qa SOURCE_REPO=https://github.com/ucsb-cs156-f25/proj-happycows-f25-xx
 dokku postgres:create happycows-qa-db
 dokku postgres:link happycows-qa-db happycows-qa
-dokku git:sync happycows-qa https://github.com/ucsb-cs156/proj-happycows main
+dokku git:sync happycows-qa https://github.com/ucsb-cs156-f25/proj-happycows-f25-xx main
 dokku ps:rebuild happycows-qa
 dokku letsencrypt:set happycows-qa email yourEmail@ucsb.edu
 dokku letsencrypt:enable happycows-qa
