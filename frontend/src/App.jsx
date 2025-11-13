@@ -68,7 +68,6 @@ function App() {
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
       />
-      
     </>
   ) : null;
 
