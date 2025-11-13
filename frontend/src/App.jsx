@@ -30,11 +30,15 @@ import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 
+import DeveloperPage from "main/pages/DeveloperPage";
+
+
 function App() {
   const { data: currentUser } = useCurrentUser();
 
   const adminRoutes = hasRole(currentUser, "ROLE_ADMIN") ? (
     <>
+      <Route path="/admin/developer" element={<DeveloperPage />} />
       <Route path="/admin/users" element={<AdminUsersPage />} />
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
