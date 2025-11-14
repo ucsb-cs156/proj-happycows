@@ -27,7 +27,7 @@ Default.parameters = {
         },
         {
           status: 200,
-        }
+        },
       );
     }),
   ],

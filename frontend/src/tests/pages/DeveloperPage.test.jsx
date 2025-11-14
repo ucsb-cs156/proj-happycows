@@ -29,14 +29,18 @@ describe("DeveloperPage tests", () => {
         <MemoryRouter>
           <DeveloperPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Developer Info")).toBeInTheDocument();
     expect(await screen.findByText("System Information")).toBeInTheDocument();
     expect(await screen.findByText("Source Code:")).toBeInTheDocument();
-    expect(await screen.findByTestId("developer-page-source-link")).toBeInTheDocument();
-    expect(await screen.findByTestId("developer-page-system-info")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-page-source-link"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-page-system-info"),
+    ).toBeInTheDocument();
   });
 
   test("source link has correct attributes with valid systemInfo", async () => {
@@ -45,14 +49,19 @@ describe("DeveloperPage tests", () => {
         <MemoryRouter>
           <DeveloperPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     const sourceLink = await screen.findByTestId("developer-page-source-link");
-    expect(sourceLink).toHaveAttribute("href", systemInfoFixtures.showingAll.sourceRepo);
+    expect(sourceLink).toHaveAttribute(
+      "href",
+      systemInfoFixtures.showingAll.sourceRepo,
+    );
     expect(sourceLink).toHaveAttribute("target", "_blank");
     expect(sourceLink).toHaveAttribute("rel", "noopener noreferrer");
-    expect(sourceLink).toHaveTextContent(systemInfoFixtures.showingAll.sourceRepo);
+    expect(sourceLink).toHaveTextContent(
+      systemInfoFixtures.showingAll.sourceRepo,
+    );
   });
 
   test("renders correctly when systemInfo is null", async () => {
@@ -60,16 +69,14 @@ describe("DeveloperPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, null);
+    axiosMock.onGet("/api/systemInfo").reply(200, null);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <DeveloperPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Developer Info")).toBeInTheDocument();
@@ -78,7 +85,9 @@ describe("DeveloperPage tests", () => {
     expect(sourceLink).toBeInTheDocument();
     expect(sourceLink).toHaveTextContent("");
     expect(sourceLink.getAttribute("href")).toBeNull();
-    expect(await screen.findByTestId("developer-page-system-info")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-page-system-info"),
+    ).toBeInTheDocument();
   });
 
   test("renders correctly when systemInfo has undefined sourceRepo", async () => {
@@ -89,16 +98,14 @@ describe("DeveloperPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, systemInfoWithoutRepo);
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoWithoutRepo);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <DeveloperPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Developer Info")).toBeInTheDocument();
@@ -107,29 +114,29 @@ describe("DeveloperPage tests", () => {
     expect(sourceLink).toBeInTheDocument();
     expect(sourceLink).toHaveTextContent("");
     expect(sourceLink.getAttribute("href")).toBeNull();
-    expect(await screen.findByTestId("developer-page-system-info")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-page-system-info"),
+    ).toBeInTheDocument();
   });
 
   test("renders correctly when systemInfo has empty sourceRepo", async () => {
-    const systemInfoWithEmptyRepo = { 
-      ...systemInfoFixtures.showingAll, 
-      sourceRepo: "" 
+    const systemInfoWithEmptyRepo = {
+      ...systemInfoFixtures.showingAll,
+      sourceRepo: "",
     };
 
     axiosMock.reset();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock
-      .onGet("/api/systemInfo")
-      .reply(200, systemInfoWithEmptyRepo);
+    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoWithEmptyRepo);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <DeveloperPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(await screen.findByText("Developer Info")).toBeInTheDocument();
@@ -138,6 +145,8 @@ describe("DeveloperPage tests", () => {
     expect(sourceLink).toBeInTheDocument();
     expect(sourceLink).toHaveTextContent("");
     expect(sourceLink).toHaveAttribute("href", "");
-    expect(await screen.findByTestId("developer-page-system-info")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("developer-page-system-info"),
+    ).toBeInTheDocument();
   });
 });
