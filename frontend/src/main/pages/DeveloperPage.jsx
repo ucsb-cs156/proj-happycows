@@ -9,19 +9,17 @@ const DeveloperPage = () => {
   return (
     <BasicLayout>
       <h2>Developer Info</h2>
-      {systemInfo?.sourceRepo && (
-        <p>
-          <strong>Source Code: </strong>
-          <a
-            href={systemInfo.sourceRepo}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-testid="developer-page-source-link"
-          >
-            {systemInfo.sourceRepo}
-          </a>
-        </p>
-      )}
+      <p>
+        <strong>Source Code: </strong>
+        <a
+          href={systemInfo?.sourceRepo}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-testid="developer-page-source-link"
+        >
+          {systemInfo?.sourceRepo}
+        </a>
+      </p>
       <h3>System Information</h3>
       <div data-testid="developer-page-system-info">
         <Inspector data={systemInfo} />

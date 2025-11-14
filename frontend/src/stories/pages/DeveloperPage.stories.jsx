@@ -20,26 +20,10 @@ Default.parameters = {
       });
     }),
     http.get("/api/systemInfo", () => {
-      return HttpResponse.json(systemInfoFixtures.showingAll, {
-        status: 200,
-      });
-    }),
-  ],
-};
-
-export const WithoutSourceRepo = Template.bind({});
-WithoutSourceRepo.parameters = {
-  msw: [
-    http.get("/api/currentUser", () => {
-      return HttpResponse.json(apiCurrentUserFixtures.adminUser, {
-        status: 200,
-      });
-    }),
-    http.get("/api/systemInfo", () => {
       return HttpResponse.json(
         {
           ...systemInfoFixtures.showingAll,
-          sourceRepo: null,
+          sourceRepo: "https://github.com/ucsb-cs156/proj-happycows",
         },
         {
           status: 200,
