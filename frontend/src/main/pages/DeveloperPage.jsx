@@ -4,32 +4,28 @@ import { Inspector } from "react-inspector";
 import { useSystemInfo } from "main/utils/systemInfo";
 
 const DeveloperPage = () => {
-    const { data: systemInfo } = useSystemInfo();
+  const { data: systemInfo } = useSystemInfo();
 
-    return (
+  return (
     <BasicLayout>
-        <h2>Developer Info</h2>
-        <p>This page is only visible to admin users.</p>
+      <h2>Developer Info</h2>
+      <p>This page is only visible to admin users.</p>
 
-        {systemInfo && (
+      {systemInfo && (
         <>
-            <h3>GitHub Repository</h3>
-            <p>
-            <a
-                href={systemInfo.sourceRepo}
-                target="_blank"
-                rel="noreferrer"
-            >
-                {systemInfo.sourceRepo}
+          <h3>GitHub Repository</h3>
+          <p>
+            <a href={systemInfo.sourceRepo} target="_blank" rel="noreferrer">
+              {systemInfo.sourceRepo}
             </a>
-            </p>
+          </p>
 
-            <h3>System Info (JSON)</h3>
-            <Inspector data={systemInfo} />
+          <h3>System Info (JSON)</h3>
+          <Inspector data={systemInfo} />
         </>
-        )}
+      )}
     </BasicLayout>
-    );
+  );
 };
 
 export default DeveloperPage;

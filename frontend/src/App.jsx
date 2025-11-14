@@ -32,7 +32,6 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 
 import DeveloperPage from "main/pages/DeveloperPage";
 
-
 function App() {
   const { data: currentUser } = useCurrentUser();
 
