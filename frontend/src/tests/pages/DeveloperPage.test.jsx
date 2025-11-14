@@ -47,4 +47,20 @@ describe("DeveloperPage tests", () => {
       screen.getByText("https://github.com/ucsb-cs156/proj-happycows")
     ).toBeInTheDocument();
   });
+
+  test("does not crash when systemInfo is undefined", () => {
+    useSystemInfo.mockReturnValue({
+      data: undefined
+    });
+  
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <DeveloperPage />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+  
+    expect(screen.getByText("Developer Info")).toBeInTheDocument();
+  });
 });

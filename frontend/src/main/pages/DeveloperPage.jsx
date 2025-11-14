@@ -16,11 +16,11 @@ const DeveloperPage = () => {
             <h3>GitHub Repository</h3>
             <p>
             <a
-                href={systemInfo?.sourceRepo}
+                href={systemInfo.sourceRepo}
                 target="_blank"
                 rel="noreferrer"
             >
-                {systemInfo?.sourceRepo}
+                {systemInfo.sourceRepo}
             </a>
             </p>
 
