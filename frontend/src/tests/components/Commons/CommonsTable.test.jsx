@@ -58,7 +58,7 @@ describe("UserTable tests", () => {
     );
   });
 
-  test("Has the expected column headers and content for adminUser", () => {
+  test("Displays expected commons information and actions for adminUser", () => {
     const currentUser = currentUserFixtures.adminUser;
 
     render(
@@ -71,110 +71,109 @@ describe("UserTable tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    const expectedHeaders = [
-      "id",
-      "Name",
-      /Cow\s+Price/,
-      /Milk\s+Price/,
-      /Start\s+Bal/,
-      /Starting\s+Date/,
-      /Last\s+Date/,
-      /Degrad\s+Rate/,
-      /Show\s+LrdrBrd\?/,
-      /Tot\s+Cows/,
-      /Cap \/\s+User/,
-      /Carry\s+Cap/,
-      /Eff\s+Cap/,
-    ];
-    const expectedFields = [
-      "id",
-      "name",
-      "cowPrice",
-      "milkPrice",
-      "startingBalance",
-      "startingDate",
-      "lastDate",
-      "degradationRate",
-      "capacityPerUser",
-      "carryingCapacity",
-    ];
-
-    const testId = "CommonsTable";
-
-    expectedHeaders.forEach((headerText) => {
-      const header = screen.getByText(headerText);
-      expect(header).toBeInTheDocument();
-    });
-
-    expectedFields.forEach((field) => {
-      const header = screen.getByTestId(
-        `${testId}-cell-row-0-col-commons.${field}`,
-      );
-      expect(header).toBeInTheDocument();
-    });
+    const cards = commonsPlusFixtures.threeCommonsPlus.map((_, index) =>
+      screen.getByTestId(`CommonsTable-card-${index}`),
+    );
+    expect(cards.length).toEqual(commonsPlusFixtures.threeCommonsPlus.length);
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-commons.id`),
+      screen.getByTestId("CommonsTable-card-0-field-commons.id"),
     ).toHaveTextContent("1");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.id`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.id"),
     ).toHaveTextContent("2");
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.name`),
+      screen.getByTestId("CommonsTable-card-1-name"),
     ).toHaveTextContent("Com2");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.cowPrice`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.cowPrice"),
     ).toHaveTextContent("1");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.milkPrice`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.milkPrice"),
     ).toHaveTextContent("2");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.degradationRate`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.degradationRate"),
     ).toHaveTextContent("0.01");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.capacityPerUser`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.capacityPerUser"),
     ).toHaveTextContent("5");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.carryingCapacity`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.carryingCapacity"),
     ).toHaveTextContent("42");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.startingBalance`),
+      screen.getByTestId(
+        "CommonsTable-card-1-field-commons.startingBalance",
+      ),
     ).toHaveTextContent("10");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.startingDate`),
-    ).toHaveTextContent(/^2022-11-22$/); // regex so that we have an exact match https://stackoverflow.com/a/73298371
+      screen.getByTestId("CommonsTable-card-1-field-commons.startingDate"),
+    ).toHaveTextContent("2022-11-22");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.lastDate`),
-    ).toHaveTextContent(/^2022-11-22$/);
+      screen.getByTestId("CommonsTable-card-1-field-commons.lastDate"),
+    ).toHaveTextContent("2022-11-22");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.showLeaderboard`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.showLeaderboard"),
     ).toHaveTextContent("true");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commons.showChat`),
+      screen.getByTestId("CommonsTable-card-1-field-commons.showChat"),
     ).toHaveTextContent("true");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-totalCows`),
+      screen.getByTestId("CommonsTable-card-1-field-totalCows"),
     ).toHaveTextContent("0");
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-effectiveCapacity`),
+      screen.getByTestId("CommonsTable-card-1-totalCows"),
+    ).toHaveTextContent("Tot Cows: 0");
+    expect(
+      screen.getByTestId("CommonsTable-card-1-effectiveCapacity"),
+    ).toHaveTextContent("Eff Cap: 42");
+    expect(
+      screen.getByTestId("CommonsTable-card-1-field-effectiveCapacity"),
     ).toHaveTextContent("42");
 
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`),
+      screen.getByTestId("CommonsTable-card-0-action-Edit"),
     ).toHaveClass("btn-primary");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`),
+      screen.getByTestId("CommonsTable-card-0-action-Delete"),
     ).toHaveClass("btn-danger");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Leaderboard-button`),
+      screen.getByTestId("CommonsTable-card-0-action-Leaderboard"),
     ).toHaveClass("btn-secondary");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Stats CSV-button`),
+      screen.getByTestId("CommonsTable-card-0-action-StatsCSV"),
     ).toHaveClass("btn-success");
     expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`),
+      screen.getByTestId("CommonsTable-card-0-action-Announcements"),
     ).toHaveClass("btn-info");
+  });
+
+  test("allows sorting by Name descending", () => {
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CommonsTable
+            commons={commonsPlusFixtures.threeCommonsPlus}
+            currentUser={currentUser}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const sortSelect = screen.getByTestId("CommonsTable-sort-select");
+    fireEvent.change(sortSelect, { target: { value: "commons.name" } });
+
+    const directionToggle = screen.getByTestId(
+      "CommonsTable-sort-direction-toggle",
+    );
+    fireEvent.click(directionToggle);
+
+    expect(directionToggle).toHaveTextContent("Descending");
+    expect(
+      screen.getByTestId("CommonsTable-card-0-field-commons.id"),
+    ).toHaveTextContent("3");
   });
 });
 
@@ -217,7 +216,7 @@ describe("Modal tests", () => {
     });
 
     const deleteButton = screen.getByTestId(
-      "CommonsTable-cell-row-0-col-Delete-button",
+      "CommonsTable-card-0-action-Delete",
     );
     fireEvent.click(deleteButton);
 
@@ -248,7 +247,7 @@ describe("Modal tests", () => {
     );
 
     const deleteButton = screen.getByTestId(
-      "CommonsTable-cell-row-0-col-Delete-button",
+      "CommonsTable-card-0-action-Delete",
     );
     fireEvent.click(deleteButton);
 
@@ -286,7 +285,7 @@ describe("Modal tests", () => {
     );
 
     const deleteButton = screen.getByTestId(
-      "CommonsTable-cell-row-0-col-Delete-button",
+      "CommonsTable-card-0-action-Delete",
     );
     fireEvent.click(deleteButton);
 
@@ -317,7 +316,7 @@ describe("Modal tests", () => {
 
     // Click the delete button to open the modal
     const deleteButton = screen.getByTestId(
-      "CommonsTable-cell-row-0-col-Delete-button",
+      "CommonsTable-card-0-action-Delete",
     );
     fireEvent.click(deleteButton);
 

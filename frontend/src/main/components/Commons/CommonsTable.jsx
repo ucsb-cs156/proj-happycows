@@ -1,10 +1,15 @@
-import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import OurTable, {
-  ButtonColumn,
-  HrefButtonColumn,
-} from "main/components/OurTable";
+import React, { useMemo, useState } from "react";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Col,
+  Form,
+  Modal,
+  Row,
+  Stack,
+} from "react-bootstrap";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
@@ -15,13 +20,11 @@ import { hasRole } from "main/utils/currentUser";
 
 export default function CommonsTable({ commons, currentUser }) {
   const [showModal, setShowModal] = useState(false);
-  const [cellToDelete, setCellToDelete] = useState(null);
+  const [commonsToDelete, setCommonsToDelete] = useState(null);
+  const [sortKey, setSortKey] = useState("commons.id");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   const navigate = useNavigate();
-
-  const editCallback = (cell) => {
-    navigate(`/admin/editcommons/${cell.row.values["commons.id"]}`);
-  };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
@@ -29,158 +32,359 @@ export default function CommonsTable({ commons, currentUser }) {
     ["/api/commons/allplus"],
   );
 
-  const deleteCallback = async (cell) => {
-    setCellToDelete(cell);
+  const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
+
+  const formatPlain = (value) => {
+    if (value === null || value === undefined || value === "") {
+      return "—";
+    }
+    return `${value}`;
+  };
+
+  const formatDate = (value) => {
+    if (!value) return "—";
+    return String(value).slice(0, 10);
+  };
+
+  const formatBoolean = (value) => {
+    if (value === null || value === undefined || value === "") {
+      return "—";
+    }
+    return String(value);
+  };
+
+  const handleEdit = (commonsId) => {
+    navigate(`/admin/editcommons/${commonsId}`);
+  };
+
+  const handleDelete = (commonsPlus) => {
+    setCommonsToDelete(commonsPlus);
     setShowModal(true);
   };
 
-  const confirmDelete = async (cell) => {
-    deleteMutation.mutate(cell);
+  const confirmDelete = async () => {
+    if (!commonsToDelete) return;
+    deleteMutation.mutate({
+      row: {
+        values: {
+          "commons.id": commonsToDelete.commons.id,
+        },
+      },
+    });
     setShowModal(false);
+    setCommonsToDelete(null);
   };
 
-  const leaderboardCallback = (cell) => {
-    const route = `/leaderboard/${cell.row.values["commons.id"]}`;
-    navigate(route);
+  const handleLeaderboard = (commonsId) => {
+    navigate(`/leaderboard/${commonsId}`);
   };
 
-  const columns = [
-    {
-      Header: "id",
-      accessor: "commons.id", // accessor is the "key" in the data
-    },
-    {
-      Header: "Name",
-      accessor: "commons.name",
-    },
-    {
-      Header: (
-        <span>
-          Cow
-          <br /> Price
-        </span>
-      ),
-      accessor: (row) => row.commons.cowPrice,
-      id: "commons.cowPrice",
-    },
-    {
-      Header: (
-        <span>
-          Milk <br /> Price
-        </span>
-      ),
-      accessor: (row) => row.commons.milkPrice,
-      id: "commons.milkPrice",
-    },
-    {
-      Header: (
-        <span>
-          Start <br /> Bal
-        </span>
-      ),
-      accessor: (row) => row.commons.startingBalance,
-      id: "commons.startingBalance",
-    },
-    {
-      Header: (
-        <span>
-          Starting <br /> Date
-        </span>
-      ),
-      accessor: (row) => String(row.commons.startingDate).slice(0, 10),
-      id: "commons.startingDate",
-    },
-    {
-      Header: (
-        <span>
-          Last <br /> Date
-        </span>
-      ),
-      accessor: (row) => String(row.commons.lastDate).slice(0, 10),
-      id: "commons.lastDate",
-    },
-    {
-      Header: (
-        <span>
-          Degrad <br /> Rate
-        </span>
-      ),
-      accessor: (row) => row.commons.degradationRate,
-      id: "commons.degradationRate",
-    },
-    {
-      Header: (
-        <span>
-          Show <br /> LrdrBrd?
-        </span>
-      ),
-      id: "commons.showLeaderboard", // needed for tests
-      accessor: (row, _rowIndex) => String(row.commons.showLeaderboard), // hack needed for boolean values to show up
-    },
-    {
-      Header: (
-        <span>
-          Show <br /> Chat?
-        </span>
-      ),
-      id: "commons.showChat",
-      accessor: (row, _rowIndex) => String(row.commons.showChat),
-    },
-    {
-      Header: (
-        <span>
-          Tot <br /> Cows
-        </span>
-      ),
-      accessor: "totalCows",
-    },
-    {
-      Header: (
-        <span>
-          Cap / <br /> User
-        </span>
-      ),
-      accessor: (row) => row.commons.capacityPerUser,
-      id: "commons.capacityPerUser",
-    },
-    {
-      Header: (
-        <span>
-          Carry <br /> Cap
-        </span>
-      ),
-      accessor: (row) => row.commons.carryingCapacity,
-      id: "commons.carryingCapacity",
-    },
-    {
-      Header: (
-        <span>
-          Eff <br /> Cap
-        </span>
-      ),
-      accessor: "effectiveCapacity",
-    },
-  ];
+  const computeEffectiveCapacity = (commonsPlus) => {
+    const { effectiveCapacity, commons: commonsData, totalUsers } = commonsPlus;
+    if (effectiveCapacity !== null && effectiveCapacity !== undefined) {
+      return effectiveCapacity;
+    }
+    if (
+      commonsData.capacityPerUser !== null &&
+      commonsData.capacityPerUser !== undefined &&
+      totalUsers !== null &&
+      totalUsers !== undefined
+    ) {
+      return commonsData.capacityPerUser * totalUsers;
+    }
+    return null;
+  };
 
-  const testid = "CommonsTable";
+  const getSortableValue = (commonsPlus, key) => {
+    switch (key) {
+      case "commons.id":
+        return commonsPlus.commons.id ?? null;
+      case "commons.name":
+        return commonsPlus.commons.name ?? "";
+      case "commons.cowPrice":
+        return commonsPlus.commons.cowPrice ?? null;
+      case "commons.milkPrice":
+        return commonsPlus.commons.milkPrice ?? null;
+      case "commons.startingBalance":
+        return commonsPlus.commons.startingBalance ?? null;
+      case "commons.startingDate":
+        return commonsPlus.commons.startingDate ?? "";
+      case "commons.lastDate":
+        return commonsPlus.commons.lastDate ?? "";
+      case "commons.degradationRate":
+        return commonsPlus.commons.degradationRate ?? null;
+      case "commons.showLeaderboard":
+        return commonsPlus.commons.showLeaderboard ?? null;
+      case "commons.showChat":
+        return commonsPlus.commons.showChat ?? null;
+      case "totalCows":
+        return commonsPlus.totalCows ?? null;
+      case "commons.capacityPerUser":
+        return commonsPlus.commons.capacityPerUser ?? null;
+      case "commons.carryingCapacity":
+        return commonsPlus.commons.carryingCapacity ?? null;
+      case "effectiveCapacity":
+        return computeEffectiveCapacity(commonsPlus);
+      default:
+        return null;
+    }
+  };
 
-  const columnsIfAdmin = [
-    ...columns,
-    ButtonColumn("Edit", "primary", editCallback, testid),
-    ButtonColumn("Delete", "danger", deleteCallback, testid),
-    ButtonColumn("Leaderboard", "secondary", leaderboardCallback, testid),
-    HrefButtonColumn(
-      "Stats CSV",
-      "success",
-      `/api/commonstats/download?commonsId=`,
-      testid,
-    ),
-    HrefButtonColumn("Announcements", "info", `/admin/announcements/`, testid),
-  ];
+  const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
+    ? sortKey
+    : "commons.id";
 
-  const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN")
-    ? columnsIfAdmin
-    : columns;
+  const sortedCommons = useMemo(() => {
+    const sorted = [...commons];
+    sorted.sort((a, b) => {
+      const aVal = getSortableValue(a, validSortKey);
+      const bVal = getSortableValue(b, validSortKey);
+      if (aVal === null || aVal === undefined) {
+        if (bVal === null || bVal === undefined) return 0;
+        return sortDirection === "asc" ? 1 : -1;
+      }
+      if (bVal === null || bVal === undefined) {
+        return sortDirection === "asc" ? -1 : 1;
+      }
+      if (typeof aVal === "string" || typeof bVal === "string") {
+        const cmp = String(aVal).localeCompare(String(bVal));
+        return sortDirection === "asc" ? cmp : -cmp;
+      }
+      const aNum = Number(aVal);
+      const bNum = Number(bVal);
+      if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
+        if (aNum > bNum) return sortDirection === "asc" ? 1 : -1;
+        if (aNum < bNum) return sortDirection === "asc" ? -1 : 1;
+        return 0;
+      }
+      const fallback = String(aVal).localeCompare(String(bVal));
+      return sortDirection === "asc" ? fallback : -fallback;
+    });
+    return sorted;
+  }, [commons, validSortKey, sortDirection]);
+
+  const cards = useMemo(
+    () =>
+      sortedCommons.map((commonsPlus, index) => {
+        const { commons: commonsData, totalCows } = commonsPlus;
+        const {
+          id,
+          name,
+          cowPrice,
+          milkPrice,
+          startingBalance,
+          startingDate,
+          lastDate,
+          degradationRate,
+          capacityPerUser,
+          carryingCapacity,
+          showLeaderboard,
+          showChat,
+        } = commonsData;
+
+        const computedEffectiveCapacity = computeEffectiveCapacity(commonsPlus);
+
+        return (
+          <Card
+            key={id}
+            data-testid={`CommonsTable-card-${index}`}
+            className="shadow-sm border-0"
+          >
+            <Card.Header className="bg-transparent border-0 pb-0">
+              <Stack
+                direction="horizontal"
+                className="flex-column flex-lg-row gap-3 align-items-start align-items-lg-center justify-content-between"
+              >
+                <div>
+                  <div
+                    data-testid={`CommonsTable-card-${index}-name`}
+                    className="h5 mb-1"
+                  >
+                    {name}
+                  </div>
+                  <div className="text-muted small">
+                    <span className="me-1">ID#</span>
+                    <span
+                      data-testid={`CommonsTable-card-${index}-field-commons.id`}
+                    >
+                      {id}
+                    </span>
+                  </div>
+                </div>
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="flex-wrap"
+                  data-testid={`CommonsTable-card-${index}-summary`}
+                >
+                  <Badge bg="secondary" data-testid={`CommonsTable-card-${index}-totalCows`}>
+                    Tot Cows: {formatPlain(totalCows)}
+                  </Badge>
+                  <Badge
+                    bg="secondary"
+                    data-testid={`CommonsTable-card-${index}-effectiveCapacity`}
+                  >
+                    Eff Cap: {formatPlain(computedEffectiveCapacity)}
+                  </Badge>
+                </Stack>
+              </Stack>
+            </Card.Header>
+            <Card.Body className="pt-3">
+              <Row className="gy-3">
+                <Col lg={6}>
+                  <h6 className="text-uppercase text-muted small mb-2">
+                    Economic Overview
+                  </h6>
+                  <dl className="row mb-0">
+                    <dt className="col-sm-5 text-muted small">Start Bal</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.startingBalance`}
+                    >
+                      {formatPlain(startingBalance)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Cow Price</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.cowPrice`}
+                    >
+                      {formatPlain(cowPrice)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Milk Price</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.milkPrice`}
+                    >
+                      {formatPlain(milkPrice)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Degrad Rate</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.degradationRate`}
+                    >
+                      {formatPlain(degradationRate)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Tot Cows</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-totalCows`}
+                    >
+                      {formatPlain(totalCows)}
+                    </dd>
+                  </dl>
+                </Col>
+                <Col lg={6}>
+                  <h6 className="text-uppercase text-muted small mb-2">
+                    Timeline & Capacity
+                  </h6>
+                  <dl className="row mb-0">
+                    <dt className="col-sm-5 text-muted small">Starting Date</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.startingDate`}
+                    >
+                      {formatDate(startingDate)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Last Date</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.lastDate`}
+                    >
+                      {formatDate(lastDate)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Cap / User</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.capacityPerUser`}
+                    >
+                      {formatPlain(capacityPerUser)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Carry Cap</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.carryingCapacity`}
+                    >
+                      {formatPlain(carryingCapacity)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Show LrdrBrd?</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.showLeaderboard`}
+                    >
+                      {formatBoolean(showLeaderboard)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Show Chat</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-commons.showChat`}
+                    >
+                      {formatBoolean(showChat)}
+                    </dd>
+                    <dt className="col-sm-5 text-muted small">Eff Cap</dt>
+                    <dd
+                      className="col-sm-7 fw-semibold"
+                      data-testid={`CommonsTable-card-${index}-field-effectiveCapacity`}
+                    >
+                      {formatPlain(computedEffectiveCapacity)}
+                    </dd>
+                  </dl>
+                </Col>
+              </Row>
+              {isAdmin && (
+                <Stack
+                  direction="horizontal"
+                  gap={2}
+                  className="flex-wrap mt-3"
+                  data-testid={`CommonsTable-card-${index}-actions`}
+                >
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    data-testid={`CommonsTable-card-${index}-action-Edit`}
+                    onClick={() => handleEdit(id)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    data-testid={`CommonsTable-card-${index}-action-Delete`}
+                    onClick={() => handleDelete(commonsPlus)}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    data-testid={`CommonsTable-card-${index}-action-Leaderboard`}
+                    onClick={() => handleLeaderboard(id)}
+                  >
+                    Leaderboard
+                  </Button>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    data-testid={`CommonsTable-card-${index}-action-StatsCSV`}
+                    href={`/api/commonstats/download?commonsId=${id}`}
+                  >
+                    Stats CSV
+                  </Button>
+                  <Button
+                    variant="info"
+                    size="sm"
+                    data-testid={`CommonsTable-card-${index}-action-Announcements`}
+                    href={`/admin/announcements/${id}`}
+                  >
+                    Announcements
+                  </Button>
+                </Stack>
+              )}
+            </Card.Body>
+          </Card>
+        );
+      }),
+    [sortedCommons, isAdmin, computeEffectiveCapacity],
+  );
 
   const commonsModal = (
     <Modal
@@ -203,7 +407,7 @@ export default function CommonsTable({ commons, currentUser }) {
         <Button
           variant="danger"
           data-testid="CommonsTable-Modal-Delete"
-          onClick={() => confirmDelete(cellToDelete)}
+          onClick={() => confirmDelete()}
         >
           Permanently Delete
         </Button>
@@ -213,8 +417,69 @@ export default function CommonsTable({ commons, currentUser }) {
 
   return (
     <>
-      <OurTable data={commons} columns={columnsToDisplay} testid={testid} />
-      {hasRole(currentUser, "ROLE_ADMIN") && commonsModal}
+      {commons.length === 0 ? (
+        <Alert
+          variant="light"
+          data-testid="CommonsTable-empty"
+          className="border border-dashed"
+        >
+          No commons available at the moment.
+        </Alert>
+      ) : (
+        <>
+          <Stack
+            direction="horizontal"
+            className="flex-column flex-md-row gap-3 align-items-start align-items-md-end mb-3"
+          >
+            <Form.Group controlId="CommonsTable-sort-select-group">
+              <Form.Label className="text-muted small mb-1">Sort By</Form.Label>
+              <Form.Select
+                size="sm"
+                value={validSortKey}
+                onChange={(event) => setSortKey(event.target.value)}
+                data-testid="CommonsTable-sort-select"
+              >
+                {SORT_FIELDS.map((field) => (
+                  <option key={field.key} value={field.key}>
+                    {field.label}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              data-testid="CommonsTable-sort-direction-toggle"
+              onClick={() =>
+                setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+              }
+            >
+              {sortDirection === "asc" ? "Ascending" : "Descending"}
+            </Button>
+          </Stack>
+          <Stack gap={3} data-testid="CommonsTable-card-list">
+            {cards}
+          </Stack>
+        </>
+      )}
+      {isAdmin && commonsModal}
     </>
   );
 }
+
+const SORT_FIELDS = [
+  { key: "commons.id", label: "id" },
+  { key: "commons.name", label: "Name" },
+  { key: "commons.cowPrice", label: "Cow Price" },
+  { key: "commons.milkPrice", label: "Milk Price" },
+  { key: "commons.startingBalance", label: "Start Bal" },
+  { key: "commons.startingDate", label: "Starting Date" },
+  { key: "commons.lastDate", label: "Last Date" },
+  { key: "commons.degradationRate", label: "Degrad Rate" },
+  { key: "commons.showLeaderboard", label: "Show LrdrBrd?" },
+  { key: "commons.showChat", label: "Show Chat?" },
+  { key: "totalCows", label: "Tot Cows" },
+  { key: "commons.capacityPerUser", label: "Cap / User" },
+  { key: "commons.carryingCapacity", label: "Carry Cap" },
+  { key: "effectiveCapacity", label: "Eff Cap" },
+];

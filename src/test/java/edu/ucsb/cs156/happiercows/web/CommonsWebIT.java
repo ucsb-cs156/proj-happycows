@@ -50,16 +50,16 @@ public class CommonsWebIT extends WebTestCase {
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByText("List Commons").click();
   
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("Web Test Commons");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.name")).hasText("Web Test Commons");
 
-        page.getByTestId("CommonsTable-cell-row-0-col-Edit-button").click();
+        page.getByTestId("CommonsTable-card-0-action-Edit").click();
         
         page.getByTestId("CommonsForm-name").fill("WTC");
         page.getByTestId("CommonsForm-Submit-Button").click();
 
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("WTC");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.name")).hasText("WTC");
 
-        page.getByTestId("CommonsTable-cell-row-0-col-Delete-button").click();
+        page.getByTestId("CommonsTable-card-0-action-Delete").click();
         page.getByTestId("CommonsTable-Modal-Delete").click();
         
         // return to home page
@@ -97,18 +97,18 @@ public class CommonsWebIT extends WebTestCase {
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByText("List Commons").click();
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("Web Test Commons 2");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.startingBalance")).hasText("9000");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.cowPrice")).hasText("50");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.milkPrice")).hasText("2");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.degradationRate")).hasText("0.002");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.carryingCapacity")).hasText("200");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.capacityPerUser")).hasText("100");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.startingDate")).hasText("2024-11-24");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.lastDate")).hasText("2025-12-01");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.name")).hasText("Web Test Commons 2");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.startingBalance")).hasText("9000");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.cowPrice")).hasText("50");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.milkPrice")).hasText("2");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.degradationRate")).hasText("0.002");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.carryingCapacity")).hasText("200");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.capacityPerUser")).hasText("100");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.startingDate")).hasText("2024-11-24");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.lastDate")).hasText("2025-12-01");
         // we currently don't have a way to see the values of above/belowCapacityHealthUpdateStrategy via the list commons table
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.showLeaderboard")).hasText("true");
-        assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.showChat")).hasText("true");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.showLeaderboard")).hasText("true");
+        assertThat(page.getByTestId("CommonsTable-card-0-field-commons.showChat")).hasText("true");
         // if we change the default value of showLeaderboard and showChat these might flip since we toggle not set.
     }
 }
