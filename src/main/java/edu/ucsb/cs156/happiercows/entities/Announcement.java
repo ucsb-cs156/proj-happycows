@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
-// testing my push
 
 import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
