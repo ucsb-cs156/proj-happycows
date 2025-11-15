@@ -75,7 +75,7 @@ const ManageCowsModal = ({
           </Form.Group>
           <Form.Group>
             <Form.Label>
-              Please specify the number of cows you'd like to {message} below.
+              Please specify the number of cows you&apos;d like to {message} below.
             </Form.Label>
           </Form.Group>
           <Form.Group>
