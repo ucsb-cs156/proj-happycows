@@ -48,7 +48,14 @@ public class WiremockServiceImpl extends WiremockService {
                     .withStatus(200)
                     .withHeader("Content-Type", "text/html")
                     .withBodyFile("login.html")));
-
+    s.stubFor(
+        get(urlPathEqualTo("/login.html"))
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "text/html")
+                    .withBodyFile("login.html")));
+                    
     s.stubFor(
         post(urlPathEqualTo("/login"))
             .willReturn(
