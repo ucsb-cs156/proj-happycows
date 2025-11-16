@@ -40,6 +40,10 @@ describe("ManageCowsModal", () => {
     );
 
     expect(screen.getByTestId("buy-sell-cow-modal")).toBeInTheDocument();
+
+    expect(
+      screen.getByText("Please specify the number of cows you'd like to buy below.")
+    ).toBeInTheDocument();
   });
 
   test("modal has correct buy capitalization", () => {
