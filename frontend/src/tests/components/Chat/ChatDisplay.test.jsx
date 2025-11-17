@@ -94,7 +94,7 @@ describe("ChatDisplay tests", () => {
     expect(axiosMock.history.get[0].params).toEqual({
       commonsId: 1,
       page: 0,
-      size: 100,
+      size: 10,
     });
     expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
@@ -142,6 +142,10 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByTestId("ChatMessageDisplay-3-Date")).toHaveTextContent(
       "2023-08-18 02:59:28",
     );
+
+    expect(
+      screen.queryByTestId("ChatDisplay-HistoryLink"),
+    ).not.toBeInTheDocument();
   });
 
   test("displays one message correctly without usernames", async () => {
@@ -170,7 +174,7 @@ describe("ChatDisplay tests", () => {
     expect(axiosMock.history.get[1].params).toEqual({
       commonsId: 1,
       page: 0,
-      size: 100,
+      size: 10,
     });
     expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
     expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
@@ -187,14 +191,18 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent(
       "2023-08-17 23:57:46",
     );
+
+    expect(
+      screen.queryByTestId("ChatDisplay-HistoryLink"),
+    ).not.toBeInTheDocument();
   });
 
-  test("displays cuts off at 100 messages", async () => {
+  test("displays at most 10 messages and shows history link when more exist", async () => {
     //arrange
 
     axiosMock
       .onGet("/api/chat/get")
-      .reply(200, { content: chatMessageFixtures.oneHundredMessages });
+      .reply(200, { content: chatMessageFixtures.twelveChatMessages });
     axiosMock
       .onGet("/api/usercommons/commons/all")
       .reply(200, userCommonsFixtures.threeUserCommons);
@@ -217,33 +225,32 @@ describe("ChatDisplay tests", () => {
     expect(axiosMock.history.get[1].params).toEqual({
       commonsId: 1,
       page: 0,
-      size: 100,
+      size: 10,
     });
     expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
     expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
 
     await waitFor(() => {
-      expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
+      expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
+    expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
     expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
 
     expect(
-      screen.queryByTestId("ChatMessageDisplay-1"),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByTestId("ChatMessageDisplay-2"),
     ).not.toBeInTheDocument();
-
     expect(
-      screen.queryByText("This should not appear"),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("This should also be cut off"),
+      screen.queryByTestId("ChatMessageDisplay-1"),
     ).not.toBeInTheDocument();
 
-    expect(screen.getByText("This should appear, though")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("ChatDisplay-HistoryLink"),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText("This should appear, though"),
+    ).toBeInTheDocument();
     expect(screen.getByText("This one too!")).toBeInTheDocument();
   });
 });
