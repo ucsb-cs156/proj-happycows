@@ -13,11 +13,11 @@ describe("index.html title", () => {
   });
 
   it("favicon link is correct", () => {
-     document.head.innerHTML = `
+    document.head.innerHTML = `
     <link rel="icon" href="/favicon.ico" />
   `;
 
-  const link = document.querySelector('link[rel="icon"]');
-  expect(link.getAttribute("href")).toBe("/favicon.ico");
+    const link = document.querySelector('link[rel="icon"]');
+    expect(link.getAttribute("href")).toBe("/favicon.ico");
   });
 });
