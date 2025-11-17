@@ -1,4 +1,9 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
@@ -30,20 +35,28 @@ vi.mock("react-router", async () => ({
 describe("AdminListCommonsV2 tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  const testId = "CommonsTable";
+  
 
   const setupUserOnly = () => {
     axiosMock.reset();
     axiosMock.resetHistory();
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
   };
 
   const setupAdminUser = () => {
     axiosMock.reset();
     axiosMock.resetHistory();
-    axiosMock.onGet("/api/currentUser").reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/systemInfo").reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock
+      .onGet("/api/systemInfo")
+      .reply(200, systemInfoFixtures.showingNeither);
   };
 
   test("renders without crashing for regular user", () => {
@@ -77,7 +90,9 @@ describe("AdminListCommonsV2 tests", () => {
   test("renders three commons without crashing for admin user", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -121,8 +136,12 @@ describe("AdminListCommonsV2 tests", () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
-    axiosMock.onDelete("/api/commons", { params: { id: 1 } }).reply(200, "Commons with id 1 was deleted");
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onDelete("/api/commons", { params: { id: 1 } })
+      .reply(200, "Commons with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -140,7 +159,9 @@ describe("AdminListCommonsV2 tests", () => {
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      expect(screen.getByTestId("AdminListCommonsV2-Modal-Delete")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("AdminListCommonsV2-Modal-Delete"),
+      ).toBeInTheDocument();
     });
 
     const modalDelete = screen.getByTestId("AdminListCommonsV2-Modal-Delete");
@@ -151,13 +172,13 @@ describe("AdminListCommonsV2 tests", () => {
     });
   });
 
-  
-
   test("what happens when you click edit as an admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -174,14 +195,18 @@ describe("AdminListCommonsV2 tests", () => {
 
     fireEvent.click(editButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcommons/1"));
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcommons/1"),
+    );
   });
 
   test("what happens when you click leaderboard as an admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -198,14 +223,18 @@ describe("AdminListCommonsV2 tests", () => {
 
     fireEvent.click(leaderboardButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1"));
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1"),
+    );
   });
 
   test("correct href for stats csv button as an admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -220,14 +249,18 @@ describe("AdminListCommonsV2 tests", () => {
     const statsElems = screen.getAllByText("Stats CSV");
     expect(statsElems.length).toBeGreaterThan(0);
     const statsCSV = statsElems[0];
-    expect(statsCSV.getAttribute("href")).toContain("/api/commonstats/download?commonsId=1");
+    expect(statsCSV.getAttribute("href")).toContain(
+      "/api/commonstats/download?commonsId=1",
+    );
   });
 
   test("what happens when you click announcements as an admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -244,14 +277,18 @@ describe("AdminListCommonsV2 tests", () => {
 
     fireEvent.click(announcementButton);
 
-    await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith("/admin/announcements/1"));
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/announcements/1"),
+    );
   });
 
   test("cancel button hides the modal (admin)", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -267,13 +304,17 @@ describe("AdminListCommonsV2 tests", () => {
     fireEvent.click(deleteButton);
 
     // modal should show the Permanently Delete button
-    expect(await screen.findByTestId("AdminListCommonsV2-Modal-Delete")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("AdminListCommonsV2-Modal-Delete"),
+    ).toBeInTheDocument();
 
     const modalCancel = screen.getByTestId("AdminListCommonsV2-Modal-Cancel");
     fireEvent.click(modalCancel);
 
     await waitFor(() => {
-      expect(screen.queryByTestId("AdminListCommonsV2-Modal-Delete")).toBeNull();
+      expect(
+        screen.queryByTestId("AdminListCommonsV2-Modal-Delete"),
+      ).toBeNull();
     });
   });
 
@@ -281,7 +322,9 @@ describe("AdminListCommonsV2 tests", () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -294,7 +337,9 @@ describe("AdminListCommonsV2 tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
-    const found = axiosMock.history.get.find((r) => r.url === "/api/commons/allplus");
+    const found = axiosMock.history.get.find(
+      (r) => r.url === "/api/commons/allplus",
+    );
     expect(found).toBeDefined();
   });
 
@@ -304,7 +349,20 @@ describe("AdminListCommonsV2 tests", () => {
     const queryClient = new QueryClient();
     const withNoDates = [
       {
-        commons: { id: 99, name: "NoDates", cowPrice: 1, milkPrice: 1, startingBalance: 0, startingDate: null, lastDate: null, degradationRate: 0.1, showLeaderboard: false, showChat: false, capacityPerUser: 10, carryingCapacity: 100 },
+        commons: {
+          id: 99,
+          name: "NoDates",
+          cowPrice: 1,
+          milkPrice: 1,
+          startingBalance: 0,
+          startingDate: null,
+          lastDate: null,
+          degradationRate: 0.1,
+          showLeaderboard: false,
+          showChat: false,
+          capacityPerUser: 10,
+          carryingCapacity: 100,
+        },
         totalCows: 0,
         effectiveCapacity: 0,
       },
