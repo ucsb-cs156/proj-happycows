@@ -630,20 +630,20 @@ describe("PlayPage tests", () => {
     });
   });
 
-  test("Select Another Commons button navigates to /selectcommons", async () => {  
+  test("Select Another Commons button navigates to /selectcommons", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter initialEntries={["/play/1"]}>
           <PlayPage />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
-  
+
     const button = await screen.findByTestId("select-another-commons-button");
     expect(button).toBeInTheDocument();
-  
+
     fireEvent.click(button);
-  
+
     expect(mockNavigate).toHaveBeenCalledWith("/selectcommons");
   });
 });

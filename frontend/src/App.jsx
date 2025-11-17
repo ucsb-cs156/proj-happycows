@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useBackendMutation } from "main/utils/useBackend";
-import HomePage from "main/pages/HomePage";   
+import HomePage from "main/pages/HomePage";
 import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
@@ -33,7 +33,7 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 function App() {
   const { data: currentUser } = useCurrentUser();
 
-  let redirectUrl = "/selectcommons"; 
+  let redirectUrl = "/selectcommons";
 
   if (currentUser?.root?.user?.commons) {
     const commons = currentUser.root.user.commons;
@@ -98,7 +98,6 @@ function App() {
     </>
   ) : null;
 
-
   const updateLastOnlineMutation = useBackendMutation(
     () => ({ method: "POST", url: "/api/currentUser/last-online" }),
     {},
@@ -122,7 +121,6 @@ function App() {
       };
     }
   }, [currentUser, updateLastOnlineMutation]);
-
 
   return (
     <BrowserRouter>
