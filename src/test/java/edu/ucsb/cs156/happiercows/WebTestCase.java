@@ -10,7 +10,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -36,7 +35,7 @@ public abstract class WebTestCase {
     public static void setupWireMock() {
         wireMockServer = new WireMockServer(options()
                 .port(8090)
-                .extensions(new ResponseTemplateTransformer(true)));
+                .globalTemplating(true));
 
         WiremockServiceImpl.setupOauthMocks(wireMockServer, false);
 
@@ -54,6 +53,7 @@ public abstract class WebTestCase {
     }
 
     public void setupUser(boolean isAdmin) {
+        wireMockServer.resetAll();
         WiremockServiceImpl.setupOauthMocks(wireMockServer, isAdmin);
 
         browser = Playwright.create().chromium().launch(new BrowserType.LaunchOptions().setHeadless(runHeadless));
