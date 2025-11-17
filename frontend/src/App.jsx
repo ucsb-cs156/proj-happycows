@@ -6,6 +6,7 @@ import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
 import LeaderboardPage from "main/pages/LeaderboardPage";
+import AdminDeveloperPage from "main/pages/AdminDeveloperPage";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,6 +44,7 @@ function App() {
       <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
+      <Route path="/admin/developer" element={<AdminDeveloperPage />} />
       <Route
         path="/admin/createstudents"
         element={<AdminStudentsCreatePage />}
