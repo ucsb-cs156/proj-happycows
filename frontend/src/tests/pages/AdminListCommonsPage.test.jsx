@@ -163,9 +163,7 @@ describe("AdminListCommonPage tests", () => {
       screen.getByTestId(`${testId}-card-0-field-commons.id`),
     ).toHaveTextContent("1");
 
-    const deleteButton = screen.getByTestId(
-      `${testId}-card-0-action-Delete`,
-    );
+    const deleteButton = screen.getByTestId(`${testId}-card-0-action-Delete`);
     expect(deleteButton).toBeInTheDocument();
 
     fireEvent.click(deleteButton);
@@ -266,7 +264,9 @@ describe("AdminListCommonPage tests", () => {
       await screen.findByTestId(`${testId}-card-0-field-commons.id`),
     ).toHaveTextContent("1");
 
-    const statsCSVButton = screen.getByTestId(`${testId}-card-0-action-StatsCSV`);
+    const statsCSVButton = screen.getByTestId(
+      `${testId}-card-0-action-StatsCSV`,
+    );
     expect(statsCSVButton).toHaveAttribute(
       "href",
       "/api/commonstats/download?commonsId=1",

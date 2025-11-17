@@ -83,9 +83,9 @@ describe("UserTable tests", () => {
       screen.getByTestId("CommonsTable-card-1-field-commons.id"),
     ).toHaveTextContent("2");
 
-    expect(
-      screen.getByTestId("CommonsTable-card-1-name"),
-    ).toHaveTextContent("Com2");
+    expect(screen.getByTestId("CommonsTable-card-1-name")).toHaveTextContent(
+      "Com2",
+    );
     expect(
       screen.getByTestId("CommonsTable-card-1-field-commons.cowPrice"),
     ).toHaveTextContent("1");
@@ -102,9 +102,7 @@ describe("UserTable tests", () => {
       screen.getByTestId("CommonsTable-card-1-field-commons.carryingCapacity"),
     ).toHaveTextContent("42");
     expect(
-      screen.getByTestId(
-        "CommonsTable-card-1-field-commons.startingBalance",
-      ),
+      screen.getByTestId("CommonsTable-card-1-field-commons.startingBalance"),
     ).toHaveTextContent("10");
     expect(
       screen.getByTestId("CommonsTable-card-1-field-commons.startingDate"),
@@ -131,12 +129,12 @@ describe("UserTable tests", () => {
       screen.getByTestId("CommonsTable-card-1-field-effectiveCapacity"),
     ).toHaveTextContent("42");
 
-    expect(
-      screen.getByTestId("CommonsTable-card-0-action-Edit"),
-    ).toHaveClass("btn-primary");
-    expect(
-      screen.getByTestId("CommonsTable-card-0-action-Delete"),
-    ).toHaveClass("btn-danger");
+    expect(screen.getByTestId("CommonsTable-card-0-action-Edit")).toHaveClass(
+      "btn-primary",
+    );
+    expect(screen.getByTestId("CommonsTable-card-0-action-Delete")).toHaveClass(
+      "btn-danger",
+    );
     expect(
       screen.getByTestId("CommonsTable-card-0-action-Leaderboard"),
     ).toHaveClass("btn-secondary");

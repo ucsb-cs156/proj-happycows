@@ -101,40 +101,43 @@ export default function CommonsTable({ commons, currentUser }) {
     return null;
   }, []);
 
-  const getSortableValue = useCallback((commonsPlus, key) => {
-    switch (key) {
-      case "commons.id":
-        return commonsPlus.commons.id ?? null;
-      case "commons.name":
-        return commonsPlus.commons.name ?? "";
-      case "commons.cowPrice":
-        return commonsPlus.commons.cowPrice ?? null;
-      case "commons.milkPrice":
-        return commonsPlus.commons.milkPrice ?? null;
-      case "commons.startingBalance":
-        return commonsPlus.commons.startingBalance ?? null;
-      case "commons.startingDate":
-        return commonsPlus.commons.startingDate ?? "";
-      case "commons.lastDate":
-        return commonsPlus.commons.lastDate ?? "";
-      case "commons.degradationRate":
-        return commonsPlus.commons.degradationRate ?? null;
-      case "commons.showLeaderboard":
-        return commonsPlus.commons.showLeaderboard ?? null;
-      case "commons.showChat":
-        return commonsPlus.commons.showChat ?? null;
-      case "totalCows":
-        return commonsPlus.totalCows ?? null;
-      case "commons.capacityPerUser":
-        return commonsPlus.commons.capacityPerUser ?? null;
-      case "commons.carryingCapacity":
-        return commonsPlus.commons.carryingCapacity ?? null;
-      case "effectiveCapacity":
-        return computeEffectiveCapacity(commonsPlus);
-      default:
-        return null;
-    }
-  }, [computeEffectiveCapacity]);
+  const getSortableValue = useCallback(
+    (commonsPlus, key) => {
+      switch (key) {
+        case "commons.id":
+          return commonsPlus.commons.id ?? null;
+        case "commons.name":
+          return commonsPlus.commons.name ?? "";
+        case "commons.cowPrice":
+          return commonsPlus.commons.cowPrice ?? null;
+        case "commons.milkPrice":
+          return commonsPlus.commons.milkPrice ?? null;
+        case "commons.startingBalance":
+          return commonsPlus.commons.startingBalance ?? null;
+        case "commons.startingDate":
+          return commonsPlus.commons.startingDate ?? "";
+        case "commons.lastDate":
+          return commonsPlus.commons.lastDate ?? "";
+        case "commons.degradationRate":
+          return commonsPlus.commons.degradationRate ?? null;
+        case "commons.showLeaderboard":
+          return commonsPlus.commons.showLeaderboard ?? null;
+        case "commons.showChat":
+          return commonsPlus.commons.showChat ?? null;
+        case "totalCows":
+          return commonsPlus.totalCows ?? null;
+        case "commons.capacityPerUser":
+          return commonsPlus.commons.capacityPerUser ?? null;
+        case "commons.carryingCapacity":
+          return commonsPlus.commons.carryingCapacity ?? null;
+        case "effectiveCapacity":
+          return computeEffectiveCapacity(commonsPlus);
+        default:
+          return null;
+      }
+    },
+    [computeEffectiveCapacity],
+  );
 
   const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
     ? sortKey
@@ -223,7 +226,10 @@ export default function CommonsTable({ commons, currentUser }) {
                   className="flex-wrap"
                   data-testid={`CommonsTable-card-${index}-summary`}
                 >
-                  <Badge bg="secondary" data-testid={`CommonsTable-card-${index}-totalCows`}>
+                  <Badge
+                    bg="secondary"
+                    data-testid={`CommonsTable-card-${index}-totalCows`}
+                  >
                     Tot Cows: {formatPlain(totalCows)}
                   </Badge>
                   <Badge
