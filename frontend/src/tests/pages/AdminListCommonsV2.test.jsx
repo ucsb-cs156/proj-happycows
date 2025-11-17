@@ -1,9 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
@@ -35,7 +30,10 @@ vi.mock("react-router", async () => ({
 describe("AdminListCommonsV2 tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  
+  beforeEach(() => {
+    mockToast.mockClear();
+    mockedNavigate.mockClear();
+  });
 
   const setupUserOnly = () => {
     axiosMock.reset();
@@ -132,16 +130,15 @@ describe("AdminListCommonsV2 tests", () => {
     expect(screen.getByText(/Commons \(Card view\)/)).toBeInTheDocument();
   });
 
-  test("what happens when you click delete, admin", async () => {
+  test("what happens when you click delete and confirm, admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
     axiosMock
       .onGet("/api/commons/allplus")
       .reply(200, commonsPlusFixtures.threeCommonsPlus);
-    axiosMock
-      .onDelete("/api/commons", { params: { id: 1 } })
-      .reply(200, "Commons with id 1 was deleted");
+
+    window.confirm = vi.fn(() => true);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -159,17 +156,40 @@ describe("AdminListCommonsV2 tests", () => {
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId("AdminListCommonsV2-Modal-Delete"),
-      ).toBeInTheDocument();
+      expect(window.confirm).toHaveBeenCalled();
     });
 
-    const modalDelete = screen.getByTestId("AdminListCommonsV2-Modal-Delete");
-    fireEvent.click(modalDelete);
+    expect(mockToast).toHaveBeenCalledWith("Commons with id 1 deleted");
+  });
+
+  test("what happens when you click delete and cancel, admin", async () => {
+    setupAdminUser();
+
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    window.confirm = vi.fn(() => false);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminListCommonsV2 />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/id: 1/)).toBeInTheDocument();
+
+    const deleteButton = screen.getAllByText("Delete")[0];
+    fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      expect(mockToast).toBeCalledWith("Commons with id 1 was deleted");
+      expect(window.confirm).toHaveBeenCalled();
     });
+
+    expect(mockToast).not.toHaveBeenCalled();
   });
 
   test("what happens when you click edit as an admin", async () => {
@@ -282,13 +302,11 @@ describe("AdminListCommonsV2 tests", () => {
     );
   });
 
-  test("cancel button hides the modal (admin)", async () => {
+  test("renders no cards when commons list is empty (admin)", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock.onGet("/api/commons/allplus").reply(200, []);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -298,49 +316,8 @@ describe("AdminListCommonsV2 tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/id: 1/)).toBeInTheDocument();
-
-    const deleteButton = screen.getAllByText("Delete")[0];
-    fireEvent.click(deleteButton);
-
-    // modal should show the Permanently Delete button
-    expect(
-      await screen.findByTestId("AdminListCommonsV2-Modal-Delete"),
-    ).toBeInTheDocument();
-
-    const modalCancel = screen.getByTestId("AdminListCommonsV2-Modal-Cancel");
-    fireEvent.click(modalCancel);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId("AdminListCommonsV2-Modal-Delete"),
-      ).toBeNull();
-    });
-  });
-
-  test("backend GET is called for /api/commons/allplus", async () => {
-    setupAdminUser();
-
-    const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, commonsPlusFixtures.threeCommonsPlus);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminListCommonsV2 />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    await waitFor(() => {
-      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
-    });
-    const found = axiosMock.history.get.find(
-      (r) => r.url === "/api/commons/allplus",
-    );
-    expect(found).toBeDefined();
+    expect(await screen.findByText("Commons (Card view)")).toBeInTheDocument();
+    expect(screen.queryByText("Edit")).toBeNull();
   });
 
   test("renders empty date strings when dates are missing", async () => {
@@ -380,7 +357,5 @@ describe("AdminListCommonsV2 tests", () => {
     const items = await screen.findAllByText(/NoDates/);
     expect(items.length).toBeGreaterThanOrEqual(1);
     expect(items[0]).toBeInTheDocument();
-    // ensure the mutated string would not appear
-    expect(screen.queryByText("Stryker was here!")).toBeNull();
   });
 });

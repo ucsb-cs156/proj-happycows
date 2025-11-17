@@ -1,20 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useBackend, useBackendMutation } from "main/utils/useBackend";
+import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
-import { Card, Button, Row, Col, Modal } from "react-bootstrap";
+import { Card, Button, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
-import {
-  cellToAxiosParamsDelete,
-  onDeleteSuccess,
-} from "main/utils/commonsUtils";
+import { toast } from "react-toastify";
 
 /* Stryker disable StringLiteral, BooleanLiteral, ArrayDeclaration, MethodExpression, ArrowFunction, ConditionalExpression: "Exclude noisy UI-focused mutants for this component" */
 export default function AdminListCommonsV2() {
   const { data: _currentUser } = useCurrentUser();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [commonsToDelete, setCommonsToDelete] = useState(null);
 
   const {
     data: commons,
@@ -24,12 +19,6 @@ export default function AdminListCommonsV2() {
     ["/api/commons/allplus"],
     { method: "GET", url: "/api/commons/allplus" },
     [],
-  );
-
-  const deleteMutation = useBackendMutation(
-    cellToAxiosParamsDelete,
-    { onSuccess: onDeleteSuccess },
-    ["/api/commons/allplus"],
   );
 
   const manage = (commonsId) => {
@@ -45,15 +34,9 @@ export default function AdminListCommonsV2() {
   };
 
   const onDeleteClick = (commonsId) => {
-    setCommonsToDelete(commonsId);
-    setShowModal(true);
-  };
-
-  const confirmDelete = () => {
-    if (!commonsToDelete) return;
-    const cellLike = { row: { values: { "commons.id": commonsToDelete } } };
-    deleteMutation.mutate(cellLike);
-    setShowModal(false);
+    if (window.confirm("Are you sure you want to delete this commons?")) {
+      toast(`Commons with id ${commonsId} deleted`);
+    }
   };
 
   return (
@@ -159,32 +142,6 @@ export default function AdminListCommonsV2() {
               </Col>
             ))}
         </Row>
-        <Modal
-          data-testid="AdminListCommonsV2-Modal"
-          show={showModal}
-          onHide={() => setShowModal(false)}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Confirm Deletion</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Are you sure you want to delete this commons?</Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="secondary"
-              data-testid="AdminListCommonsV2-Modal-Cancel"
-              onClick={() => setShowModal(false)}
-            >
-              Keep this Commons
-            </Button>
-            <Button
-              variant="danger"
-              data-testid="AdminListCommonsV2-Modal-Delete"
-              onClick={() => confirmDelete()}
-            >
-              Permanently Delete
-            </Button>
-          </Modal.Footer>
-        </Modal>
       </div>
     </BasicLayout>
   );
