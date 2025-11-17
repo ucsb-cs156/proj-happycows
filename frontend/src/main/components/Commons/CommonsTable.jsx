@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Alert,
   Badge,
@@ -34,33 +34,36 @@ export default function CommonsTable({ commons, currentUser }) {
 
   const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
-  const formatPlain = (value) => {
+  const formatPlain = useCallback((value) => {
     if (value === null || value === undefined || value === "") {
       return "—";
     }
     return `${value}`;
-  };
+  }, []);
 
-  const formatDate = (value) => {
+  const formatDate = useCallback((value) => {
     if (!value) return "—";
     return String(value).slice(0, 10);
-  };
+  }, []);
 
-  const formatBoolean = (value) => {
+  const formatBoolean = useCallback((value) => {
     if (value === null || value === undefined || value === "") {
       return "—";
     }
     return String(value);
-  };
+  }, []);
 
-  const handleEdit = (commonsId) => {
-    navigate(`/admin/editcommons/${commonsId}`);
-  };
+  const handleEdit = useCallback(
+    (commonsId) => {
+      navigate(`/admin/editcommons/${commonsId}`);
+    },
+    [navigate],
+  );
 
-  const handleDelete = (commonsPlus) => {
+  const handleDelete = useCallback((commonsPlus) => {
     setCommonsToDelete(commonsPlus);
     setShowModal(true);
-  };
+  }, []);
 
   const confirmDelete = async () => {
     if (!commonsToDelete) return;
@@ -75,11 +78,14 @@ export default function CommonsTable({ commons, currentUser }) {
     setCommonsToDelete(null);
   };
 
-  const handleLeaderboard = (commonsId) => {
-    navigate(`/leaderboard/${commonsId}`);
-  };
+  const handleLeaderboard = useCallback(
+    (commonsId) => {
+      navigate(`/leaderboard/${commonsId}`);
+    },
+    [navigate],
+  );
 
-  const computeEffectiveCapacity = (commonsPlus) => {
+  const computeEffectiveCapacity = useCallback((commonsPlus) => {
     const { effectiveCapacity, commons: commonsData, totalUsers } = commonsPlus;
     if (effectiveCapacity !== null && effectiveCapacity !== undefined) {
       return effectiveCapacity;
@@ -93,9 +99,9 @@ export default function CommonsTable({ commons, currentUser }) {
       return commonsData.capacityPerUser * totalUsers;
     }
     return null;
-  };
+  }, []);
 
-  const getSortableValue = (commonsPlus, key) => {
+  const getSortableValue = useCallback((commonsPlus, key) => {
     switch (key) {
       case "commons.id":
         return commonsPlus.commons.id ?? null;
@@ -128,7 +134,7 @@ export default function CommonsTable({ commons, currentUser }) {
       default:
         return null;
     }
-  };
+  }, [computeEffectiveCapacity]);
 
   const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
     ? sortKey
@@ -161,7 +167,7 @@ export default function CommonsTable({ commons, currentUser }) {
       return sortDirection === "asc" ? fallback : -fallback;
     });
     return sorted;
-  }, [commons, validSortKey, sortDirection]);
+  }, [commons, validSortKey, sortDirection, getSortableValue]);
 
   const cards = useMemo(
     () =>
@@ -383,7 +389,17 @@ export default function CommonsTable({ commons, currentUser }) {
           </Card>
         );
       }),
-    [sortedCommons, isAdmin, computeEffectiveCapacity],
+    [
+      sortedCommons,
+      isAdmin,
+      computeEffectiveCapacity,
+      handleEdit,
+      handleDelete,
+      handleLeaderboard,
+      formatPlain,
+      formatDate,
+      formatBoolean,
+    ],
   );
 
   const commonsModal = (
