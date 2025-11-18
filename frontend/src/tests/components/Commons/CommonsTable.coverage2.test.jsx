@@ -37,15 +37,29 @@ function renderTable(commons, currentUser = { authorities: ["ROLE_ADMIN"] }) {
       <MemoryRouter>
         <CommonsTable commons={commons} currentUser={currentUser} />
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
 describe("CommonsTable comparator edge branches", () => {
   test("numeric-equal branch: sorting by cowPrice with equal numbers keeps original order", async () => {
     const commons = [
-      makeCommonsPlus({ commons: { ...makeCommonsPlus().commons, id: 11, name: "A", cowPrice: 42 } }),
-      makeCommonsPlus({ commons: { ...makeCommonsPlus().commons, id: 22, name: "B", cowPrice: 42 } }),
+      makeCommonsPlus({
+        commons: {
+          ...makeCommonsPlus().commons,
+          id: 11,
+          name: "A",
+          cowPrice: 42,
+        },
+      }),
+      makeCommonsPlus({
+        commons: {
+          ...makeCommonsPlus().commons,
+          id: 22,
+          name: "B",
+          cowPrice: 42,
+        },
+      }),
     ];
 
     renderTable(commons);
@@ -66,8 +80,22 @@ describe("CommonsTable comparator edge branches", () => {
     const objA = { toString: () => "aaa" };
     const objB = { toString: () => "bbb" };
     const commons = [
-      makeCommonsPlus({ commons: { ...makeCommonsPlus().commons, id: 101, name: "X", showLeaderboard: objA } }),
-      makeCommonsPlus({ commons: { ...makeCommonsPlus().commons, id: 102, name: "Y", showLeaderboard: objB } }),
+      makeCommonsPlus({
+        commons: {
+          ...makeCommonsPlus().commons,
+          id: 101,
+          name: "X",
+          showLeaderboard: objA,
+        },
+      }),
+      makeCommonsPlus({
+        commons: {
+          ...makeCommonsPlus().commons,
+          id: 102,
+          name: "Y",
+          showLeaderboard: objB,
+        },
+      }),
     ];
 
     renderTable(commons);
@@ -76,7 +104,7 @@ describe("CommonsTable comparator edge branches", () => {
     const select = screen.getByTestId("CommonsTable-sort-select");
     await userEvent.selectOptions(select, ["commons.showLeaderboard"]);
 
-  // default sortDirection is asc -> expect "aaa" before "bbb" -> X before Y
+    // default sortDirection is asc -> expect "aaa" before "bbb" -> X before Y
     const firstCard = await screen.findByTestId("CommonsTable-card-0-name");
     expect(firstCard).toHaveTextContent("X");
 
@@ -84,7 +112,9 @@ describe("CommonsTable comparator edge branches", () => {
     const toggle = screen.getByTestId("CommonsTable-sort-direction-toggle");
     await userEvent.click(toggle);
 
-    const firstCardAfter = await screen.findByTestId("CommonsTable-card-0-name");
+    const firstCardAfter = await screen.findByTestId(
+      "CommonsTable-card-0-name",
+    );
     expect(firstCardAfter).toHaveTextContent("Y");
   });
 });

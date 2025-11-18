@@ -45,7 +45,14 @@ export default function OurTable({
 
   return (
     <div {...tableRest} key={tableKey}>
-      <Table style={tableStyle} {...tableRest} key={tableKey} striped bordered hover>
+      <Table
+        style={tableStyle}
+        {...tableRest}
+        key={tableKey}
+        striped
+        bordered
+        hover
+      >
         <thead>
           {headerGroups.map((headerGroup, hgIndex) => {
             const hgProps = headerGroup.getHeaderGroupProps();
@@ -54,7 +61,9 @@ export default function OurTable({
             return (
               <tr {...hgRest} key={safeHgKey}>
                 {headerGroup.headers.map((column, colIndex) => {
-                  const colProps = column.getHeaderProps(column.getSortByToggleProps());
+                  const colProps = column.getHeaderProps(
+                    column.getSortByToggleProps(),
+                  );
                   const { key: colKey, ...colRest } = colProps || {};
                   const safeColKey = colKey ?? `col-${column.id ?? colIndex}`;
                   return (
@@ -93,7 +102,9 @@ export default function OurTable({
                   {row.cells.map((cell, cellIndex) => {
                     const cellProps = cell.getCellProps();
                     const { key: cellKey, ...cellRest } = cellProps || {};
-                    const safeCellKey = cellKey ?? `cell-${cell.row.index}-${cell.column.id ?? cellIndex}`;
+                    const safeCellKey =
+                      cellKey ??
+                      `cell-${cell.row.index}-${cell.column.id ?? cellIndex}`;
                     return (
                       <td
                         {...cellRest}

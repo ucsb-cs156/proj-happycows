@@ -1,4 +1,4 @@
-import { formatPlain, getSortableValue } from "main/components/Commons/CommonsTable";
+import { formatPlain, getSortableValue } from "main/components/Commons/commonsTableUtils";
 
 describe("CommonsTable sort and formatPlain (utils only)", () => {
   it("formatPlain returns '—' for null/undefined/''", () => {
@@ -11,7 +11,9 @@ describe("CommonsTable sort and formatPlain (utils only)", () => {
 
   it("getSortableValue only supports id and name", () => {
     expect(getSortableValue({ commons: { id: 1 } }, "commons.id")).toBe(1);
-    expect(getSortableValue({ commons: { name: "A" } }, "commons.name")).toBe("A");
+    expect(getSortableValue({ commons: { name: "A" } }, "commons.name")).toBe(
+      "A",
+    );
     expect(getSortableValue({ commons: {} }, "commons.cowPrice")).toBeNull();
     expect(getSortableValue({ commons: {} }, "notAKey")).toBeNull();
   });

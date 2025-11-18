@@ -93,7 +93,8 @@ export function getSortableValue(commonsPlus, key) {
 
   // For string/date/boolean fields, return as-is (or empty string for missing names/dates)
   if (key === "commons.name") return val ?? "";
-  if (key === "commons.startingDate" || key === "commons.lastDate") return val ?? "";
+  if (key === "commons.startingDate" || key === "commons.lastDate")
+    return val ?? "";
 
   return val ?? null;
 }

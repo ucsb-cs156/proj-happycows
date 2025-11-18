@@ -43,7 +43,6 @@ export default function CommonsTable({ commons, currentUser }) {
 
   const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
-
   const handleEdit = useCallback(
     (commonsId) => {
       navigate(`/admin/editcommons/${commonsId}`);
@@ -75,8 +74,6 @@ export default function CommonsTable({ commons, currentUser }) {
     },
     [navigate],
   );
-
-  
 
   const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
     ? sortKey
