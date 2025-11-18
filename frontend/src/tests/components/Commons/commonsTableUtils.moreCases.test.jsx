@@ -140,4 +140,33 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     const desc = createCommonsComparator("commons.name", "desc");
     expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
   });
+
+  it("createCommonsComparator treats undefined numeric values as missing", () => {
+    const missing = { commons: { id: 3 }, totalCows: undefined };
+    const present = { commons: { id: 4 }, totalCows: 2 };
+
+    const comparator = createCommonsComparator("totalCows", "asc");
+    expect(comparator(missing, present)).toBe(1);
+    expect(comparator(present, missing)).toBe(-1);
+  });
+
+  it("createCommonsComparator returns 0 for equal numeric values", () => {
+    const commonsA = { commons: { cowPrice: 5 } };
+    const commonsB = { commons: { cowPrice: 5 } };
+
+    const asc = createCommonsComparator("commons.cowPrice", "asc");
+    expect(asc(commonsA, commonsB)).toBe(0);
+
+    const desc = createCommonsComparator("commons.cowPrice", "desc");
+    expect(desc(commonsA, commonsB)).toBe(0);
+  });
+
+  it("createCommonsComparator defaults to ascending when direction omitted", () => {
+    const earlier = { commons: { startingDate: "2023-01-01" } };
+    const later = { commons: { startingDate: "2023-02-01" } };
+
+    const comparator = createCommonsComparator("commons.startingDate");
+    expect(comparator(earlier, later)).toBeLessThan(0);
+    expect(comparator(later, earlier)).toBeGreaterThan(0);
+  });
 });

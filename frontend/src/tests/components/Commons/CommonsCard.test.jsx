@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import CommonsCard from "main/components/Commons/CommonsCard";
+import CommonsCard, { isFutureDate } from "main/components/Commons/CommonsCard";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
@@ -7,6 +7,26 @@ import "@testing-library/jest-dom";
 const curr = new Date();
 
 describe("CommonsCard tests", () => {
+  describe("isFutureDate", () => {
+    const referenceDate = new Date(2025, 4, 15); // May 15, 2025
+
+    it("returns true when target date is after reference", () => {
+      expect(isFutureDate("2025-06-01", referenceDate)).toBe(true);
+    });
+
+    it("returns false when target date equals reference", () => {
+      expect(isFutureDate("2025-05-15", referenceDate)).toBe(false);
+    });
+
+    it("returns false when target date is before reference", () => {
+      expect(isFutureDate("2025-04-20", referenceDate)).toBe(false);
+    });
+
+    it("returns false when starting date is missing", () => {
+      expect(isFutureDate(null, referenceDate)).toBe(false);
+    });
+  });
+
   test("renders without crashing when button text is set", async () => {
     const click = vi.fn();
     render(
