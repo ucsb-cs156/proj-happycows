@@ -148,7 +148,10 @@ export default function CommonsTable({ commons, currentUser }) {
                     data-testid={`CommonsTable-card-${index}-name`}
                     className="h5 mb-1"
                   >
-                    {name}
+                    {/* Keep existing test id for unit tests, and add the expected test id for integration tests */}
+                    <span data-testid={`CommonsTable-card-${index}-field-commons.name`}>
+                      {name}
+                    </span>
                   </div>
                   <div className="text-muted small">
                     <span className="me-1">ID#</span>
