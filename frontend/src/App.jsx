@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
-import { useBackendMutation} from "main/utils/useBackend";
+import { useBackendMutation } from "main/utils/useBackend";
 import HomePage from "main/pages/HomePage";
 import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
@@ -82,7 +82,7 @@ function App() {
 
   const commonsCount = currentUser?.root?.user?.commons?.length ?? 0;
   const singleCommonsId = currentUser?.root?.user?.commons?.[0]?.id;
-  
+
   const homeRoute =
     hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
       <>

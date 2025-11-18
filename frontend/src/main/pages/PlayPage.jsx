@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
-import { useParams, useNavigate} from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsOverview from "main/components/Commons/CommonsOverview";
@@ -247,7 +247,9 @@ export default function PlayPage() {
         onClick={() => navigate("/home")}
         data-testid="playpage-home-button"
       >
-        <span style={emojiStyle} data-testid="home-icon">🏠</span>
+        <span style={emojiStyle} data-testid="home-icon">
+          🏠
+        </span>
       </Button>
     </div>
   );

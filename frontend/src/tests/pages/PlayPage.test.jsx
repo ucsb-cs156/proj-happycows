@@ -633,7 +633,7 @@ describe("PlayPage tests", () => {
       ).toBeInTheDocument();
     });
   });
-  
+
   test("click home button", async () => {
     render(
       <QueryClientProvider client={queryClient}>
@@ -643,7 +643,9 @@ describe("PlayPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("playpage-home-button")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("playpage-home-button"),
+    ).toBeInTheDocument();
     const homeButton = screen.getByTestId("playpage-home-button");
     fireEvent.click(homeButton);
 
