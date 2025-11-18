@@ -5,7 +5,6 @@ import {
   formatBoolean,
   formatDate,
   getSortableValue,
-  compareAsStrings,
   createCommonsComparator,
 } from "main/components/Commons/commonsTableUtils";
 
