@@ -642,11 +642,21 @@ describe("PlayPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-
+    
     expect(
       await screen.findByTestId("playpage-home-button"),
     ).toBeInTheDocument();
     const homeButton = screen.getByTestId("playpage-home-button");
+    expect(homeButton).toHaveStyle(`
+            width: "60px",
+            height: "60px",
+            borderRadius: "25%",
+            backgroundColor: "lightblue",
+            color: "black",
+            position: "fixed",
+            bottom: "30px",
+            right: "90px",
+        `);
     fireEvent.click(homeButton);
 
     expect(mockedNavigate).toHaveBeenCalledWith("/home");
