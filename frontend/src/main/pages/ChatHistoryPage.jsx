@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router";
 import { useInfiniteQuery } from "react-query";
@@ -32,16 +32,16 @@ const ChatHistoryPage = () => {
   );
   // Stryker restore all
 
-  const userIdToUsername = useMemo(() => {
-    return userCommonsList.reduce((acc, user) => {
-      acc[user.userId] = user.username || "";
-      return acc;
-    }, {});
-  }, [userCommonsList]);
+  const hasValidUserCommons = Array.isArray(userCommonsList);
+  const userIdToUsername = hasValidUserCommons
+    ? userCommonsList.reduce((acc, user) => {
+        acc[user.userId] = user.username || "";
+        return acc;
+      }, {})
+    : {};
 
   const fetchChatPage = async ({ pageParam = 0 }) => {
-    const response = await axios("/api/chat/get", {
-      method: "GET",
+    const response = await axios.get("/api/chat/get", {
       params: {
         commonsId: commonsId,
         page: pageParam,
@@ -86,25 +86,24 @@ const ChatHistoryPage = () => {
     );
 
     const currentRef = loadMoreRef.current;
-
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
+    observer.observe(currentRef);
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
+      observer.unobserve(currentRef);
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const messages =
-    data?.pages.flatMap((page) =>
-      page.content.map((message) => ({
-        ...message,
-        username: userIdToUsername[message.userId],
-      })),
-    ) ?? [];
+  const messages = Array.isArray(data?.pages)
+    ? data.pages.flatMap((page) => {
+        if (!page || !Array.isArray(page.content)) {
+          return [];
+        }
+        return page.content.map((message) => ({
+          ...message,
+          username: userIdToUsername[message.userId],
+        }));
+      })
+    : [];
 
   const isInitialLoading = status === "loading";
   const showError = status === "error";

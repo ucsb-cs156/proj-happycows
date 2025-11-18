@@ -43,16 +43,27 @@ const ChatDisplay = ({ commonsId }) => {
 
   // Stryker restore all
 
-  const sortedMessages = [...messagesPage.content].sort((a, b) => b.id - a.id);
+  const messageContent = Array.isArray(messagesPage?.content)
+    ? messagesPage.content
+    : undefined;
+  const sortedMessages = Array.isArray(messageContent)
+    ? [...messageContent].sort((a, b) => b.id - a.id)
+    : null;
 
-  const userIdToUsername = userCommonsList.reduce((acc, user) => {
-    acc[user.userId] = user.username || "";
-    return acc;
-  }, {});
+  const userIdToUsername = Array.isArray(userCommonsList)
+    ? userCommonsList.reduce((acc, user) => {
+        acc[user.userId] = user.username || "";
+        return acc;
+      }, {})
+    : {};
 
+  const totalElements =
+    typeof messagesPage?.totalElements === "number"
+      ? messagesPage.totalElements
+      : undefined;
+  const messageCount = Array.isArray(sortedMessages) ? sortedMessages.length : 0;
   const showHistoryLink =
-    (messagesPage?.totalElements ?? sortedMessages.length) >
-    initialMessagePageSize;
+    (totalElements ?? messageCount) > initialMessagePageSize;
   const historyLink = `/chat/${commonsId}`;
 
   return (
@@ -66,16 +77,18 @@ const ChatDisplay = ({ commonsId }) => {
         }}
         data-testid="ChatDisplay"
       >
-        {Array.isArray(sortedMessages) &&
-          sortedMessages.slice(0, initialMessagePageSize).map((message) => (
-            <ChatMessageDisplay
-              key={message.id}
-              message={{
-                ...message,
-                username: userIdToUsername[message.userId],
-              }}
-            />
-          ))}
+        {(Array.isArray(sortedMessages) ? sortedMessages : []).slice(
+          0,
+          initialMessagePageSize,
+        ).map((message) => (
+          <ChatMessageDisplay
+            key={message.id}
+            message={{
+              ...message,
+              username: userIdToUsername[message.userId],
+            }}
+          />
+        ))}
       </div>
       {showHistoryLink && (
         <div
