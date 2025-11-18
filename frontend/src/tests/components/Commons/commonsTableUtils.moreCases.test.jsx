@@ -87,8 +87,20 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
 
   it("numeric getSortableValue returns numbers and respects nullish guards", () => {
     const base = { commons: {}, totalUsers: 0 };
-    expect(getSortableValue({ ...base, effectiveCapacity: 5 }, "effectiveCapacity")).toBe(5);
-    expect(getSortableValue({ ...base, effectiveCapacity: null }, "effectiveCapacity")).toBeNull();
-    expect(getSortableValue({ ...base, effectiveCapacity: undefined }, "effectiveCapacity")).toBeNull();
+    expect(
+      getSortableValue({ ...base, effectiveCapacity: 5 }, "effectiveCapacity"),
+    ).toBe(5);
+    expect(
+      getSortableValue(
+        { ...base, effectiveCapacity: null },
+        "effectiveCapacity",
+      ),
+    ).toBeNull();
+    expect(
+      getSortableValue(
+        { ...base, effectiveCapacity: undefined },
+        "effectiveCapacity",
+      ),
+    ).toBeNull();
   });
 });

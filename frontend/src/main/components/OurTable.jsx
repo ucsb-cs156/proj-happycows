@@ -59,11 +59,7 @@ export default function OurTable({
             const { key: hgKey, ...hgRest } = hgProps || {};
             const safeHgKey = hgKey ?? `headergroup-${hgIndex}`;
             return (
-              <tr
-                {...hgRest}
-                key={safeHgKey}
-                data-fallback-key={safeHgKey}
-              >
+              <tr {...hgRest} key={safeHgKey} data-fallback-key={safeHgKey}>
                 {headerGroup.headers.map((column, colIndex) => {
                   const colProps = column.getHeaderProps(
                     column.getSortByToggleProps(),

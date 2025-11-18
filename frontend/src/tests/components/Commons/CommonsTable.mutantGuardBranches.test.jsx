@@ -75,7 +75,10 @@ describe("CommonsTable comparator edge cases", () => {
 
   test("numeric comparator treats NaN as a fallback and keeps NaN entries last", async () => {
     const commons = [
-      { commons: { id: 1, name: "NaN Entry", cowPrice: Number.NaN }, totalCows: 0 },
+      {
+        commons: { id: 1, name: "NaN Entry", cowPrice: Number.NaN },
+        totalCows: 0,
+      },
       { commons: { id: 2, name: "Five", cowPrice: 5 }, totalCows: 0 },
       { commons: { id: 3, name: "Ten", cowPrice: 10 }, totalCows: 0 },
     ];
