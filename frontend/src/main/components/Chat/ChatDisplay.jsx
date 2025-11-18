@@ -1,12 +1,39 @@
 import React from "react";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { useBackend } from "main/utils/useBackend";
+import { useState, useEffect, useRef } from "react";
 
 // Props for storybook manual injection
 
 const ChatDisplay = ({ commonsId }) => {
-  const initialMessagePageSize = 100;
-  const refreshRate = 2000;
+  const initialMessagePageSize = 10;
+  const refreshRate = 200;
+
+  const [tempPage, setTempPage] = useState(0);
+  const chatElement = document.querySelector('[data-testid="ChatDisplay"]');
+
+  if(chatElement) {
+    chatElement.addEventListener("scroll", () => {
+      if(chatElement.scrollTop == -520){
+        try{
+          console.log(tempPage);
+          setTempPage(tempPage + 1);          
+        }
+        catch (error){
+          console.log("No more messages.");
+        }
+      }
+      else if(chatElement.scrollTop == 0 && tempPage > 0){
+        try{
+          console.log(tempPage);
+          setTempPage(tempPage - 1);
+        }
+        catch (error){
+          console.log("Up to date.");
+        }
+      }
+    })
+  }
 
   // Stryker disable all
 
@@ -17,7 +44,7 @@ const ChatDisplay = ({ commonsId }) => {
       url: `/api/chat/get`,
       params: {
         commonsId: commonsId,
-        page: 0,
+        page: tempPage,
         size: initialMessagePageSize,
       },
     },
@@ -72,3 +99,4 @@ const ChatDisplay = ({ commonsId }) => {
 };
 
 export default ChatDisplay;
+
