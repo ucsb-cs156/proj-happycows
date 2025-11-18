@@ -28,7 +28,7 @@ export default defineConfig({
   test: {
     globals: true, // makes describe, it, expect available globally
     environment: "jsdom", // makes it possible to use DOM APIs
-    setupFiles: "./vitest.setup.js",
+    setupFiles: "./vitest.setup.jsx",
     include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     coverage: {
       enabled: true, // This enables coverage collection, equivalent to `check-coverage`
@@ -45,6 +45,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      src: path.resolve(__dirname, "./src"),
       main: path.resolve(__dirname, "./src/main"),
       fixtures: path.resolve(__dirname, "./src/fixtures"),
       tests: path.resolve(__dirname, "./src/tests"),

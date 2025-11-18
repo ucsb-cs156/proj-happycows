@@ -105,6 +105,9 @@ function compareAsNumbers(aNum, bNum, directionMultiplier) {
 }
 
 export function createCommonsComparator(sortKey, sortDirection = "asc") {
+  if (sortDirection !== "asc" && sortDirection !== "desc") {
+    throw new Error("Invalid sort direction; expected 'asc' or 'desc'");
+  }
   const directionMultiplier = sortDirection === "desc" ? -1 : 1;
 
   return (a, b) => {

@@ -92,6 +92,34 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     expect(getSortableValue(commonsPlus, "commons.capacityPerUser")).toBe(7);
   });
 
+  it("getSortableValue does not throw when commons object is missing", () => {
+    const keysExpectNull = [
+      "commons.id",
+      "commons.cowPrice",
+      "commons.milkPrice",
+      "commons.startingBalance",
+      "commons.degradationRate",
+      "commons.showLeaderboard",
+      "commons.showChat",
+      "commons.capacityPerUser",
+      "commons.carryingCapacity",
+    ];
+    const keysExpectEmptyString = [
+      "commons.name",
+      "commons.startingDate",
+      "commons.lastDate",
+    ];
+    const commonsPlus = {};
+    keysExpectNull.forEach((key) => {
+      expect(() => getSortableValue(commonsPlus, key)).not.toThrow();
+      expect(getSortableValue(commonsPlus, key)).toBeNull();
+    });
+    keysExpectEmptyString.forEach((key) => {
+      expect(() => getSortableValue(commonsPlus, key)).not.toThrow();
+      expect(getSortableValue(commonsPlus, key)).toBe("");
+    });
+  });
+
   it("getSortableValue default branch returns null for unknown keys", () => {
     expect(getSortableValue({ commons: {} }, "not.a.real.key")).toBeNull();
   });
@@ -156,5 +184,26 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     const desc = createCommonsComparator("commons.name", "desc");
     expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
   });
-});
 
+  it("createCommonsComparator defaults to ascending when direction omitted", () => {
+    const a = { commons: { id: 1 } };
+    const b = { commons: { id: 2 } };
+    const comparator = createCommonsComparator("commons.id");
+    expect(comparator(a, b)).toBeLessThan(0);
+    expect(comparator(b, a)).toBeGreaterThan(0);
+  });
+
+  it("createCommonsComparator returns 0 when numeric values are equal", () => {
+    const a = { commons: { cowPrice: 7 } };
+    const b = { commons: { cowPrice: 7 } };
+    const comparator = createCommonsComparator("commons.cowPrice", "asc");
+    expect(comparator(a, b)).toBe(0);
+    expect(comparator(b, a)).toBe(0);
+  });
+  
+  it("createCommonsComparator throws on invalid sortDirection", () => {
+    expect(() => createCommonsComparator("commons.name", "zzz")).toThrow(
+      /Invalid sort direction/
+    );
+  });
+});

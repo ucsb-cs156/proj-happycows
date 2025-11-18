@@ -26,6 +26,19 @@ describe("CommonsCard tests", () => {
     it("returns false when starting date is missing", () => {
       expect(isFutureDate(null, referenceDate)).toBe(false);
     });
+
+    it("treats ISO strings with time component as the same calendar day", () => {
+      expect(isFutureDate("2025-05-15T23:59:59Z", referenceDate)).toBe(false);
+    });
+
+    it("handles single digit days correctly when comparing", () => {
+      const earlyMay = new Date(2025, 4, 5);
+      expect(isFutureDate(earlyMay, referenceDate)).toBe(false);
+    });
+
+    it("returns false when current date is missing", () => {
+      expect(isFutureDate("2025-01-01", null)).toBe(false);
+    });
   });
 
   test("renders without crashing when button text is set", async () => {

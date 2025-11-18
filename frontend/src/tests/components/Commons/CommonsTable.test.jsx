@@ -224,10 +224,10 @@ describe("Modal tests", () => {
     );
 
     await waitFor(
-      () =>
-        expect(
-          screen.queryByTestId("CommonsTable-Modal"),
-        ).not.toBeInTheDocument(),
+      () => {
+        const modal = screen.getByTestId("CommonsTable-Modal");
+        expect(modal).not.toBeVisible();
+      },
       { timeout: 50 },
     );
   });
@@ -249,10 +249,10 @@ describe("Modal tests", () => {
     fireEvent.click(cancelButton);
 
     await waitFor(
-      () =>
-        expect(
-          screen.queryByTestId("CommonsTable-Modal"),
-        ).not.toBeInTheDocument(),
+      () => {
+        const modal = screen.getByTestId("CommonsTable-Modal");
+        expect(modal).not.toBeVisible();
+      },
       { timeout: 50 },
     );
 
@@ -278,10 +278,10 @@ describe("Modal tests", () => {
     fireEvent.click(closeButton);
 
     await waitFor(
-      () =>
-        expect(
-          screen.queryByTestId("CommonsTable-Modal"),
-        ).not.toBeInTheDocument(),
+      () => {
+        const modal = screen.getByTestId("CommonsTable-Modal");
+        expect(modal).not.toBeVisible();
+      },
       { timeout: 50 },
     );
 

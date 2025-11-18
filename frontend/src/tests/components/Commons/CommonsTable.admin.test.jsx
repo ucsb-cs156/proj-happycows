@@ -56,6 +56,10 @@ describe("CommonsTable admin actions", () => {
       screen.getByTestId("CommonsTable-card-0-action-Announcements"),
     ).toBeInTheDocument();
 
+    // modal should be hidden before any interaction
+    const modalBeforeClick = screen.getByTestId("CommonsTable-Modal");
+    expect(modalBeforeClick).not.toBeVisible();
+
     // open delete modal
     await userEvent.click(
       screen.getByTestId("CommonsTable-card-0-action-Delete"),
@@ -66,10 +70,10 @@ describe("CommonsTable admin actions", () => {
     await userEvent.click(screen.getByTestId("CommonsTable-Modal-Cancel"));
     // wait for the modal to be removed or hidden
     await waitFor(
-      () =>
-        expect(
-          screen.queryByTestId("CommonsTable-Modal"),
-        ).not.toBeInTheDocument(),
+      () => {
+        const modal = screen.getByTestId("CommonsTable-Modal");
+        expect(modal).not.toBeVisible();
+      },
       { timeout: 50 },
     );
   });
