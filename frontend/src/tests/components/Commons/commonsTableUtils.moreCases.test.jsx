@@ -141,3 +141,4 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
   });
 });
+
