@@ -35,7 +35,7 @@ vi.mock("react-bootstrap", async () => {
 					onClick={onHide}
 					data-testid="Modal-close-button"
 				>
-					×
+					x
 				</button>
 			) : null}
 		</div>
