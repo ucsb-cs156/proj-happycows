@@ -109,7 +109,6 @@ describe("ChatHistoryPage", () => {
     useBackendSpy.mockRestore();
   });
 
-
   test("renders chat messages and shows terminal status when no more pages", async () => {
     setupCommonMocks();
     axiosMock
