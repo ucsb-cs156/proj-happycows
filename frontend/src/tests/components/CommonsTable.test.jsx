@@ -1,4 +1,7 @@
-import { formatPlain, getSortableValue } from "main/components/Commons/commonsTableUtils";
+import {
+  formatPlain,
+  getSortableValue,
+} from "main/components/Commons/commonsTableUtils";
 
 describe("CommonsTable sort and formatPlain (utils only)", () => {
   it("formatPlain returns '—' for null/undefined/''", () => {

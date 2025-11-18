@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { getSortableValue, computeEffectiveCapacity } from "../../../../src/main/components/Commons/commonsTableUtils";
+import {
+  getSortableValue,
+  computeEffectiveCapacity,
+} from "../../../../src/main/components/Commons/commonsTableUtils";
 
 describe("CommonsTable getSortableValue exhaustive tests", () => {
   it("returns null when commonsPlus is falsy", () => {

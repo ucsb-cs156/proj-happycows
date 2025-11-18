@@ -1,5 +1,8 @@
 import { describe, test, expect } from "vitest";
-import { formatPlain, getSortableValue } from "main/components/Commons/commonsTableUtils";
+import {
+  formatPlain,
+  getSortableValue,
+} from "main/components/Commons/commonsTableUtils";
 
 describe("CommonsTable helpers unit tests", () => {
   test("formatPlain returns dash for null/empty/undefined", () => {
