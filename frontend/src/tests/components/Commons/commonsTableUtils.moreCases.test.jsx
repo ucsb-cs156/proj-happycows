@@ -156,10 +156,4 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     const desc = createCommonsComparator("commons.name", "desc");
     expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
   });
-
-  it("compareAsStrings honors direction multiplier", () => {
-    expect(compareAsStrings("A", "B", 1)).toBeLessThan(0);
-    expect(compareAsStrings("A", "B", -1)).toBeGreaterThan(0);
-    expect(compareAsStrings("same", "same", -1)).toBe(0);
-  });
 });

@@ -35,72 +35,67 @@ export function computeEffectiveCapacity(commonsPlus) {
   return null;
 }
 
+const NUMERIC_SORT_KEYS = new Set([
+  "commons.cowPrice",
+  "commons.milkPrice",
+  "commons.startingBalance",
+  "commons.degradationRate",
+  "totalCows",
+  "commons.capacityPerUser",
+  "commons.carryingCapacity",
+  "effectiveCapacity",
+]);
+
+const STRING_DEFAULT_EMPTY_KEYS = new Set([
+  "commons.name",
+  "commons.startingDate",
+  "commons.lastDate",
+]);
+
+const sortableValueResolvers = {
+  "commons.id": (commonsPlus) => commonsPlus.commons?.id,
+  "commons.name": (commonsPlus) => commonsPlus.commons?.name,
+  "commons.cowPrice": (commonsPlus) => commonsPlus.commons?.cowPrice,
+  "commons.milkPrice": (commonsPlus) => commonsPlus.commons?.milkPrice,
+  "commons.startingBalance": (commonsPlus) =>
+    commonsPlus.commons?.startingBalance,
+  "commons.startingDate": (commonsPlus) => commonsPlus.commons?.startingDate,
+  "commons.lastDate": (commonsPlus) => commonsPlus.commons?.lastDate,
+  "commons.degradationRate": (commonsPlus) =>
+    commonsPlus.commons?.degradationRate,
+  "commons.showLeaderboard": (commonsPlus) =>
+    commonsPlus.commons?.showLeaderboard,
+  "commons.showChat": (commonsPlus) => commonsPlus.commons?.showChat,
+  totalCows: (commonsPlus) => commonsPlus.totalCows,
+  "commons.capacityPerUser": (commonsPlus) =>
+    commonsPlus.commons?.capacityPerUser,
+  "commons.carryingCapacity": (commonsPlus) =>
+    commonsPlus.commons?.carryingCapacity,
+  effectiveCapacity: computeEffectiveCapacity,
+};
+
 export function getSortableValue(commonsPlus, key) {
   if (!commonsPlus) return null;
-  const val = (() => {
-    switch (key) {
-      case "commons.id":
-        return commonsPlus.commons && commonsPlus.commons.id;
-      case "commons.name":
-        return commonsPlus.commons && commonsPlus.commons.name;
-      case "commons.cowPrice":
-        return commonsPlus.commons && commonsPlus.commons.cowPrice;
-      case "commons.milkPrice":
-        return commonsPlus.commons && commonsPlus.commons.milkPrice;
-      case "commons.startingBalance":
-        return commonsPlus.commons && commonsPlus.commons.startingBalance;
-      case "commons.startingDate":
-        return commonsPlus.commons && commonsPlus.commons.startingDate;
-      case "commons.lastDate":
-        return commonsPlus.commons && commonsPlus.commons.lastDate;
-      case "commons.degradationRate":
-        return commonsPlus.commons && commonsPlus.commons.degradationRate;
-      case "commons.showLeaderboard":
-        return commonsPlus.commons && commonsPlus.commons.showLeaderboard;
-      case "commons.showChat":
-        return commonsPlus.commons && commonsPlus.commons.showChat;
-      case "totalCows":
-        return commonsPlus.totalCows;
-      case "commons.capacityPerUser":
-        return commonsPlus.commons && commonsPlus.commons.capacityPerUser;
-      case "commons.carryingCapacity":
-        return commonsPlus.commons && commonsPlus.commons.carryingCapacity;
-      case "effectiveCapacity":
-        return computeEffectiveCapacity(commonsPlus);
-      default:
-        return null;
-    }
-  })();
+  const resolver = sortableValueResolvers[key];
+  if (!resolver) return null;
 
-  // For numeric-like fields, coerce to Number when possible
-  const numericKeys = new Set([
-    "commons.cowPrice",
-    "commons.milkPrice",
-    "commons.startingBalance",
-    "commons.degradationRate",
-    "totalCows",
-    "commons.capacityPerUser",
-    "commons.carryingCapacity",
-    "effectiveCapacity",
-  ]);
+  const val = resolver(commonsPlus);
 
-  if (numericKeys.has(key)) {
+  if (NUMERIC_SORT_KEYS.has(key)) {
     if (val == null || val === "") return null;
     const n = Number(val);
     return Number.isFinite(n) ? n : null;
   }
 
   // For string/date/boolean fields, return as-is (or empty string for missing names/dates)
-  if (key === "commons.name") return val ?? "";
-  if (key === "commons.startingDate" || key === "commons.lastDate")
-    return val ?? "";
+  if (STRING_DEFAULT_EMPTY_KEYS.has(key)) return val ?? "";
 
   return val ?? null;
 }
 
 export function compareAsStrings(aVal, bVal, directionMultiplier) {
   const cmp = String(aVal).localeCompare(String(bVal));
-  return cmp * directionMultiplier;
+  return directionMultiplier === -1 ? -cmp : cmp;
 }
 
 function compareAsNumbers(aNum, bNum, directionMultiplier) {
@@ -116,12 +111,12 @@ export function createCommonsComparator(sortKey, sortDirection = "asc") {
     const aVal = getSortableValue(a, sortKey);
     const bVal = getSortableValue(b, sortKey);
 
-    if (aVal === null || aVal === undefined) {
-      if (bVal === null || bVal === undefined) return 0;
+    if (aVal == null) {
+      if (bVal == null) return 0;
       return 1;
     }
 
-    if (bVal === null || bVal === undefined) {
+    if (bVal == null) {
       return -1;
     }
 
