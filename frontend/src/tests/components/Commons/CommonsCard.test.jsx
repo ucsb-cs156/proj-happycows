@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import CommonsCard, { isFutureDate } from "main/components/Commons/CommonsCard";
+import CommonsCard from "main/components/Commons/CommonsCard";
+import { isFutureDate } from "main/components/Commons/commonsCardUtils";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";

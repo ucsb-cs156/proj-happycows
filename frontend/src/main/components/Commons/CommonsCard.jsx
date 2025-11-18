@@ -1,25 +1,6 @@
 import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
-
-const curr = new Date();
-
-function toDateKey(dateOrString) {
-  if (!dateOrString) return "";
-  if (typeof dateOrString === "string") {
-    return dateOrString.substring(0, 10);
-  }
-  const year = dateOrString.getFullYear();
-  const month = String(dateOrString.getMonth() + 1).padStart(2, "0");
-  const day = String(dateOrString.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-export function isFutureDate(startingDate, currentDate = curr) {
-  const targetKey = toDateKey(startingDate);
-  const referenceKey = toDateKey(currentDate);
-  if (!targetKey || !referenceKey) return false;
-  return targetKey > referenceKey;
-}
+import { isFutureDate } from "./commonsCardUtils";
 
 const CommonsCard = ({ buttonText, buttonLink, commons }) => {
   const testIdPrefix = "commonsCard";
