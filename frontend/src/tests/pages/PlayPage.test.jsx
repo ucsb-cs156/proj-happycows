@@ -642,7 +642,7 @@ describe("PlayPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-    
+
     expect(
       await screen.findByTestId("playpage-home-button"),
     ).toBeInTheDocument();
