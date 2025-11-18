@@ -18,6 +18,105 @@ import {
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
+// Helper functions exported for unit tests
+export function formatPlain(value) {
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+  return `${value}`;
+}
+
+export function formatDate(value) {
+  if (!value) return "—";
+  return String(value).slice(0, 10);
+}
+
+export function formatBoolean(value) {
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+  return String(value);
+}
+
+export function computeEffectiveCapacity(commonsPlus) {
+  const { effectiveCapacity, commons: commonsData, totalUsers } = commonsPlus;
+  if (effectiveCapacity !== null && effectiveCapacity !== undefined) {
+    return effectiveCapacity;
+  }
+  if (
+    commonsData.capacityPerUser !== null &&
+    commonsData.capacityPerUser !== undefined &&
+    totalUsers !== null &&
+    totalUsers !== undefined
+  ) {
+    return commonsData.capacityPerUser * totalUsers;
+  }
+  return null;
+}
+
+export function getSortableValue(commonsPlus, key) {
+  if (!commonsPlus) return null;
+  const val = (() => {
+    switch (key) {
+      case "commons.id":
+        return commonsPlus.commons && commonsPlus.commons.id;
+      case "commons.name":
+        return commonsPlus.commons && commonsPlus.commons.name;
+      case "commons.cowPrice":
+        return commonsPlus.commons && commonsPlus.commons.cowPrice;
+      case "commons.milkPrice":
+        return commonsPlus.commons && commonsPlus.commons.milkPrice;
+      case "commons.startingBalance":
+        return commonsPlus.commons && commonsPlus.commons.startingBalance;
+      case "commons.startingDate":
+        return commonsPlus.commons && commonsPlus.commons.startingDate;
+      case "commons.lastDate":
+        return commonsPlus.commons && commonsPlus.commons.lastDate;
+      case "commons.degradationRate":
+        return commonsPlus.commons && commonsPlus.commons.degradationRate;
+      case "commons.showLeaderboard":
+        return commonsPlus.commons && commonsPlus.commons.showLeaderboard;
+      case "commons.showChat":
+        return commonsPlus.commons && commonsPlus.commons.showChat;
+      case "totalCows":
+        return commonsPlus.totalCows;
+      case "commons.capacityPerUser":
+        return commonsPlus.commons && commonsPlus.commons.capacityPerUser;
+      case "commons.carryingCapacity":
+        return commonsPlus.commons && commonsPlus.commons.carryingCapacity;
+      case "effectiveCapacity":
+        return computeEffectiveCapacity(commonsPlus);
+      default:
+        return null;
+    }
+  })();
+
+  // For numeric-like fields, coerce to Number when possible
+  const numericKeys = new Set([
+    "commons.cowPrice",
+    "commons.milkPrice",
+    "commons.startingBalance",
+    "commons.degradationRate",
+    "totalCows",
+    "commons.capacityPerUser",
+    "commons.carryingCapacity",
+    "effectiveCapacity",
+  ]);
+
+  if (numericKeys.has(key)) {
+    if (val === null || val === undefined || val === "") return null;
+    if (typeof val === "number") return val;
+    const n = Number(val);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  // For string/date/boolean fields, return as-is (or empty string for missing names/dates)
+  if (key === "commons.name") return val ?? "";
+  if (key === "commons.startingDate" || key === "commons.lastDate") return val ?? "";
+
+  return val ?? null;
+}
+
 export default function CommonsTable({ commons, currentUser }) {
   const [showModal, setShowModal] = useState(false);
   const [commonsToDelete, setCommonsToDelete] = useState(null);
@@ -34,24 +133,6 @@ export default function CommonsTable({ commons, currentUser }) {
 
   const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
-  const formatPlain = useCallback((value) => {
-    if (value === null || value === undefined || value === "") {
-      return "—";
-    }
-    return `${value}`;
-  }, []);
-
-  const formatDate = useCallback((value) => {
-    if (!value) return "—";
-    return String(value).slice(0, 10);
-  }, []);
-
-  const formatBoolean = useCallback((value) => {
-    if (value === null || value === undefined || value === "") {
-      return "—";
-    }
-    return String(value);
-  }, []);
 
   const handleEdit = useCallback(
     (commonsId) => {
@@ -85,59 +166,7 @@ export default function CommonsTable({ commons, currentUser }) {
     [navigate],
   );
 
-  const computeEffectiveCapacity = useCallback((commonsPlus) => {
-    const { effectiveCapacity, commons: commonsData, totalUsers } = commonsPlus;
-    if (effectiveCapacity !== null && effectiveCapacity !== undefined) {
-      return effectiveCapacity;
-    }
-    if (
-      commonsData.capacityPerUser !== null &&
-      commonsData.capacityPerUser !== undefined &&
-      totalUsers !== null &&
-      totalUsers !== undefined
-    ) {
-      return commonsData.capacityPerUser * totalUsers;
-    }
-    return null;
-  }, []);
-
-  const getSortableValue = useCallback(
-    (commonsPlus, key) => {
-      switch (key) {
-        case "commons.id":
-          return commonsPlus.commons.id ?? null;
-        case "commons.name":
-          return commonsPlus.commons.name ?? "";
-        case "commons.cowPrice":
-          return commonsPlus.commons.cowPrice ?? null;
-        case "commons.milkPrice":
-          return commonsPlus.commons.milkPrice ?? null;
-        case "commons.startingBalance":
-          return commonsPlus.commons.startingBalance ?? null;
-        case "commons.startingDate":
-          return commonsPlus.commons.startingDate ?? "";
-        case "commons.lastDate":
-          return commonsPlus.commons.lastDate ?? "";
-        case "commons.degradationRate":
-          return commonsPlus.commons.degradationRate ?? null;
-        case "commons.showLeaderboard":
-          return commonsPlus.commons.showLeaderboard ?? null;
-        case "commons.showChat":
-          return commonsPlus.commons.showChat ?? null;
-        case "totalCows":
-          return commonsPlus.totalCows ?? null;
-        case "commons.capacityPerUser":
-          return commonsPlus.commons.capacityPerUser ?? null;
-        case "commons.carryingCapacity":
-          return commonsPlus.commons.carryingCapacity ?? null;
-        case "effectiveCapacity":
-          return computeEffectiveCapacity(commonsPlus);
-        default:
-          return null;
-      }
-    },
-    [computeEffectiveCapacity],
-  );
+  
 
   const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
     ? sortKey
@@ -148,12 +177,15 @@ export default function CommonsTable({ commons, currentUser }) {
     sorted.sort((a, b) => {
       const aVal = getSortableValue(a, validSortKey);
       const bVal = getSortableValue(b, validSortKey);
+      // Treat null/undefined as "missing" and place missing values last
+      // regardless of sort direction so that non-null values appear first
+      // for both ascending and descending sorts.
       if (aVal === null || aVal === undefined) {
         if (bVal === null || bVal === undefined) return 0;
-        return sortDirection === "asc" ? 1 : -1;
+        return 1;
       }
       if (bVal === null || bVal === undefined) {
-        return sortDirection === "asc" ? -1 : 1;
+        return -1;
       }
       if (typeof aVal === "string" || typeof bVal === "string") {
         const cmp = String(aVal).localeCompare(String(bVal));

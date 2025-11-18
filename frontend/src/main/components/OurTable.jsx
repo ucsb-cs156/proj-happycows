@@ -38,43 +38,66 @@ export default function OurTable({
       useSortBy,
     );
 
+  const tableProps = getTableProps();
+  const { key: tableKey, ...tableRest } = tableProps || {};
+  const bodyProps = getTableBodyProps();
+  const { key: bodyKey, ...bodyRest } = bodyProps || {};
+
   return (
-    <div {...getTableProps()}>
-      <Table style={tableStyle} {...getTableProps()} striped bordered hover>
+    <div {...tableRest} key={tableKey}>
+      <Table style={tableStyle} {...tableRest} key={tableKey} striped bordered hover>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  data-testid={`${testid}-header-${column.id}`}
-                >
-                  {column.render("Header")}
-                  <span
-                    data-testid={`${testid}-header-${column.id}-sort-carets`}
-                  >
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
+          {headerGroups.map((headerGroup, hgIndex) => {
+            const hgProps = headerGroup.getHeaderGroupProps();
+            const { key: hgKey, ...hgRest } = hgProps || {};
+            const safeHgKey = hgKey ?? `headergroup-${hgIndex}`;
+            return (
+              <tr {...hgRest} key={safeHgKey}>
+                {headerGroup.headers.map((column, colIndex) => {
+                  const colProps = column.getHeaderProps(column.getSortByToggleProps());
+                  const { key: colKey, ...colRest } = colProps || {};
+                  const safeColKey = colKey ?? `col-${column.id ?? colIndex}`;
+                  return (
+                    <th
+                      {...colRest}
+                      key={safeColKey}
+                      data-testid={`${testid}-header-${column.id}`}
+                    >
+                      {column.render("Header")}
+                      <span
+                        data-testid={`${testid}-header-${column.id}-sort-carets`}
+                      >
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? " 🔽"
+                            : " 🔼"
+                          : ""}
+                      </span>
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
-        <tbody {...getTableBodyProps()}>
+        <tbody {...bodyRest} key={bodyKey}>
           {rows
             .slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-            .map((row) => {
+            .map((row, rowIndex) => {
               prepareRow(row);
+              const rowProps = row.getRowProps();
+              const { key: rowKey, ...rowRest } = rowProps || {};
+              const safeRowKey = rowKey ?? `row-${rowIndex}`;
               return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell, _index) => {
+                <tr {...rowRest} key={safeRowKey}>
+                  {row.cells.map((cell, cellIndex) => {
+                    const cellProps = cell.getCellProps();
+                    const { key: cellKey, ...cellRest } = cellProps || {};
+                    const safeCellKey = cellKey ?? `cell-${cell.row.index}-${cell.column.id ?? cellIndex}`;
                     return (
                       <td
-                        {...cell.getCellProps()}
+                        {...cellRest}
+                        key={safeCellKey}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
                         {cell.render("Cell")}
@@ -88,7 +111,7 @@ export default function OurTable({
       </Table>
       {rows.length > pageSize && (
         <div style={paginationStyle}>
-          <Pagination {...getTableProps()}>
+          <Pagination {...tableRest}>
             <Pagination.Prev
               onClick={() => setPageIndex(pageIndex - 1)}
               data-testid={`${testid}-prev-page-button`}
@@ -175,7 +198,7 @@ export default function OurTable({
               </Pagination.Item>
             )}
             <Pagination.Next
-              {...getTableBodyProps()}
+              {...bodyRest}
               onClick={() => setPageIndex(pageIndex + 1)}
               data-testid={`${testid}-next-page-button`}
               disabled={
