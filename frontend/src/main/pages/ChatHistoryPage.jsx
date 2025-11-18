@@ -17,7 +17,6 @@ const ChatHistoryPage = () => {
   const navigate = useNavigate();
   const loadMoreRef = useRef(null);
 
-  // Stryker disable all
   const { data: userCommonsList } = useBackend(
     [`/api/usercommons/commons/all?commonsId=${commonsId}`],
     {
@@ -30,7 +29,6 @@ const ChatHistoryPage = () => {
     [],
     { refetchInterval: REFRESH_RATE, enabled: !!commonsId },
   );
-  // Stryker restore all
 
   const hasValidUserCommons = Array.isArray(userCommonsList);
   const userIdToUsername = hasValidUserCommons

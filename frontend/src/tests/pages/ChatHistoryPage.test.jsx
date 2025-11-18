@@ -79,6 +79,37 @@ describe("ChatHistoryPage", () => {
     return spy;
   };
 
+  test("configures user commons query with expected polling options", () => {
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
+    useBackendSpy.mockReturnValue({ data: [] });
+    const useInfiniteQuerySpy = mockInfiniteQuery();
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(useBackendSpy).toHaveBeenCalledWith(
+      [`/api/usercommons/commons/all?commonsId=1`],
+      {
+        method: "GET",
+        url: "/api/usercommons/commons/all",
+        params: { commonsId: 1 },
+      },
+      [],
+      { refetchInterval: 2000, enabled: true },
+    );
+
+    useInfiniteQuerySpy.mockRestore();
+    useBackendSpy.mockRestore();
+  });
+
+
   test("renders chat messages and shows terminal status when no more pages", async () => {
     setupCommonMocks();
     axiosMock

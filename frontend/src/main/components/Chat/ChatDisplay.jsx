@@ -9,8 +9,6 @@ const ChatDisplay = ({ commonsId }) => {
   const initialMessagePageSize = 10;
   const refreshRate = 2000;
 
-  // Stryker disable all
-
   const { data: messagesPage } = useBackend(
     [
       `/api/chat/get?page=0&size=${initialMessagePageSize}&commonsId=${commonsId}`,
@@ -40,8 +38,6 @@ const ChatDisplay = ({ commonsId }) => {
     [],
     { refetchInterval: refreshRate },
   );
-
-  // Stryker restore all
 
   const messageContent = Array.isArray(messagesPage?.content)
     ? messagesPage.content

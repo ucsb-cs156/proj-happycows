@@ -395,4 +395,40 @@ describe("ChatDisplay tests", () => {
       screen.queryByTestId("ChatDisplay-HistoryLink"),
     ).not.toBeInTheDocument();
   });
+
+  test("configures chat and user commons queries with expected arguments", () => {
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
+    useBackendSpy
+      .mockReturnValueOnce({ data: { content: [], totalElements: 0 } })
+      .mockReturnValueOnce({ data: [] });
+
+    renderChatDisplay();
+
+    expect(useBackendSpy).toHaveBeenNthCalledWith(
+      1,
+      [`/api/chat/get?page=0&size=10&commonsId=${commonsId}`],
+      {
+        method: "GET",
+        url: "/api/chat/get",
+        params: {
+          commonsId,
+          page: 0,
+          size: 10,
+        },
+      },
+      { content: [], totalElements: 0 },
+      { refetchInterval: 2000 },
+    );
+    expect(useBackendSpy).toHaveBeenNthCalledWith(
+      2,
+      [`/api/usercommons/commons/all`],
+      {
+        method: "GET",
+        url: "/api/usercommons/commons/all",
+        params: { commonsId },
+      },
+      [],
+      { refetchInterval: 2000 },
+    );
+  });
 });
