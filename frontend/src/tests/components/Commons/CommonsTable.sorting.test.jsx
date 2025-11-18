@@ -1,9 +1,8 @@
 import { describe, test, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import CommonsTable, {
-  getSortableValue,
-} from 'main/components/Commons/CommonsTable';
+import CommonsTable from 'main/components/Commons/CommonsTable';
+import { getSortableValue } from 'main/components/Commons/commonsTableUtils';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { MemoryRouter } from 'react-router';
 
