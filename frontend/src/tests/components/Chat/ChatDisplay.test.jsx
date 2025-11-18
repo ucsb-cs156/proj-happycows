@@ -232,13 +232,9 @@ describe("ChatDisplay tests", () => {
       screen.queryByTestId("ChatMessageDisplay-1"),
     ).not.toBeInTheDocument();
 
-    expect(
-      screen.getByTestId("ChatDisplay-HistoryLink"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("ChatDisplay-HistoryLink")).toBeInTheDocument();
 
-    expect(
-      screen.getByText("This should appear, though"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("This should appear, though")).toBeInTheDocument();
     expect(screen.getByText("This one too!")).toBeInTheDocument();
   });
 
@@ -257,7 +253,9 @@ describe("ChatDisplay tests", () => {
       expect(screen.getByTestId("ChatMessageDisplay-10")).toBeInTheDocument();
     });
 
-    expect(screen.queryByTestId("ChatMessageDisplay-11")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("ChatMessageDisplay-11"),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId("ChatDisplay-HistoryLink")).toBeInTheDocument();
   });
 

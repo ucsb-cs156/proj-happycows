@@ -61,7 +61,9 @@ const ChatDisplay = ({ commonsId }) => {
     typeof messagesPage?.totalElements === "number"
       ? messagesPage.totalElements
       : undefined;
-  const messageCount = Array.isArray(sortedMessages) ? sortedMessages.length : 0;
+  const messageCount = Array.isArray(sortedMessages)
+    ? sortedMessages.length
+    : 0;
   const showHistoryLink =
     (totalElements ?? messageCount) > initialMessagePageSize;
   const historyLink = `/chat/${commonsId}`;
@@ -77,18 +79,17 @@ const ChatDisplay = ({ commonsId }) => {
         }}
         data-testid="ChatDisplay"
       >
-        {(Array.isArray(sortedMessages) ? sortedMessages : []).slice(
-          0,
-          initialMessagePageSize,
-        ).map((message) => (
-          <ChatMessageDisplay
-            key={message.id}
-            message={{
-              ...message,
-              username: userIdToUsername[message.userId],
-            }}
-          />
-        ))}
+        {(Array.isArray(sortedMessages) ? sortedMessages : [])
+          .slice(0, initialMessagePageSize)
+          .map((message) => (
+            <ChatMessageDisplay
+              key={message.id}
+              message={{
+                ...message,
+                username: userIdToUsername[message.userId],
+              }}
+            />
+          ))}
       </div>
       {showHistoryLink && (
         <div

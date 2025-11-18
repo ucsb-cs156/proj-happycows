@@ -1,8 +1,5 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
@@ -114,13 +111,11 @@ describe("ChatHistoryPage", () => {
     expect(container).toHaveStyle("background-color: white");
 
     expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("ChatMessageDisplay-1-User"),
-    ).toHaveTextContent("George Washington");
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "George Washington",
+    );
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
-    expect(
-      screen.queryByText(/Loading messages.../i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Loading messages.../i)).not.toBeInTheDocument();
     expect(
       screen.queryByText(/Unable to load chat messages/i),
     ).not.toBeInTheDocument();
@@ -156,9 +151,9 @@ describe("ChatHistoryPage", () => {
         screen.getByTestId("ChatMessageDisplay-1-User"),
       ).toBeInTheDocument(),
     );
-    expect(
-      screen.getByTestId("ChatMessageDisplay-1-User"),
-    ).toHaveTextContent("Anonymous");
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "Anonymous",
+    );
   });
 
   test("clicking back navigates to previous page", async () => {
@@ -231,9 +226,7 @@ describe("ChatHistoryPage", () => {
     expect(
       screen.getByText(/Unable to load chat messages/i),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/Loading messages.../i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Loading messages.../i)).not.toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
   });
 
@@ -257,9 +250,7 @@ describe("ChatHistoryPage", () => {
     expect(
       screen.getByText(/No messages available for this commons/i),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/Loading messages.../i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Loading messages.../i)).not.toBeInTheDocument();
     expect(
       screen.queryByText(/Unable to load chat messages/i),
     ).not.toBeInTheDocument();
@@ -313,9 +304,9 @@ describe("ChatHistoryPage", () => {
         screen.getByTestId("ChatMessageDisplay-1-User"),
       ).toBeInTheDocument(),
     );
-    expect(
-      screen.getByTestId("ChatMessageDisplay-1-User"),
-    ).toHaveTextContent("Anonymous");
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "Anonymous",
+    );
 
     useInfiniteQuerySpy.mockRestore();
     useBackendSpy.mockRestore();
@@ -401,7 +392,9 @@ describe("ChatHistoryPage", () => {
     expect(options.getNextPageParam({ last: false }, samplePages)).toBe(
       samplePages.length,
     );
-    expect(options.getNextPageParam({ last: true }, samplePages)).toBeUndefined();
+    expect(
+      options.getNextPageParam({ last: true }, samplePages),
+    ).toBeUndefined();
     expect(options.getNextPageParam(undefined, samplePages)).toBeUndefined();
 
     useInfiniteQuerySpy.mockRestore();
@@ -430,7 +423,9 @@ describe("ChatHistoryPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText(/Scroll to load more messages/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Scroll to load more messages/i),
+    ).toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
   });
 
@@ -471,9 +466,7 @@ describe("ChatHistoryPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByText(/Loading more messages/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Loading more messages/i)).toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
   });
 
@@ -495,7 +488,9 @@ describe("ChatHistoryPage", () => {
       </QueryClientProvider>,
     );
 
-    await waitFor(() => expect(globalThis.IntersectionObserver).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
     intersectionCallback?.([{ isIntersecting: false }]);
     expect(fetchNextPage).not.toHaveBeenCalled();
 
@@ -521,7 +516,9 @@ describe("ChatHistoryPage", () => {
       </QueryClientProvider>,
     );
 
-    await waitFor(() => expect(globalThis.IntersectionObserver).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
     intersectionCallback?.([{ isIntersecting: true }]);
     expect(fetchNextPage).not.toHaveBeenCalled();
 
@@ -545,9 +542,7 @@ describe("ChatHistoryPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByText(/Updating conversation/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Updating conversation/i)).toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
   });
 
@@ -610,7 +605,9 @@ describe("ChatHistoryPage", () => {
     await waitFor(() => {
       const nextPageRequests = axiosMock.history.get.filter(
         (req) =>
-          req.url === "/api/chat/get" && req.params?.page === 1 && req.params.size === 25,
+          req.url === "/api/chat/get" &&
+          req.params?.page === 1 &&
+          req.params.size === 25,
       );
       expect(nextPageRequests.length).toBeGreaterThan(0);
     });

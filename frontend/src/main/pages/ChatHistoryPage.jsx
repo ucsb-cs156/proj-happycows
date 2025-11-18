@@ -58,16 +58,12 @@ const ChatHistoryPage = () => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery(
-    ["chatHistory", commonsId],
-    fetchChatPage,
-    {
-      getNextPageParam: (lastPage, pages) =>
-        lastPage?.last === false ? pages.length : undefined,
-      refetchInterval: REFRESH_RATE,
-      enabled: !!commonsId,
-    },
-  );
+  } = useInfiniteQuery(["chatHistory", commonsId], fetchChatPage, {
+    getNextPageParam: (lastPage, pages) =>
+      lastPage?.last === false ? pages.length : undefined,
+    refetchInterval: REFRESH_RATE,
+    enabled: !!commonsId,
+  });
 
   useEffect(() => {
     if (!hasNextPage) {
