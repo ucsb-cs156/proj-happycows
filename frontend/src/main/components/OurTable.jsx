@@ -43,9 +43,10 @@ export default function OurTable({
       <Table style={tableStyle} {...getTableProps()} striped bordered hover>
         <thead>
           {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th
+                  key={column.id}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                   data-testid={`${testid}-header-${column.id}`}
                 >
@@ -70,10 +71,11 @@ export default function OurTable({
             .map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr key={row.id} {...row.getRowProps()}>
                   {row.cells.map((cell, _index) => {
                     return (
                       <td
+                        key={cell.column.id}
                         {...cell.getCellProps()}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
