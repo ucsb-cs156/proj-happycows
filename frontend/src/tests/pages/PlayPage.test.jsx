@@ -648,14 +648,14 @@ describe("PlayPage tests", () => {
     ).toBeInTheDocument();
     const homeButton = screen.getByTestId("playpage-home-button");
     expect(homeButton).toHaveStyle(`
-            width: "60px",
-            height: "60px",
-            borderRadius: "25%",
-            backgroundColor: "lightblue",
-            color: "black",
-            position: "fixed",
-            bottom: "30px",
-            right: "90px",
+            width: 60px;
+            height: 60px;
+            borderRadius: 25%;
+            backgroundColor: lightblue;
+            color: black;
+            position: fixed;
+            bottom: 30px;
+            right: 90px;
         `);
     fireEvent.click(homeButton);
 
