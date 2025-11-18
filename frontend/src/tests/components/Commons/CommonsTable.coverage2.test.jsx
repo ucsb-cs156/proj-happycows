@@ -2,8 +2,9 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // Helper to build a commonsPlus object
 const makeCommonsPlus = (overrides = {}) => {
@@ -29,9 +30,8 @@ const makeCommonsPlus = (overrides = {}) => {
   return { ...base, ...overrides };
 };
 
-const queryClient = new QueryClient();
-
 function renderTable(commons, currentUser = { authorities: ["ROLE_ADMIN"] }) {
+  const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>

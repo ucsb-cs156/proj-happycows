@@ -2,11 +2,12 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 test("confirmDelete early-return branch is safe when no commonsToDelete", async () => {
-  const queryClient = new QueryClient();
+  const queryClient = createTestQueryClient();
 
   render(
     <QueryClientProvider client={queryClient}>

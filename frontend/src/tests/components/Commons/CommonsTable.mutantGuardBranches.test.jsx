@@ -2,16 +2,17 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import CommonsTable from "main/components/Commons/CommonsTable";
+import { createTestQueryClient } from "src/tests/utils/testQueryClient";
 
 vi.mock("main/utils/useBackend", () => ({
   useBackendMutation: () => ({ mutate: vi.fn() }),
 }));
 
 function renderTable(commons, currentUser = { roles: [] }) {
-  const queryClient = new QueryClient();
+  const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>

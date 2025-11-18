@@ -3,7 +3,9 @@ import {
   computeEffectiveCapacity,
   formatPlain,
   formatBoolean,
+  formatDate,
   getSortableValue,
+  compareAsStrings,
   createCommonsComparator,
 } from "main/components/Commons/commonsTableUtils";
 
@@ -68,6 +70,14 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     expect(formatBoolean(undefined)).toBe("—");
     expect(formatBoolean("")).toBe("—");
     expect(formatBoolean(true)).toBe("true");
+    expect(formatBoolean(false)).toBe("false");
+  });
+
+  it("formatDate returns em dash for falsy and slices ISO strings", () => {
+    expect(formatDate(null)).toBe("—");
+    expect(formatDate(undefined)).toBe("—");
+    expect(formatDate("")).toBe("—");
+    expect(formatDate("2024-07-09T12:34:56.000Z")).toBe("2024-07-09");
   });
 
   it("getSortableValue handles showChat and capacityPerUser cases", () => {
@@ -84,6 +94,12 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
 
   it("getSortableValue default branch returns null for unknown keys", () => {
     expect(getSortableValue({ commons: {} }, "not.a.real.key")).toBeNull();
+  });
+
+  it("getSortableValue returns empty string fallback for missing names and date fields", () => {
+    expect(getSortableValue({ commons: {} }, "commons.name")).toBe("");
+    expect(getSortableValue({ commons: {} }, "commons.startingDate")).toBe("");
+    expect(getSortableValue({ commons: {} }, "commons.lastDate")).toBe("");
   });
 
   it("numeric getSortableValue returns numbers and respects nullish guards", () => {

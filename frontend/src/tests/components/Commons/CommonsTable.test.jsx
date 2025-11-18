@@ -1,5 +1,5 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
@@ -10,6 +10,7 @@ import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/commonsUtils";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // Next line uses technique from https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
 
@@ -20,57 +21,42 @@ vi.mock("react-router", async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe("UserTable tests", () => {
-  const queryClient = new QueryClient();
+const renderCommonsTable = (props) => {
+  const queryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <CommonsTable {...props} />
+      </MemoryRouter>
+    </QueryClientProvider>,
+  );
+};
 
+describe("UserTable tests", () => {
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable commons={[]} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({ commons: [], currentUser });
   });
   test("renders without crashing for empty table for ordinary user", () => {
     const currentUser = currentUserFixtures.userOnly;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable commons={[]} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({ commons: [], currentUser });
   });
 
   test("renders without crashing for empty table for admin", () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable commons={[]} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({ commons: [], currentUser });
   });
 
   test("Displays expected commons information and actions for adminUser", () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
+    });
     const cards = commonsPlusFixtures.threeCommonsPlus.map((_, index) =>
       screen.getByTestId(`CommonsTable-card-${index}`),
     );
@@ -149,16 +135,10 @@ describe("UserTable tests", () => {
   test("allows sorting by Name descending", () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
+    });
 
     const sortSelect = screen.getByTestId("CommonsTable-sort-select");
     fireEvent.change(sortSelect, { target: { value: "commons.name" } });
@@ -176,8 +156,6 @@ describe("UserTable tests", () => {
 });
 
 describe("Modal tests", () => {
-  const queryClient = new QueryClient();
-
   // Mocking the delete mutation function
   const mockMutate = vi.fn();
   const mockUseBackendMutation = {
@@ -197,20 +175,9 @@ describe("Modal tests", () => {
   test("Clicking Delete button opens the modal for adminUser", async () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).not.toHaveClass("modal-open");
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
     });
 
     const deleteButton = screen.getByTestId(
@@ -218,10 +185,7 @@ describe("Modal tests", () => {
     );
     fireEvent.click(deleteButton);
 
-    // Verify that the modal is shown by checking for the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).toHaveClass("modal-open");
-    });
+    expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
   });
 
   test("Clicking Permanently Delete button deletes the commons", async () => {
@@ -233,16 +197,10 @@ describe("Modal tests", () => {
       "useBackendMutation",
     );
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
+    });
 
     const deleteButton = screen.getByTestId(
       "CommonsTable-card-0-action-Delete",
@@ -254,33 +212,33 @@ describe("Modal tests", () => {
     );
     fireEvent.click(permanentlyDeleteButton);
 
-    await waitFor(() => {
-      expect(useBackendMutationSpy).toHaveBeenCalledWith(
-        cellToAxiosParamsDelete,
-        { onSuccess: onDeleteSuccess },
-        ["/api/commons/allplus"],
-      );
-    });
+    await waitFor(
+      () => {
+        expect(useBackendMutationSpy).toHaveBeenCalledWith(
+          cellToAxiosParamsDelete,
+          { onSuccess: onDeleteSuccess },
+          ["/api/commons/allplus"],
+        );
+      },
+      { timeout: 50 },
+    );
 
-    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).not.toHaveClass("modal-open");
-    });
+    await waitFor(
+      () =>
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
+      { timeout: 50 },
+    );
   });
 
   test("Clicking Keep this Commons button cancels the deletion", async () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
+    });
 
     const deleteButton = screen.getByTestId(
       "CommonsTable-card-0-action-Delete",
@@ -290,10 +248,13 @@ describe("Modal tests", () => {
     const cancelButton = await screen.findByTestId("CommonsTable-Modal-Cancel");
     fireEvent.click(cancelButton);
 
-    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).not.toHaveClass("modal-open");
-    });
+    await waitFor(
+      () =>
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
+      { timeout: 50 },
+    );
 
     expect(mockMutate).not.toHaveBeenCalled();
   });
@@ -301,34 +262,28 @@ describe("Modal tests", () => {
   test("Pressing the escape key on the modal cancels the deletion", async () => {
     const currentUser = currentUserFixtures.adminUser;
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <CommonsTable
-            commons={commonsPlusFixtures.threeCommonsPlus}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser,
+    });
 
-    // Click the delete button to open the modal
     const deleteButton = screen.getByTestId(
       "CommonsTable-card-0-action-Delete",
     );
     fireEvent.click(deleteButton);
 
-    // Check that the modal is displayed by checking for the "modal-open" class in the body
-    expect(document.body).toHaveClass("modal-open");
+    expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
 
-    // Click the close button
     const closeButton = screen.getByLabelText("Close");
     fireEvent.click(closeButton);
 
-    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).not.toHaveClass("modal-open");
-    });
+    await waitFor(
+      () =>
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
+      { timeout: 50 },
+    );
 
     // Assert that the delete mutation was not called
     // (you'll need to replace `mockMutate` with the actual reference to the mutation in your code)

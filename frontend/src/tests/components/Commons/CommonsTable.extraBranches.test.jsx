@@ -4,8 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { getSortableValue } from "main/components/Commons/commonsTableUtils";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // We'll mock useBackendMutation so confirmDelete calls the spy we can assert on
 const mutateSpy = vi.fn();
@@ -17,9 +18,8 @@ vi.mock("main/utils/useBackend", () => ({
 const adminUser = { loggedIn: true, root: { rolesList: ["ROLE_ADMIN"] } };
 
 describe("CommonsTable extra branches", () => {
-  const queryClient = new QueryClient();
-
   function renderTable(commons, currentUser = { roles: [] }) {
+    const queryClient = createTestQueryClient();
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -50,9 +50,12 @@ describe("CommonsTable extra branches", () => {
     // confirm delete
     await userEvent.click(screen.getByTestId("CommonsTable-Modal-Delete"));
 
-    await waitFor(() => {
-      expect(mutateSpy).toHaveBeenCalled();
-    });
+    await waitFor(
+      () => {
+        expect(mutateSpy).toHaveBeenCalled();
+      },
+      { timeout: 50 },
+    );
 
     // check mutate was called with the expected row values
     const arg = mutateSpy.mock.calls[0][0];

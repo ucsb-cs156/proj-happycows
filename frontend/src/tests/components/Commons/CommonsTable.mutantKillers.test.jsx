@@ -3,8 +3,9 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, test, expect, vi } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // mock backend mutation used by the component to avoid network calls
 vi.mock("main/utils/useBackend", () => ({
@@ -14,7 +15,7 @@ vi.mock("main/utils/useBackend", () => ({
 const adminUser = { loggedIn: true, root: { rolesList: ["ROLE_ADMIN"] } };
 
 function renderWithProviders(ui) {
-  const queryClient = new QueryClient();
+  const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>{ui}</MemoryRouter>
