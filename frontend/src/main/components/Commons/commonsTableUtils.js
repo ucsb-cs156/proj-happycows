@@ -85,8 +85,7 @@ export function getSortableValue(commonsPlus, key) {
   ]);
 
   if (numericKeys.has(key)) {
-    if (val === null || val === undefined || val === "") return null;
-    if (typeof val === "number") return val;
+    if (val == null || val === "") return null;
     const n = Number(val);
     return Number.isFinite(n) ? n : null;
   }
@@ -97,4 +96,41 @@ export function getSortableValue(commonsPlus, key) {
     return val ?? "";
 
   return val ?? null;
+}
+
+export function compareAsStrings(aVal, bVal, directionMultiplier) {
+  const cmp = String(aVal).localeCompare(String(bVal));
+  return cmp * directionMultiplier;
+}
+
+function compareAsNumbers(aNum, bNum, directionMultiplier) {
+  if (aNum > bNum) return directionMultiplier;
+  if (aNum < bNum) return -directionMultiplier;
+  return 0;
+}
+
+export function createCommonsComparator(sortKey, sortDirection = "asc") {
+  const directionMultiplier = sortDirection === "desc" ? -1 : 1;
+
+  return (a, b) => {
+    const aVal = getSortableValue(a, sortKey);
+    const bVal = getSortableValue(b, sortKey);
+
+    if (aVal === null || aVal === undefined) {
+      if (bVal === null || bVal === undefined) return 0;
+      return 1;
+    }
+
+    if (bVal === null || bVal === undefined) {
+      return -1;
+    }
+
+    const aNum = Number(aVal);
+    const bNum = Number(bVal);
+    if (Number.isFinite(aNum) && Number.isFinite(bNum)) {
+      return compareAsNumbers(aNum, bNum, directionMultiplier);
+    }
+
+    return compareAsStrings(aVal, bVal, directionMultiplier);
+  };
 }

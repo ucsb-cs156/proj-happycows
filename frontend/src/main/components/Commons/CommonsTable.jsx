@@ -19,10 +19,10 @@ import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 import {
   computeEffectiveCapacity,
+  createCommonsComparator,
   formatBoolean,
   formatDate,
   formatPlain,
-  getSortableValue,
 } from "./commonsTableUtils";
 
 // helper functions moved to ./commonsTableUtils to satisfy react-refresh rule
@@ -73,37 +73,16 @@ export default function CommonsTable({ commons, currentUser }) {
     ? sortKey
     : "commons.id";
 
+  const comparator = useMemo(
+    () => createCommonsComparator(validSortKey, sortDirection),
+    [validSortKey, sortDirection],
+  );
+
   const sortedCommons = useMemo(() => {
     const sorted = [...commons];
-    sorted.sort((a, b) => {
-      const aVal = getSortableValue(a, validSortKey);
-      const bVal = getSortableValue(b, validSortKey);
-      // Treat null/undefined as "missing" and place missing values last
-      // regardless of sort direction so that non-null values appear first
-      // for both ascending and descending sorts.
-      if (aVal === null || aVal === undefined) {
-        if (bVal === null || bVal === undefined) return 0;
-        return 1;
-      }
-      if (bVal === null || bVal === undefined) {
-        return -1;
-      }
-      if (typeof aVal === "string" || typeof bVal === "string") {
-        const cmp = String(aVal).localeCompare(String(bVal));
-        return sortDirection === "asc" ? cmp : -cmp;
-      }
-      const aNum = Number(aVal);
-      const bNum = Number(bVal);
-      if (!Number.isNaN(aNum) && !Number.isNaN(bNum)) {
-        if (aNum > bNum) return sortDirection === "asc" ? 1 : -1;
-        if (aNum < bNum) return sortDirection === "asc" ? -1 : 1;
-        return 0;
-      }
-      const fallback = String(aVal).localeCompare(String(bVal));
-      return sortDirection === "asc" ? fallback : -fallback;
-    });
+    sorted.sort(comparator);
     return sorted;
-  }, [commons, validSortKey, sortDirection]);
+  }, [commons, comparator]);
 
   const cards = sortedCommons.map((commonsPlus, index) => {
     const { commons: commonsData, totalCows } = commonsPlus;

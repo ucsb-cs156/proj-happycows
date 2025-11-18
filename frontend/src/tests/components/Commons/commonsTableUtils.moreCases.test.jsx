@@ -4,6 +4,7 @@ import {
   formatPlain,
   formatBoolean,
   getSortableValue,
+  createCommonsComparator,
 } from "main/components/Commons/commonsTableUtils";
 
 describe("commonsTableUtils additional edge cases to kill mutants", () => {
@@ -102,5 +103,41 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
         "effectiveCapacity",
       ),
     ).toBeNull();
+  });
+
+  it("createCommonsComparator pushes missing values to the end regardless of direction", () => {
+    const missing = { commons: { id: 1 }, totalCows: null };
+    const present = { commons: { id: 2 }, totalCows: 5 };
+
+    const asc = createCommonsComparator("totalCows", "asc");
+    expect(asc(missing, present)).toBe(1);
+    expect(asc(present, missing)).toBe(-1);
+    expect(asc(missing, missing)).toBe(0);
+
+    const desc = createCommonsComparator("totalCows", "desc");
+    expect(desc(missing, present)).toBe(1);
+    expect(desc(present, missing)).toBe(-1);
+  });
+
+  it("createCommonsComparator compares numeric values respecting direction", () => {
+    const commonsA = { commons: { cowPrice: 5 } };
+    const commonsB = { commons: { cowPrice: 10 } };
+
+    const asc = createCommonsComparator("commons.cowPrice", "asc");
+    expect(asc(commonsA, commonsB)).toBeLessThan(0);
+
+    const desc = createCommonsComparator("commons.cowPrice", "desc");
+    expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
+  });
+
+  it("createCommonsComparator compares string values lexicographically", () => {
+    const commonsA = { commons: { name: "Alpha" } };
+    const commonsB = { commons: { name: "Zulu" } };
+
+    const asc = createCommonsComparator("commons.name", "asc");
+    expect(asc(commonsA, commonsB)).toBeLessThan(0);
+
+    const desc = createCommonsComparator("commons.name", "desc");
+    expect(desc(commonsA, commonsB)).toBeGreaterThan(0);
   });
 });
