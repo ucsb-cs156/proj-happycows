@@ -57,5 +57,19 @@ describe("OurTable fallback key branches", () => {
     // Header and a cell should render using our mocked data
     expect(screen.getByText("H1")).toBeInTheDocument();
     expect(screen.getByText("C1")).toBeInTheDocument();
+
+    const headerRow = screen.getAllByRole("row")[0];
+    expect(headerRow).toHaveAttribute("data-fallback-key", "headergroup-0");
+
+    const headerCell = screen.getByText("H1").closest("th");
+    expect(headerCell).not.toBeNull();
+    expect(headerCell).toHaveAttribute("data-fallback-key", "col-0");
+
+    const bodyRow = screen.getAllByRole("row")[1];
+    expect(bodyRow).toHaveAttribute("data-fallback-key", "row-0");
+
+    const bodyCell = screen.getByText("C1").closest("td");
+    expect(bodyCell).not.toBeNull();
+    expect(bodyCell).toHaveAttribute("data-fallback-key", "cell-0-0");
   });
 });

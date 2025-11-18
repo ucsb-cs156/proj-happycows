@@ -59,7 +59,11 @@ export default function OurTable({
             const { key: hgKey, ...hgRest } = hgProps || {};
             const safeHgKey = hgKey ?? `headergroup-${hgIndex}`;
             return (
-              <tr {...hgRest} key={safeHgKey}>
+              <tr
+                {...hgRest}
+                key={safeHgKey}
+                data-fallback-key={safeHgKey}
+              >
                 {headerGroup.headers.map((column, colIndex) => {
                   const colProps = column.getHeaderProps(
                     column.getSortByToggleProps(),
@@ -70,6 +74,7 @@ export default function OurTable({
                     <th
                       {...colRest}
                       key={safeColKey}
+                      data-fallback-key={safeColKey}
                       data-testid={`${testid}-header-${column.id}`}
                     >
                       {column.render("Header")}
@@ -98,7 +103,11 @@ export default function OurTable({
               const { key: rowKey, ...rowRest } = rowProps || {};
               const safeRowKey = rowKey ?? `row-${rowIndex}`;
               return (
-                <tr {...rowRest} key={safeRowKey}>
+                <tr
+                  {...rowRest}
+                  key={safeRowKey}
+                  data-fallback-key={safeRowKey}
+                >
                   {row.cells.map((cell, cellIndex) => {
                     const cellProps = cell.getCellProps();
                     const { key: cellKey, ...cellRest } = cellProps || {};
@@ -109,6 +118,7 @@ export default function OurTable({
                       <td
                         {...cellRest}
                         key={safeCellKey}
+                        data-fallback-key={safeCellKey}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
                         {cell.render("Cell")}

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
   Badge,
@@ -43,17 +43,14 @@ export default function CommonsTable({ commons, currentUser }) {
 
   const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
-  const handleEdit = useCallback(
-    (commonsId) => {
-      navigate(`/admin/editcommons/${commonsId}`);
-    },
-    [navigate],
-  );
+  const handleEdit = (commonsId) => {
+    navigate(`/admin/editcommons/${commonsId}`);
+  };
 
-  const handleDelete = useCallback((commonsPlus) => {
+  const handleDelete = (commonsPlus) => {
     setCommonsToDelete(commonsPlus);
     setShowModal(true);
-  }, []);
+  };
 
   const confirmDelete = async () => {
     if (!commonsToDelete) return;
@@ -68,12 +65,9 @@ export default function CommonsTable({ commons, currentUser }) {
     setCommonsToDelete(null);
   };
 
-  const handleLeaderboard = useCallback(
-    (commonsId) => {
-      navigate(`/leaderboard/${commonsId}`);
-    },
-    [navigate],
-  );
+  const handleLeaderboard = (commonsId) => {
+    navigate(`/leaderboard/${commonsId}`);
+  };
 
   const validSortKey = SORT_FIELDS.some((field) => field.key === sortKey)
     ? sortKey
@@ -111,9 +105,7 @@ export default function CommonsTable({ commons, currentUser }) {
     return sorted;
   }, [commons, validSortKey, sortDirection]);
 
-  const cards = useMemo(
-    () =>
-      sortedCommons.map((commonsPlus, index) => {
+  const cards = sortedCommons.map((commonsPlus, index) => {
         const { commons: commonsData, totalCows } = commonsPlus;
         const {
           id,
@@ -338,9 +330,7 @@ export default function CommonsTable({ commons, currentUser }) {
             </Card.Body>
           </Card>
         );
-      }),
-    [sortedCommons, isAdmin, handleEdit, handleDelete, handleLeaderboard],
-  );
+      });
 
   const commonsModal = (
     <Modal
@@ -394,6 +384,7 @@ export default function CommonsTable({ commons, currentUser }) {
                 value={validSortKey}
                 onChange={(event) => setSortKey(event.target.value)}
                 data-testid="CommonsTable-sort-select"
+                data-current-sort={sortKey}
               >
                 {SORT_FIELDS.map((field) => (
                   <option key={field.key} value={field.key}>
@@ -406,6 +397,7 @@ export default function CommonsTable({ commons, currentUser }) {
               variant="outline-secondary"
               size="sm"
               data-testid="CommonsTable-sort-direction-toggle"
+              data-current-direction={sortDirection}
               onClick={() =>
                 setSortDirection(sortDirection === "asc" ? "desc" : "asc")
               }
