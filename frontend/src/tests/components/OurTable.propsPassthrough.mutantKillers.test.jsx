@@ -11,11 +11,17 @@ vi.mock("react-table", () => {
       getTableBodyProps: () => ({ "data-body-prop": "body-prop", key: "bkey" }),
       headerGroups: [
         {
-          getHeaderGroupProps: () => ({ "data-hg-prop": "hg-prop", key: "hgkey" }),
+          getHeaderGroupProps: () => ({
+            "data-hg-prop": "hg-prop",
+            key: "hgkey",
+          }),
           headers: [
             {
               id: "col1",
-              getHeaderProps: () => ({ "data-col-prop": "col-prop", key: "ckey" }),
+              getHeaderProps: () => ({
+                "data-col-prop": "col-prop",
+                key: "ckey",
+              }),
               getSortByToggleProps: () => ({}),
               render: () => "H1",
               isSorted: false,
@@ -31,7 +37,10 @@ vi.mock("react-table", () => {
             {
               row: { index: 0 },
               column: { id: "col1" },
-              getCellProps: () => ({ "data-cell-prop": "cell-prop", key: "pkey" }),
+              getCellProps: () => ({
+                "data-cell-prop": "cell-prop",
+                key: "pkey",
+              }),
               render: () => "C1",
             },
           ],
@@ -54,9 +63,9 @@ describe("OurTable spreads props from react-table helpers (kills destructuring m
       "table-prop",
     );
 
-  // header group props applied on tr
-  const thead = document.querySelector("thead");
-  const tr = thead?.querySelector("tr");
+    // header group props applied on tr
+    const thead = document.querySelector("thead");
+    const tr = thead?.querySelector("tr");
     expect(tr).toHaveAttribute("data-hg-prop", "hg-prop");
 
     // column props applied on th
