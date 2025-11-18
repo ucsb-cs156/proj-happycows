@@ -199,10 +199,10 @@ describe("commonsTableUtils additional edge cases to kill mutants", () => {
     expect(comparator(a, b)).toBe(0);
     expect(comparator(b, a)).toBe(0);
   });
-  
+
   it("createCommonsComparator throws on invalid sortDirection", () => {
     expect(() => createCommonsComparator("commons.name", "zzz")).toThrow(
-      /Invalid sort direction/
+      /Invalid sort direction/,
     );
   });
 });
