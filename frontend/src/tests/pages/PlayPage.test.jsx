@@ -8,12 +8,18 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-vi.mock("react-router", async () => ({
-  ...(await vi.importActual("react-router")),
-  useParams: () => ({
-    commonsId: 1,
-  }),
-}));
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router", async () => {
+  const actual = await vi.importActual("react-router");
+  return {
+    ...actual,
+    useParams: () => ({
+      commonsId: 1,
+    }),
+    useNavigate: () => mockedNavigate,
+  };
+});
 
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
@@ -39,6 +45,7 @@ describe("PlayPage tests", () => {
     };
     axiosMock.reset();
     axiosMock.resetHistory();
+    mockedNavigate.mockClear();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
@@ -625,5 +632,21 @@ describe("PlayPage tests", () => {
         screen.getByText("This commons does not exist!"),
       ).toBeInTheDocument();
     });
+  });
+  
+  test("click home button", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("playpage-home-button")).toBeInTheDocument();
+    const homeButton = screen.getByTestId("playpage-home-button");
+    fireEvent.click(homeButton);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/home");
   });
 });
