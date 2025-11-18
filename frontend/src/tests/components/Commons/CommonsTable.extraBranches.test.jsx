@@ -50,9 +50,12 @@ describe("CommonsTable extra branches", () => {
     // confirm delete
     await userEvent.click(screen.getByTestId("CommonsTable-Modal-Delete"));
 
-    await waitFor(() => {
-      expect(mutateSpy).toHaveBeenCalled();
-    }, { timeout: 50 });
+    await waitFor(
+      () => {
+        expect(mutateSpy).toHaveBeenCalled();
+      },
+      { timeout: 50 },
+    );
 
     // check mutate was called with the expected row values
     const arg = mutateSpy.mock.calls[0][0];

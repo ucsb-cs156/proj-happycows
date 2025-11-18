@@ -67,7 +67,9 @@ describe("CommonsTable admin actions", () => {
     // wait for the modal to be removed or hidden
     await waitFor(
       () =>
-        expect(screen.queryByTestId("CommonsTable-Modal")).not.toBeInTheDocument(),
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
       { timeout: 50 },
     );
   });

@@ -33,7 +33,6 @@ const renderCommonsTable = (props) => {
 };
 
 describe("UserTable tests", () => {
-
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;
 
@@ -157,7 +156,6 @@ describe("UserTable tests", () => {
 });
 
 describe("Modal tests", () => {
-
   // Mocking the delete mutation function
   const mockMutate = vi.fn();
   const mockUseBackendMutation = {
@@ -227,7 +225,9 @@ describe("Modal tests", () => {
 
     await waitFor(
       () =>
-        expect(screen.queryByTestId("CommonsTable-Modal")).not.toBeInTheDocument(),
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
       { timeout: 50 },
     );
   });
@@ -250,7 +250,9 @@ describe("Modal tests", () => {
 
     await waitFor(
       () =>
-        expect(screen.queryByTestId("CommonsTable-Modal")).not.toBeInTheDocument(),
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
       { timeout: 50 },
     );
 
@@ -277,7 +279,9 @@ describe("Modal tests", () => {
 
     await waitFor(
       () =>
-        expect(screen.queryByTestId("CommonsTable-Modal")).not.toBeInTheDocument(),
+        expect(
+          screen.queryByTestId("CommonsTable-Modal"),
+        ).not.toBeInTheDocument(),
       { timeout: 50 },
     );
 
