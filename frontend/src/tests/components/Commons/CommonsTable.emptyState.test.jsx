@@ -2,13 +2,13 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 describe("CommonsTable empty state", () => {
-  const queryClient = new QueryClient();
-
   function renderTable(commons = [], currentUser = { roles: [] }) {
+    const queryClient = createTestQueryClient();
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

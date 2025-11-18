@@ -2,9 +2,10 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { vi } from "vitest";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // mock backend mutation used by the component to avoid network calls, but keep other exports intact
 vi.mock("main/utils/useBackend", async () => {
@@ -57,7 +58,7 @@ describe("CommonsTable validSortKey fallback branch", () => {
   ];
 
   test("changing select to invalid key keeps validSortKey fallback (commons.id) selected", async () => {
-    const queryClient = new QueryClient();
+    const queryClient = createTestQueryClient();
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

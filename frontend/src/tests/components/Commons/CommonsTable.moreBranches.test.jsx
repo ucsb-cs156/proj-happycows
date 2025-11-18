@@ -2,8 +2,9 @@ import { describe, test, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CommonsTable from "main/components/Commons/CommonsTable";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // mock backend mutation used by the component to avoid network calls
 vi.mock("main/utils/useBackend", () => ({
@@ -19,7 +20,7 @@ describe("CommonsTable additional sorting branches", () => {
     ];
 
     const currentUser = { roles: [] };
-    const queryClient = new QueryClient();
+    const queryClient = createTestQueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -74,7 +75,7 @@ describe("CommonsTable additional sorting branches", () => {
     ];
 
     const currentUser = { roles: [] };
-    const queryClient = new QueryClient();
+    const queryClient = createTestQueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>

@@ -1,34 +1,15 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
-import { describe, test, expect, vi } from "vitest";
-
-// Mock Modal so its children always render in the DOM (react-bootstrap normally portals/mounts conditionally)
-vi.mock("react-bootstrap", async () => {
-  const actual = await vi.importActual("react-bootstrap");
-  const MockModal = ({ children, ...props }) => (
-    <div data-testid="MockModal" {...props}>
-      {children}
-    </div>
-  );
-  MockModal.Header = ({ children }) => <div>{children}</div>;
-  MockModal.Title = ({ children }) => <div>{children}</div>;
-  MockModal.Body = ({ children }) => <div>{children}</div>;
-  MockModal.Footer = ({ children }) => <div>{children}</div>;
-
-  return {
-    ...actual,
-    Modal: MockModal,
-  };
-});
-
+import { describe, test, expect } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 describe("CommonsTable confirmDelete early return branch", () => {
   test("clicking Permanently Delete with no commonsToDelete triggers early return safely", async () => {
-    const queryClient = new QueryClient();
+    const queryClient = createTestQueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>

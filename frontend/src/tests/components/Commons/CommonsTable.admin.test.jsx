@@ -1,10 +1,11 @@
 import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { vi } from "vitest";
+import { createTestQueryClient } from "tests/utils/testQueryClient";
 
 // Mock useBackendMutation to avoid network calls
 vi.mock("main/utils/useBackend", () => ({
@@ -15,9 +16,9 @@ vi.mock("main/utils/useBackend", () => ({
 const adminUser = { loggedIn: true, root: { rolesList: ["ROLE_ADMIN"] } };
 
 describe("CommonsTable admin actions", () => {
-  const queryClient = new QueryClient();
+  const renderTable = (commons) => {
+    const queryClient = createTestQueryClient();
 
-  function renderTable(commons) {
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -25,7 +26,7 @@ describe("CommonsTable admin actions", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
-  }
+  };
 
   test("renders admin action buttons and modal open/close", async () => {
     const commons = [
@@ -64,14 +65,10 @@ describe("CommonsTable admin actions", () => {
     // cancel should close modal
     await userEvent.click(screen.getByTestId("CommonsTable-Modal-Cancel"));
     // wait for the modal to be removed or hidden
-    await waitFor(() => {
-      const maybeModal = screen.queryByTestId("CommonsTable-Modal");
-      // pass when modal is either gone or not visible
-      if (maybeModal) {
-        expect(maybeModal).not.toBeVisible();
-      } else {
-        expect(maybeModal).toBeNull();
-      }
-    });
+    await waitFor(
+      () =>
+        expect(screen.queryByTestId("CommonsTable-Modal")).not.toBeInTheDocument(),
+      { timeout: 50 },
+    );
   });
 });
