@@ -3,6 +3,7 @@ import {
   timestampToDate,
   daysSinceTimestamp,
   formatTime,
+  isFutureDate,
 } from "main/utils/dateUtils";
 
 describe("dateUtils tests", () => {
@@ -80,6 +81,45 @@ describe("dateUtils tests", () => {
       expect(formatTime(twoWeeksAgo.toISOString())).toEqual(
         twoWeeksAgo.toLocaleDateString(),
       );
+    });
+  });
+
+  describe("isFutureDate tests", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2024-03-15T12:00:00.000Z"));
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should return true for a future date", () => {
+      expect(isFutureDate("2024-03-20")).toBe(true);
+    });
+
+    it("should return false for a past date", () => {
+      expect(isFutureDate("2024-03-10")).toBe(false);
+    });
+
+    it("should return false for today", () => {
+      expect(isFutureDate("2024-03-15")).toBe(false);
+    });
+
+    it("should return true for future month in same year", () => {
+      expect(isFutureDate("2024-04-01")).toBe(true);
+    });
+
+    it("should return false for past month in same year", () => {
+      expect(isFutureDate("2024-02-01")).toBe(false);
+    });
+
+    it("should return true for future year", () => {
+      expect(isFutureDate("2025-01-01")).toBe(true);
+    });
+
+    it("should return false for past year", () => {
+      expect(isFutureDate("2023-12-31")).toBe(false);
     });
   });
 });
