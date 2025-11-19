@@ -365,8 +365,10 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
     expect(await screen.findByText("Record Common Stats")).toBeInTheDocument();
-    
-    const RecordCommonStatsButton = await screen.getByText("Record Common Stats");
+
+    const RecordCommonStatsButton = await screen.getByText(
+      "Record Common Stats",
+    );
     expect(RecordCommonStatsButton).toBeInTheDocument();
     RecordCommonStatsButton.click();
 
