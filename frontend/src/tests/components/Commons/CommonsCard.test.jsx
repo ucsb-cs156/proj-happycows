@@ -246,7 +246,7 @@ describe("CommonsCard tests", () => {
     expect(click).toBeCalledTimes(1);
   });
 
-  test("can join commons with past date - past month same year", async() => {
+  test("can join commons with past date - past month same year", async () => {
     const pastCommon = commonsFixtures.threeCommons[2];
     const safeMonth = curr.getMonth() >= 6 ? 5 : 0;
 
@@ -255,8 +255,8 @@ describe("CommonsCard tests", () => {
       safeMonth,
       curr.getDate() + 5,
     )
-    .toISOString()
-    .substring(0, 10);
+      .toISOString()
+      .substring(0, 10);
 
     const click = vi.fn();
 
@@ -274,10 +274,9 @@ describe("CommonsCard tests", () => {
     expect(button.textContent).toEqual("Join");
     fireEvent.click(button);
     expect(click).toBeCalledTimes(1);
-
   });
 
-  test("cannot join commons with future start date - future month dame year", async() => {
+  test("cannot join commons with future start date - future month dame year", async () => {
     const futureCommon = commonsFixtures.threeCommons[2];
 
     if (curr.getMonth() === 11) {
@@ -308,11 +307,9 @@ describe("CommonsCard tests", () => {
       />,
     );
 
-
     const button = screen.getByTestId("commonsCard-button-Join-1");
     expect(button).toBeInTheDocument();
     fireEvent.click(button);
     expect(click).toBeCalledTimes(0);
   });
-
 });
