@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsOverview from "main/components/Commons/CommonsOverview";
@@ -17,6 +17,7 @@ import ManageCowsModal from "main/components/Commons/ManageCowsModal";
 
 export default function PlayPage() {
   const { commonsId } = useParams();
+  const navigate = useNavigate();
   const { data: currentUser } = useCurrentUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState();
@@ -172,6 +173,15 @@ export default function PlayPage() {
     >
       <BasicLayout>
         <Container>
+          <Button 
+            variant="outline-secondary" 
+            onClick={() => navigate('/selectcommons')}
+            className="mb-3"
+            data-testid="select-commons-button"
+          >
+            Select Another Commons
+          </Button>
+
           {!commonsPlus && <h1>This commons does not exist!</h1>}
           {notallowed && <h1>You have yet to join this commons!</h1>}
           {allowed && !!currentUser && (

@@ -1,5 +1,5 @@
 import React from "react";
-import HomePage from "main/pages/HomePage";
+import HomePage from "main/pages/SelectCommonsPage";
 import { http, HttpResponse } from "msw";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";

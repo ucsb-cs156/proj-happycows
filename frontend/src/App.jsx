@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useBackendMutation } from "main/utils/useBackend";
-import HomePage from "main/pages/HomePage";
+import HomePage from "main/pages/SelectCommonsPage";
 import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
@@ -29,6 +29,21 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+
+// Component to handle smart home page routing
+function HomePageRouter({ currentUser }) {
+  // Get the user's commons data
+  const userCommons = currentUser?.root?.user?.commons || [];
+  
+  // If user has exactly 1 commons, redirect to PlayPage for that commons
+  if (userCommons.length === 1) {
+    const commonsId = userCommons[0].commonsId;
+    return <Navigate to={`/play/${commonsId}`} replace />;
+  }
+  
+  // Otherwise (0 or 2+ commons), show HomePage (the commons selection page)
+  return <HomePage />;
+}
 
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -74,12 +89,14 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
+      {/* Add explicit route to always access HomePage (commons selection) */}
+      <Route path="/selectcommons" element={<HomePage />} />
     </>
   ) : null;
 
   const homeRoute =
     hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<HomePageRouter currentUser={currentUser} />} />
     ) : (
       <Route path="/" element={<LoginPage />} />
     );

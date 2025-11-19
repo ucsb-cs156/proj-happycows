@@ -1,6 +1,6 @@
 import React from "react";
 
-import HomePage from "main/pages/HomePage";
+import HomePage from "main/pages/SelectCommonsPage";
 
 export default {
   title: "pages/HomePage",
