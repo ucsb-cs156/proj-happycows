@@ -78,7 +78,9 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
   // Stryker disable all - styles that don't need to be mut tested
   const cardStyle = {
     border: "1px solid #e0e0e0",
-    boxShadow: isHovered ? "0 4px 8px rgba(0,0,0,0.17)" : "0 2px 4px rgba(0,0,0,0.1)",
+    boxShadow: isHovered
+      ? "0 4px 8px rgba(0,0,0,0.17)"
+      : "0 2px 4px rgba(0,0,0,0.1)",
     transition: "box-shadow 0.2s ease",
   };
 
@@ -110,51 +112,75 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
         <Card.Body style={bodyStyle}>
           <Row>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Cow Price:</strong></div>
+              <div>
+                <strong>Cow Price:</strong>
+              </div>
               <div>{commons.cowPrice}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Milk Price:</strong></div>
+              <div>
+                <strong>Milk Price:</strong>
+              </div>
               <div>{commons.milkPrice}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Start Balance:</strong></div>
+              <div>
+                <strong>Start Balance:</strong>
+              </div>
               <div>{commons.startingBalance}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Starting Date:</strong></div>
+              <div>
+                <strong>Starting Date:</strong>
+              </div>
               <div>{formatDate(commons.startingDate)}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Last Date:</strong></div>
+              <div>
+                <strong>Last Date:</strong>
+              </div>
               <div>{formatDate(commons.lastDate)}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Degrad Rate:</strong></div>
+              <div>
+                <strong>Degrad Rate:</strong>
+              </div>
               <div>{commons.degradationRate}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Show Leaderboard:</strong></div>
+              <div>
+                <strong>Show Leaderboard:</strong>
+              </div>
               <div>{String(commons.showLeaderboard)}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Show Chat:</strong></div>
+              <div>
+                <strong>Show Chat:</strong>
+              </div>
               <div>{String(commons.showChat)}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Total Cows:</strong></div>
+              <div>
+                <strong>Total Cows:</strong>
+              </div>
               <div>{commonItem.totalCows || 0}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Cap / User:</strong></div>
+              <div>
+                <strong>Cap / User:</strong>
+              </div>
               <div>{commons.capacityPerUser}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Carry Cap:</strong></div>
+              <div>
+                <strong>Carry Cap:</strong>
+              </div>
               <div>{commons.carryingCapacity}</div>
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
-              <div><strong>Eff Cap:</strong></div>
+              <div>
+                <strong>Eff Cap:</strong>
+              </div>
               <div>{commonItem.effectiveCapacity || 0}</div>
             </Col>
           </Row>
@@ -207,4 +233,3 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
     </>
   );
 }
-
