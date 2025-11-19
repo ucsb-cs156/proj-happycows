@@ -170,8 +170,8 @@ const AdminJobsPage = () => {
     toast("Submitted Job: Instructor Report (Specific Commons)");
     InstructorReportSpecificCommonsMutation.mutate(data);
   };
-
   // *** Record Common Stats job ***
+  
   const objectToAxiosParamsRecordCommonStatsJob = () => ({
     url: `/api/jobs/launch/recordcommonstats`,
     method: "POST",
