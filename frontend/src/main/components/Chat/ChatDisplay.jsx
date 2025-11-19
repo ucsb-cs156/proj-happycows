@@ -1,38 +1,30 @@
 import React from "react";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { useBackend } from "main/utils/useBackend";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 // Props for storybook manual injection
 
 const ChatDisplay = ({ commonsId }) => {
   const initialMessagePageSize = 10;
-  const refreshRate = 200;
+  const refreshRate = 500;
 
   const [tempPage, setTempPage] = useState(0);
+
   const chatElement = document.querySelector('[data-testid="ChatDisplay"]');
 
-  if(chatElement) {
-    chatElement.addEventListener("scroll", () => {
-      if(chatElement.scrollTop == -520){
-        try{
-          console.log(tempPage);
-          setTempPage(tempPage + 1);          
-        }
-        catch (error){
-          console.log("No more messages.");
-        }
-      }
-      else if(chatElement.scrollTop == 0 && tempPage > 0){
-        try{
-          console.log(tempPage);
-          setTempPage(tempPage - 1);
-        }
-        catch (error){
-          console.log("Up to date.");
-        }
-      }
-    })
+  const loadPages = () => {
+    if(chatElement.clientHeight <= 60){
+      alert("No more messages.");
+      setTempPage(tempPage - 1);
+    }
+    else{
+      setTempPage(tempPage + 1);
+    }
+  }
+
+  const reloadPages = () => {
+    setTempPage(tempPage - 1);
   }
 
   // Stryker disable all
@@ -74,7 +66,7 @@ const ChatDisplay = ({ commonsId }) => {
     return acc;
   }, {});
 
-  return (
+  return tempPage ? (
     <div
       style={{
         display: "flex",
@@ -84,6 +76,7 @@ const ChatDisplay = ({ commonsId }) => {
       }}
       data-testid="ChatDisplay"
     >
+      <button onClick={reloadPages}>Reload messages.</button>
       {Array.isArray(sortedMessages) &&
         sortedMessages.slice(0, initialMessagePageSize).map((message) => (
           <ChatMessageDisplay
@@ -94,7 +87,30 @@ const ChatDisplay = ({ commonsId }) => {
             }}
           />
         ))}
+        <button onClick={loadPages}>Load more messages.</button>
     </div>
+  ) : 
+  (<div
+    style={{
+      display: "flex",
+      flexDirection: "column-reverse",
+      overflowY: "scroll",
+      maxHeight: "300px",
+    }}
+    data-testid="ChatDisplay"
+  >
+    {Array.isArray(sortedMessages) &&
+      sortedMessages.slice(0, initialMessagePageSize).map((message) => (
+        <ChatMessageDisplay
+          key={message.id}
+          message={{
+            ...message,
+            username: userIdToUsername[message.userId],
+          }}
+        />
+      ))}
+      <button onClick={loadPages}>Load more messages.</button>
+  </div>
   );
 };
 
