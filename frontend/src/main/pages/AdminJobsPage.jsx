@@ -147,7 +147,7 @@ const AdminJobsPage = () => {
   );
 
   // Stryker restore all
-    const submitRecordCommonStatsJob = async () => {
+  const submitRecordCommonStatsJob = async () => {
     toast("Submitted Job: Record Common Stats");
     RecordCommonStatsMutation.mutate();
   };
@@ -211,7 +211,7 @@ const AdminJobsPage = () => {
       name: "Milk The Cows",
       form: <MilkCowsJobForm submitAction={submitMilkTheCowsJob} />,
     },
-        {
+    {
       name: "Record Common Stats",
       form: <RecordCommonStatsForm submitAction={submitRecordCommonStatsJob} />,
     },
