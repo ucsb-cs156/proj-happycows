@@ -1,9 +1,9 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import CommonsTable from "main/components/Commons/CommonsTable";
+import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
-import { Button, Row, Col } from "react-bootstrap";
+import { Button, Row, Col, Container } from "react-bootstrap";
 
 export default function AdminListCommonsPage() {
   const { data: currentUser } = useCurrentUser();
@@ -40,7 +40,16 @@ export default function AdminListCommonsPage() {
             </Button>
           </Col>
         </Row>
-        <CommonsTable commons={commons} currentUser={currentUser} />
+        <Container fluid className="pt-3">
+          {commons &&
+            commons.map((common) => (
+              <AdminCommonsCard
+                key={common.commons.id}
+                commonItem={common}
+                currentUser={currentUser}
+              />
+            ))}
+        </Container>
       </div>
     </BasicLayout>
   );
