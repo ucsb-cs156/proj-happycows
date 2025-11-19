@@ -90,7 +90,7 @@ function App() {
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
       {/* Add explicit route to always access HomePage (commons selection) */}
-      <Route path="/selectcommons" element={<HomePage />} />
+      <Route path="/selectCommons" element={<HomePage />} />
     </>
   ) : null;
 

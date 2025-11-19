@@ -633,7 +633,7 @@ describe("PlayPage tests", () => {
     });
   });
 
-  test("clicking Select Another Commons navigates to /selectcommons", async () => {
+  test("clicking Select Another Commons navigates to /selectCommons", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -647,6 +647,6 @@ describe("PlayPage tests", () => {
 
     fireEvent.click(button);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/selectcommons");
+    expect(mockNavigate).toHaveBeenCalledWith("/selectCommons");
   });
 });

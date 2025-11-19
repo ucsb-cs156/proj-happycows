@@ -175,7 +175,7 @@ export default function PlayPage() {
         <Container>
           <Button
             variant="outline-secondary"
-            onClick={() => navigate("/selectcommons")}
+            onClick={() => navigate("/selectCommons")}
             className="mb-3"
             data-testid="select-commons-button"
           >
