@@ -66,6 +66,7 @@ describe("AdminJobsPage tests", () => {
     expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
     expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
     expect(await screen.findByText("Instructor Report")).toBeInTheDocument();
+    expect(await screen.findByText("Record Common Stats")).toBeInTheDocument();
   });
 
   test("user can submit a test job", async () => {
@@ -281,6 +282,43 @@ describe("AdminJobsPage tests", () => {
 
     expect(mockToast).toHaveBeenCalledWith(
       `Submitted Job: Milk The Cows! (Commons: Anika's Commons)`,
+    );
+  });
+
+  test("user can submit record common stats job", async () => {
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, commonsFixtures.threeCommons);
+
+    const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    getItemSpy.mockImplementation(() => null);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminJobsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Record Common Stats")).toBeInTheDocument();
+
+    const RecordCommonStatsJobButton = screen.getByText("Record Common Stats");
+    expect(RecordCommonStatsJobButton).toBeInTheDocument();
+    RecordCommonStatsJobButton.click();
+
+    const submitButton = screen.getByTestId("RecordCommonStats-Submit-Button");
+    expect(submitButton).toBeInTheDocument();
+    submitButton.click();
+
+    await waitFor(() => {
+      expect(axiosMock.history.post[0].url).toBe(
+        `/api/jobs/launch/recordcommonstats`,
+      );
+    });
+
+    expect(mockToast).toHaveBeenCalledWith(
+      `Submitted Job: Record Common Stats`,
     );
   });
 
