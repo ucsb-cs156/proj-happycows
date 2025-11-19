@@ -34,13 +34,13 @@ import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPag
 function HomePageRouter({ currentUser }) {
   // Get the user's commons data
   const userCommons = currentUser?.root?.user?.commons || [];
-  
+
   // If user has exactly 1 commons, redirect to PlayPage for that commons
   if (userCommons.length === 1) {
     const commonsId = userCommons[0].commonsId;
     return <Navigate to={`/play/${commonsId}`} replace />;
   }
-  
+
   // Otherwise (0 or 2+ commons), show HomePage (the commons selection page)
   return <HomePage />;
 }
