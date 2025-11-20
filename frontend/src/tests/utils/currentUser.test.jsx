@@ -42,10 +42,6 @@ describe("utils/currentUser tests", () => {
       });
       await waitFor(() => result.current.isSuccess);
 
-      //expect(result.current.data).toEqual({
-      //  loggedIn: false,
-      //  root: null,
-      //});
       expect(result.current.data.loggedIn).toBe(false);
       expect(result.current.data.root).toBe(null);
 
@@ -74,7 +70,6 @@ describe("utils/currentUser tests", () => {
       });
 
       await waitFor(() => result.current.isFetched);
-      //expect(result.current.data).toEqual(currentUserFixtures.userOnly);
       expect(result.current.data.loggedIn).toBe(true);
       expect(result.current.data.root).toBeTruthy();
 
