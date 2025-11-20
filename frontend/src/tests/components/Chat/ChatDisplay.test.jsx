@@ -40,6 +40,16 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByTestId("ChatDisplay")).toHaveStyle(
       "flexDirection: column-reverse",
     );
+
+    expect(screen.getByTestId("load-button")).toBeInTheDocument();
+    expect(screen.getByTestId("load-button")).toHaveStyle(
+      "backgroundColor: #0d6efd",
+    );
+    expect(screen.getByTestId("load-button")).toHaveStyle("color: white");
+    expect(screen.getByTestId("load-button")).toHaveStyle("borderRadius: 8px");
+    expect(screen.getByTestId("load-button")).toHaveStyle(
+      "borderColor: #0d6efd",
+    );
   });
 
   test("displays no messages correctly", async () => {
@@ -310,5 +320,56 @@ describe("ChatDisplay tests", () => {
         throw new Error("Load more messages at cap failed.");
       }
     });
+  });
+
+  test("renders page with reload & load without crashing", async () => {
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const loadButton = await screen.findByText("Load more messages.");
+    loadButton.click();
+    const reloadButton = await screen.findByText("Reload messages.");
+    expect(reloadButton).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("ChatDisplay")).toHaveStyle("overflowY: scroll");
+    expect(screen.getByTestId("ChatDisplay")).toHaveStyle("maxHeight: 300px");
+    expect(screen.getByTestId("ChatDisplay")).toHaveStyle("display: flex");
+    expect(screen.getByTestId("ChatDisplay")).toHaveStyle(
+      "flexDirection: column-reverse",
+    );
+
+    expect(screen.getByTestId("load-button")).toBeInTheDocument();
+    expect(screen.getByTestId("load-button")).toHaveStyle(
+      "backgroundColor: #0d6efd",
+    );
+    expect(screen.getByTestId("load-button")).toHaveStyle("color: white");
+    expect(screen.getByTestId("load-button")).toHaveStyle("borderRadius: 8px");
+    expect(screen.getByTestId("load-button")).toHaveStyle(
+      "borderColor: #0d6efd",
+    );
+
+    expect(screen.getByTestId("reload-button")).toBeInTheDocument();
+    expect(screen.getByTestId("reload-button")).toHaveStyle(
+      "backgroundColor: #0d6efd",
+    );
+    expect(screen.getByTestId("reload-button")).toHaveStyle("color: white");
+    expect(screen.getByTestId("reload-button")).toHaveStyle(
+      "borderRadius: 8px",
+    );
+    expect(screen.getByTestId("reload-button")).toHaveStyle(
+      "borderColor: #0d6efd",
+    );
   });
 });

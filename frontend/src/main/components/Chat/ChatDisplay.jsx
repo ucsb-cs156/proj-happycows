@@ -82,6 +82,7 @@ const ChatDisplay = ({ commonsId }) => {
           borderColor: "#0d6efd",
           borderRadius: "8px",
         }}
+        data-testid="reload-button"
         onClick={reloadPages}
       >
         Reload messages.
@@ -103,6 +104,7 @@ const ChatDisplay = ({ commonsId }) => {
           borderColor: "#0d6efd",
           borderRadius: "8px",
         }}
+        data-testid="load-button"
         onClick={loadPages}
       >
         Load more messages.
@@ -135,6 +137,7 @@ const ChatDisplay = ({ commonsId }) => {
           borderColor: "#0d6efd",
           borderRadius: "8px",
         }}
+        data-testid="load-button"
         onClick={loadPages}
       >
         Load more messages.
