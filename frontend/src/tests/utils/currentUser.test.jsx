@@ -9,9 +9,7 @@ import { useCurrentUser, useLogout, hasRole } from "main/utils/currentUser";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-import {
-  apiCurrentUserFixtures,
-} from "fixtures/currentUserFixtures";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 
 vi.mock("react-router");
 const { MemoryRouter } = await vi.importActual("react-router");
