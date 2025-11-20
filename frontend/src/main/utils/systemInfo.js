@@ -17,11 +17,10 @@ export function useSystemInfo() {
       }
     },
     {
-      initialData: {
-        initialData: true,
+      initialData: () => ({
         springH2ConsoleEnabled: false,
         showSwaggerUILink: false,
-      },
+      }),
     },
   );
 }
