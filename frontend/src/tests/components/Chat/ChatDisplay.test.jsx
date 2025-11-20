@@ -246,4 +246,70 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByText("This should appear, though")).toBeInTheDocument();
     expect(screen.getByText("This one too!")).toBeInTheDocument();
   });
+
+  test("no reload message button on latest page", async () => {
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.threeChatMessages });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await waitFor(() => {
+      expect(screen.queryByText("Reload messages.")).not.toBeInTheDocument();
+    });
+  });
+
+  test("reload button exists and works after loading more messages", async () => {
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    axiosMock.onGet("/api/chat/get").reply(200, { content: [] });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const loadButton = await screen.findByText("Load more messages.");
+    loadButton.click();
+    const reloadButton = await screen.findByText("Reload messages.");
+    expect(reloadButton).toBeInTheDocument();
+    reloadButton.click();
+  });
+
+  test("load more button works properly when no more pages exist", async () => {
+    axiosMock
+      .onGet("/api/chat/get")
+      .replyOnce(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock.onGet("/api/chat/get").replyOnce(200, { content: [] });
+    axiosMock
+      .onGet("/api/chat/get")
+      .replyOnce(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    let isAlerted = false;
+    window.alert = () => {
+      isAlerted = true;
+    };
+    const loadButton = await screen.findByText("Load more messages.");
+    loadButton.click();
+    await waitFor(() => {
+      if (!isAlerted) {
+        throw new Error("Load more messages at cap failed.");
+      }
+    });
+  });
 });

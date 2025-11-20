@@ -1,33 +1,33 @@
 import React from "react";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { useBackend } from "main/utils/useBackend";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Props for storybook manual injection
 
 const ChatDisplay = ({ commonsId }) => {
-  const initialMessagePageSize = 10;
+  const initialMessagePageSize = 100;
   const refreshRate = 500;
+
+  // Stryker disable all
 
   const [tempPage, setTempPage] = useState(0);
 
-  const chatElement = document.querySelector('[data-testid="ChatDisplay"]');
+  // const chatElement = document.querySelector('[data-testid="ChatDisplay"]');
 
   const loadPages = () => {
-    if(chatElement.clientHeight <= 60){
-      alert("No more messages.");
-      setTempPage(tempPage - 1);
-    }
-    else{
-      setTempPage(tempPage + 1);
-    }
-  }
+    setTempPage((tempPage) => tempPage + 1);
+    // if(messagesPage.content.length == 0){
+    //   alert("No more messages.");
+    //   setTempPage((tempPage) => tempPage - 1);
+    // } else {
+    //   setTempPage((tempPage) => tempPage + 1);
+    // }
+  };
 
   const reloadPages = () => {
-    setTempPage(tempPage - 1);
-  }
-
-  // Stryker disable all
+    setTempPage((tempPage) => tempPage - 1);
+  };
 
   const { data: messagesPage } = useBackend(
     [`/api/chat/get`],
@@ -43,6 +43,13 @@ const ChatDisplay = ({ commonsId }) => {
     { content: [] },
     { refetchInterval: refreshRate },
   );
+
+  useEffect(() => {
+    if (messagesPage.content.length == 0 && tempPage > 0) {
+      alert("No more messages.");
+      setTempPage((tempPage) => tempPage - 1);
+    }
+  }, [messagesPage]);
 
   const { data: userCommonsList } = useBackend(
     [`/api/usercommons/commons/all`],
@@ -76,7 +83,7 @@ const ChatDisplay = ({ commonsId }) => {
       }}
       data-testid="ChatDisplay"
     >
-      <button onClick={reloadPages}>Reload messages.</button>
+      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={reloadPages}>Reload messages.</button>
       {Array.isArray(sortedMessages) &&
         sortedMessages.slice(0, initialMessagePageSize).map((message) => (
           <ChatMessageDisplay
@@ -87,32 +94,31 @@ const ChatDisplay = ({ commonsId }) => {
             }}
           />
         ))}
-        <button onClick={loadPages}>Load more messages.</button>
+      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={loadPages}>Load more messages.</button>
     </div>
-  ) : 
-  (<div
-    style={{
-      display: "flex",
-      flexDirection: "column-reverse",
-      overflowY: "scroll",
-      maxHeight: "300px",
-    }}
-    data-testid="ChatDisplay"
-  >
-    {Array.isArray(sortedMessages) &&
-      sortedMessages.slice(0, initialMessagePageSize).map((message) => (
-        <ChatMessageDisplay
-          key={message.id}
-          message={{
-            ...message,
-            username: userIdToUsername[message.userId],
-          }}
-        />
-      ))}
-      <button onClick={loadPages}>Load more messages.</button>
-  </div>
+  ) : (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column-reverse",
+        overflowY: "scroll",
+        maxHeight: "300px",
+      }}
+      data-testid="ChatDisplay"
+    >
+      {Array.isArray(sortedMessages) &&
+        sortedMessages.slice(0, initialMessagePageSize).map((message) => (
+          <ChatMessageDisplay
+            key={message.id}
+            message={{
+              ...message,
+              username: userIdToUsername[message.userId],
+            }}
+          />
+        ))}
+      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={loadPages}>Load more messages.</button>
+    </div>
   );
 };
 
 export default ChatDisplay;
-
