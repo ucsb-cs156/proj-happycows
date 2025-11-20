@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for pages/AdminReportsPage.jsx</title>
+    <title>Code coverage report for pages/AdminDeveloperPage.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">pages</a> AdminReportsPage.jsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">pages</a> AdminDeveloperPage.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -80,13 +80,7 @@
 <a name='L15'></a><a href='#L15'>15</a>
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a>
-<a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a>
-<a name='L22'></a><a href='#L22'>22</a>
-<a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -98,40 +92,28 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useBackend } from "main/utils/useBackend";
-import ReportTable from "main/components/Reports/ReportTable";
+import { Inspector } from "react-inspector";
+import { useSystemInfo } from "main/utils/systemInfo";
 &nbsp;
-export default function AdminReportsPage() {
-  // Stryker disable  all
-  const {
-    data: reports,
-    error: _error,
-    status: _status,
-  } = useBackend(["/api/reports"], { method: "GET", url: "/api/reports" }, []);
-  // Stryker restore all
-&nbsp;
+const AdminDeveloperPage = () =&gt; {
+  const { data: systemInfo } = useSystemInfo();
   return (
     &lt;BasicLayout&gt;
-      &lt;div className="pt-2"&gt;
-        &lt;h1&gt;Instructor Reports&lt;/h1&gt;
-        &lt;ReportTable reports={reports} /&gt;
-      &lt;/div&gt;
+      &lt;h2&gt;Github Branch Information&lt;/h2&gt;
+      &lt;p&gt;The following SystemInfo is displayed in a JSON file.&lt;/p&gt;
+      &lt;Inspector data={systemInfo} /&gt;
     &lt;/BasicLayout&gt;
   );
-}
+};
+&nbsp;
+export default AdminDeveloperPage;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
