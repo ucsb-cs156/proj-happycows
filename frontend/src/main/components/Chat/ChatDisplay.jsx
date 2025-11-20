@@ -41,7 +41,7 @@ const ChatDisplay = ({ commonsId }) => {
       alert("No more messages.");
       setTempPage((tempPage) => tempPage - 1);
     }
-  }, [messagesPage]);
+  }, [messagesPage, tempPage]);
 
   const { data: userCommonsList } = useBackend(
     [`/api/usercommons/commons/all`],

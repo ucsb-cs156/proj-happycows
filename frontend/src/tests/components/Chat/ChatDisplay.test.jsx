@@ -269,7 +269,6 @@ describe("ChatDisplay tests", () => {
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.oneHundredMessages });
     axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
-    axiosMock.onGet("/api/chat/get").reply(200, { content: [] });
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
