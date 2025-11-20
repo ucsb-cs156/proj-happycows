@@ -13,16 +13,8 @@ const ChatDisplay = ({ commonsId }) => {
 
   const [tempPage, setTempPage] = useState(0);
 
-  // const chatElement = document.querySelector('[data-testid="ChatDisplay"]');
-
   const loadPages = () => {
     setTempPage((tempPage) => tempPage + 1);
-    // if(messagesPage.content.length == 0){
-    //   alert("No more messages.");
-    //   setTempPage((tempPage) => tempPage - 1);
-    // } else {
-    //   setTempPage((tempPage) => tempPage + 1);
-    // }
   };
 
   const reloadPages = () => {
@@ -83,7 +75,17 @@ const ChatDisplay = ({ commonsId }) => {
       }}
       data-testid="ChatDisplay"
     >
-      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={reloadPages}>Reload messages.</button>
+      <button
+        style={{
+          backgroundColor: "#0d6efd",
+          color: "white",
+          borderColor: "#0d6efd",
+          borderRadius: "8px",
+        }}
+        onClick={reloadPages}
+      >
+        Reload messages.
+      </button>
       {Array.isArray(sortedMessages) &&
         sortedMessages.slice(0, initialMessagePageSize).map((message) => (
           <ChatMessageDisplay
@@ -94,7 +96,17 @@ const ChatDisplay = ({ commonsId }) => {
             }}
           />
         ))}
-      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={loadPages}>Load more messages.</button>
+      <button
+        style={{
+          backgroundColor: "#0d6efd",
+          color: "white",
+          borderColor: "#0d6efd",
+          borderRadius: "8px",
+        }}
+        onClick={loadPages}
+      >
+        Load more messages.
+      </button>
     </div>
   ) : (
     <div
@@ -116,7 +128,17 @@ const ChatDisplay = ({ commonsId }) => {
             }}
           />
         ))}
-      <button style={{ backgroundColor: "#0d6efd", color: "white", borderColor: "#0d6efd", borderRadius: "8px" }} onClick={loadPages}>Load more messages.</button>
+      <button
+        style={{
+          backgroundColor: "#0d6efd",
+          color: "white",
+          borderColor: "#0d6efd",
+          borderRadius: "8px",
+        }}
+        onClick={loadPages}
+      >
+        Load more messages.
+      </button>
     </div>
   );
 };
