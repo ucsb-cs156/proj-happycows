@@ -36,14 +36,15 @@ function HomePageRouter({ currentUser }) {
   const userCommons = currentUser?.root?.user?.commons || [];
 
   // If user has exactly 1 commons, redirect to PlayPage for that commons
-  if (userCommons.length === 1) {
-    const commonsId = userCommons[0].commonsId;
+  if (userCommons.length === 1 && userCommons[0]?.id != null) {
+    const commonsId = userCommons[0].id;
     return <Navigate to={`/play/${commonsId}`} replace />;
   }
 
   // Otherwise (0 or 2+ commons), show HomePage (the commons selection page)
   return <HomePage />;
 }
+
 
 function App() {
   const { data: currentUser } = useCurrentUser();
