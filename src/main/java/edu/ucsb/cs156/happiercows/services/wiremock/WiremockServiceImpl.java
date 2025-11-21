@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.Stubbing;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -112,9 +111,7 @@ public class WiremockServiceImpl extends WiremockService {
   public void init() {
     log.info("WiremockServiceImpl.init() called");
 
-    WireMockServer wireMockServer = new WireMockServer(options()
-        .port(8090) // No-args constructor will start on port
-        .extensions(new ResponseTemplateTransformer(true)));
+    WireMockServer wireMockServer = new WireMockServer(options().port(8090).globalTemplating(true));
 
     setupOauthMocks(wireMockServer, true);
 
