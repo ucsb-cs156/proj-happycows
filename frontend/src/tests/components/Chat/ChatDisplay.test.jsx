@@ -372,4 +372,88 @@ describe("ChatDisplay tests", () => {
       "borderColor: #0d6efd",
     );
   });
+  test("displays three messages correctly with usernames in the correct order on page 1", async () => {
+    //arrange
+    axiosMock
+      .onGet("/api/chat/get")
+      .replyOnce(200, { content: chatMessageFixtures.oneHundredMessages });
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: chatMessageFixtures.threeChatMessages });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+
+    //act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    const loadButton = await screen.findByText("Load more messages.");
+    loadButton.click();
+    await waitFor(() => {
+      expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(5);
+    });
+    expect(axiosMock.history.get[4].url).toBe("/api/chat/get");
+    expect(axiosMock.history.get[4].params).toEqual({
+      commonsId: 1,
+      page: 1,
+      size: 100,
+    });
+    expect(axiosMock.history.get[6].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[6].params).toEqual({ commonsId: 1 });
+
+    const container = screen.getByTestId("ChatDisplay");
+
+    await waitFor(() => {
+      expect(container.children[4].getAttribute("data-testid")).toBe(
+        "load-button",
+      );
+    });
+    expect(container.children[3].getAttribute("data-testid")).toBe(
+      "ChatMessageDisplay-1",
+    );
+    expect(container.children[2].getAttribute("data-testid")).toBe(
+      "ChatMessageDisplay-2",
+    );
+    expect(container.children[1].getAttribute("data-testid")).toBe(
+      "ChatMessageDisplay-3",
+    );
+    expect(container.children[0].getAttribute("data-testid")).toBe(
+      "reload-button",
+    );
+
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "George Washington",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-1-Message"),
+    ).toHaveTextContent("Hello World");
+    expect(screen.getByTestId("ChatMessageDisplay-1-Date")).toHaveTextContent(
+      "2023-08-17 23:57:46",
+    );
+
+    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
+      "Thomas Jefferson",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-2-Message"),
+    ).toHaveTextContent("Hello World How are you doing???");
+    expect(screen.getByTestId("ChatMessageDisplay-2-Date")).toHaveTextContent(
+      "2023-08-18 02:59:11",
+    );
+
+    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
+      "John Adams",
+    );
+    expect(
+      screen.getByTestId("ChatMessageDisplay-3-Message"),
+    ).toHaveTextContent("This is another test for chat messaging");
+    expect(screen.getByTestId("ChatMessageDisplay-3-Date")).toHaveTextContent(
+      "2023-08-18 02:59:28",
+    );
+  });
 });
