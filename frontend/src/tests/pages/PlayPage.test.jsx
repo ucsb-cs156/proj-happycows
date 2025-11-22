@@ -8,12 +8,15 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
-vi.mock("react-router", async () => ({
-  ...(await vi.importActual("react-router")),
-  useParams: () => ({
-    commonsId: 1,
-  }),
-}));
+const mockNavigate = vi.fn();
+vi.mock("react-router", async () => {
+  const actual = await vi.importActual("react-router");
+  return {
+    ...actual,
+    useParams: () => ({ commonsId: 1 }),
+    useNavigate: () => mockNavigate,
+  };
+});
 
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
@@ -625,5 +628,22 @@ describe("PlayPage tests", () => {
         screen.getByText("This commons does not exist!"),
       ).toBeInTheDocument();
     });
+  });
+
+  test("Select Another Commons button navigates to /selectcommons", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/play/1"]}>
+          <PlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const button = await screen.findByTestId("select-another-commons-button");
+    expect(button).toBeInTheDocument();
+
+    fireEvent.click(button);
+
+    expect(mockNavigate).toHaveBeenCalledWith("/selectcommons");
   });
 });
