@@ -210,7 +210,7 @@ public class CourseControllerTests extends ControllerTestCase {
         MvcResult response =
             mockMvc
                 .perform(
-                    put("/api/course?id=45")
+                    put("/api/course/update?id=45")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(requestBody)
@@ -247,7 +247,7 @@ public class CourseControllerTests extends ControllerTestCase {
         MvcResult response =
             mockMvc
                 .perform(
-                    put("/api/course?id=56")
+                    put("/api/course/update?id=56")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
                         .content(requestBody)

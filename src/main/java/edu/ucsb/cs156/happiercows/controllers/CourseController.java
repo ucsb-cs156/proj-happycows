@@ -85,7 +85,7 @@ public class CourseController extends ApiController {
 
     @Operation(summary = "Update a single course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("")
+    @PutMapping("/update")
     public Course updateCourse(@Parameter(name = "id") @RequestParam Long id, @RequestBody @Valid Course incoming) {
         Course course = courseRepository
             .findById(id)
