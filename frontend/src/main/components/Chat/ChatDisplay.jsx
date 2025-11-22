@@ -40,7 +40,7 @@ const ChatDisplay = ({ commonsId }) => {
   );
 
   useEffect(() => {
-    if(tempPage == prevPage){
+    if (tempPage == prevPage) {
       return;
     }
     if (messagesPage.content.length == 0 && tempPage > 0) {
