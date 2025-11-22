@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import CommonsCard from "main/components/Commons/CommonsCard";
+import { isFutureDate } from "main/components/Commons/commonsCardUtils";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
@@ -244,5 +245,55 @@ describe("CommonsCard tests", () => {
     expect(button.textContent).toEqual("Join");
     fireEvent.click(button);
     expect(click).toBeCalledTimes(1);
+  });
+});
+
+describe("isFutureDate helper", () => {
+  const referenceDate = new Date("2024-05-15T12:00:00");
+
+  test("detects future dates within the same month", () => {
+    expect(isFutureDate("2024-05-16", referenceDate)).toBe(true);
+    expect(isFutureDate("2024-05-15", referenceDate)).toBe(false);
+  });
+
+  test("detects future months and years", () => {
+    expect(isFutureDate("2024-06-01", referenceDate)).toBe(true);
+    expect(isFutureDate("2023-12-31", referenceDate)).toBe(false);
+    expect(isFutureDate("2025-01-01", referenceDate)).toBe(true);
+  });
+
+  test("handles invalid or missing starting dates gracefully", () => {
+    expect(isFutureDate(undefined, referenceDate)).toBe(false);
+    expect(isFutureDate(null, referenceDate)).toBe(false);
+    expect(isFutureDate("", referenceDate)).toBe(false);
+    expect(isFutureDate("not-a-date", referenceDate)).toBe(false);
+  });
+
+  test("compares months correctly when they differ within the same year", () => {
+    expect(isFutureDate("2024-04-01", referenceDate)).toBe(false);
+    expect(isFutureDate("2024-07-01", referenceDate)).toBe(true);
+  });
+
+  test("parses ISO timestamps with time values", () => {
+    expect(isFutureDate("2024-05-16T00:00:00Z", referenceDate)).toBe(true);
+    expect(isFutureDate("2024-05-14T23:59:59Z", referenceDate)).toBe(false);
+  });
+
+  test("accepts reference dates supplied as strings", () => {
+    expect(isFutureDate("2024-05-16", "2024-05-15")).toBe(true);
+    expect(isFutureDate("2024-05-14", "2024-05-15")).toBe(false);
+  });
+
+  test("falls back to the current date when the reference is invalid", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2024-05-15T12:00:00Z"));
+    const invalidReference = new Date("not-a-real-date");
+
+    try {
+      expect(isFutureDate("2024-05-16", invalidReference)).toBe(true);
+      expect(isFutureDate("2024-05-14", invalidReference)).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
