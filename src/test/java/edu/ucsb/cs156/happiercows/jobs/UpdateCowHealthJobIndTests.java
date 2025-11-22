@@ -138,4 +138,12 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
         assertEquals(expected, job.getLog());
     }
 
+    @Test
+    void commons_id_getter_returns_value_from_constructor() {
+        UpdateCowHealthJobInd jobInd = new UpdateCowHealthJobInd(commonsRepository, userCommonsRepository,
+                userRepository, commonsPlusBuilderService, 17L);
+
+        assertEquals(17L, jobInd.getCommonsID());
+    }
+
 }
