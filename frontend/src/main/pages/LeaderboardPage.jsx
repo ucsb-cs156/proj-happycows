@@ -85,7 +85,7 @@ export default function LeaderboardPage() {
               />
             </>
           ) : (
-            <p>You're not authorized to see the leaderboard.</p>
+            <p>You&apos;re not authorized to see the leaderboard.</p>
           )}
         </div>
       </BasicLayout>
