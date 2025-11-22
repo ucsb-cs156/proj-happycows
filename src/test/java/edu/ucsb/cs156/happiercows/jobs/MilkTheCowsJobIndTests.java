@@ -119,4 +119,13 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
         assertEquals(expected, jobStarted.getLog());
     }
 
+    @Test
+    void commons_id_getter_returns_value_from_constructor() {
+
+        MilkTheCowsJobInd job = new MilkTheCowsJobInd(commonsRepository, userCommonsRepository,
+                userRepository, profitRepository, 42L);
+
+        assertEquals(42L, job.getCommonsID());
+    }
+
 }
