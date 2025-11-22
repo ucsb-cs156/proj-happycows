@@ -12,12 +12,15 @@ const ChatDisplay = ({ commonsId }) => {
   // Stryker disable all
 
   const [tempPage, setTempPage] = useState(0);
+  const [prevPage, setPrevPage] = useState(0);
 
   const loadPages = () => {
+    setPrevPage(tempPage);
     setTempPage((tempPage) => tempPage + 1);
   };
 
   const reloadPages = () => {
+    setPrevPage(tempPage);
     setTempPage((tempPage) => tempPage - 1);
   };
 
@@ -37,11 +40,14 @@ const ChatDisplay = ({ commonsId }) => {
   );
 
   useEffect(() => {
+    if(tempPage == prevPage){
+      return;
+    }
     if (messagesPage.content.length == 0 && tempPage > 0) {
       alert("No more messages.");
       setTempPage((tempPage) => tempPage - 1);
     }
-  }, [messagesPage, tempPage]);
+  }, [messagesPage, tempPage, prevPage]);
 
   const { data: userCommonsList } = useBackend(
     [`/api/usercommons/commons/all`],
