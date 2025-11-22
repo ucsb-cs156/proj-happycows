@@ -74,9 +74,9 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
-
-      expect(result.current.data).toEqual(currentUserFixtures.userOnly);
+      await waitFor(() => {
+        expect(result.current.data).toEqual(currentUserFixtures.userOnly);
+      });
       queryClient.clear();
       axiosMock.restore();
     });

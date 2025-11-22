@@ -63,9 +63,9 @@ describe("utils/systemInfo tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
-
-      expect(result.current.data).toEqual(systemInfoFixtures.showingAll);
+      await waitFor(() => {
+        expect(result.current.data).toEqual(systemInfoFixtures.showingAll);
+      });
       queryClient.clear();
     });
 
