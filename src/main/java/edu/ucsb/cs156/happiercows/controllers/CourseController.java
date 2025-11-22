@@ -45,4 +45,40 @@ public class CourseController extends ApiController {
 
         return course;
     }
+
+    @Operation(summary = "Create a new course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/post")
+
+    public Course postCourse(
+        @Parameter(
+            name = "code",
+            description = "e.g. CMPSC 156, CHEM 123"
+        )
+        @RequestParam String code,
+        @Parameter(
+            name = "name",
+            description = "e.g. Advanced Applications Programming, Enviromental Chemistry"
+        )
+        @RequestParam String name,
+        @Parameter(
+            name = "term",
+            description = "e.g. F25, W26"
+        )
+        @RequestParam String term
+    )
+
+        throws JsonProcessingException {
+
+    log.info("code={}, name={}, term={}", code, name, term);
+
+    Course course = new Course();
+    course.setCode(code);
+    course.setName(name);
+    course.setTerm(term);
+
+    Course savedCourse = courseRepository.save(course);
+
+    return savedCourse;
+    }
 }
