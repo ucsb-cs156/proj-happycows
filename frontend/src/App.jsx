@@ -23,6 +23,7 @@ import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
+import DeveloperPage from "main/pages/DeveloperPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
@@ -38,6 +39,7 @@ function App() {
       <Route path="/admin/users" element={<AdminUsersPage />} />
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
+      <Route path="/admin/developer" element={<DeveloperPage />} />
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
       <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
