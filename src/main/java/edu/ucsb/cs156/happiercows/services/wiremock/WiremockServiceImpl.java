@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.Stubbing;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -20,10 +19,10 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 /**
  * This is a service for mocking authentication using wiremock
- * 
+ *
  * This class relies on property values. For hints on testing, see: <a href=
  * "https://www.baeldung.com/spring-boot-testing-configurationproperties">https://www.baeldung.com/spring-boot-testing-configurationproperties</a>
- * 
+ *
  */
 @Slf4j
 @Service("wiremockService")
@@ -35,7 +34,7 @@ public class WiremockServiceImpl extends WiremockService {
 
   /**
    * This method returns the wiremockServer
-   * 
+   *
    * @return the wiremockServer
    */
   public WireMockServer getWiremockServer() {
@@ -44,7 +43,7 @@ public class WiremockServiceImpl extends WiremockService {
 
   /**
    * This method sets up the necessary mocks for authentication
-   * 
+   *
    * @param s in an instance of a WireMockServer or WireMockExtension
    */
   public static void setupOauthMocks(Stubbing s, boolean isAdmin) {
@@ -114,7 +113,7 @@ public class WiremockServiceImpl extends WiremockService {
 
     WireMockServer wireMockServer = new WireMockServer(options()
         .port(8090) // No-args constructor will start on port
-        .extensions(new ResponseTemplateTransformer(true)));
+        .globalTemplating(true));
 
     setupOauthMocks(wireMockServer, true);
 
