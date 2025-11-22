@@ -43,11 +43,14 @@ export default function OurTable({
       <Table style={tableStyle} {...getTableProps()} striped bordered hover>
         <thead>
           {headerGroups.map((headerGroup) => {
-            const { key: hgKey, ...hgProps } = headerGroup.getHeaderGroupProps();
+            const { key: hgKey, ...hgProps } =
+              headerGroup.getHeaderGroupProps();
             return (
               <tr key={hgKey} {...hgProps}>
                 {headerGroup.headers.map((column) => {
-                  const headerProps = column.getHeaderProps(column.getSortByToggleProps());
+                  const headerProps = column.getHeaderProps(
+                    column.getSortByToggleProps(),
+                  );
                   const { key: colKey, ...restHeaderProps } = headerProps;
                   return (
                     <th
