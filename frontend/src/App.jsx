@@ -29,6 +29,7 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+import DeveloperPage from "main/pages/DeveloperPage";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
       />
+      <Route path="/developer" element={<DeveloperPage />} />
       <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
     </>
   ) : null;
