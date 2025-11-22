@@ -65,6 +65,9 @@ export default function AppNavbar({
                   id="appnavbar-admin-dropdown"
                   data-testid="appnavbar-admin-dropdown"
                 >
+                  <NavDropdown.Item href="/admin/developer">
+                    Developer Info
+                  </NavDropdown.Item>
                   <NavDropdown.Item href="/admin/createcommons">
                     Create Commons
                   </NavDropdown.Item>

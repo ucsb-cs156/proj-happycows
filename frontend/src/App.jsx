@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useBackendMutation } from "main/utils/useBackend";
 import HomePage from "main/pages/HomePage";
@@ -30,11 +30,32 @@ import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 
+import DeveloperPage from "main/pages/DeveloperPage";
+
 function App() {
   const { data: currentUser } = useCurrentUser();
 
+  let redirectUrl = "/selectcommons";
+
+  if (currentUser?.root?.user?.commons) {
+    const commons = currentUser.root.user.commons;
+    const joined = commons.length;
+
+    if (joined === 1) {
+      redirectUrl = `/play/${commons[0].id}`;
+    }
+  }
+
+  const homeRoute =
+    hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
+      <Route path="/" element={<Navigate to={redirectUrl} replace />} />
+    ) : (
+      <Route path="/" element={<LoginPage />} />
+    );
+
   const adminRoutes = hasRole(currentUser, "ROLE_ADMIN") ? (
     <>
+      <Route path="/admin/developer" element={<DeveloperPage />} />
       <Route path="/admin/users" element={<AdminUsersPage />} />
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
@@ -74,18 +95,12 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
+
+      {/* NEW ROUTE - Select Commons Page */}
+      <Route path="/selectcommons" element={<HomePage />} />
     </>
   ) : null;
 
-  const homeRoute =
-    hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
-      <Route path="/" element={<HomePage />} />
-    ) : (
-      <Route path="/" element={<LoginPage />} />
-    );
-
-  /*  Display the LoadingPage while awaiting currentUser 
-      response to prevent the NotFoundPage from displaying */
   const updateLastOnlineMutation = useBackendMutation(
     () => ({ method: "POST", url: "/api/currentUser/last-online" }),
     {},
