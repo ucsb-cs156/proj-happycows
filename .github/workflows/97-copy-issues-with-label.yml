@@ -8,7 +8,7 @@ on:
         description: label on issues to copy (e.g. F25a)
 env:
   GH_TOKEN: ${{ github.token }}
-  STARTER: https://github.com/ucsb-cs156/proj-frontiers
+  STARTER: https://github.com/ucsb-cs156/proj-happycows
   TAG: ${{ github.event.inputs.label }}
 
 jobs:
