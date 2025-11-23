@@ -41,7 +41,7 @@ function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-3">
         <Form.Text htmlFor="description">
-          Updated the cows' health in a single or all commons.
+          Updated the cows&apos; health in a single or all commons.
         </Form.Text>
       </Form.Group>
 
