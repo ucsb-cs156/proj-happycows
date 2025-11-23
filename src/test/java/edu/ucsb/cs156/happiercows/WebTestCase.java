@@ -22,7 +22,7 @@ import edu.ucsb.cs156.happiercows.services.wiremock.WiremockServiceImpl;
 @ActiveProfiles("integration")
 public abstract class WebTestCase {
     @LocalServerPort
-    private int port;
+    protected int port;  // Changed from private to protected
 
     @Value("${app.playwright.headless:true}")
     private boolean runHeadless;

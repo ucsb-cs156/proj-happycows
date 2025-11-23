@@ -45,7 +45,6 @@ function HomePageRouter({ currentUser }) {
   return <HomePage />;
 }
 
-
 function App() {
   const { data: currentUser } = useCurrentUser();
 
