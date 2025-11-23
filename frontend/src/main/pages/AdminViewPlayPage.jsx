@@ -99,8 +99,8 @@ const AdminViewPlayPage = () => {
             <Card.Title>
               This is a Admin Feature for <strong>{admin_name}</strong>
               <br />
-              Visiting Farmer <strong>{visiting_user}</strong>'s Play Page for
-              common <strong>{visiting_commons}</strong> in Read Only Mode.
+              Visiting Farmer <strong>{visiting_user}</strong>&apos;s Play Page
+              for common <strong>{visiting_commons}</strong> in Read Only Mode.
             </Card.Title>
           </Card.Body>
         </Card>
