@@ -1,7 +1,4 @@
 package edu.ucsb.cs156.happiercows.controllers;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Course;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
@@ -12,225 +9,293 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.beans.Transient;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 @WebMvcTest(controllers = CourseController.class)
-@Import(TestConfig.class)
 public class CourseControllerTests extends ControllerTestCase {
     @MockBean
     CourseRepository courseRepository;
-
     @MockBean
     UserRepository userRepository;
 
-    // Logged out users
     @Test
     public void logged_out_users_cannot_get_all() throws Exception {
         mockMvc.perform(get("/api/course/all"))
-                .andExpect(status().is(403)); // logged out users can't get all
+                .andExpect(status().is(403)); 
     }
-
+    
     // Regular users positive tests
-
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = { "USER" })
     @Test
     public void logged_in_user_can_get_all_courses() throws Exception {
         // arrange
-
         Course advapp = Course.builder()
             .code("CMPSC 156")
             .name("Advanced App Programming")
             .term("F24")
             .build();
-
         Course ethics = Course.builder()
             .code("ENGR")
             .name("Ethics in Engineering")
             .term("F24")
             .build();
-
         ArrayList<Course> expectedCourses = new ArrayList<>();
         expectedCourses.add(advapp);
         expectedCourses.add(ethics);
-
         when(courseRepository.findAll()).thenReturn(expectedCourses);
-
         // act
         MvcResult response = mockMvc.perform(get("/api/course/all"))
                 .andExpect(status().isOk()).andReturn();
-
         // assert
-
         verify(courseRepository, times(1)).findAll();
         String expectedJson = mapper.writeValueAsString(expectedCourses);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
-    //Get
-    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void admin_can_get_course_by_id() throws Exception {
+    public void logged_out_users_cannot_get_by_id() throws Exception {
+        mockMvc
+            .perform(get("/api/course?id=7"))
+            .andExpect(status().is(403));
+    }
 
-        Course course = Course.builder()
-                .id(1L)
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_user_get_by_id_course_doesnt_exist() throws Exception {
+        // arrange
+
+        when (courseRepository.findById(eq(123L))).thenReturn(Optional.empty());
+
+        // act
+
+        MvcResult response =
+            mockMvc.perform(get("/api/course?id=123")).andExpect(status().isNotFound()).andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(eq(123L));
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("Course with id 123 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_user_get_by_id_course_exists() throws Exception {
+        // arrange
+
+        Course course =
+            Course.builder()
                 .code("CMPSC 156")
-                .name("Advanced App Programming")
-                .term("F24")
+                .name("Advanced Applications Programming")
+                .term("F25")
                 .build();
 
-        when(courseRepository.findById(1L)).thenReturn(java.util.Optional.of(course));
+        when(courseRepository.findById(eq(7L))).thenReturn(Optional.of(course));
 
-        MvcResult response = mockMvc.perform(get("/api/course/1"))
-                .andExpect(status().isOk())
-                .andReturn();
+        // act
 
-        verify(courseRepository, times(1)).findById(1L);
+        MvcResult response =
+            mockMvc.perform(get("/api/course?id=7")).andExpect(status().isOk()).andReturn();
 
+        // assert
+
+        verify(courseRepository, times(1)).findById(eq(7L));
         String expectedJson = mapper.writeValueAsString(course);
-        assertEquals(expectedJson, response.getResponse().getContentAsString());
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    // POST ----------------------------------
+
+    @Test
+    public void logged_out_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_regular_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course")).andExpect(status().is(403));
     }
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void admin_get_course_by_id_not_found() throws Exception {
+    public void admin_user_can_post_new_course() throws Exception {
+        // arrange
 
-        when(courseRepository.findById(1L)).thenReturn(java.util.Optional.empty());
-
-        mockMvc.perform(get("/api/course/1"))
-                .andExpect(status().isNotFound());
-    }
-
-    //post
-    @WithMockUser(roles = {"ADMIN"})
-    @Test
-    public void admin_can_create_course() throws Exception {
-
-        Course course = Course.builder()
-                .code("CMPSC 148")
-                .name("Operating Systems")
-                .term("W25")
-                .build();
-
-        Course savedCourse = Course.builder()
-                .id(1L)
-                .code("CMPSC 148")
-                .name("Operating Systems")
-                .term("W25")
-                .build();
-
-        when(courseRepository.save(course)).thenReturn(savedCourse);
-
-        MvcResult response = mockMvc.perform(
-                post("/api/course")
-                        .with(csrf())
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(course)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        verify(courseRepository, times(1)).save(course);
-
-        String expectedJson = mapper.writeValueAsString(savedCourse);
-        assertEquals(expectedJson, response.getResponse().getContentAsString());
-    }
-
-    // Put
-    @WithMockUser(roles = {"ADMIN"})
-    @Test
-    public void admin_can_update_course() throws Exception {
-
-        Course originalCourse = Course.builder()
-                .id(1L)
+        Course course =
+            Course.builder()
                 .code("CMPSC 156")
-                .name("App Programming")
-                .term("F24")
+                .name("Advanced Applications Programming")
+                .term("F25")
                 .build();
 
-        Course updatedCourse = Course.builder()
-                .code("CMPSC 156")
-                .name("Advanced App Programming")
-                .term("F24")
-                .build();
+        when(courseRepository.save(eq(course))).thenReturn(course);
 
-        Course savedCourse = Course.builder()
-                .id(1L)
-                .code("CMPSC 156")
-                .name("Advanced App Programming")
-                .term("F24")
-                .build();
+        // act
 
-        when(courseRepository.findById(1L)).thenReturn(java.util.Optional.of(originalCourse));
-        when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
-
-        MvcResult response = mockMvc.perform(
-                put("/api/course/1")
-                        .with(csrf())
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(updatedCourse)))
+        MvcResult response =
+            mockMvc
+                .perform(
+                    post("/api/course?code=CMPSC 156&name=Advanced Applications Programming&term=F25")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        verify(courseRepository, times(1)).findById(1L);
-        verify(courseRepository, times(1)).save(any(Course.class));
+        // assert
 
-        String expectedJson = mapper.writeValueAsString(savedCourse);
-        assertEquals(expectedJson, response.getResponse().getContentAsString());
+        verify(courseRepository, times(1)).save(eq(course));
+        String expectedJson = mapper.writeValueAsString(course);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void admin_cannot_update_nonexistent_course() throws Exception {
+    public void admin_can_edit_an_existing_course() throws Exception {
+        // arrange
 
-        Course updatedCourse = Course.builder()
+        Course courseOrig =
+            Course.builder()
                 .code("CMPSC 156")
-                .name("Updated Name")
-                .term("F24")
+                .name("Advanced Applications Programming")
+                .term("F25")
                 .build();
 
-        when(courseRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+        Course courseEdited =
+            Course.builder()
+                .code("CMPSC 32")
+                .name("Intro to CS")
+                .term("W24")
+                .build();
 
-        mockMvc.perform(
-                put("/api/course/1")
-                        .with(csrf())
-                        .contentType("application/json")
-                        .content(mapper.writeValueAsString(updatedCourse)))
-                .andExpect(status().isNotFound());
+        String requestBody = mapper.writeValueAsString(courseEdited);
 
-        verify(courseRepository, times(1)).findById(1L);
+        when(courseRepository.findById(eq(45L))).thenReturn(Optional.of(courseOrig));
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    put("/api/course?id=45")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(45L);
+        verify(courseRepository, times(1)).save(courseOrig);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(requestBody, responseString);
     }
 
-    // Delete
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_cannot_edit_course_that_doesnt_exist() throws Exception {
+        // arrange
+
+        Course courseEdited =
+            Course.builder()
+                .code("CMPSC 32")
+                .name("Intro to CS")
+                .term("W24")
+                .build();
+
+        String requestBody = mapper.writeValueAsString(courseEdited);
+
+        when(courseRepository.findById(eq(56L))).thenReturn(Optional.empty());
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    put("/api/course?id=56")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(56L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 56 not found", json.get("message"));
+
+    }
+
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_can_delete_course() throws Exception {
+        // arrange
 
-        when(courseRepository.existsById(1L)).thenReturn(true);
+        Course course =
+            Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced Applications Programming")
+                .term("F25")
+                .build();
 
-        mockMvc.perform(delete("/api/course/1").with(csrf()))
-            .andExpect(status().isNoContent());
+        when(courseRepository.findById(eq(15L))).thenReturn(Optional.of(course));
 
-        verify(courseRepository, times(1)).existsById(1L);
-        verify(courseRepository, times(1)).deleteById(1L);
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(delete("/api/course?id=15").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(15L);
+        verify(courseRepository, times(1)).delete(any());
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 15 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void admin_cannot_delete_nonexistent_course() throws Exception {
+    public void admin_tries_to_delete_non_existing_course() throws Exception {
+        // arrange
 
-        when(courseRepository.existsById(1L)).thenReturn(false);
+        when(courseRepository.findById(eq(48L))).thenReturn(Optional.empty());
 
-        mockMvc.perform(delete("/api/course/1").with(csrf()))
-            .andExpect(status().isNotFound());
+        // act
 
-        verify(courseRepository, times(1)).existsById(1L);
-    } 
+        MvcResult response =
+            mockMvc
+                .perform(delete("/api/course?id=48").with(csrf()))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(48L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 48 not found", json.get("message"));
+    }
 }
