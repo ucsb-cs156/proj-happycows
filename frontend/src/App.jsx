@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useBackendMutation } from "main/utils/useBackend";
 import HomePage from "main/pages/HomePage";
@@ -73,15 +73,28 @@ function App() {
 
   const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
     <>
+      <Route path="/home" element={<HomePage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
     </>
   ) : null;
 
+  const commonsCount = currentUser?.root?.user?.commons?.length ?? 0;
+  const singleCommonsId = currentUser?.root?.user?.commons?.[0]?.id;
+
   const homeRoute =
     hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
-      <Route path="/" element={<HomePage />} />
+      <>
+        {commonsCount === 1 && singleCommonsId ? (
+          <Route
+            path="/"
+            element={<Navigate to={`/play/${singleCommonsId}`} replace />}
+          />
+        ) : (
+          <Route path="/" element={<HomePage />} />
+        )}
+      </>
     ) : (
       <Route path="/" element={<LoginPage />} />
     );
