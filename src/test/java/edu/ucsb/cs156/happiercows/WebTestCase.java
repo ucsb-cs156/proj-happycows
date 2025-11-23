@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -20,6 +20,7 @@ import com.microsoft.playwright.Playwright;
 import edu.ucsb.cs156.happiercows.services.wiremock.WiremockServiceImpl;
 
 @ActiveProfiles("integration")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public abstract class WebTestCase {
     @LocalServerPort
     private int port;
@@ -34,9 +35,7 @@ public abstract class WebTestCase {
 
     @BeforeAll
     public static void setupWireMock() {
-        wireMockServer = new WireMockServer(options()
-                .port(8090)
-                .extensions(new ResponseTemplateTransformer(true)));
+        wireMockServer = new WireMockServer(options().port(8090).globalTemplating(true));
 
         WiremockServiceImpl.setupOauthMocks(wireMockServer, false);
 
