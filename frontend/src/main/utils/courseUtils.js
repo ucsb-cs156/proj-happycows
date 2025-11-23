@@ -10,7 +10,7 @@ export function cellToAxiosParamsDelete(cell) {
     url: "/api/course",
     method: "DELETE",
     params: {
-      id: cell.row.original.id,
+      id: cell.row.values.id,
     },
   };
 }

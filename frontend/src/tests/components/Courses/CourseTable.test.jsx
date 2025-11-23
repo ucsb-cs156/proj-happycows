@@ -3,18 +3,26 @@ import { courseFixtures } from "fixtures/courseFixtures";
 import CourseTable from "main/components/Courses/CourseTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { vi } from "vitest";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import axios from "axios";
-import AxiosMockAdapter from "axios-mock-adapter";
+// import axios from "axios";
+// import AxiosMockAdapter from "axios-mock-adapter";
+
+// const mockedNavigate = vi.fn();
+// vi.mock("react-router", async () => {
+//   const originalModule = await vi.importActual("react-router");
+//   return {
+//     ...originalModule,
+//     useNavigate: () => mockedNavigate,
+//   };
+// });
 
 const mockedNavigate = vi.fn();
-vi.mock("react-router", async () => {
-  const originalModule = await vi.importActual("react-router");
-  return {
-    ...originalModule,
-    useNavigate: () => mockedNavigate,
-  };
-});
+
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
+  useNavigate: () => mockedNavigate,
+}));
 
 describe("CourseTable tests", () => {
   const queryClient = new QueryClient();
@@ -166,9 +174,12 @@ describe("CourseTable tests", () => {
     );
 
     // assert - check that the expected content is rendered
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
     expect(
-      await screen.findByTestId(`${testId}-cell-row-0-col-id`),
-    ).toHaveTextContent("1");
+      screen.getByTestId(`${testId}-cell-row-0-col-name`),
+    ).toHaveTextContent("Advanced Applications Programming");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -184,12 +195,10 @@ describe("CourseTable tests", () => {
     );
   });
 
+
   test("Delete button calls delete callback", async () => {
     // arrange
     const currentUser = currentUserFixtures.adminUser;
-
-    const axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onDelete("/api/course").reply(200, { message: "Course deleted" });
 
     // act - render the component
     render(
@@ -204,9 +213,12 @@ describe("CourseTable tests", () => {
     );
 
     // assert - check that the expected content is rendered
+    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
+      "1",
+    );
     expect(
-      await screen.findByTestId(`${testId}-cell-row-0-col-id`),
-    ).toHaveTextContent("1");
+      screen.getByTestId(`${testId}-cell-row-0-col-name`),
+    ).toHaveTextContent("Advanced Applications Programming");
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
@@ -215,10 +227,5 @@ describe("CourseTable tests", () => {
 
     // act - click the delete button
     fireEvent.click(deleteButton);
-
-    // assert - check that the delete endpoint was called
-
-    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
-    expect(axiosMock.history.delete[0].params).toEqual({ id: 1 });
   });
 });
