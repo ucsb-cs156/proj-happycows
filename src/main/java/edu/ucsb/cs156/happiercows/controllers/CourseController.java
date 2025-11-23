@@ -54,17 +54,17 @@ public class CourseController extends ApiController {
     public Course postCourse(
         @Parameter(
             name = "code",
-            description = "e.g. CMPSC 156, CHEM 123"
+            description = "e.g. CMPSC 156"
         )
         @RequestParam String code,
         @Parameter(
             name = "name",
-            description = "e.g. Advanced Applications Programming, Enviromental Chemistry"
+            description = "e.g. Advanced Applications Programming"
         )
         @RequestParam String name,
         @Parameter(
             name = "term",
-            description = "e.g. F25, W26"
+            description = "e.g. F25"
         )
         @RequestParam String term
     )

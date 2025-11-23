@@ -77,27 +77,21 @@ public class CourseControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void logged_in_user_get_by_id_course_doesnt_exist() throws Exception {
-        // arrange
 
-        when (courseRepository.findById(eq(123L))).thenReturn(Optional.empty());
-
-        // act
+        when (courseRepository.findById(eq(45L))).thenReturn(Optional.empty());
 
         MvcResult response =
-            mockMvc.perform(get("/api/course?id=123")).andExpect(status().isNotFound()).andReturn();
+            mockMvc.perform(get("/api/course?id=45")).andExpect(status().isNotFound()).andReturn();
 
-        // assert
-
-        verify(courseRepository, times(1)).findById(eq(123L));
+        verify(courseRepository, times(1)).findById(eq(45L));
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("Course with id 123 not found", json.get("message"));
+        assertEquals("Course with id 45 not found", json.get("message"));
     }
 
     @WithMockUser(roles = {"USER"})
     @Test
     public void logged_in_user_get_by_id_course_exists() throws Exception {
-        // arrange
 
         Course course =
             Course.builder()
@@ -108,20 +102,14 @@ public class CourseControllerTests extends ControllerTestCase {
 
         when(courseRepository.findById(eq(7L))).thenReturn(Optional.of(course));
 
-        // act
-
         MvcResult response =
             mockMvc.perform(get("/api/course?id=7")).andExpect(status().isOk()).andReturn();
-
-        // assert
 
         verify(courseRepository, times(1)).findById(eq(7L));
         String expectedJson = mapper.writeValueAsString(course);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
-
-    // POST ----------------------------------
 
     @Test
     public void logged_out_users_cannot_post() throws Exception {
@@ -137,8 +125,6 @@ public class CourseControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_user_can_post_new_course() throws Exception {
-        // arrange
-
         Course course =
             Course.builder()
                 .code("CMPSC 156")
@@ -148,8 +134,6 @@ public class CourseControllerTests extends ControllerTestCase {
 
         when(courseRepository.save(eq(course))).thenReturn(course);
 
-        // act
-
         MvcResult response =
             mockMvc
                 .perform(
@@ -157,8 +141,6 @@ public class CourseControllerTests extends ControllerTestCase {
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn();
-
-        // assert
 
         verify(courseRepository, times(1)).save(eq(course));
         String expectedJson = mapper.writeValueAsString(course);
@@ -169,7 +151,6 @@ public class CourseControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_can_edit_an_existing_course() throws Exception {
-        // arrange
 
         Course courseOrig =
             Course.builder()
@@ -180,16 +161,14 @@ public class CourseControllerTests extends ControllerTestCase {
 
         Course courseEdited =
             Course.builder()
-                .code("CMPSC 32")
+                .code("CMPSC 24")
                 .name("Intro to CS")
-                .term("W24")
+                .term("W25")
                 .build();
 
         String requestBody = mapper.writeValueAsString(courseEdited);
 
         when(courseRepository.findById(eq(45L))).thenReturn(Optional.of(courseOrig));
-
-        // act
 
         MvcResult response =
             mockMvc
@@ -202,8 +181,6 @@ public class CourseControllerTests extends ControllerTestCase {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // assert
-
         verify(courseRepository, times(1)).findById(45L);
         verify(courseRepository, times(1)).save(courseOrig);
         String responseString = response.getResponse().getContentAsString();
@@ -213,7 +190,6 @@ public class CourseControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_cannot_edit_course_that_doesnt_exist() throws Exception {
-        // arrange
 
         Course courseEdited =
             Course.builder()
@@ -226,8 +202,6 @@ public class CourseControllerTests extends ControllerTestCase {
 
         when(courseRepository.findById(eq(56L))).thenReturn(Optional.empty());
 
-        // act
-
         MvcResult response =
             mockMvc
                 .perform(
@@ -239,8 +213,6 @@ public class CourseControllerTests extends ControllerTestCase {
                 .andExpect(status().isNotFound())
                 .andReturn();
 
-        // assert
-
         verify(courseRepository, times(1)).findById(56L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("Course with id 56 not found", json.get("message"));
@@ -250,7 +222,6 @@ public class CourseControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_can_delete_course() throws Exception {
-        // arrange
 
         Course course =
             Course.builder()
@@ -259,43 +230,34 @@ public class CourseControllerTests extends ControllerTestCase {
                 .term("F25")
                 .build();
 
-        when(courseRepository.findById(eq(15L))).thenReturn(Optional.of(course));
-
-        // act
+        when(courseRepository.findById(eq(10L))).thenReturn(Optional.of(course));
 
         MvcResult response =
             mockMvc
-                .perform(delete("/api/course?id=15").with(csrf()))
+                .perform(delete("/api/course?id=10").with(csrf()))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        // assert
-
-        verify(courseRepository, times(1)).findById(15L);
+        verify(courseRepository, times(1)).findById(10L);
         verify(courseRepository, times(1)).delete(any());
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Course with id 15 deleted", json.get("message"));
+        assertEquals("Course with id 10 deleted", json.get("message"));
     }
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_tries_to_delete_non_existing_course() throws Exception {
-        // arrange
 
-        when(courseRepository.findById(eq(48L))).thenReturn(Optional.empty());
-
-        // act
+        when(courseRepository.findById(eq(45L))).thenReturn(Optional.empty());
 
         MvcResult response =
             mockMvc
-                .perform(delete("/api/course?id=48").with(csrf()))
+                .perform(delete("/api/course?id=45").with(csrf()))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
-        // assert
-
-        verify(courseRepository, times(1)).findById(48L);
+        verify(courseRepository, times(1)).findById(45L);
         Map<String, Object> json = responseToJson(response);
-        assertEquals("Course with id 48 not found", json.get("message"));
+        assertEquals("Course with id 45 not found", json.get("message"));
     }
 }
