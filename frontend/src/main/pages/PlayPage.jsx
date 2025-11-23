@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsOverview from "main/components/Commons/CommonsOverview";
@@ -133,6 +133,8 @@ export default function PlayPage() {
     mutationsell.mutate(userCommons, numCows);
   };
 
+  const navigate = useNavigate();
+
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const toggleChatWindow = () => {
@@ -148,6 +150,16 @@ export default function PlayPage() {
     position: "fixed",
     bottom: "30px",
     right: "30px",
+  };
+  const selectCommonPageButtonStyle = {
+    width: "60px",
+    height: "60px",
+    borderRadius: "25%",
+    backgroundColor: "lightblue",
+    color: "black",
+    position: "fixed",
+    bottom: "30px",
+    right: "90px",
   };
 
   const chatContainerStyle = {
@@ -230,6 +242,15 @@ export default function PlayPage() {
           </Button>
         </div>
       )}
+      <Button
+        style={selectCommonPageButtonStyle}
+        onClick={() => navigate("/home")}
+        data-testid="playpage-home-button"
+      >
+        <span style={emojiStyle} data-testid="home-icon">
+          🏠
+        </span>
+      </Button>
     </div>
   );
 }
