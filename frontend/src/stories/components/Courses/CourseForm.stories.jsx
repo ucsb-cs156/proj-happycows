@@ -8,7 +8,7 @@ export default {
 };
 
 const Template = (args) => {
-  return <CourseForm  {...args} />;
+  return <CourseForm {...args} />;
 };
 
 export const Create = Template.bind({});

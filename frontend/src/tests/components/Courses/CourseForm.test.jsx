@@ -39,9 +39,7 @@ describe("CourseForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <CourseForm
-            initialContents={courseFixtures.oneCourse}
-          />
+          <CourseForm initialContents={courseFixtures.oneCourse} />
         </Router>
       </QueryClientProvider>,
     );
@@ -61,7 +59,7 @@ describe("CourseForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <CourseForm  />
+          <CourseForm />
         </Router>
       </QueryClientProvider>,
     );
@@ -77,49 +75,46 @@ describe("CourseForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <CourseForm  />
+          <CourseForm />
         </Router>
       </QueryClientProvider>,
     );
 
     expect(await screen.findByText(/Create/)).toBeInTheDocument();
-    const submitButton =  screen.getByTestId(`${testId}-submit`);
+    const submitButton = screen.getByTestId(`${testId}-submit`);
     fireEvent.click(submitButton);
 
-    await screen.findByText(
-      /Code is required/,
-    );
+    await screen.findByText(/Code is required/);
     expect(screen.getByText(/Name is required/)).toBeInTheDocument();
     expect(screen.getByText(/Term is required/)).toBeInTheDocument();
- 
   });
 
-  test("shows max length validation error ", async () => {
-  render(
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <CourseForm />
-      </Router>
-    </QueryClientProvider>
-  );
+  test("shows max length validation error", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <CourseForm />
+        </Router>
+      </QueryClientProvider>,
+    );
 
-  const codeInput = screen.getByTestId(`${testId}-code`);
-  const nameInput = await screen.findByTestId(`${testId}-name`);
-  const termInput = await screen.findByTestId(`${testId}-term`);
-  const submitButton =  screen.getByTestId(`${testId}-submit`);
+    const codeInput = screen.getByTestId(`${testId}-code`);
+    const nameInput = await screen.findByTestId(`${testId}-name`);
+    const termInput = await screen.findByTestId(`${testId}-term`);
+    const submitButton = screen.getByTestId(`${testId}-submit`);
 
-  fireEvent.change(codeInput, { target: { value: "a".repeat(31) } });
-  fireEvent.change(nameInput, { target: { value: "a".repeat(101) } });
-  fireEvent.change(termInput, { target: { value: "a".repeat(11) } });
+    fireEvent.change(codeInput, { target: { value: "a".repeat(31) } });
+    fireEvent.change(nameInput, { target: { value: "a".repeat(101) } });
+    fireEvent.change(termInput, { target: { value: "a".repeat(11) } });
 
-  fireEvent.click(submitButton);
+    fireEvent.click(submitButton);
 
-  await screen.findByText(/Code max length 30 characters/);
-  expect(
+    await screen.findByText(/Code max length 30 characters/);
+    expect(
       screen.getByText(/Name max length 100 characters/),
     ).toBeInTheDocument();
-  expect(
-    screen.getByText(/Term max length 10 characters/),
-  ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Term max length 10 characters/),
+    ).toBeInTheDocument();
   });
 });
