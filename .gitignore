@@ -56,3 +56,4 @@ build/
 ### .DS_Store ###
 .DS_Store
 
+.PVS-Studio/
