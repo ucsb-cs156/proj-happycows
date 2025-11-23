@@ -20,14 +20,13 @@ import java.util.Optional;
 public class CourseController extends ApiController {
     @Autowired
     private CourseRepository courseRepository;
-
     /**
      * This method returns a list of all courses.
      * 
      * @return a list of all courses
      */
     @Operation(summary = "List all courses")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/all")
     public Iterable<Course> allOrganisations() {
         Iterable<Course> courses = courseRepository.findAll();
@@ -36,7 +35,7 @@ public class CourseController extends ApiController {
 
     //get a single course
     @Operation(summary = "Get a course by ID")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         Optional<Course> courseOpt = courseRepository.findById(id);
@@ -49,7 +48,7 @@ public class CourseController extends ApiController {
 
     //create a new course
     @Operation(summary = "Create a new course")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
     public ResponseEntity<Course> createCourse(@RequestBody Course course) {
         Course savedCourse = courseRepository.save(course);
@@ -58,7 +57,7 @@ public class CourseController extends ApiController {
 
     //update an existing course
     @Operation(summary = "Update an existing course")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Course> updateCourse(@PathVariable Long id, @RequestBody Course updatedCourse) {
         Optional<Course> courseOpt = courseRepository.findById(id);
@@ -77,9 +76,10 @@ public class CourseController extends ApiController {
 
     //delete a course
     @Operation(summary = "Delete a course")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+
         if (!courseRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
