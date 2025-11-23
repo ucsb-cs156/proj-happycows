@@ -195,7 +195,6 @@ describe("CourseTable tests", () => {
     );
   });
 
-
   test("Delete button calls delete callback", async () => {
     // arrange
     const currentUser = currentUserFixtures.adminUser;
