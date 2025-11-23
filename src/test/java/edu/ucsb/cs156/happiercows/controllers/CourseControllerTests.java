@@ -79,7 +79,6 @@ public class CourseControllerTests extends ControllerTestCase {
     }
 
 
-//START EDITING FROM HERE 
     @Test
   public void logged_out_users_cannot_post() throws Exception {
     mockMvc.perform(post("/api/course")).andExpect(status().is(403));
