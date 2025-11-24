@@ -23,6 +23,7 @@ import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
+import ChatPage from "main/pages/ChatPage";
 import DeveloperPage from "main/pages/DeveloperPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
@@ -76,6 +77,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
+      <Route path="/chat/:commonsId" element={<ChatPage />} />
     </>
   ) : null;
 

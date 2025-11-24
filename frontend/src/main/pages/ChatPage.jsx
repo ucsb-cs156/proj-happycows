@@ -26,7 +26,7 @@ export default function ChatPage() {
       },
     },
     { content: [], totalPages: 0, totalElements: 0 },
-    { refetchInterval: refreshRate }
+    { refetchInterval: refreshRate },
   );
 
   const { data: userCommonsList } = useBackend(
@@ -39,25 +39,7 @@ export default function ChatPage() {
       },
     },
     [],
-    { refetchInterval: refreshRate }
-  );
-
-  const { data: commons } = useBackend(
-    [`/api/commons`, commonsId],
-    {
-      method: "GET",
-      url: `/api/commons?id=${commonsId}`,
-    },
-    {}
-  );
-
-  const { data: currentUser } = useBackend(
-    [`/api/currentUser`],
-    {
-      method: "GET",
-      url: `/api/currentUser`,
-    },
-    {}
+    { refetchInterval: refreshRate },
   );
 
   // Stryker restore all

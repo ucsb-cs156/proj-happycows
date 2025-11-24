@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { useBackend } from "main/utils/useBackend";
 
@@ -23,7 +23,7 @@ const ChatDisplay = ({ commonsId }) => {
       },
     },
     { content: [], totalElements: 0 }, // added totalElements to track total msg count
-    { refetchInterval: refreshRate }
+    { refetchInterval: refreshRate },
   );
 
   const { data: userCommonsList } = useBackend(
@@ -41,7 +41,9 @@ const ChatDisplay = ({ commonsId }) => {
 
   // Stryker restore all
 
-  const sortedMessages = (messagesPage.content || []).sort((a, b) => b.id - a.id);
+  const sortedMessages = (messagesPage.content || []).sort(
+    (a, b) => b.id - a.id,
+  );
 
   const userIdToUsername = userCommonsList.reduce((acc, user) => {
     acc[user.userId] = user.username || "";
