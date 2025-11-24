@@ -22,7 +22,10 @@ export function useCurrentUser() {
       }
     },
     {
-      initialData: { loggedIn: false, root: null, initialData: true },
+      initialData: {
+        loggedIn: false,
+        root: null,
+      },
     },
   );
 }
