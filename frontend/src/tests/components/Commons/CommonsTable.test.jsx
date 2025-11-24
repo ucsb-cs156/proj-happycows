@@ -327,7 +327,10 @@ describe("commonsTableUtils additional coverage", () => {
     // explicit numeric-null handling: both null numeric values should compare equal (return 0)
     const aNull = { commons: { cowPrice: null, id: 1 }, totalCows: null };
     const bNull = { commons: { cowPrice: null, id: 2 }, totalCows: null };
-    const numericNullComparator = createCommonsComparator("commons.cowPrice", "asc");
+    const numericNullComparator = createCommonsComparator(
+      "commons.cowPrice",
+      "asc",
+    );
     expect(numericNullComparator(aNull, bNull)).toBe(0);
   });
 });

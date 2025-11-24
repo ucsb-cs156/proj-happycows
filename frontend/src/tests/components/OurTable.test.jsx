@@ -807,8 +807,14 @@ describe("OurTable extra coverage", () => {
     // set pageSize to 1 to ensure rows.length > pageSize
     render(<OurTable columns={cols} data={rows} pageSize={1} testid={"pg"} />);
 
-    expect(await screen.findByTestId("pg-next-page-button")).toBeInTheDocument();
-    expect(await screen.findByTestId("pg-prev-page-button")).toBeInTheDocument();
-    expect(await screen.findByTestId("pg-current-page-button")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("pg-next-page-button"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("pg-prev-page-button"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("pg-current-page-button"),
+    ).toBeInTheDocument();
   });
 });
