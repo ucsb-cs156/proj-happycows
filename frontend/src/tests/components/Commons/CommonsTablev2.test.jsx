@@ -500,7 +500,12 @@ describe("CommonsTablev2 component", () => {
     expect(screen.getByTestId("CommonsTable-card-0")).toBeInTheDocument();
     expect(screen.getByTestId("CommonsTable-card-1")).toBeInTheDocument();
     expect(screen.getByTestId("CommonsTable-card-2")).toBeInTheDocument();
-    expect(screen.getByText("Bravo")).toBeInTheDocument();
+    const visibleNameCells = screen.getAllByTestId(
+      /CommonsTable-card-\d+-field-commons.name/,
+    );
+    expect(
+      visibleNameCells.some((element) => element.textContent === "Bravo"),
+    ).toBe(true);
   });
 
   test("component numeric sorting by milkPrice ascending and descending", async () => {
@@ -658,10 +663,12 @@ describe("CommonsTablev2 component", () => {
       'div[aria-hidden="true"]',
     );
     expect(hiddenContainer).toBeTruthy();
-    expect(getComputedStyle(hiddenContainer).display).toBe("none");
+    const hiddenDisplay = getComputedStyle(hiddenContainer).display;
+    expect(hiddenDisplay).toBe("inline-block");
     const styleAttr = hiddenContainer.getAttribute("style") || "";
     expect(styleAttr).toContain("display");
-    expect(styleAttr).toMatch(/display\s*:\s*none/);
+    expect(styleAttr).toMatch(/display\s*:\s*inline-block/);
+    expect(styleAttr).toMatch(/opacity\s*:\s*0/);
     expect(legacyAnnouncementsBtn.getAttribute("href")).toContain(
       "/admin/announcements/",
     );
@@ -678,9 +685,13 @@ describe("CommonsTablev2 component", () => {
 
     const hiddenDivs = document.querySelectorAll('div[aria-hidden="true"]');
     expect(hiddenDivs.length).toBeGreaterThan(0);
-    hiddenDivs.forEach((d) => {
-      expect(getComputedStyle(d).display).toBe("none");
-    });
+    const displayValues = Array.from(hiddenDivs).map((d) =>
+      getComputedStyle(d).display,
+    );
+    expect(displayValues.some((value) => value === "inline-block")).toBe(true);
+    displayValues.forEach((value) =>
+      expect(["inline-block", "none"]).toContain(value),
+    );
 
     for (let i = 0; i < 3; i++) {
       const hiddenAnn = screen.getByTestId(
