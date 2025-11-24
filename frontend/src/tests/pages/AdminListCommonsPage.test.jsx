@@ -98,7 +98,7 @@ describe("AdminListCommonPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
     expect(
       screen.getByTestId(`${testId}-card-1-field-commons.id`),
@@ -131,7 +131,7 @@ describe("AdminListCommonPage tests", () => {
     restoreConsole();
 
     expect(
-      screen.queryByTestId(`${testId}-card-0-field-commons.id`),
+      screen.queryByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).not.toBeInTheDocument();
     expect(screen.getByTestId("CommonsTable-empty")).toBeInTheDocument();
     expect(screen.getByText(`Download All Stats`)).toBeInTheDocument();
@@ -157,10 +157,10 @@ describe("AdminListCommonPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(`${testId}-card-0-field-commons.id`),
+      screen.getByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
     const deleteButton = screen.getByTestId(`${testId}-card-0-action-Delete`);
@@ -199,7 +199,7 @@ describe("AdminListCommonPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
     const editButton = screen.getByTestId(`${testId}-card-0-action-Edit`);
@@ -229,7 +229,7 @@ describe("AdminListCommonPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
     const leaderboardButton = screen.getByTestId(
@@ -261,7 +261,7 @@ describe("AdminListCommonPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
     const statsCSVButton = screen.getByTestId(

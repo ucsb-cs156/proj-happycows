@@ -94,7 +94,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByTestId(`${testId}-card-0-field-commons.id`),
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
     const announcementsButton = screen.getByTestId(

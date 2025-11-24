@@ -380,7 +380,7 @@ describe("CommonsTable component", () => {
     expect(cards.length).toEqual(commonsPlusFixtures.threeCommonsPlus.length);
 
     expect(
-      screen.getByTestId("CommonsTable-card-0-field-commons.id"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-commons.id"),
     ).toHaveTextContent("1");
     expect(
       screen.getByTestId("CommonsTable-card-1-field-commons.id"),
@@ -465,7 +465,7 @@ describe("CommonsTable component", () => {
 
     expect(directionToggle).toHaveTextContent("Descending");
     expect(
-      screen.getByTestId("CommonsTable-card-0-field-commons.id"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-commons.id"),
     ).toHaveTextContent("3");
   });
 
@@ -705,7 +705,7 @@ describe("CommonsTable component", () => {
     renderCommonsTable({ commons, currentUser: adminUser });
 
     expect(
-      screen.getByTestId("CommonsTable-card-0-field-commons.name"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-commons.name"),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("CommonsTable-card-0-summary"),
@@ -883,7 +883,7 @@ describe("CommonsTable component", () => {
     fireEvent.change(select, { target: { value: "not-a-real-key" } });
     expect(select).toHaveValue("commons.id");
     // Ensure the displayed order is still sorted by the default key (commons.id)
-    const firstId = screen.getByTestId("CommonsTable-card-0-field-commons.id");
+    const firstId = screen.getByTestId("CommonsTable-cell-row-0-col-commons.id");
     expect(firstId).toHaveTextContent("1");
   });
 
