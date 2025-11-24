@@ -41,4 +41,13 @@ public class CourseController extends ApiController {
                 .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
         return course;
     }
+
+    @Operation(summary = "Create a course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("")
+    public Course postCourse(
+            @Parameter(name = "course") @RequestBody Course course) {
+        Course savedCourse = courseRepository.save(course);
+        return savedCourse;
+    }
 }
