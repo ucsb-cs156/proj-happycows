@@ -65,9 +65,9 @@ describe("AdminListCommonPageV2 tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByTestId("CommonsTable-empty"),
-    ).toHaveTextContent("No commons available");
+    expect(await screen.findByTestId("CommonsTable-empty")).toHaveTextContent(
+      "No commons available",
+    );
   });
 
   test("renders commons in card layout for admin", async () => {
