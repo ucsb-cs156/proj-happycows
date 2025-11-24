@@ -792,7 +792,6 @@ describe("OurTable extra coverage", () => {
 
     const header = await screen.findByTestId("rid-header-myid");
     expect(header).toBeInTheDocument();
-    const headerRow = header.closest("tr");
     // when id is present, the cell fallback key should include that id
     const bodyCell = await screen.findByTestId("rid-cell-row-0-col-myid");
     expect(bodyCell).toBeInTheDocument();
