@@ -23,7 +23,8 @@ import {
 const mutateSpy = vi.fn();
 
 vi.mock("main/utils/useBackend", () => ({
-  useBackendMutation: (...args) => globalThis.__useBackendMutationMock__(...args),
+  useBackendMutation: (...args) =>
+    globalThis.__useBackendMutationMock__(...args),
 }));
 
 const mockedNavigate = vi.fn();
@@ -312,7 +313,9 @@ describe("CommonsTable component", () => {
 
   beforeEach(() => {
     mockMutate = vi.fn();
-    globalThis.__useBackendMutationMock__ = vi.fn(() => ({ mutate: mockMutate }));
+    globalThis.__useBackendMutationMock__ = vi.fn(() => ({
+      mutate: mockMutate,
+    }));
     mockedNavigate.mockReset();
   });
 
