@@ -13,9 +13,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.beans.Transient;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -27,6 +33,8 @@ public class CourseControllerTests extends ControllerTestCase {
 
     @MockBean
     UserRepository userRepository;
+
+    // GET ----------------------------------
 
     // Logged out users
     @Test
@@ -68,6 +76,105 @@ public class CourseControllerTests extends ControllerTestCase {
 
         verify(courseRepository, times(1)).findAll();
         String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @Test
+    public void logged_out_users_cannot_get_by_id() throws Exception {
+        mockMvc
+            .perform(get("/api/course?id=7"))
+            .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_user_get_by_id_course_doesnt_exist() throws Exception {
+        // arrange
+
+        when (courseRepository.findById(eq(123L))).thenReturn(Optional.empty());
+
+        // act
+
+        MvcResult response =
+            mockMvc.perform(get("/api/course?id=123")).andExpect(status().isNotFound()).andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(eq(123L));
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("Course with id 123 not found", json.get("message"));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_user_get_by_id_course_exists() throws Exception {
+        // arrange
+
+        Course course =
+            Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced Applications Programming")
+                .term("F25")
+                .build();
+
+        when(courseRepository.findById(eq(7L))).thenReturn(Optional.of(course));
+
+        // act
+
+        MvcResult response =
+            mockMvc.perform(get("/api/course?id=7")).andExpect(status().isOk()).andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(eq(7L));
+        String expectedJson = mapper.writeValueAsString(course);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    // POST ----------------------------------
+
+    @Test
+    public void logged_out_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course/post")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_regular_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course/post")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_user_can_post_new_course() throws Exception {
+        // arrange
+
+        Course course =
+            Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced Applications Programming")
+                .term("F25")
+                .build();
+
+        when(courseRepository.save(eq(course))).thenReturn(course);
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    post("/api/course/post?code=CMPSC 156&name=Advanced Applications Programming&term=F25")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).save(eq(course));
+        String expectedJson = mapper.writeValueAsString(course);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
