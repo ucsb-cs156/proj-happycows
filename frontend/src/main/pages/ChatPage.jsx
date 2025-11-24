@@ -10,7 +10,7 @@ export default function ChatPage() {
   const { commonsId } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const refreshRate = 2000;
+  const refreshRate = 10;
 
   // Stryker disable all
 
@@ -49,7 +49,7 @@ export default function ChatPage() {
   const totalElements = messagesPage.totalElements || 0;
 
   const userIdToUsername = userCommonsList.reduce((acc, user) => {
-    acc[user.userId] = user.username || "";
+    acc[user.userId] = user.username;
     return acc;
   }, {});
 

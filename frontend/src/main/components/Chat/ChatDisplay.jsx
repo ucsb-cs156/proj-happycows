@@ -7,7 +7,7 @@ import { useBackend } from "main/utils/useBackend";
 
 const ChatDisplay = ({ commonsId }) => {
   const initialMessagePageSize = 10;
-  const refreshRate = 2000;
+  const refreshRate = 10;
 
   // Stryker disable all
 
@@ -41,12 +41,10 @@ const ChatDisplay = ({ commonsId }) => {
 
   // Stryker restore all
 
-  const sortedMessages = (messagesPage.content || []).sort(
-    (a, b) => b.id - a.id,
-  );
+  const sortedMessages = messagesPage.content.sort((a, b) => b.id - a.id);
 
   const userIdToUsername = userCommonsList.reduce((acc, user) => {
-    acc[user.userId] = user.username || "";
+    acc[user.userId] = user.username;
     return acc;
   }, {});
 
