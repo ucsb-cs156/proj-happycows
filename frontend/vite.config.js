@@ -45,7 +45,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      
       main: path.resolve(__dirname, "./src/main"),
       fixtures: path.resolve(__dirname, "./src/fixtures"),
       tests: path.resolve(__dirname, "./src/tests"),

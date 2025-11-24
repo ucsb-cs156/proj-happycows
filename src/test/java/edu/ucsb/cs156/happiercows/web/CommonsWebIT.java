@@ -52,14 +52,14 @@ public class CommonsWebIT extends WebTestCase {
   
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("Web Test Commons");
 
-        page.getByTestId("CommonsTable-cell-row-0-col-button").click();
+        page.getByTestId("CommonsTable-cell-row-0-col-Edit-button").click();
         
         page.getByTestId("CommonsForm-name").fill("WTC");
         page.getByTestId("CommonsForm-Submit-Button").click();
 
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("WTC");
 
-        page.getByTestId("CommonsTable-cell-row-0-col-button").click();
+        page.getByTestId("CommonsTable-cell-row-0-col-Delete-button").click();
         page.getByTestId("CommonsTable-Modal-Delete").click();
         
         // return to home page
