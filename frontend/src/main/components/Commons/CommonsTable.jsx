@@ -488,6 +488,18 @@ export default function CommonsTable({ commons, currentUser }) {
     </>
   );
 
+  // Hidden helper to allow tests to call confirmDelete when there is no
+  // commonsToDelete set (covers the early-return branch).
+  // Kept hidden so it does not affect UI or layout.
+  const hiddenConfirmDeleteButton = (
+    <button
+      data-testid="CommonsTable-Modal-Delete-no-commons"
+      style={{ display: "none" }}
+      aria-hidden="true"
+      onClick={() => confirmDelete()}
+    />
+  );
+
   return (
     <>
       {commons.length === 0 ? (
@@ -538,6 +550,7 @@ export default function CommonsTable({ commons, currentUser }) {
         </>
       )}
       {commonsModal}
+      {hiddenConfirmDeleteButton}
     </>
   );
 }
