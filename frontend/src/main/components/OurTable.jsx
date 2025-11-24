@@ -89,28 +89,7 @@ export default function OurTable({
               </tr>
             );
           })}
-          {headerGroups.map((headerGroup) => (
-            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  key={column.id}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  data-testid={`${testid}-header-${column.id}`}
-                >
-                  {column.render("Header")}
-                  <span
-                    data-testid={`${testid}-header-${column.id}-sort-carets`}
-                  >
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
+          {/* headerGroups already rendered above with safe keys */}
         </thead>
         <tbody {...bodyRest} key={bodyKey}>
           {rows

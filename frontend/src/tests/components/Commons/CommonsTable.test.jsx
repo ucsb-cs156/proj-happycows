@@ -21,10 +21,9 @@ import {
 } from "main/components/Commons/commonsTableUtils";
 
 const mutateSpy = vi.fn();
-const useBackendMutationMock = vi.fn(() => ({ mutate: mutateSpy }));
 
 vi.mock("main/utils/useBackend", () => ({
-  useBackendMutation: useBackendMutationMock,
+  useBackendMutation: (...args) => globalThis.__useBackendMutationMock__(...args),
 }));
 
 const mockedNavigate = vi.fn();
@@ -36,8 +35,8 @@ vi.mock("react-router", async () => ({
 
 beforeEach(() => {
   mutateSpy.mockReset();
-  useBackendMutationMock.mockReset();
-  useBackendMutationMock.mockImplementation(() => ({ mutate: mutateSpy }));
+  // default runtime bridge for the mocked useBackendMutation (vi.fn so we can assert calls)
+  globalThis.__useBackendMutationMock__ = vi.fn(() => ({ mutate: mutateSpy }));
 });
 
 const renderCommonsTable = (props) => {
@@ -313,7 +312,7 @@ describe("CommonsTable component", () => {
 
   beforeEach(() => {
     mockMutate = vi.fn();
-    useBackendMutationMock.mockReturnValue({ mutate: mockMutate });
+    globalThis.__useBackendMutationMock__ = vi.fn(() => ({ mutate: mockMutate }));
     mockedNavigate.mockReset();
   });
 
@@ -514,7 +513,7 @@ describe("CommonsTable component", () => {
 
     await waitFor(
       () => {
-        expect(useBackendMutationMock).toHaveBeenCalledWith(
+        expect(globalThis.__useBackendMutationMock__).toHaveBeenCalledWith(
           cellToAxiosParamsDelete,
           { onSuccess: onDeleteSuccess },
           ["/api/commons/allplus"],

@@ -25,6 +25,7 @@ export function computeEffectiveCapacity(commonsPlus) {
     return effectiveCapacity;
   }
   if (
+    commonsData &&
     commonsData.capacityPerUser !== null &&
     commonsData.capacityPerUser !== undefined &&
     totalUsers !== null &&
