@@ -120,7 +120,9 @@ export default function CommonsTable({ commons, currentUser }) {
                 className="h5 mb-1"
               >
                 {/* Keep existing test id for unit tests */}
-                <span data-testid={`CommonsTable-card-${index}-field-commons.name`}>
+                <span
+                  data-testid={`CommonsTable-card-${index}-field-commons.name`}
+                >
                   {name}
                 </span>
               </div>
@@ -464,26 +466,26 @@ export default function CommonsTable({ commons, currentUser }) {
         style={{ display: showModal ? undefined : "none" }}
       />
       <Modal show={showModal} onHide={() => setShowModal(false)}>
-      <Modal.Header closeButton>
-        <Modal.Title>Confirm Deletion</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>Are you sure you want to delete this commons?</Modal.Body>
-      <Modal.Footer>
-        <Button
-          variant="secondary"
-          data-testid="CommonsTable-Modal-Cancel"
-          onClick={() => setShowModal(false)}
-        >
-          Keep this Commons
-        </Button>
-        <Button
-          variant="danger"
-          data-testid="CommonsTable-Modal-Delete"
-          onClick={() => confirmDelete()}
-        >
-          Permanently Delete
-        </Button>
-      </Modal.Footer>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this commons?</Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            data-testid="CommonsTable-Modal-Cancel"
+            onClick={() => setShowModal(false)}
+          >
+            Keep this Commons
+          </Button>
+          <Button
+            variant="danger"
+            data-testid="CommonsTable-Modal-Delete"
+            onClick={() => confirmDelete()}
+          >
+            Permanently Delete
+          </Button>
+        </Modal.Footer>
       </Modal>
     </>
   );

@@ -545,7 +545,9 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Edit-button"));
+    fireEvent.click(
+      screen.getByTestId("CommonsTable-cell-row-0-col-Edit-button"),
+    );
 
     expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcommons/1");
   });
@@ -580,7 +582,9 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Leaderboard"));
+    fireEvent.click(
+      screen.getByTestId("CommonsTable-cell-row-0-col-Leaderboard"),
+    );
 
     expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1");
   });
@@ -618,11 +622,17 @@ describe("CommonsTable component", () => {
     // Check action links/hrefs are present and look correct
     const statsCsv = screen.getByTestId("CommonsTable-card-0-action-StatsCSV");
     expect(statsCsv).toBeTruthy();
-    expect(statsCsv.getAttribute("href")).toContain("/api/commonstats/download?commonsId=");
+    expect(statsCsv.getAttribute("href")).toContain(
+      "/api/commonstats/download?commonsId=",
+    );
 
-    const announcements = screen.getByTestId("CommonsTable-card-0-action-Announcements");
+    const announcements = screen.getByTestId(
+      "CommonsTable-card-0-action-Announcements",
+    );
     expect(announcements).toBeTruthy();
-    expect(announcements.getAttribute("href")).toContain("/admin/announcements/");
+    expect(announcements.getAttribute("href")).toContain(
+      "/admin/announcements/",
+    );
   });
 
   test("Legacy actions and hidden containers exist and behave (delete/modal, announcements, stats)", () => {
@@ -636,26 +646,38 @@ describe("CommonsTable component", () => {
     expect(actionsContainer).toBeTruthy();
 
     // legacy Delete button opens the modal
-    const legacyDelete = screen.getByTestId("CommonsTable-cell-row-0-col-Delete");
+    const legacyDelete = screen.getByTestId(
+      "CommonsTable-cell-row-0-col-Delete",
+    );
     fireEvent.click(legacyDelete);
     expect(screen.getByText(/Permanently Delete/i)).toBeTruthy();
 
     // legacy Announcements button and its hidden parent are present and hidden
-    const legacyAnnouncementsBtn = screen.getByTestId("CommonsTable-cell-row-0-col-Announcements-button");
+    const legacyAnnouncementsBtn = screen.getByTestId(
+      "CommonsTable-cell-row-0-col-Announcements-button",
+    );
     expect(legacyAnnouncementsBtn).toBeTruthy();
-    const hiddenContainer = legacyAnnouncementsBtn.closest('div[aria-hidden="true"]');
+    const hiddenContainer = legacyAnnouncementsBtn.closest(
+      'div[aria-hidden="true"]',
+    );
     expect(hiddenContainer).toBeTruthy();
     expect(getComputedStyle(hiddenContainer).display).toBe("none");
     // ensure the inline style explicitly sets display:none (kills style object/string literal mutants)
-    const styleAttr = hiddenContainer.getAttribute('style') || '';
-    expect(styleAttr).toContain('display');
+    const styleAttr = hiddenContainer.getAttribute("style") || "";
+    expect(styleAttr).toContain("display");
     expect(styleAttr).toMatch(/display\s*:\s*none/);
-    expect(legacyAnnouncementsBtn.getAttribute("href")).toContain("/admin/announcements/");
+    expect(legacyAnnouncementsBtn.getAttribute("href")).toContain(
+      "/admin/announcements/",
+    );
 
     // legacy Stats CSV anchor exists and has correct href
-    const legacyStats = screen.getByTestId("CommonsTable-cell-row-0-col-StatsCSV");
+    const legacyStats = screen.getByTestId(
+      "CommonsTable-cell-row-0-col-StatsCSV",
+    );
     expect(legacyStats).toBeTruthy();
-    expect(legacyStats.getAttribute("href")).toContain("/api/commonstats/download?commonsId=");
+    expect(legacyStats.getAttribute("href")).toContain(
+      "/api/commonstats/download?commonsId=",
+    );
 
     // check label for effective capacity appears in UI (kills label string literal mutants)
     expect(screen.getAllByText("Eff Cap").length).toBeGreaterThan(0);
@@ -670,22 +692,34 @@ describe("CommonsTable component", () => {
     // assert data-test-button attribute and hrefs for legacy announcements/stats exist exactly
     for (let i = 0; i < 3; i++) {
       // the hidden anchor that carries the data-test-button attribute
-      const hiddenAnn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Announcements`);
+      const hiddenAnn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Announcements`,
+      );
       expect(hiddenAnn).toBeTruthy();
-      expect(hiddenAnn.getAttribute('data-test-button')).toBe(`CommonsTable-cell-row-${i}-col-Announcements-button`);
-      expect(hiddenAnn.getAttribute('href')).toContain(`/admin/announcements/`);
+      expect(hiddenAnn.getAttribute("data-test-button")).toBe(
+        `CommonsTable-cell-row-${i}-col-Announcements-button`,
+      );
+      expect(hiddenAnn.getAttribute("href")).toContain(`/admin/announcements/`);
 
-      const annBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Announcements-button`);
+      const annBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Announcements-button`,
+      );
       expect(annBtn).toBeTruthy();
-      expect(annBtn.getAttribute('href')).toContain(`/admin/announcements/`);
+      expect(annBtn.getAttribute("href")).toContain(`/admin/announcements/`);
 
-      const statsBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-StatsCSV`);
+      const statsBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-StatsCSV`,
+      );
       expect(statsBtn).toBeTruthy();
-      expect(statsBtn.getAttribute('href')).toContain(`/api/commonstats/download?commonsId=`);
+      expect(statsBtn.getAttribute("href")).toContain(
+        `/api/commonstats/download?commonsId=`,
+      );
     }
 
     // click visible delete action to open modal and confirm delete (kill onClick arrow mutants)
-    const visibleDelete = screen.getByTestId("CommonsTable-card-0-action-Delete");
+    const visibleDelete = screen.getByTestId(
+      "CommonsTable-card-0-action-Delete",
+    );
     fireEvent.click(visibleDelete);
     const permDelete = screen.getByText(/Permanently Delete/i);
     expect(permDelete).toBeTruthy();
@@ -694,7 +728,9 @@ describe("CommonsTable component", () => {
 
     // ensure actions container has expected data-testid attribute (kill related string literal mutants)
     const actionsContainer2 = screen.getByTestId("CommonsTable-card-0-actions");
-    expect(actionsContainer2.getAttribute('data-testid')).toBe("CommonsTable-card-0-actions");
+    expect(actionsContainer2.getAttribute("data-testid")).toBe(
+      "CommonsTable-card-0-actions",
+    );
   });
 
   test("Exercise hidden and visible actions for all commons rows to trigger mutated handlers", () => {
@@ -708,59 +744,98 @@ describe("CommonsTable component", () => {
 
     for (let i = 0; i < n; i++) {
       // visible actions: Edit, Leaderboard, Delete, StatsCSV, Announcements
-      const visibleEdit = screen.getByTestId(`CommonsTable-card-${i}-action-Edit`);
+      const visibleEdit = screen.getByTestId(
+        `CommonsTable-card-${i}-action-Edit`,
+      );
       fireEvent.click(visibleEdit);
 
-      const visibleLeaderboard = screen.getByTestId(`CommonsTable-card-${i}-action-Leaderboard`);
+      const visibleLeaderboard = screen.getByTestId(
+        `CommonsTable-card-${i}-action-Leaderboard`,
+      );
       fireEvent.click(visibleLeaderboard);
 
-      const visibleStats = screen.getByTestId(`CommonsTable-card-${i}-action-StatsCSV`);
-      expect(visibleStats.getAttribute('href')).toContain('/api/commonstats/download?commonsId=');
+      const visibleStats = screen.getByTestId(
+        `CommonsTable-card-${i}-action-StatsCSV`,
+      );
+      expect(visibleStats.getAttribute("href")).toContain(
+        "/api/commonstats/download?commonsId=",
+      );
 
-      const visibleAnnouncements = screen.getByTestId(`CommonsTable-card-${i}-action-Announcements`);
-      expect(visibleAnnouncements.getAttribute('href')).toContain('/admin/announcements/');
+      const visibleAnnouncements = screen.getByTestId(
+        `CommonsTable-card-${i}-action-Announcements`,
+      );
+      expect(visibleAnnouncements.getAttribute("href")).toContain(
+        "/admin/announcements/",
+      );
 
       // click visible delete -> open modal -> click Permanently Delete
       const visDel = screen.getByTestId(`CommonsTable-card-${i}-action-Delete`);
       fireEvent.click(visDel);
-      const perm = screen.getByTestId('CommonsTable-Modal-Delete');
+      const perm = screen.getByTestId("CommonsTable-Modal-Delete");
       expect(perm).toBeTruthy();
       fireEvent.click(perm);
 
       // hidden legacy interactive elements: Delete, Delete-button, Edit, Edit-button, Leaderboard, Leaderboard-button
-      const hiddenDelete = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Delete`);
+      const hiddenDelete = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Delete`,
+      );
       fireEvent.click(hiddenDelete);
-      const perm2 = screen.getByTestId('CommonsTable-Modal-Delete');
+      const perm2 = screen.getByTestId("CommonsTable-Modal-Delete");
       expect(perm2).toBeTruthy();
       fireEvent.click(perm2);
 
-      const hiddenDeleteBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Delete-button`);
+      const hiddenDeleteBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Delete-button`,
+      );
       fireEvent.click(hiddenDeleteBtn);
-      fireEvent.click(screen.getByTestId('CommonsTable-Modal-Delete'));
+      fireEvent.click(screen.getByTestId("CommonsTable-Modal-Delete"));
 
-      const hiddenEdit = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Edit`);
+      const hiddenEdit = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Edit`,
+      );
       fireEvent.click(hiddenEdit);
-      const hiddenEditBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Edit-button`);
+      const hiddenEditBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Edit-button`,
+      );
       fireEvent.click(hiddenEditBtn);
 
-      const hiddenLeaderboard = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Leaderboard`);
+      const hiddenLeaderboard = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Leaderboard`,
+      );
       fireEvent.click(hiddenLeaderboard);
-      const hiddenLeaderboardBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Leaderboard-button`);
+      const hiddenLeaderboardBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Leaderboard-button`,
+      );
       fireEvent.click(hiddenLeaderboardBtn);
 
       // hidden stats anchors
-      const hiddenStats = screen.getByTestId(`CommonsTable-cell-row-${i}-col-StatsCSV`);
-      expect(hiddenStats.getAttribute('href')).toContain('/api/commonstats/download?commonsId=');
-      const hiddenStats2 = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Stats CSV-button`);
-      expect(hiddenStats2.getAttribute('href')).toContain('/api/commonstats/download?commonsId=');
+      const hiddenStats = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-StatsCSV`,
+      );
+      expect(hiddenStats.getAttribute("href")).toContain(
+        "/api/commonstats/download?commonsId=",
+      );
+      const hiddenStats2 = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Stats CSV-button`,
+      );
+      expect(hiddenStats2.getAttribute("href")).toContain(
+        "/api/commonstats/download?commonsId=",
+      );
 
       // hidden announcements anchors: one has data-test-button attribute
-      const hiddenAnn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Announcements`);
-      expect(hiddenAnn.getAttribute('href')).toContain('/admin/announcements/');
-      expect(hiddenAnn.getAttribute('data-test-button')).toBe(`CommonsTable-cell-row-${i}-col-Announcements-button`);
-      const hiddenAnnBtn = screen.getByTestId(`CommonsTable-cell-row-${i}-col-Announcements-button`);
-      expect(hiddenAnnBtn.getAttribute('href')).toContain('/admin/announcements/');
-
+      const hiddenAnn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Announcements`,
+      );
+      expect(hiddenAnn.getAttribute("href")).toContain("/admin/announcements/");
+      expect(hiddenAnn.getAttribute("data-test-button")).toBe(
+        `CommonsTable-cell-row-${i}-col-Announcements-button`,
+      );
+      const hiddenAnnBtn = screen.getByTestId(
+        `CommonsTable-cell-row-${i}-col-Announcements-button`,
+      );
+      expect(hiddenAnnBtn.getAttribute("href")).toContain(
+        "/admin/announcements/",
+      );
     }
   });
 
@@ -774,11 +849,13 @@ describe("CommonsTable component", () => {
     fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
 
     // now click the hidden helper which calls confirmDelete()
-    const hiddenHelper = screen.getByTestId("CommonsTable-Modal-Delete-no-commons");
+    const hiddenHelper = screen.getByTestId(
+      "CommonsTable-Modal-Delete-no-commons",
+    );
     expect(hiddenHelper).toBeTruthy();
 
     // ensure the hidden helper is actually hidden via inline style
-    const styleAttr = hiddenHelper.getAttribute('style') || '';
+    const styleAttr = hiddenHelper.getAttribute("style") || "";
     expect(styleAttr).toMatch(/display\s*:\s*none/);
     expect(getComputedStyle(hiddenHelper).display).toBe("none");
 
@@ -795,11 +872,15 @@ describe("CommonsTable component", () => {
     });
 
     const select = screen.getByTestId("CommonsTable-sort-select");
-    const option = Array.from(select.options).find((o) => o.value === "effectiveCapacity");
+    const option = Array.from(select.options).find(
+      (o) => o.value === "effectiveCapacity",
+    );
     expect(option).toBeTruthy();
     // check the serialized html for an exact option label to catch string literal mutations
     const inner = select.innerHTML;
-    expect(inner).toMatch(/<option[^>]*value=\"effectiveCapacity\"[^>]*>\s*Eff Cap\s*<\/option>/);
+    expect(inner).toMatch(
+      /<option[^>]*value="effectiveCapacity"[^>]*>\s*Eff Cap\s*<\/option>/,
+    );
   });
 
   test("Visible Edit action navigates to edit page when adminUser (card button)", () => {
@@ -819,7 +900,9 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Leaderboard"));
+    fireEvent.click(
+      screen.getByTestId("CommonsTable-card-0-action-Leaderboard"),
+    );
 
     expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1");
   });
@@ -838,9 +921,7 @@ describe("CommonsTable component", () => {
   test("confirm delete returns early when no commonsToDelete via hidden helper", async () => {
     renderCommonsTable({ commons: [], currentUser: adminUser });
 
-    const hidden = screen.queryByTestId(
-      "CommonsTable-Modal-Delete-no-commons",
-    );
+    const hidden = screen.queryByTestId("CommonsTable-Modal-Delete-no-commons");
     if (hidden) {
       await userEvent.click(hidden);
     }
