@@ -89,6 +89,28 @@ export default function OurTable({
               </tr>
             );
           })}
+          {headerGroups.map((headerGroup) => (
+            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <th
+                  key={column.id}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  data-testid={`${testid}-header-${column.id}`}
+                >
+                  {column.render("Header")}
+                  <span
+                    data-testid={`${testid}-header-${column.id}-sort-carets`}
+                  >
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? " 🔽"
+                        : " 🔼"
+                      : ""}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          ))}
         </thead>
         <tbody {...bodyRest} key={bodyKey}>
           {rows
@@ -115,6 +137,12 @@ export default function OurTable({
                         {...cellRest}
                         key={safeCellKey}
                         data-fallback-key={safeCellKey}
+                <tr key={row.id} {...row.getRowProps()}>
+                  {row.cells.map((cell, _index) => {
+                    return (
+                      <td
+                        key={cell.column.id}
+                        {...cell.getCellProps()}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
                         {cell.render("Cell")}
