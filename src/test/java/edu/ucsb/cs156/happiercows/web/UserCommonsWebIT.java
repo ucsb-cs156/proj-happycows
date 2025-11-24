@@ -37,6 +37,11 @@ public class UserCommonsWebIT extends WebTestCase {
         // Join commons
         page.getByTestId("commonsCard-button-Join-1").click();
 
+        // Navigate to SelectCommonsPage to access the Visit button
+        // (Since user now has 1 commons, they would auto-redirect to PlayPage,
+        // so we need to explicitly go to /selectCommons to click Visit)
+        page.navigate("http://localhost:" + port + "/selectCommons");
+        
         // Visit commons
         page.getByTestId("commonsCard-button-Visit-1").click();
         
