@@ -5,17 +5,6 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { vi } from "vitest";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-// import axios from "axios";
-// import AxiosMockAdapter from "axios-mock-adapter";
-
-// const mockedNavigate = vi.fn();
-// vi.mock("react-router", async () => {
-//   const originalModule = await vi.importActual("react-router");
-//   return {
-//     ...originalModule,
-//     useNavigate: () => mockedNavigate,
-//   };
-// });
 
 const mockedNavigate = vi.fn();
 
