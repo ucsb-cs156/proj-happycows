@@ -383,44 +383,44 @@ describe("CommonsTable component", () => {
       screen.getByTestId("CommonsTable-cell-row-0-col-commons.id"),
     ).toHaveTextContent("1");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.id"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.id"),
     ).toHaveTextContent("2");
 
     expect(screen.getByTestId("CommonsTable-card-1-name")).toHaveTextContent(
       "Com2",
     );
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.cowPrice"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.cowPrice"),
     ).toHaveTextContent("1");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.milkPrice"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.milkPrice"),
     ).toHaveTextContent("2");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.degradationRate"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.degradationRate"),
     ).toHaveTextContent("0.01");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.capacityPerUser"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.capacityPerUser"),
     ).toHaveTextContent("5");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.carryingCapacity"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.carryingCapacity"),
     ).toHaveTextContent("42");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.startingBalance"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.startingBalance"),
     ).toHaveTextContent("10");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.startingDate"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.startingDate"),
     ).toHaveTextContent("2022-11-22");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.lastDate"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.lastDate"),
     ).toHaveTextContent("2022-11-22");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.showLeaderboard"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.showLeaderboard"),
     ).toHaveTextContent("true");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-commons.showChat"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-commons.showChat"),
     ).toHaveTextContent("true");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-totalCows"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-totalCows"),
     ).toHaveTextContent("0");
     expect(
       screen.getByTestId("CommonsTable-card-1-totalCows"),
@@ -429,23 +429,23 @@ describe("CommonsTable component", () => {
       screen.getByTestId("CommonsTable-card-1-effectiveCapacity"),
     ).toHaveTextContent("Eff Cap: 42");
     expect(
-      screen.getByTestId("CommonsTable-card-1-field-effectiveCapacity"),
+      screen.getByTestId("CommonsTable-cell-row-1-col-effectiveCapacity"),
     ).toHaveTextContent("42");
 
-    expect(screen.getByTestId("CommonsTable-card-0-action-Edit")).toHaveClass(
+    expect(screen.getByTestId("CommonsTable-cell-row-0-col-Edit")).toHaveClass(
       "btn-primary",
     );
-    expect(screen.getByTestId("CommonsTable-card-0-action-Delete")).toHaveClass(
+    expect(screen.getByTestId("CommonsTable-cell-row-0-col-Delete")).toHaveClass(
       "btn-danger",
     );
     expect(
-      screen.getByTestId("CommonsTable-card-0-action-Leaderboard"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-Leaderboard"),
     ).toHaveClass("btn-secondary");
     expect(
-      screen.getByTestId("CommonsTable-card-0-action-StatsCSV"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-StatsCSV"),
     ).toHaveClass("btn-success");
     expect(
-      screen.getByTestId("CommonsTable-card-0-action-Announcements"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-Announcements"),
     ).toHaveClass("btn-info");
   });
 
@@ -523,7 +523,7 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
+    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
     expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
   });
@@ -534,7 +534,7 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
+    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
     const permanentlyDeleteButton = await screen.findByTestId(
       "CommonsTable-Modal-Delete",
@@ -567,7 +567,7 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
+    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
     const cancelButton = await screen.findByTestId("CommonsTable-Modal-Cancel");
     fireEvent.click(cancelButton);
@@ -589,7 +589,7 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
+    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
     expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
 
@@ -667,7 +667,7 @@ describe("CommonsTable component", () => {
     expect(modalBeforeClick).not.toBeVisible();
 
     await userEvent.click(
-      screen.getByTestId("CommonsTable-card-0-action-Delete"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-Delete"),
     );
     expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
 
@@ -711,7 +711,7 @@ describe("CommonsTable component", () => {
       screen.getByTestId("CommonsTable-card-0-summary"),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId("CommonsTable-card-0-actions"),
+      screen.getByTestId("CommonsTable-cell-row-0-cols"),
     ).toBeInTheDocument();
   });
 
@@ -1090,7 +1090,7 @@ describe("CommonsTable component", () => {
     renderCommonsTable({ commons, currentUser: adminUser });
 
     await userEvent.click(
-      screen.getByTestId("CommonsTable-card-0-action-Delete"),
+      screen.getByTestId("CommonsTable-cell-row-0-col-Delete"),
     );
     await userEvent.click(screen.getByTestId("CommonsTable-Modal-Delete"));
 

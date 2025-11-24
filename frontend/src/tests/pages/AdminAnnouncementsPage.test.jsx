@@ -98,7 +98,7 @@ describe("AdminAnnouncementsPage tests", () => {
     ).toHaveTextContent("1");
 
     const announcementsButton = screen.getByTestId(
-      `${testId}-card-0-action-Announcements`,
+      `${testId}-cell-row-0-col-Announcements`,
     );
     expect(announcementsButton).toHaveAttribute(
       "href",

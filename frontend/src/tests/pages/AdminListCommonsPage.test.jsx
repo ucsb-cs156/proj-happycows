@@ -101,10 +101,10 @@ describe("AdminListCommonPage tests", () => {
       await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
     expect(
-      screen.getByTestId(`${testId}-card-1-field-commons.id`),
+      screen.getByTestId(`${testId}-cell-row-1-col-commons.id`),
     ).toHaveTextContent("2");
     expect(
-      screen.getByTestId(`${testId}-card-2-field-commons.id`),
+      screen.getByTestId(`${testId}-cell-row-2-col-commons.id`),
     ).toHaveTextContent("3");
     expect(screen.getByText(`Download All Stats`)).toBeInTheDocument();
   });
@@ -163,7 +163,7 @@ describe("AdminListCommonPage tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
-    const deleteButton = screen.getByTestId(`${testId}-card-0-action-Delete`);
+    const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete`);
     expect(deleteButton).toBeInTheDocument();
 
     fireEvent.click(deleteButton);
@@ -202,7 +202,7 @@ describe("AdminListCommonPage tests", () => {
       await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
     ).toHaveTextContent("1");
 
-    const editButton = screen.getByTestId(`${testId}-card-0-action-Edit`);
+    const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit`);
     expect(editButton).toBeInTheDocument();
 
     fireEvent.click(editButton);
@@ -233,7 +233,7 @@ describe("AdminListCommonPage tests", () => {
     ).toHaveTextContent("1");
 
     const leaderboardButton = screen.getByTestId(
-      `${testId}-card-0-action-Leaderboard`,
+      `${testId}-cell-row-0-col-Leaderboard`,
     );
     expect(leaderboardButton).toBeInTheDocument();
 
@@ -265,7 +265,7 @@ describe("AdminListCommonPage tests", () => {
     ).toHaveTextContent("1");
 
     const statsCSVButton = screen.getByTestId(
-      `${testId}-card-0-action-StatsCSV`,
+      `${testId}-cell-row-0-col-StatsCSV`,
     );
     expect(statsCSVButton).toHaveAttribute(
       "href",
