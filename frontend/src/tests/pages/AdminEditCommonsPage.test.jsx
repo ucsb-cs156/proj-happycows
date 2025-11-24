@@ -207,7 +207,7 @@ describe("AdminEditCommonsPage tests", () => {
       expect(mockToast).toBeCalledWith(
         "Commons Updated - id: 5 name: Phill's Commons",
       );
-      expect(mockNavigate).toBeCalledWith({ to: "/admin/listcommonsv2" });
+      expect(mockNavigate).toBeCalledWith({ to: "/admin/listcommons" });
 
       expect(axiosMock.history.put.length).toBe(1); // times called
       expect(axiosMock.history.put[0].params).toEqual({ id: 5 });

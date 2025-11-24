@@ -68,7 +68,7 @@ export default function CommonsEditPage() {
   };
 
   if (isSuccess) {
-    return <Navigate to="/admin/listcommonsv2" />;
+    return <Navigate to="/admin/listcommons" />;
   }
 
   return (

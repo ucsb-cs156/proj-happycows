@@ -1,11 +1,11 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import CommonsTable from "main/components/Commons/CommonsTable";
+import CommonsTablev2 from "main/components/Commons/CommonsTablev2";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import { Button, Row, Col } from "react-bootstrap";
 
-export default function AdminListCommonsPage() {
+export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
 
   // Stryker disable  all
@@ -40,7 +40,7 @@ export default function AdminListCommonsPage() {
             </Button>
           </Col>
         </Row>
-        <CommonsTable commons={commons} currentUser={currentUser} />
+        <CommonsTablev2 commons={commons} currentUser={currentUser} />
       </div>
     </BasicLayout>
   );
