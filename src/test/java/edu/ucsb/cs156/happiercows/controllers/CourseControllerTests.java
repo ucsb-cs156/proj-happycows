@@ -21,6 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,6 +33,8 @@ public class CourseControllerTests extends ControllerTestCase {
 
     @MockBean
     UserRepository userRepository;
+
+    // GET ----------------------------------
 
     // Logged out users
     @Test
@@ -126,6 +129,51 @@ public class CourseControllerTests extends ControllerTestCase {
         // assert
 
         verify(courseRepository, times(1)).findById(eq(7L));
+        String expectedJson = mapper.writeValueAsString(course);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    // POST ----------------------------------
+
+    @Test
+    public void logged_out_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course/post")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void logged_in_regular_users_cannot_post() throws Exception {
+        mockMvc.perform(post("/api/course/post")).andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_user_can_post_new_course() throws Exception {
+        // arrange
+
+        Course course =
+            Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced Applications Programming")
+                .term("F25")
+                .build();
+
+        when(courseRepository.save(eq(course))).thenReturn(course);
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    post("/api/course/post?code=CMPSC 156&name=Advanced Applications Programming&term=F25")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).save(eq(course));
         String expectedJson = mapper.writeValueAsString(course);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
