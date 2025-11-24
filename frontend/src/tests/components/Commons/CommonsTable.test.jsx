@@ -402,7 +402,9 @@ describe("CommonsTable component", () => {
       screen.getByTestId("CommonsTable-cell-row-1-col-commons.capacityPerUser"),
     ).toHaveTextContent("5");
     expect(
-      screen.getByTestId("CommonsTable-cell-row-1-col-commons.carryingCapacity"),
+      screen.getByTestId(
+        "CommonsTable-cell-row-1-col-commons.carryingCapacity",
+      ),
     ).toHaveTextContent("42");
     expect(
       screen.getByTestId("CommonsTable-cell-row-1-col-commons.startingBalance"),
@@ -435,9 +437,9 @@ describe("CommonsTable component", () => {
     expect(screen.getByTestId("CommonsTable-cell-row-0-col-Edit")).toHaveClass(
       "btn-primary",
     );
-    expect(screen.getByTestId("CommonsTable-cell-row-0-col-Delete")).toHaveClass(
-      "btn-danger",
-    );
+    expect(
+      screen.getByTestId("CommonsTable-cell-row-0-col-Delete"),
+    ).toHaveClass("btn-danger");
     expect(
       screen.getByTestId("CommonsTable-cell-row-0-col-Leaderboard"),
     ).toHaveClass("btn-secondary");
@@ -883,7 +885,9 @@ describe("CommonsTable component", () => {
     fireEvent.change(select, { target: { value: "not-a-real-key" } });
     expect(select).toHaveValue("commons.id");
     // Ensure the displayed order is still sorted by the default key (commons.id)
-    const firstId = screen.getByTestId("CommonsTable-cell-row-0-col-commons.id");
+    const firstId = screen.getByTestId(
+      "CommonsTable-cell-row-0-col-commons.id",
+    );
     expect(firstId).toHaveTextContent("1");
   });
 
