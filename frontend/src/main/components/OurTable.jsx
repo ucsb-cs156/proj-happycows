@@ -137,12 +137,6 @@ export default function OurTable({
                         {...cellRest}
                         key={safeCellKey}
                         data-fallback-key={safeCellKey}
-                <tr key={row.id} {...row.getRowProps()}>
-                  {row.cells.map((cell, _index) => {
-                    return (
-                      <td
-                        key={cell.column.id}
-                        {...cell.getCellProps()}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
                         {cell.render("Cell")}
