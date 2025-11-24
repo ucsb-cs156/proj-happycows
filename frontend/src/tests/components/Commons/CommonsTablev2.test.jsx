@@ -541,9 +541,11 @@ describe("CommonsTablev2 component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
+    const modal = screen.getByTestId("CommonsTable-Modal");
+    expect(modal).not.toBeVisible();
     fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
-    expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
+    expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
   });
 
   test("Edit action navigates to edit page when adminUser (legacy hidden button)", () => {
@@ -653,6 +655,7 @@ describe("CommonsTablev2 component", () => {
       "CommonsTable-cell-row-0-col-Delete",
     );
     fireEvent.click(legacyDelete);
+    expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
     expect(screen.getByText(/Permanently Delete/i)).toBeTruthy();
 
     const legacyAnnouncementsBtn = screen.getByTestId(
@@ -776,6 +779,7 @@ describe("CommonsTablev2 component", () => {
         `CommonsTable-cell-row-${i}-col-Delete`,
       );
       fireEvent.click(hiddenDelete);
+      expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
       const perm2 = screen.getByTestId("CommonsTable-Modal-Delete");
       expect(perm2).toBeTruthy();
       fireEvent.click(perm2);
@@ -784,6 +788,7 @@ describe("CommonsTablev2 component", () => {
         `CommonsTable-cell-row-${i}-col-Delete-button`,
       );
       fireEvent.click(hiddenDeleteBtn);
+      expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
       fireEvent.click(screen.getByTestId("CommonsTable-Modal-Delete"));
 
       const hiddenEdit = screen.getByTestId(
@@ -902,9 +907,11 @@ describe("CommonsTablev2 component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
+    const modal = screen.getByTestId("CommonsTable-Modal");
+    expect(modal).not.toBeVisible();
     fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
 
-    expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
+    expect(screen.getByTestId("CommonsTable-Modal")).toBeVisible();
   });
 
   test("confirm delete returns early when no commonsToDelete via hidden helper", async () => {
