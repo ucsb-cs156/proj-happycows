@@ -685,8 +685,8 @@ describe("CommonsTablev2 component", () => {
 
     const hiddenDivs = document.querySelectorAll('div[aria-hidden="true"]');
     expect(hiddenDivs.length).toBeGreaterThan(0);
-    const displayValues = Array.from(hiddenDivs).map((d) =>
-      getComputedStyle(d).display,
+    const displayValues = Array.from(hiddenDivs).map(
+      (d) => getComputedStyle(d).display,
     );
     expect(displayValues.some((value) => value === "inline-block")).toBe(true);
     displayValues.forEach((value) =>
