@@ -58,7 +58,7 @@ const CommonsList = (props) => {
                     { fontFamily: "Sancreek", paddingBottom: "10px" }
                   }
                 >
-                  Common's Name
+                  Common&apos;s Name
                 </Col>
                 <Col sm={4}></Col>
               </Row>
