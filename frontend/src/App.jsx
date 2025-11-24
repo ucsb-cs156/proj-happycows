@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { useEffect, useRef } from "react";
 import { useBackendMutation } from "main/utils/useBackend";
-import HomePage from "main/pages/HomePage";
+import HomePage from "main/pages/SelectCommonsPage";
 import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
@@ -19,6 +19,7 @@ import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
+import AdminListCommonsV2 from "main/pages/AdminListCommonsV2";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
@@ -30,6 +31,21 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+
+// Component to handle smart home page routing
+function HomePageRouter({ currentUser }) {
+  // Get the user's commons data
+  const userCommons = currentUser?.root?.user?.commons || [];
+
+  // If user has exactly 1 commons, redirect to PlayPage for that commons
+  if (userCommons.length === 1 && userCommons[0]?.id != null) {
+    const commonsId = userCommons[0].id;
+    return <Navigate to={`/play/${commonsId}`} replace />;
+  }
+
+  // Otherwise (0 or 2+ commons), show HomePage (the commons selection page)
+  return <HomePage />;
+}
 
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -43,6 +59,7 @@ function App() {
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
       <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
+      <Route path="/admin/listcommonsv2" element={<AdminListCommonsV2 />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
       <Route
@@ -76,12 +93,14 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
+      {/* Add explicit route to always access HomePage (commons selection) */}
+      <Route path="/selectCommons" element={<HomePage />} />
     </>
   ) : null;
 
   const homeRoute =
     hasRole(currentUser, "ROLE_ADMIN") || hasRole(currentUser, "ROLE_USER") ? (
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<HomePageRouter currentUser={currentUser} />} />
     ) : (
       <Route path="/" element={<LoginPage />} />
     );
