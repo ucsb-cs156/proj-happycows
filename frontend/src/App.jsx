@@ -43,7 +43,7 @@ function App() {
       <Route path="/admin/reports" element={<AdminReportsPage />} />
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
-      <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
+      <Route path="/admin/listcommonsv2" element={<AdminListCommonsPage />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
       <Route
