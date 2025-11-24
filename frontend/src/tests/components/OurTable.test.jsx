@@ -518,15 +518,19 @@ describe("OurTable extra coverage", () => {
     const data = [{ col1: "A", col2: "B" }];
 
     render(<OurTableLocal columns={columns} data={data} testid={"testid"} />);
-
     const headerCell = await screen.findByTestId("testid-header-col1");
     expect(headerCell).toBeInTheDocument();
     const headerRow = headerCell.closest("tr");
-    expect(headerRow).toHaveAttribute("data-fallback-key");
+    // exact fallback key should be headergroup-0 when no key provided
+    expect(headerRow).toHaveAttribute("data-fallback-key", "headergroup-0");
 
     const bodyCell = await screen.findByTestId("testid-cell-row-0-col-col1");
     expect(bodyCell).toBeInTheDocument();
-    expect(bodyCell).toHaveAttribute("data-fallback-key");
+    // exact fallback key should include the column id when present
+    // for these columns the expected key is `cell-0-col1`
+    expect(bodyCell).toHaveAttribute("data-fallback-key", "cell-0-col1");
+    const tr = bodyCell.closest("tr");
+    expect(tr).toHaveAttribute("data-fallback-key", "row-0");
   });
 
   test("renders fallback branches when react-table props are undefined", async () => {
@@ -595,11 +599,14 @@ describe("OurTable extra coverage", () => {
     const headerCell = await screen.findByTestId("tf-header-col1");
     expect(headerCell).toBeInTheDocument();
     const headerRow = headerCell.closest("tr");
-    expect(headerRow).toHaveAttribute("data-fallback-key");
+    expect(headerRow).toHaveAttribute("data-fallback-key", "headergroup-0");
 
     const bodyCell = await screen.findByTestId("tf-cell-row-0-col-col1");
     expect(bodyCell).toBeInTheDocument();
-    expect(bodyCell).toHaveAttribute("data-fallback-key");
+    // accessor exists so fallback uses accessor as the column id
+    expect(bodyCell).toHaveAttribute("data-fallback-key", "cell-0-col1");
+    const tr = bodyCell.closest("tr");
+    expect(tr).toHaveAttribute("data-fallback-key", "row-0");
   });
 
   test("renders when react-table props provide explicit keys", async () => {
@@ -642,7 +649,9 @@ describe("OurTable extra coverage", () => {
 
           return {
             getTableProps: () => ({ key: "TABLE-KEY", "data-hello": "x" }),
-            getTableBodyProps: () => ({ key: "BODY-KEY" }),
+            // include a renderable data attribute so we can assert that
+            // the spread of bodyRest actually applies DOM attributes to tbody
+            getTableBodyProps: () => ({ key: "BODY-KEY", "data-body": "B" }),
             headerGroups,
             rows,
             prepareRow: () => {},
@@ -664,15 +673,19 @@ describe("OurTable extra coverage", () => {
     expect(headerCell).toBeInTheDocument();
     const headerRow = headerCell.closest("tr");
     const hf = headerRow.getAttribute("data-fallback-key");
-    expect(hf).toBeTruthy();
+    // the explicit key provided by the mocked getHeaderGroupProps should be used
+    expect(hf).toBe("HG-0");
 
     const bodyCell = await screen.findByTestId("tk-cell-row-0-col-col1");
     expect(bodyCell).toBeInTheDocument();
     const bf = bodyCell.getAttribute("data-fallback-key");
-    expect(bf).toBeTruthy();
+    expect(bf).toBe("CELL-0-0");
 
     const table = headerCell.closest("table");
     expect(table).toHaveAttribute("data-hello", "x");
+    // tbody should receive data attributes from getTableBodyProps spread
+    const tbody = table.querySelector("tbody");
+    expect(tbody).toHaveAttribute("data-body", "B");
   });
 
   test("covers column.id ?? colIndex and cell.column.id ?? cellIndex fallbacks", async () => {
@@ -748,5 +761,54 @@ describe("OurTable extra coverage", () => {
     expect(bodyCells.length).toBeGreaterThan(0);
     const bodyCell = bodyCells[0];
     expect(bodyCell).toHaveAttribute("data-fallback-key", "cell-0-0");
+    const tr = bodyCell.closest("tr");
+    expect(tr).toHaveAttribute("data-fallback-key", "row-0");
+  });
+
+  test("real rendering uses default safe keys for headergroup/row/cell", async () => {
+    // Render without mocking react-table to exercise the real default behavior
+    const cols = [{ Header: "C1" }, { Header: "C2" }];
+    const rows = [{}];
+    render(<OurTable columns={cols} data={rows} testid={"rt"} />);
+    // The real renderer creates testids from header text (C1/C2) and
+    // uses a different fallback key format than some mocked forms.
+    const header = await screen.findByTestId("rt-header-C1");
+    expect(header).toBeInTheDocument();
+    const headerRow = header.closest("tr");
+    // actual fallback key uses camelCase + underscore in real render
+    expect(headerRow).toHaveAttribute("data-fallback-key", "headerGroup_0");
+
+    const row = await screen.findByTestId("rt-cell-row-0-col-C1");
+    expect(row).toBeInTheDocument();
+    const tr = row.closest("tr");
+    expect(tr).toHaveAttribute("data-fallback-key", "row_0");
+    expect(row).toHaveAttribute("data-fallback-key", "cell_0_C1");
+  });
+
+  test("real rendering with explicit column id uses that id in testids and safe keys", async () => {
+    const cols = [{ Header: "C1", accessor: "a", id: "myid" }];
+    const rows = [{ a: "ValueA" }];
+    render(<OurTable columns={cols} data={rows} testid={"rid"} />);
+
+    const header = await screen.findByTestId("rid-header-myid");
+    expect(header).toBeInTheDocument();
+    const headerRow = header.closest("tr");
+    // when id is present, the cell fallback key should include that id
+    const bodyCell = await screen.findByTestId("rid-cell-row-0-col-myid");
+    expect(bodyCell).toBeInTheDocument();
+    expect(bodyCell).toHaveAttribute("data-fallback-key", "cell_0_myid");
+    const tr = bodyCell.closest("tr");
+    expect(tr).toHaveAttribute("data-fallback-key", "row_0");
+  });
+
+  test("pageSize prop forces pagination rendering when rows exceed pageSize", async () => {
+    const cols = [{ Header: "C1", accessor: "a", id: "id1" }];
+    const rows = [{ a: "v1" }, { a: "v2" }];
+    // set pageSize to 1 to ensure rows.length > pageSize
+    render(<OurTable columns={cols} data={rows} pageSize={1} testid={"pg"} />);
+
+    expect(await screen.findByTestId("pg-next-page-button")).toBeInTheDocument();
+    expect(await screen.findByTestId("pg-prev-page-button")).toBeInTheDocument();
+    expect(await screen.findByTestId("pg-current-page-button")).toBeInTheDocument();
   });
 });

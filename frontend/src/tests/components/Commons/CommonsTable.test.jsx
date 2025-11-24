@@ -275,6 +275,24 @@ describe("commonsTableUtils additional coverage", () => {
     ).toBeNull();
   });
 
+  test("computeEffectiveCapacity returns null when capacityPerUser present but totalUsers undefined", () => {
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: undefined,
+        commons: { capacityPerUser: 3 },
+        totalUsers: undefined,
+      }),
+    ).toBeNull();
+
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: undefined,
+        commons: null,
+        totalUsers: 5,
+      }),
+    ).toBeNull();
+  });
+
   test("createCommonsComparator handles numeric, string, and missing values", () => {
     const a = { commons: { cowPrice: 5, name: "Alpha", id: 1 }, totalCows: 1 };
     const b = { commons: { cowPrice: 10, name: "Zulu", id: 2 }, totalCows: 2 };
@@ -305,6 +323,12 @@ describe("commonsTableUtils additional coverage", () => {
     expect(() => createCommonsComparator("commons.id", "zzz")).toThrow(
       /Invalid sort direction/,
     );
+
+    // explicit numeric-null handling: both null numeric values should compare equal (return 0)
+    const aNull = { commons: { cowPrice: null, id: 1 }, totalCows: null };
+    const bNull = { commons: { cowPrice: null, id: 2 }, totalCows: null };
+    const numericNullComparator = createCommonsComparator("commons.cowPrice", "asc");
+    expect(numericNullComparator(aNull, bNull)).toBe(0);
   });
 });
 
@@ -607,6 +631,24 @@ describe("CommonsTable component", () => {
     expect(toggle).toHaveTextContent(/Ascending/);
   });
 
+  test("data-current-sort reflects internal sortKey state and updates on change", async () => {
+    const commons = [
+      { commons: { id: 2, name: "B" }, totalCows: 0 },
+      { commons: { id: 1, name: "A" }, totalCows: 0 },
+    ];
+
+    renderCommonsTable({ commons, currentUser: { roles: [] } });
+
+    const select = screen.getByTestId("CommonsTable-sort-select");
+    // data-current-sort holds the internal sortKey state (not the validated value)
+    expect(select).toHaveValue("commons.id");
+    expect(select.dataset.currentSort).toBe("commons.id");
+
+    // changing the select should update internal sortKey (data-current-sort)
+    fireEvent.change(select, { target: { value: "commons.name" } });
+    expect(select.dataset.currentSort).toBe("commons.name");
+  });
+
   test("modal is hidden before delete is clicked and closes on cancel", async () => {
     const commons = [
       {
@@ -837,6 +879,94 @@ describe("CommonsTable component", () => {
 
     fireEvent.change(select, { target: { value: "not-a-real-key" } });
     expect(select).toHaveValue("commons.id");
+    // Ensure the displayed order is still sorted by the default key (commons.id)
+    const firstId = screen.getByTestId("CommonsTable-card-0-field-commons.id");
+    expect(firstId).toHaveTextContent("1");
+  });
+
+  test("computeEffectiveCapacity handles zero values correctly", () => {
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: undefined,
+        commons: { capacityPerUser: 0 },
+        totalUsers: 5,
+      }),
+    ).toBe(0);
+
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: undefined,
+        commons: { capacityPerUser: "0" },
+        totalUsers: "3",
+      }),
+    ).toBe(0);
+  });
+
+  test("computeEffectiveCapacity returns 0 when effectiveCapacity is explicitly 0", () => {
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: 0,
+        commons: { capacityPerUser: 5 },
+        totalUsers: 3,
+      }),
+    ).toBe(0);
+  });
+
+  test("computeEffectiveCapacity returns NaN when capacityPerUser is non-numeric string", () => {
+    const result = computeEffectiveCapacity({
+      effectiveCapacity: undefined,
+      commons: { capacityPerUser: "not-a-number" },
+      totalUsers: 3,
+    });
+    expect(Number.isNaN(Number(result))).toBe(true);
+  });
+
+  test("getSortableValue returns null for effectiveCapacity when computed value is NaN", () => {
+    const val = getSortableValue(
+      {
+        effectiveCapacity: undefined,
+        commons: { capacityPerUser: "not-a-number" },
+        totalUsers: 3,
+      },
+      "effectiveCapacity",
+    );
+    expect(val).toBeNull();
+  });
+
+  test("createCommonsComparator string-key both-null returns 0 and null-vs-nonnull ordering", () => {
+    const comp = createCommonsComparator("commons.name", "asc");
+    const a = { commons: { name: null } };
+    const b = { commons: { name: null } };
+    expect(comp(a, b)).toBe(0);
+
+    const c = { commons: { name: "A" } };
+    // In implementation, STRING_DEFAULT_EMPTY_KEYS returns empty string for null,
+    // so null -> "" compares before non-empty strings. Expect -1.
+    expect(comp(a, c)).toBe(-1);
+    expect(comp(c, a)).toBe(1);
+  });
+
+  test("computeEffectiveCapacity uses computed value when effectiveCapacity is null", () => {
+    // If effectiveCapacity is explicitly null, we should fall back to computed value
+    // when capacityPerUser and totalUsers are present.
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: null,
+        commons: { capacityPerUser: 3 },
+        totalUsers: 4,
+      }),
+    ).toBe(12);
+  });
+
+  test("computeEffectiveCapacity returns null when capacityPerUser missing", () => {
+    // If capacityPerUser is omitted/undefined, we must not compute a product.
+    expect(
+      computeEffectiveCapacity({
+        effectiveCapacity: undefined,
+        commons: {},
+        totalUsers: 5,
+      }),
+    ).toBeNull();
   });
 
   test("sorting handles null vs non-null with descending direction", async () => {
