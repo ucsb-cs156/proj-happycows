@@ -6,7 +6,7 @@ import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
-import { createTestQueryClient } from "tests/utils/testQueryClient";
+import { QueryClient } from "react-query";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
@@ -41,7 +41,16 @@ beforeEach(() => {
 });
 
 const renderCommonsTable = (props) => {
-  const queryClient = createTestQueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        cacheTime: 0,
+        refetchOnWindowFocus: false,
+      },
+      mutations: { retry: false },
+    },
+  });
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
@@ -528,6 +537,30 @@ describe("CommonsTable component", () => {
     fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Delete"));
 
     expect(screen.getByTestId("CommonsTable-Modal")).toBeInTheDocument();
+  });
+
+  test("Edit action navigates to edit page when adminUser (legacy hidden button)", () => {
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser: currentUserFixtures.adminUser,
+    });
+
+    fireEvent.click(screen.getByTestId("CommonsTable-cell-row-0-col-Edit-button"));
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcommons/1");
+  });
+
+  test("Leaderboard action navigates to leaderboard page when clicked (legacy hidden button)", () => {
+    renderCommonsTable({
+      commons: commonsPlusFixtures.threeCommonsPlus,
+      currentUser: currentUserFixtures.adminUser,
+    });
+
+    fireEvent.click(
+      screen.getByTestId("CommonsTable-cell-row-0-col-Leaderboard-button"),
+    );
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1");
   });
 
   test("Clicking Permanently Delete button deletes the commons", async () => {
