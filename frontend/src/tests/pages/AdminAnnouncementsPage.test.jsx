@@ -33,14 +33,6 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
-      commons: {
-        id: 1,
-        name: "Sample Commons",
-      },
-      totalPlayers: 0,
-      totalCows: 0,
-    });
   });
 
   test("renders page without crashing", async () => {
@@ -98,7 +90,7 @@ describe("AdminAnnouncementsPage tests", () => {
     ).toHaveTextContent("1");
 
     const announcementsButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Announcements`,
+      `${testId}-cell-row-0-col-Announcements-button`,
     );
     expect(announcementsButton).toHaveAttribute(
       "href",

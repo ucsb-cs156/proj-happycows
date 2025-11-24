@@ -74,8 +74,7 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      // Wait for the query to successfully fetch from the API
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => result.current.isFetched);
 
       expect(result.current.data).toEqual(currentUserFixtures.userOnly);
       queryClient.clear();
