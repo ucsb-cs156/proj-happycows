@@ -370,40 +370,62 @@ export default function CommonsTable({ commons, currentUser }) {
             <span data-testid={`CommonsTable-cell-row-${index}-col-commons.id`}>
               {id}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.cowPrice`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.cowPrice`}
+            >
               {formatPlain(cowPrice)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.milkPrice`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.milkPrice`}
+            >
               {formatPlain(milkPrice)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.degradationRate`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.degradationRate`}
+            >
               {formatPlain(degradationRate)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.capacityPerUser`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.capacityPerUser`}
+            >
               {formatPlain(capacityPerUser)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.carryingCapacity`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.carryingCapacity`}
+            >
               {formatPlain(carryingCapacity)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.startingBalance`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.startingBalance`}
+            >
               {formatPlain(startingBalance)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.startingDate`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.startingDate`}
+            >
               {formatDate(startingDate)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.lastDate`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.lastDate`}
+            >
               {formatDate(lastDate)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.showLeaderboard`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.showLeaderboard`}
+            >
               {formatBoolean(showLeaderboard)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-commons.showChat`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-commons.showChat`}
+            >
               {formatBoolean(showChat)}
             </span>
             <span data-testid={`CommonsTable-cell-row-${index}-col-totalCows`}>
               {formatPlain(totalCows)}
             </span>
-            <span data-testid={`CommonsTable-cell-row-${index}-col-effectiveCapacity`}>
+            <span
+              data-testid={`CommonsTable-cell-row-${index}-col-effectiveCapacity`}
+            >
               {formatPlain(computedEffectiveCapacity)}
             </span>
             {/* legacy action testids are provided as interactive hidden elements
