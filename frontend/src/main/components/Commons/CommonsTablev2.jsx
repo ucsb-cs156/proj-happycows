@@ -309,7 +309,10 @@ export default function CommonsTablev2({ commons, currentUser }) {
                   handlers without changing the tests. The container is
                   visually hidden but placed inside the viewport so Playwright
                   can interact with these elements during integration tests. */}
-              <div style={{ display: "inline-block", opacity: 0 }} aria-hidden="true">
+              <div
+                style={{ display: "inline-block", opacity: 0 }}
+                aria-hidden="true"
+              >
                 <button
                   className="btn btn-danger"
                   data-testid={`CommonsTable-cell-row-${index}-col-Delete`}
