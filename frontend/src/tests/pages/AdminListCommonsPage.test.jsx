@@ -212,7 +212,9 @@ describe("AdminListCommonPage tests", () => {
 
     expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
 
-    const leaderboardButton = screen.getByTestId("AdminCommonsCard-Leaderboard-1");
+    const leaderboardButton = screen.getByTestId(
+      "AdminCommonsCard-Leaderboard-1",
+    );
     expect(leaderboardButton).toBeInTheDocument();
 
     fireEvent.click(leaderboardButton);

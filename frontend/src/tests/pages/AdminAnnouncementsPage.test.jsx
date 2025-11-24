@@ -72,7 +72,6 @@ describe("AdminAnnouncementsPage tests", () => {
   });
 
   test("correct href for announcements button as an admin", async () => {
-    const testId = "CommonsTable";
     axiosMock
       .onGet("/api/commons/allplus")
       .reply(200, commonsPlusFixtures.threeCommonsPlus);
@@ -85,12 +84,10 @@ describe("AdminAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
-    ).toHaveTextContent("1");
+    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
 
     const announcementsButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Announcements-button`,
+      "AdminCommonsCard-Announcements-1",
     );
     expect(announcementsButton).toHaveAttribute(
       "href",
