@@ -2,14 +2,7 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
-import {
-  describe,
-  test,
-  expect,
-  beforeEach,
-  afterEach,
-  vi,
-} from "vitest";
+import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
@@ -413,9 +406,9 @@ describe("CommonsTable component", () => {
     expect(screen.getByTestId("CommonsTable-card-0-action-Edit")).toHaveClass(
       "btn-primary",
     );
-    expect(
-      screen.getByTestId("CommonsTable-card-0-action-Delete"),
-    ).toHaveClass("btn-danger");
+    expect(screen.getByTestId("CommonsTable-card-0-action-Delete")).toHaveClass(
+      "btn-danger",
+    );
     expect(
       screen.getByTestId("CommonsTable-card-0-action-Leaderboard"),
     ).toHaveClass("btn-secondary");
@@ -667,8 +660,12 @@ describe("CommonsTable component", () => {
     expect(
       screen.getByTestId("CommonsTable-card-0-field-commons.name"),
     ).toBeInTheDocument();
-    expect(screen.getByTestId("CommonsTable-card-0-summary")).toBeInTheDocument();
-    expect(screen.getByTestId("CommonsTable-card-0-actions")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("CommonsTable-card-0-summary"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("CommonsTable-card-0-actions"),
+    ).toBeInTheDocument();
   });
 
   test("string sorting by Name asc/desc works deterministically", async () => {
