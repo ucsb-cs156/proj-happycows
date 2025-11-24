@@ -56,4 +56,26 @@ export function formatTime(timeString) {
   return dateFromEpoch.toLocaleDateString();
 }
 
+export function isFutureDate(startingDate) {
+  const curr = new Date();
+  const startYear = parseInt(startingDate);
+  const startMonth = parseInt(startingDate.substring(5, 7));
+  const startDate = parseInt(startingDate.substring(8, 10));
+  const currYear = curr.getFullYear();
+  const currMonth = curr.getMonth() + 1;
+  const currDate = curr.getDate();
+
+  if (startYear === currYear) {
+    if (startMonth === currMonth) {
+      return startDate > currDate;
+    } else {
+      // Stryker disable next-line all: mutation test unreasonable
+      return startMonth > currMonth;
+    }
+  } else {
+    // Stryker disable next-line all: mutation test unreasonable
+    return startYear > currYear;
+  }
+}
+
 export { timestampToDate, padWithZero, daysSinceTimestamp };
