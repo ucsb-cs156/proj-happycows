@@ -7,6 +7,7 @@ import UpdateCowHealthForm from "main/components/Jobs/UpdateCowHealthForm";
 import MilkCowsJobForm from "main/components/Jobs/MilkCowsJobForm";
 import InstructorReportForm from "main/components/Jobs/InstructorReportForm";
 import InstructorReportSpecificCommonsForm from "main/components/Jobs/InstructorReportSpecificCommonsForm";
+import RecordCommonStatsForm from "main/components/Jobs/RecordCommonStatsForm";
 import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";
@@ -169,6 +170,23 @@ const AdminJobsPage = () => {
     toast("Submitted Job: Instructor Report (Specific Commons)");
     InstructorReportSpecificCommonsMutation.mutate(data);
   };
+  // *** Record Common Stats job ***
+
+  const objectToAxiosParamsRecordCommonStatsJob = () => ({
+    url: `/api/jobs/launch/recordcommonstats`,
+    method: "POST",
+  });
+  // Stryker disable all
+  const RecordCommonStatsMutation = useBackendMutation(
+    objectToAxiosParamsRecordCommonStatsJob,
+    {},
+    ["/api/jobs/all"],
+  );
+  // Stryker restore all
+  const submitRecordCommonStatsJob = async () => {
+    toast("Submitted Job: Record Common Stats");
+    RecordCommonStatsMutation.mutate();
+  };
 
   const jobLaunchers = [
     {
@@ -178,6 +196,10 @@ const AdminJobsPage = () => {
     {
       name: "Set Cow Health for a Specific Commons",
       form: <SetCowHealthForm submitAction={submitSetCowHealthJob} />,
+    },
+    {
+      name: "Record Common Stats",
+      form: <RecordCommonStatsForm submitAction={submitRecordCommonStatsJob} />,
     },
     {
       name: "Update Cow Health",
