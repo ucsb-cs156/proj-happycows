@@ -702,7 +702,7 @@ describe("OurTable extra coverage", () => {
           const rows = data.map((d, i) => ({
             getRowProps: () => undefined,
             index: i,
-            cells: columns.map((col, ci) => ({
+            cells: columns.map((col, _ci) => ({
               getCellProps: () => undefined,
               render: () => d[col.accessor] ?? null,
               row: { index: i, values: d },
