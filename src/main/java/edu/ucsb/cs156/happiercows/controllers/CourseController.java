@@ -7,6 +7,7 @@ import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -80,5 +81,22 @@ public class CourseController extends ApiController {
     Course savedCourse = courseRepository.save(course);
 
     return savedCourse;
+    }
+
+    @Operation(summary = "Update a single course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Course updateCourse(@Parameter(name = "id") @RequestParam Long id, @RequestBody @Valid Course incoming) {
+        Course course = courseRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        course.setCode(incoming.getCode());
+        course.setName(incoming.getName());
+        course.setTerm(incoming.getTerm());
+
+        courseRepository.save(course);
+
+        return course;
     }
 }

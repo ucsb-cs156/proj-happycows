@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -177,5 +178,88 @@ public class CourseControllerTests extends ControllerTestCase {
         String expectedJson = mapper.writeValueAsString(course);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
+    }
+
+    // PUT ----------------------------------
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_can_edit_an_existing_course() throws Exception {
+        // arrange
+
+        Course courseOrig =
+            Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced Applications Programming")
+                .term("F25")
+                .build();
+
+        Course courseEdited =
+            Course.builder()
+                .code("CMPSC 32")
+                .name("Intro to CS")
+                .term("W24")
+                .build();
+
+        String requestBody = mapper.writeValueAsString(courseEdited);
+
+        when(courseRepository.findById(eq(45L))).thenReturn(Optional.of(courseOrig));
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    put("/api/course?id=45")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(45L);
+        verify(courseRepository, times(1)).save(courseOrig);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(requestBody, responseString);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_cannot_edit_course_that_doesnt_exist() throws Exception {
+        // arrange
+
+        Course courseEdited =
+            Course.builder()
+                .code("CMPSC 32")
+                .name("Intro to CS")
+                .term("W24")
+                .build();
+
+        String requestBody = mapper.writeValueAsString(courseEdited);
+
+        when(courseRepository.findById(eq(56L))).thenReturn(Optional.empty());
+
+        // act
+
+        MvcResult response =
+            mockMvc
+                .perform(
+                    put("/api/course?id=56")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // assert
+
+        verify(courseRepository, times(1)).findById(56L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 56 not found", json.get("message"));
+
     }
 }
