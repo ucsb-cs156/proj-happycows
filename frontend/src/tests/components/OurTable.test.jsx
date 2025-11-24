@@ -447,7 +447,8 @@ describe("OurTable extra coverage", () => {
 
     const btn = await screen.findByTestId("tid-cell-row-0-col-Link-button");
     expect(btn).toBeInTheDocument();
-    const href = btn.getAttribute("href") ?? btn.closest("a")?.getAttribute("href");
+    const href =
+      btn.getAttribute("href") ?? btn.closest("a")?.getAttribute("href");
     expect(href).toBe("/foo/42");
   });
 
@@ -466,7 +467,7 @@ describe("OurTable extra coverage", () => {
               headers: columns.map((col, idx) => ({
                 getHeaderProps: () => ({}),
                 getSortByToggleProps: () => ({}),
-                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                render: () => col.Header ?? col.header ?? `col-${idx}`,
                 id: col.id ?? col.accessor ?? `col-${idx}`,
                 isSorted: false,
                 isSortedDesc: false,
@@ -546,7 +547,7 @@ describe("OurTable extra coverage", () => {
                 // header-level getHeaderProps returns undefined to trigger colProps || {}
                 getHeaderProps: () => undefined,
                 getSortByToggleProps: () => undefined,
-                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                render: () => col.Header ?? col.header ?? `col-${idx}`,
                 // no id to trigger safeColKey fallback
                 id: col.id ?? col.accessor ?? undefined,
                 isSorted: false,
@@ -562,7 +563,7 @@ describe("OurTable extra coverage", () => {
             cells: columns.map((col, ci) => ({
               // getCellProps undefined to trigger cellProps || {}
               getCellProps: () => undefined,
-              render: () => (d[col.accessor] ?? null),
+              render: () => d[col.accessor] ?? null,
               row: { index: i, values: d },
               column: { id: col.id ?? col.accessor ?? ci },
             })),
@@ -620,7 +621,7 @@ describe("OurTable extra coverage", () => {
               headers: columns.map((col, idx) => ({
                 getHeaderProps: () => ({ key: `COL-${idx}` }),
                 getSortByToggleProps: () => ({}),
-                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                render: () => col.Header ?? col.header ?? `col-${idx}`,
                 id: col.id ?? col.accessor ?? `col-${idx}`,
                 isSorted: false,
                 isSortedDesc: false,
@@ -633,7 +634,7 @@ describe("OurTable extra coverage", () => {
             index: i,
             cells: columns.map((col, ci) => ({
               getCellProps: () => ({ key: `CELL-${i}-${ci}` }),
-              render: () => (d[col.accessor] ?? null),
+              render: () => d[col.accessor] ?? null,
               row: { index: i, values: d },
               column: { id: col.id ?? col.accessor ?? ci },
             })),
@@ -690,7 +691,7 @@ describe("OurTable extra coverage", () => {
                 // explicitly omit id and accessor to force fallback to index
                 getHeaderProps: () => undefined,
                 getSortByToggleProps: () => undefined,
-                render: () => (col.Header ?? `col-${idx}`),
+                render: () => col.Header ?? `col-${idx}`,
                 id: undefined,
                 isSorted: false,
                 isSortedDesc: false,
@@ -703,7 +704,7 @@ describe("OurTable extra coverage", () => {
             index: i,
             cells: columns.map((col, ci) => ({
               getCellProps: () => undefined,
-              render: () => (d[col.accessor] ?? null),
+              render: () => d[col.accessor] ?? null,
               row: { index: i, values: d },
               column: { id: undefined },
             })),
@@ -724,29 +725,28 @@ describe("OurTable extra coverage", () => {
     const mod = await import("main/components/OurTable");
     const OurTableLocal = mod.default;
 
-    const columns = [
-      { Header: "C1" },
-      { Header: "C2" },
-    ];
+    const columns = [{ Header: "C1" }, { Header: "C2" }];
     const data = [{}, {}];
 
-    render(<OurTableLocal columns={columns} data={data} testid={'cf'} />);
+    render(<OurTableLocal columns={columns} data={data} testid={"cf"} />);
 
     // The component uses column.id for the data-testid; when id is undefined
     // the rendered testid will include "undefined". Find the header by its
     // displayed text and assert that the fallback keys were used for the
     // DOM keys (which exercise the column.index / cell.index fallbacks).
     const headerText = await screen.findByText("C1");
-    const headerCell = headerText.closest('th');
+    const headerCell = headerText.closest("th");
     expect(headerCell).toBeInTheDocument();
     // header should have been assigned the safe fallback key `col-0`
-    expect(headerCell).toHaveAttribute('data-fallback-key', 'col-0');
+    expect(headerCell).toHaveAttribute("data-fallback-key", "col-0");
 
     // The cell's data-testid includes the literal `undefined` for the
     // missing column.id; assert the cell exists and has the safe fallback key
-    const bodyCells = await screen.findAllByTestId("cf-cell-row-0-col-undefined");
+    const bodyCells = await screen.findAllByTestId(
+      "cf-cell-row-0-col-undefined",
+    );
     expect(bodyCells.length).toBeGreaterThan(0);
     const bodyCell = bodyCells[0];
-    expect(bodyCell).toHaveAttribute('data-fallback-key', 'cell-0-0');
+    expect(bodyCell).toHaveAttribute("data-fallback-key", "cell-0-0");
   });
 });
