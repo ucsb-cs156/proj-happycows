@@ -5,6 +5,7 @@ import {
   waitFor,
   within,
 } from "@testing-library/react";
+import { vi } from "vitest";
 import OurTable, {
   ButtonColumn,
   DateColumn,
@@ -423,5 +424,329 @@ describe("OurTable tests", () => {
     ).toContainHTML("4");
     expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(null);
     expect(screen.queryByTestId("testid-back-three-page-button")).toBe(null);
+  });
+});
+
+describe("OurTable extra coverage", () => {
+  test("HrefButtonColumn renders a button with href using commons.id", async () => {
+    // Test HrefButtonColumn in isolation (no react-table mock)
+    const mod = await import("main/components/OurTable");
+    const { HrefButtonColumn } = mod;
+
+    const column = HrefButtonColumn("Link", "primary", "/foo/", "tid");
+
+    function Wrapper() {
+      const cell = {
+        row: { index: 0, values: { "commons.id": 42 } },
+        column: { id: column.id },
+      };
+      return column.Cell({ cell });
+    }
+
+    render(<Wrapper />);
+
+    const btn = await screen.findByTestId("tid-cell-row-0-col-Link-button");
+    expect(btn).toBeInTheDocument();
+    const href = btn.getAttribute("href") ?? btn.closest("a")?.getAttribute("href");
+    expect(href).toBe("/foo/42");
+  });
+
+  test("renders fallback data-fallback-key attributes when props lack keys", async () => {
+    // Ensure module registry is reset so the mocked module is used on import
+    vi.resetModules();
+    await vi.doMock("react-table", () => {
+      return {
+        useTable: (options) => {
+          const columns = options.columns || [];
+          const data = options.data || [];
+
+          const headerGroups = [
+            {
+              getHeaderGroupProps: () => ({}),
+              headers: columns.map((col, idx) => ({
+                getHeaderProps: () => ({}),
+                getSortByToggleProps: () => ({}),
+                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                id: col.id ?? col.accessor ?? `col-${idx}`,
+                isSorted: false,
+                isSortedDesc: false,
+              })),
+            },
+          ];
+
+          const rows = data.map((d, i) => ({
+            getRowProps: () => ({}),
+            index: i,
+            cells: columns.map((col, ci) => ({
+              getCellProps: () => ({}),
+              render: () => {
+                if (col.Cell) {
+                  return col.Cell({
+                    cell: {
+                      row: { index: i, values: d },
+                      column: { id: col.id ?? col.accessor ?? ci },
+                    },
+                  });
+                }
+                return d[col.accessor];
+              },
+              row: { index: i, values: d },
+              column: { id: col.id ?? col.accessor ?? ci },
+            })),
+          }));
+
+          return {
+            getTableProps: () => ({}),
+            getTableBodyProps: () => ({}),
+            headerGroups,
+            rows,
+            prepareRow: () => {},
+          };
+        },
+        useSortBy: () => {},
+      };
+    });
+
+    const mod = await import("main/components/OurTable");
+    const OurTableLocal = mod.default;
+
+    const columns = [
+      { Header: "Col1", accessor: "col1", id: "col1" },
+      { Header: "Col2", accessor: "col2", id: "col2" },
+    ];
+    const data = [{ col1: "A", col2: "B" }];
+
+    render(<OurTableLocal columns={columns} data={data} testid={"testid"} />);
+
+    const headerCell = await screen.findByTestId("testid-header-col1");
+    expect(headerCell).toBeInTheDocument();
+    const headerRow = headerCell.closest("tr");
+    expect(headerRow).toHaveAttribute("data-fallback-key");
+
+    const bodyCell = await screen.findByTestId("testid-cell-row-0-col-col1");
+    expect(bodyCell).toBeInTheDocument();
+    expect(bodyCell).toHaveAttribute("data-fallback-key");
+  });
+
+  test("renders fallback branches when react-table props are undefined", async () => {
+    // Mock react-table to return undefined props to exercise || {} and ?? fallbacks
+    // Ensure module registry is reset so the mocked module is used on import
+    vi.resetModules();
+    await vi.doMock("react-table", () => {
+      return {
+        useTable: (options) => {
+          const columns = options.columns || [];
+          const data = options.data || [];
+
+          const headerGroups = [
+            {
+              // getHeaderGroupProps returns undefined to trigger hgProps || {}
+              getHeaderGroupProps: () => undefined,
+              headers: columns.map((col, idx) => ({
+                // header-level getHeaderProps returns undefined to trigger colProps || {}
+                getHeaderProps: () => undefined,
+                getSortByToggleProps: () => undefined,
+                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                // no id to trigger safeColKey fallback
+                id: col.id ?? col.accessor ?? undefined,
+                isSorted: false,
+                isSortedDesc: false,
+              })),
+            },
+          ];
+
+          const rows = data.map((d, i) => ({
+            // getRowProps undefined to trigger rowProps || {}
+            getRowProps: () => undefined,
+            index: i,
+            cells: columns.map((col, ci) => ({
+              // getCellProps undefined to trigger cellProps || {}
+              getCellProps: () => undefined,
+              render: () => (d[col.accessor] ?? null),
+              row: { index: i, values: d },
+              column: { id: col.id ?? col.accessor ?? ci },
+            })),
+          }));
+
+          return {
+            getTableProps: () => undefined,
+            getTableBodyProps: () => undefined,
+            headerGroups,
+            rows,
+            prepareRow: () => {},
+          };
+        },
+        useSortBy: () => {},
+      };
+    });
+
+    const mod = await import("main/components/OurTable");
+    const OurTableLocal = mod.default;
+
+    const columns = [
+      { Header: "Col1", accessor: "col1" },
+      { Header: "Col2", accessor: "col2" },
+    ];
+    const data = [{ col1: "A", col2: "B" }];
+
+    render(<OurTableLocal columns={columns} data={data} testid={"tf"} />);
+
+    const headerCell = await screen.findByTestId("tf-header-col1");
+    expect(headerCell).toBeInTheDocument();
+    const headerRow = headerCell.closest("tr");
+    expect(headerRow).toHaveAttribute("data-fallback-key");
+
+    const bodyCell = await screen.findByTestId("tf-cell-row-0-col-col1");
+    expect(bodyCell).toBeInTheDocument();
+    expect(bodyCell).toHaveAttribute("data-fallback-key");
+  });
+
+  test("renders when react-table props provide explicit keys", async () => {
+    // Reset module registry and mock react-table so OurTable is re-imported
+    // with the mocked hook implementations. This ensures the mocked
+    // `useTable` is used during module initialization.
+    vi.resetModules();
+    // Mock react-table to return props with explicit key fields to exercise
+    // the branches where the component uses the provided keys instead of fallbacks
+    await vi.doMock("react-table", () => {
+      return {
+        useTable: (options) => {
+          const columns = options.columns || [];
+          const data = options.data || [];
+
+          const headerGroups = [
+            {
+              getHeaderGroupProps: () => ({ key: "HG-0" }),
+              headers: columns.map((col, idx) => ({
+                getHeaderProps: () => ({ key: `COL-${idx}` }),
+                getSortByToggleProps: () => ({}),
+                render: () => (col.Header ?? col.header ?? `col-${idx}`),
+                id: col.id ?? col.accessor ?? `col-${idx}`,
+                isSorted: false,
+                isSortedDesc: false,
+              })),
+            },
+          ];
+
+          const rows = data.map((d, i) => ({
+            getRowProps: () => ({ key: `ROW-${i}` }),
+            index: i,
+            cells: columns.map((col, ci) => ({
+              getCellProps: () => ({ key: `CELL-${i}-${ci}` }),
+              render: () => (d[col.accessor] ?? null),
+              row: { index: i, values: d },
+              column: { id: col.id ?? col.accessor ?? ci },
+            })),
+          }));
+
+          return {
+            getTableProps: () => ({ key: "TABLE-KEY", "data-hello": "x" }),
+            getTableBodyProps: () => ({ key: "BODY-KEY" }),
+            headerGroups,
+            rows,
+            prepareRow: () => {},
+          };
+        },
+        useSortBy: () => {},
+      };
+    });
+
+    const mod = await import("main/components/OurTable");
+    const OurTableLocal = mod.default;
+
+    const columns = [{ Header: "Col1", accessor: "col1", id: "col1" }];
+    const data = [{ col1: "A" }];
+
+    render(<OurTableLocal columns={columns} data={data} testid={"tk"} />);
+
+    const headerCell = await screen.findByTestId("tk-header-col1");
+    expect(headerCell).toBeInTheDocument();
+    const headerRow = headerCell.closest("tr");
+    const hf = headerRow.getAttribute("data-fallback-key");
+    expect(hf).toBeTruthy();
+
+    const bodyCell = await screen.findByTestId("tk-cell-row-0-col-col1");
+    expect(bodyCell).toBeInTheDocument();
+    const bf = bodyCell.getAttribute("data-fallback-key");
+    expect(bf).toBeTruthy();
+
+    const table = headerCell.closest("table");
+    expect(table).toHaveAttribute("data-hello", "x");
+  });
+
+  test("covers column.id ?? colIndex and cell.column.id ?? cellIndex fallbacks", async () => {
+    // Reset modules so the mock takes effect on import
+    vi.resetModules();
+    await vi.doMock("react-table", () => {
+      return {
+        useTable: (options) => {
+          const columns = options.columns || [];
+          const data = options.data || [];
+
+          const headerGroups = [
+            {
+              getHeaderGroupProps: () => undefined,
+              headers: columns.map((col, idx) => ({
+                // explicitly omit id and accessor to force fallback to index
+                getHeaderProps: () => undefined,
+                getSortByToggleProps: () => undefined,
+                render: () => (col.Header ?? `col-${idx}`),
+                id: undefined,
+                isSorted: false,
+                isSortedDesc: false,
+              })),
+            },
+          ];
+
+          const rows = data.map((d, i) => ({
+            getRowProps: () => undefined,
+            index: i,
+            cells: columns.map((col, ci) => ({
+              getCellProps: () => undefined,
+              render: () => (d[col.accessor] ?? null),
+              row: { index: i, values: d },
+              column: { id: undefined },
+            })),
+          }));
+
+          return {
+            getTableProps: () => undefined,
+            getTableBodyProps: () => undefined,
+            headerGroups,
+            rows,
+            prepareRow: () => {},
+          };
+        },
+        useSortBy: () => {},
+      };
+    });
+
+    const mod = await import("main/components/OurTable");
+    const OurTableLocal = mod.default;
+
+    const columns = [
+      { Header: "C1" },
+      { Header: "C2" },
+    ];
+    const data = [{}, {}];
+
+    render(<OurTableLocal columns={columns} data={data} testid={'cf'} />);
+
+    // The component uses column.id for the data-testid; when id is undefined
+    // the rendered testid will include "undefined". Find the header by its
+    // displayed text and assert that the fallback keys were used for the
+    // DOM keys (which exercise the column.index / cell.index fallbacks).
+    const headerText = await screen.findByText("C1");
+    const headerCell = headerText.closest('th');
+    expect(headerCell).toBeInTheDocument();
+    // header should have been assigned the safe fallback key `col-0`
+    expect(headerCell).toHaveAttribute('data-fallback-key', 'col-0');
+
+    // The cell's data-testid includes the literal `undefined` for the
+    // missing column.id; assert the cell exists and has the safe fallback key
+    const bodyCells = await screen.findAllByTestId("cf-cell-row-0-col-undefined");
+    expect(bodyCells.length).toBeGreaterThan(0);
+    const bodyCell = bodyCells[0];
+    expect(bodyCell).toHaveAttribute('data-fallback-key', 'cell-0-0');
   });
 });
