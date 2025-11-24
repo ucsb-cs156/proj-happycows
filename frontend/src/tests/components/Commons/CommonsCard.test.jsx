@@ -245,4 +245,71 @@ describe("CommonsCard tests", () => {
     fireEvent.click(button);
     expect(click).toBeCalledTimes(1);
   });
+
+  test("can join commons with past date - past month same year", async () => {
+    const pastCommon = commonsFixtures.threeCommons[2];
+    const safeMonth = curr.getMonth() >= 6 ? 5 : 0;
+
+    pastCommon.startingDate = new Date(
+      curr.getFullYear(),
+      safeMonth,
+      curr.getDate() + 5,
+    )
+      .toISOString()
+      .substring(0, 10);
+
+    const click = vi.fn();
+
+    render(
+      <CommonsCard
+        commons={pastCommon}
+        buttonText={"Join"}
+        buttonLink={click}
+      />,
+    );
+
+    const button = screen.getByTestId("commonsCard-button-Join-1");
+    expect(button).toBeInTheDocument();
+    expect(typeof button.textContent).toBe("string");
+    expect(button.textContent).toEqual("Join");
+    fireEvent.click(button);
+    expect(click).toBeCalledTimes(1);
+  });
+
+  test("cannot join commons with future start date - future month dame year", async () => {
+    const futureCommon = commonsFixtures.threeCommons[2];
+
+    if (curr.getMonth() === 11) {
+      futureCommon.startingDate = new Date(
+        curr.getFullYear(),
+        curr.getMonth(),
+        curr.getDate() + 1,
+      )
+        .toISOString()
+        .substring(0, 10);
+    } else {
+      futureCommon.startingDate = new Date(
+        curr.getFullYear(),
+        curr.getMonth() + 1,
+        curr.getDate(),
+      )
+        .toISOString()
+        .substring(0, 10);
+    }
+
+    const click = vi.fn();
+
+    render(
+      <CommonsCard
+        commons={futureCommon}
+        buttonText={"Join"}
+        buttonLink={click}
+      />,
+    );
+
+    const button = screen.getByTestId("commonsCard-button-Join-1");
+    expect(button).toBeInTheDocument();
+    fireEvent.click(button);
+    expect(click).toBeCalledTimes(0);
+  });
 });
