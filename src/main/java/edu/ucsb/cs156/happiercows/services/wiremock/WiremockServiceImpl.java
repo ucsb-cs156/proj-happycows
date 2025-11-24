@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.Stubbing;
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -16,7 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.temporaryRedirect;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 /**
  * This is a service for mocking authentication using wiremock
@@ -45,27 +45,28 @@ public class WiremockServiceImpl extends WiremockService {
   /**
    * This method sets up the necessary mocks for authentication
    * 
-   * @param s in an instance of a WireMockServer or WireMockExtension
+   * @param server WireMockServer instance to configure
+   * @param isAdmin whether to configure admin user or regular user
    */
-  public static void setupOauthMocks(Stubbing s, boolean isAdmin) {
+  public static void setupOauthMocks(WireMockServer server, boolean isAdmin) {
 
-    s.stubFor(get(urlPathMatching("/oauth/authorize.*"))
+    server.stubFor(get(urlPathMatching("/oauth/authorize.*"))
         .willReturn(aResponse()
             .withStatus(200)
             .withHeader("Content-Type", "text/html")
             .withBodyFile("login.html")));
 
-    s.stubFor(post(urlPathEqualTo("/login"))
+    server.stubFor(post(urlPathEqualTo("/login"))
         .willReturn(temporaryRedirect(
             "{{formData request.body 'form' urlDecode=true}}{{{form.redirectUri}}}?code={{{randomValue length=30 type='ALPHANUMERIC'}}}&state={{{form.state}}}")));
 
-    s.stubFor(post(urlPathEqualTo("/oauth/token"))
+    server.stubFor(post(urlPathEqualTo("/oauth/token"))
         .willReturn(
             okJson(
                 "{\"access_token\":\"{{randomValue length=20 type='ALPHANUMERIC'}}\",\"token_type\": \"Bearer\",\"expires_in\":\"3600\",\"scope\":\"https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid\"}")));
 
     if (isAdmin) {
-      s.stubFor(get(urlPathMatching("/userinfo"))
+      server.stubFor(get(urlPathMatching("/userinfo"))
           .willReturn(aResponse()
               .withStatus(200)
               .withHeader("Content-Type", "application/json")
@@ -84,7 +85,7 @@ public class WiremockServiceImpl extends WiremockService {
                       }
                       """)));
     } else {
-      s.stubFor(get(urlPathMatching("/userinfo"))
+      server.stubFor(get(urlPathMatching("/userinfo"))
           .willReturn(aResponse()
               .withStatus(200)
               .withHeader("Content-Type", "application/json")
@@ -112,14 +113,15 @@ public class WiremockServiceImpl extends WiremockService {
   public void init() {
     log.info("WiremockServiceImpl.init() called");
 
-    WireMockServer wireMockServer = new WireMockServer(options()
-        .port(8090) // No-args constructor will start on port
-        .extensions(new ResponseTemplateTransformer(true)));
+    this.wireMockServer = new WireMockServer(wireMockConfig()
+        .port(8090)
+        .notifier(new ConsoleNotifier(true))
+        .globalTemplating(true));
 
     setupOauthMocks(wireMockServer, true);
 
     wireMockServer.start();
 
-    log.info("WiremockServiceImpl.init() completed");
+    log.info("WiremockServiceImpl.init() completed, server running on port: {}", wireMockServer.port());
   }
 }

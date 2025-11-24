@@ -1,6 +1,6 @@
 package edu.ucsb.cs156.happiercows;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -34,9 +34,9 @@ public abstract class WebTestCase {
 
     @BeforeAll
     public static void setupWireMock() {
-        wireMockServer = new WireMockServer(options()
+        wireMockServer = new WireMockServer(wireMockConfig()
                 .port(8090)
-                .extensions(new ResponseTemplateTransformer(true)));
+                .globalTemplating(true));
 
         WiremockServiceImpl.setupOauthMocks(wireMockServer, false);
 
