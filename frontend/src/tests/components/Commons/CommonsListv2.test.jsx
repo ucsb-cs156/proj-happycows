@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import CommonsList from "main/components/Commons/CommonsList";
+import CommonsList from "main/components/Commons/CommonsListv2";
 import commonsFixtures from "fixtures/commonsFixtures";
 
 describe("CommonsList tests", () => {

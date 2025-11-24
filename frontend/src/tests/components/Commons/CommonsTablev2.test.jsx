@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { describe, test, expect, beforeEach, afterEach, vi } from "vitest";
-import CommonsTable from "main/components/Commons/CommonsTable";
+import CommonsTablev2 from "main/components/Commons/CommonsTablev2";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { QueryClient } from "react-query";
@@ -54,13 +54,15 @@ const renderCommonsTable = (props) => {
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <CommonsTable {...props} />
+        <CommonsTablev2 {...props} />
       </MemoryRouter>
     </QueryClientProvider>,
   );
 };
 
 const adminUser = { loggedIn: true, root: { rolesList: ["ROLE_ADMIN"] } };
+
+// Remaining content identical to legacy tests but exercises CommonsTablev2
 
 describe("commonsTableUtils helpers", () => {
   test("formatPlain returns dash for null/empty/undefined", () => {
@@ -200,14 +202,14 @@ describe("commonsTableUtils additional coverage", () => {
 
     expect(
       computeEffectiveCapacity({
-        effectiveCapacity: null,
+        effectiveCapacity: undefined,
         commons: { capacityPerUser: null },
         totalUsers: 5,
       }),
     ).toBeNull();
     expect(
       computeEffectiveCapacity({
-        effectiveCapacity: null,
+        effectiveCapacity: undefined,
         commons: { capacityPerUser: 3 },
         totalUsers: null,
       }),
@@ -344,7 +346,7 @@ describe("commonsTableUtils additional coverage", () => {
   });
 });
 
-describe("CommonsTable component", () => {
+describe("CommonsTablev2 component", () => {
   let mockMutate;
 
   beforeEach(() => {
@@ -615,11 +617,9 @@ describe("CommonsTable component", () => {
     fieldTestIds.forEach((tid) => {
       const el = screen.getByTestId(tid);
       expect(el).toBeTruthy();
-      // ensure text content exists (non-null)
       expect(el.textContent).not.toBeNull();
     });
 
-    // Check action links/hrefs are present and look correct
     const statsCsv = screen.getByTestId("CommonsTable-card-0-action-StatsCSV");
     expect(statsCsv).toBeTruthy();
     expect(statsCsv.getAttribute("href")).toContain(
@@ -641,18 +641,15 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    // actions container exists
     const actionsContainer = screen.getByTestId("CommonsTable-card-0-actions");
     expect(actionsContainer).toBeTruthy();
 
-    // legacy Delete button opens the modal
     const legacyDelete = screen.getByTestId(
       "CommonsTable-cell-row-0-col-Delete",
     );
     fireEvent.click(legacyDelete);
     expect(screen.getByText(/Permanently Delete/i)).toBeTruthy();
 
-    // legacy Announcements button and its hidden parent are present and hidden
     const legacyAnnouncementsBtn = screen.getByTestId(
       "CommonsTable-cell-row-0-col-Announcements-button",
     );
@@ -662,7 +659,6 @@ describe("CommonsTable component", () => {
     );
     expect(hiddenContainer).toBeTruthy();
     expect(getComputedStyle(hiddenContainer).display).toBe("none");
-    // ensure the inline style explicitly sets display:none (kills style object/string literal mutants)
     const styleAttr = hiddenContainer.getAttribute("style") || "";
     expect(styleAttr).toContain("display");
     expect(styleAttr).toMatch(/display\s*:\s*none/);
@@ -670,7 +666,6 @@ describe("CommonsTable component", () => {
       "/admin/announcements/",
     );
 
-    // legacy Stats CSV anchor exists and has correct href
     const legacyStats = screen.getByTestId(
       "CommonsTable-cell-row-0-col-StatsCSV",
     );
@@ -679,19 +674,15 @@ describe("CommonsTable component", () => {
       "/api/commonstats/download?commonsId=",
     );
 
-    // check label for effective capacity appears in UI (kills label string literal mutants)
     expect(screen.getAllByText("Eff Cap").length).toBeGreaterThan(0);
 
-    // assert the hidden containers are actually display:none (kill style object literal mutants)
     const hiddenDivs = document.querySelectorAll('div[aria-hidden="true"]');
     expect(hiddenDivs.length).toBeGreaterThan(0);
     hiddenDivs.forEach((d) => {
       expect(getComputedStyle(d).display).toBe("none");
     });
 
-    // assert data-test-button attribute and hrefs for legacy announcements/stats exist exactly
     for (let i = 0; i < 3; i++) {
-      // the hidden anchor that carries the data-test-button attribute
       const hiddenAnn = screen.getByTestId(
         `CommonsTable-cell-row-${i}-col-Announcements`,
       );
@@ -716,7 +707,6 @@ describe("CommonsTable component", () => {
       );
     }
 
-    // click visible delete action to open modal and confirm delete (kill onClick arrow mutants)
     const visibleDelete = screen.getByTestId(
       "CommonsTable-card-0-action-Delete",
     );
@@ -724,9 +714,7 @@ describe("CommonsTable component", () => {
     const permDelete = screen.getByText(/Permanently Delete/i);
     expect(permDelete).toBeTruthy();
     fireEvent.click(permDelete);
-    // modal should close after deletion (no assertion on backend call here)
 
-    // ensure actions container has expected data-testid attribute (kill related string literal mutants)
     const actionsContainer2 = screen.getByTestId("CommonsTable-card-0-actions");
     expect(actionsContainer2.getAttribute("data-testid")).toBe(
       "CommonsTable-card-0-actions",
@@ -743,7 +731,6 @@ describe("CommonsTable component", () => {
     const n = commonsList.length;
 
     for (let i = 0; i < n; i++) {
-      // visible actions: Edit, Leaderboard, Delete, StatsCSV, Announcements
       const visibleEdit = screen.getByTestId(
         `CommonsTable-card-${i}-action-Edit`,
       );
@@ -768,14 +755,12 @@ describe("CommonsTable component", () => {
         "/admin/announcements/",
       );
 
-      // click visible delete -> open modal -> click Permanently Delete
       const visDel = screen.getByTestId(`CommonsTable-card-${i}-action-Delete`);
       fireEvent.click(visDel);
       const perm = screen.getByTestId("CommonsTable-Modal-Delete");
       expect(perm).toBeTruthy();
       fireEvent.click(perm);
 
-      // hidden legacy interactive elements: Delete, Delete-button, Edit, Edit-button, Leaderboard, Leaderboard-button
       const hiddenDelete = screen.getByTestId(
         `CommonsTable-cell-row-${i}-col-Delete`,
       );
@@ -808,7 +793,6 @@ describe("CommonsTable component", () => {
       );
       fireEvent.click(hiddenLeaderboardBtn);
 
-      // hidden stats anchors
       const hiddenStats = screen.getByTestId(
         `CommonsTable-cell-row-${i}-col-StatsCSV`,
       );
@@ -822,7 +806,6 @@ describe("CommonsTable component", () => {
         "/api/commonstats/download?commonsId=",
       );
 
-      // hidden announcements anchors: one has data-test-button attribute
       const hiddenAnn = screen.getByTestId(
         `CommonsTable-cell-row-${i}-col-Announcements`,
       );
@@ -845,23 +828,19 @@ describe("CommonsTable component", () => {
       currentUser: currentUserFixtures.adminUser,
     });
 
-    // click visible delete to set commonsToDelete
     fireEvent.click(screen.getByTestId("CommonsTable-card-0-action-Delete"));
 
-    // now click the hidden helper which calls confirmDelete()
     const hiddenHelper = screen.getByTestId(
       "CommonsTable-Modal-Delete-no-commons",
     );
     expect(hiddenHelper).toBeTruthy();
 
-    // ensure the hidden helper is actually hidden via inline style
     const styleAttr = hiddenHelper.getAttribute("style") || "";
     expect(styleAttr).toMatch(/display\s*:\s*none/);
     expect(getComputedStyle(hiddenHelper).display).toBe("none");
 
     await userEvent.click(hiddenHelper);
 
-    // when commonsToDelete was set, confirmDelete should invoke mutate
     expect(mockMutate).toHaveBeenCalled();
   });
 
@@ -876,7 +855,6 @@ describe("CommonsTable component", () => {
       (o) => o.value === "effectiveCapacity",
     );
     expect(option).toBeTruthy();
-    // check the serialized html for an exact option label to catch string literal mutations
     const inner = select.innerHTML;
     expect(inner).toMatch(
       /<option[^>]*value="effectiveCapacity"[^>]*>\s*Eff Cap\s*<\/option>/,
@@ -1044,11 +1022,9 @@ describe("CommonsTable component", () => {
     renderCommonsTable({ commons, currentUser: { roles: [] } });
 
     const select = screen.getByTestId("CommonsTable-sort-select");
-    // data-current-sort holds the internal sortKey state (not the validated value)
     expect(select).toHaveValue("commons.id");
     expect(select.dataset.currentSort).toBe("commons.id");
 
-    // changing the select should update internal sortKey (data-current-sort)
     fireEvent.change(select, { target: { value: "commons.name" } });
     expect(select.dataset.currentSort).toBe("commons.name");
   });
@@ -1283,7 +1259,6 @@ describe("CommonsTable component", () => {
 
     fireEvent.change(select, { target: { value: "not-a-real-key" } });
     expect(select).toHaveValue("commons.id");
-    // Ensure the displayed order is still sorted by the default key (commons.id)
     const firstId = screen.getByTestId(
       "CommonsTable-cell-row-0-col-commons.id",
     );
@@ -1346,15 +1321,11 @@ describe("CommonsTable component", () => {
     expect(comp(a, b)).toBe(0);
 
     const c = { commons: { name: "A" } };
-    // In implementation, STRING_DEFAULT_EMPTY_KEYS returns empty string for null,
-    // so null -> "" compares before non-empty strings. Expect -1.
     expect(comp(a, c)).toBe(-1);
     expect(comp(c, a)).toBe(1);
   });
 
   test("computeEffectiveCapacity uses computed value when effectiveCapacity is null", () => {
-    // If effectiveCapacity is explicitly null, we should fall back to computed value
-    // when capacityPerUser and totalUsers are present.
     expect(
       computeEffectiveCapacity({
         effectiveCapacity: null,
@@ -1365,7 +1336,6 @@ describe("CommonsTable component", () => {
   });
 
   test("computeEffectiveCapacity returns null when capacityPerUser missing", () => {
-    // If capacityPerUser is omitted/undefined, we must not compute a product.
     expect(
       computeEffectiveCapacity({
         effectiveCapacity: undefined,

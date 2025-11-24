@@ -1,5 +1,5 @@
 import React from "react";
-import CommonsCard from "./CommonsCard";
+import CommonsCardv2 from "./CommonsCardv2";
 import { Card, Container, Row, Col } from "react-bootstrap";
 
 const CommonsList = (props) => {
@@ -65,7 +65,7 @@ const CommonsList = (props) => {
             </Container>
           </Card.Subtitle>
           {props.commonList.map((c) => (
-            <CommonsCard
+            <CommonsCardv2
               key={c.id}
               commons={c}
               buttonText={props.buttonText}

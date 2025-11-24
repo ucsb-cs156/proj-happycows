@@ -1,27 +1,27 @@
 import React from "react";
 
 import commonsFixtures from "fixtures/commonsFixtures";
-import CommonsCard from "main/components/Commons/CommonsCard";
+import CommonsList from "main/components/Commons/CommonsListv2";
 
 export default {
-  title: "components/Commons/CommonsCard",
-  component: CommonsCard,
+  title: "components/Commons/CommonsListv2",
+  component: CommonsList,
 };
 
 const Template = (args) => {
-  return <CommonsCard {...args} />;
+  return <CommonsList {...args} />;
 };
 
 export const NullButton = Template.bind({});
 
 NullButton.args = {
-  commons: commonsFixtures.threeCommons[0],
+  commonList: commonsFixtures.threeCommons,
   buttonText: null,
 };
 
 export const TextButton = Template.bind({});
 
 TextButton.args = {
-  commons: commonsFixtures.threeCommons[0],
+  commonList: commonsFixtures.threeCommons,
   buttonText: "Join",
 };

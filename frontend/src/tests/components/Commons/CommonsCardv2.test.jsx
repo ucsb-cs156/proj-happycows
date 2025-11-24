@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import CommonsCard from "main/components/Commons/CommonsCard";
+import CommonsCardv2 from "main/components/Commons/CommonsCardv2";
 import { isFutureDate } from "main/components/Commons/commonsCardUtils";
 import commonsFixtures from "fixtures/commonsFixtures";
 import { vi } from "vitest";
@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 
 const curr = new Date();
 
-describe("CommonsCard tests", () => {
+describe("CommonsCardv2 tests", () => {
   describe("isFutureDate", () => {
     const referenceDate = new Date(2025, 4, 15); // May 15, 2025
 
@@ -44,7 +44,7 @@ describe("CommonsCard tests", () => {
   test("renders without crashing when button text is set", async () => {
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={commonsFixtures.threeCommons[0]}
         buttonText={"Join"}
         buttonLink={click}
@@ -71,7 +71,7 @@ describe("CommonsCard tests", () => {
 
   test("renders no button when button text is null", () => {
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={commonsFixtures.threeCommons[0]}
         buttonText={null}
       />,
@@ -104,7 +104,7 @@ describe("CommonsCard tests", () => {
     const click = vi.fn();
     window.alert = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureYearCommon}
         buttonText={"Join"}
         buttonLink={click}
@@ -135,7 +135,7 @@ describe("CommonsCard tests", () => {
       .substring(0, 10);
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureCommon}
         buttonText={"Join"}
         buttonLink={click}
@@ -165,7 +165,7 @@ describe("CommonsCard tests", () => {
       .substring(0, 10);
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureCommon}
         buttonText={"Join"}
         buttonLink={click}
@@ -191,7 +191,7 @@ describe("CommonsCard tests", () => {
       .substring(0, 10);
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureCommon}
         buttonText={"Visit"}
         buttonLink={click}
@@ -217,7 +217,7 @@ describe("CommonsCard tests", () => {
       .substring(0, 10);
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureCommon}
         buttonText={"Join"}
         buttonLink={click}
@@ -247,7 +247,7 @@ describe("CommonsCard tests", () => {
       .substring(0, 10);
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={futureCommon}
         buttonText={"Join"}
         buttonLink={click}
@@ -265,7 +265,7 @@ describe("CommonsCard tests", () => {
   test("can join commons with past start date", async () => {
     const click = vi.fn();
     render(
-      <CommonsCard
+      <CommonsCardv2
         commons={commonsFixtures.threeCommons[0]}
         buttonText={"Join"}
         buttonLink={click}

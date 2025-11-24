@@ -1,16 +1,16 @@
 import React from "react";
 
-import CommonsTable from "main/components/Commons/CommonsTable";
+import CommonsTablev2 from "main/components/Commons/CommonsTablev2";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 export default {
-  title: "components/commons/CommonsTable",
-  component: CommonsTable,
+  title: "components/commons/CommonsTablev2",
+  component: CommonsTablev2,
 };
 
 const Template = (args) => {
-  return <CommonsTable {...args} />;
+  return <CommonsTablev2 {...args} />;
 };
 
 export const Empty = Template.bind({});

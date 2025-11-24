@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 import { isFutureDate } from "./commonsCardUtils";
 
-const CommonsCard = ({ buttonText, buttonLink, commons }) => {
+const CommonsCardv2 = ({ buttonText, buttonLink, commons }) => {
   const testIdPrefix = "commonsCard";
   return (
     <Card.Body className="woodenboardtable">
@@ -50,4 +50,4 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
   );
 };
 
-export default CommonsCard;
+export default CommonsCardv2;
