@@ -35,7 +35,7 @@ Empty.parameters = {
     http.get("/api/chat/get", () => {
       return HttpResponse.json(
         { content: [], totalPages: 0, totalElements: 0 },
-        { status: 200 }
+        { status: 200 },
       );
     }),
   ],
@@ -66,7 +66,7 @@ ThreeMessages.parameters = {
           totalPages: 1,
           totalElements: 3,
         },
-        { status: 200 }
+        { status: 200 },
       );
     }),
   ],
@@ -100,7 +100,7 @@ ManyMessages.parameters = {
       }));
       return HttpResponse.json(
         { content: manyMessages, totalPages: 5, totalElements: 50 },
-        { status: 200 }
+        { status: 200 },
       );
     }),
   ],
