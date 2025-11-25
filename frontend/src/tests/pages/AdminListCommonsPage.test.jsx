@@ -30,6 +30,8 @@ vi.mock("react-router", async () => ({
 describe("AdminListCommonPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
+  const testId = "CommonsTable";
+
   const setupUserOnly = () => {
     axiosMock.reset();
     axiosMock.resetHistory();
@@ -95,9 +97,15 @@ describe("AdminListCommonPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
-    expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
-    expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-commons.id`),
+    ).toHaveTextContent("2");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-2-col-commons.id`),
+    ).toHaveTextContent("3");
     expect(screen.getByText(`Download All Stats`)).toBeInTheDocument();
   });
 
@@ -122,7 +130,9 @@ describe("AdminListCommonPage tests", () => {
     });
     restoreConsole();
 
-    expect(screen.queryByTestId("AdminCommonsCard-1")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(`Download All Stats`)).toBeInTheDocument();
   });
 
@@ -145,20 +155,27 @@ describe("AdminListCommonPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toHaveTextContent("1");
 
-    const deleteButton = screen.getByTestId("AdminCommonsCard-Delete-1");
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
     expect(deleteButton).toBeInTheDocument();
 
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
       expect(
-        screen.getByTestId("AdminCommonsCard-Modal-Delete-1"),
+        screen.getByTestId("CommonsTable-Modal-Delete"),
       ).toBeInTheDocument();
     });
 
-    const modalDelete = screen.getByTestId("AdminCommonsCard-Modal-Delete-1");
+    const modalDelete = screen.getByTestId("CommonsTable-Modal-Delete");
     fireEvent.click(modalDelete);
 
     await waitFor(() => {
@@ -182,9 +199,13 @@ describe("AdminListCommonPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toHaveTextContent("1");
 
-    const editButton = screen.getByTestId("AdminCommonsCard-Edit-1");
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
     expect(editButton).toBeInTheDocument();
 
     fireEvent.click(editButton);
@@ -210,10 +231,12 @@ describe("AdminListCommonPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toHaveTextContent("1");
 
     const leaderboardButton = screen.getByTestId(
-      "AdminCommonsCard-Leaderboard-1",
+      `${testId}-cell-row-0-col-Leaderboard-button`,
     );
     expect(leaderboardButton).toBeInTheDocument();
 
@@ -240,9 +263,13 @@ describe("AdminListCommonPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
+    ).toHaveTextContent("1");
 
-    const statsCSVButton = screen.getByTestId("AdminCommonsCard-StatsCSV-1");
+    const statsCSVButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Stats CSV-button`,
+    );
     expect(statsCSVButton).toHaveAttribute(
       "href",
       "/api/commonstats/download?commonsId=1",
