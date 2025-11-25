@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Course;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +47,8 @@ public class CourseController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("")
     public Course postCourse(
-            @Parameter(name = "course") @RequestBody Course course) {
-        Course savedCourse = courseRepository.save(course);
+            @Parameter(name = "course") @RequestBody CourseDTO courseDTO) {
+        Course savedCourse = courseRepository.save(courseDTO.toCourse());
         return savedCourse;
     }
 }
