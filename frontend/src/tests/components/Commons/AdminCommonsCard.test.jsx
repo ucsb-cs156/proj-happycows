@@ -104,19 +104,23 @@ describe("AdminCommonsCard tests", () => {
     const milkPriceValue = milkPriceLabel.parentElement.nextElementSibling;
     expect(milkPriceValue).toHaveTextContent("1");
     const startBalanceLabel = screen.getByText("Start Balance:");
-    const startBalanceValue = startBalanceLabel.parentElement.nextElementSibling;
+    const startBalanceValue =
+      startBalanceLabel.parentElement.nextElementSibling;
     expect(startBalanceValue).toHaveTextContent("10");
     const startingDateLabel = screen.getByText("Starting Date:");
-    const startingDateValue = startingDateLabel.parentElement.nextElementSibling;
+    const startingDateValue =
+      startingDateLabel.parentElement.nextElementSibling;
     expect(startingDateValue).toHaveTextContent("2022-11-22");
     const lastDateLabel = screen.getByText("Last Date:");
     const lastDateValue = lastDateLabel.parentElement.nextElementSibling;
     expect(lastDateValue).toHaveTextContent("2022-11-22");
     const degradationRateLabel = screen.getByText("Degrad Rate:");
-    const degradationRateValue = degradationRateLabel.parentElement.nextElementSibling;
+    const degradationRateValue =
+      degradationRateLabel.parentElement.nextElementSibling;
     expect(degradationRateValue).toHaveTextContent("0.01");
     const showLeaderboardLabel = screen.getByText("Show Leaderboard:");
-    const showLeaderboardValue = showLeaderboardLabel.parentElement.nextElementSibling;
+    const showLeaderboardValue =
+      showLeaderboardLabel.parentElement.nextElementSibling;
     expect(showLeaderboardValue).toHaveTextContent("false");
     const showChatLabel = screen.getByText("Show Chat:");
     const showChatValue = showChatLabel.parentElement.nextElementSibling;
@@ -125,13 +129,16 @@ describe("AdminCommonsCard tests", () => {
     const totalCowsValue = totalCowsLabel.parentElement.nextElementSibling;
     expect(totalCowsValue).toHaveTextContent("10");
     const capacityPerUserLabel = screen.getByText("Cap / User:");
-    const capacityPerUserValue = capacityPerUserLabel.parentElement.nextElementSibling;
+    const capacityPerUserValue =
+      capacityPerUserLabel.parentElement.nextElementSibling;
     expect(capacityPerUserValue).toHaveTextContent("50");
     const carryingCapacityLabel = screen.getByText("Carry Cap:");
-    const carryingCapacityValue = carryingCapacityLabel.parentElement.nextElementSibling;
+    const carryingCapacityValue =
+      carryingCapacityLabel.parentElement.nextElementSibling;
     expect(carryingCapacityValue).toHaveTextContent("100");
     const effectiveCapacityLabel = screen.getByText("Eff Cap:");
-    const effectiveCapacityValue = effectiveCapacityLabel.parentElement.nextElementSibling;
+    const effectiveCapacityValue =
+      effectiveCapacityLabel.parentElement.nextElementSibling;
     expect(effectiveCapacityValue).toHaveTextContent("100");
   });
 
@@ -140,10 +147,7 @@ describe("AdminCommonsCard tests", () => {
     const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
     const currentUser = currentUserFixtures.adminUser;
 
-    const useBackendMutationSpy = vi.spyOn(
-      useBackend,
-      "useBackendMutation",
-    );
+    const useBackendMutationSpy = vi.spyOn(useBackend, "useBackendMutation");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -292,9 +296,7 @@ describe("AdminCommonsCard tests", () => {
       ).toBeInTheDocument();
     });
 
-    const cancelButton = screen.getByTestId(
-      "AdminCommonsCard-Modal-Cancel-1",
-    );
+    const cancelButton = screen.getByTestId("AdminCommonsCard-Modal-Cancel-1");
     fireEvent.click(cancelButton);
 
     await waitFor(() => {
@@ -309,7 +311,9 @@ describe("AdminCommonsCard tests", () => {
     const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
     const currentUser = currentUserFixtures.adminUser;
 
-    axiosMock.onDelete("/api/commons", { params: { id: 1 } }).reply(200, "Commons with id 1 was deleted");
+    axiosMock
+      .onDelete("/api/commons", { params: { id: 1 } })
+      .reply(200, "Commons with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -378,12 +382,12 @@ describe("AdminCommonsCard tests", () => {
     );
 
     const card = screen.getByTestId("AdminCommonsCard-1");
-    
+
     expect(card).toHaveStyle({ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" });
-    
+
     fireEvent.mouseEnter(card);
     expect(card).toHaveStyle({ boxShadow: "0 4px 8px rgba(0,0,0,0.17)" });
-    
+
     fireEvent.mouseLeave(card);
     expect(card).toHaveStyle({ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" });
   });
@@ -533,7 +537,8 @@ describe("AdminCommonsCard tests", () => {
     );
 
     const startingDateLabel = screen.getByText("Starting Date:");
-    const startingDateElement = startingDateLabel.parentElement.nextElementSibling;
+    const startingDateElement =
+      startingDateLabel.parentElement.nextElementSibling;
     expect(startingDateElement).toBeInTheDocument();
   });
 
@@ -687,7 +692,8 @@ describe("AdminCommonsCard tests", () => {
     expect(totalCowsValue).toHaveTextContent("0");
 
     const effectiveCapacityLabel = screen.getByText("Eff Cap:");
-    const effectiveCapacityValue = effectiveCapacityLabel.parentElement.nextElementSibling;
+    const effectiveCapacityValue =
+      effectiveCapacityLabel.parentElement.nextElementSibling;
     expect(effectiveCapacityValue).toHaveTextContent("0");
   });
 
@@ -712,7 +718,8 @@ describe("AdminCommonsCard tests", () => {
     );
 
     const showLeaderboardLabel = screen.getByText("Show Leaderboard:");
-    const showLeaderboardValue = showLeaderboardLabel.parentElement.nextElementSibling;
+    const showLeaderboardValue =
+      showLeaderboardLabel.parentElement.nextElementSibling;
     expect(showLeaderboardValue).toHaveTextContent("true");
 
     const showChatLabel = screen.getByText("Show Chat:");
@@ -783,7 +790,9 @@ describe("AdminCommonsCard tests", () => {
     const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
     const currentUser = currentUserFixtures.adminUser;
 
-    axiosMock.onDelete("/api/commons", { params: { id: 1 } }).reply(200, "Commons with id 1 was deleted");
+    axiosMock
+      .onDelete("/api/commons", { params: { id: 1 } })
+      .reply(200, "Commons with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -815,4 +824,3 @@ describe("AdminCommonsCard tests", () => {
     });
   });
 });
-
