@@ -10,7 +10,7 @@ export default function ChatPage() {
   const { commonsId } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  
+
   // Stryker disable all
   const refreshRate = 2000;
 
@@ -26,7 +26,7 @@ export default function ChatPage() {
       },
     },
     { content: [], totalPages: 0, totalElements: 0 },
-    { refetchInterval: refreshRate }
+    { refetchInterval: refreshRate },
   );
 
   const { data: userCommonsList } = useBackend(

@@ -20,7 +20,7 @@ describe("ChatPage tests", () => {
             <Route path="/chat/:commonsId" element={<ChatPage />} />
           </Routes>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
   };
 
@@ -45,7 +45,7 @@ describe("ChatPage tests", () => {
 
   const mockCommonCalls = (
     messages = { content: [], totalPages: 0, totalElements: 0 },
-    users = []
+    users = [],
   ) => {
     axiosMock.onGet("/api/chat/get").reply(200, messages);
     axiosMock.onGet("/api/usercommons/commons/all").reply(200, users);
@@ -57,7 +57,7 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatPage")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatPage")).toBeInTheDocument(),
     );
   });
 
@@ -67,7 +67,7 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-size-selector")).toBeInTheDocument()
+      expect(screen.getByTestId("page-size-selector")).toBeInTheDocument(),
     );
 
     const selector = screen.getByTestId("page-size-selector");
@@ -83,12 +83,14 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("no-messages")).toBeInTheDocument()
+      expect(screen.getByTestId("no-messages")).toBeInTheDocument(),
     );
 
     expect(screen.getByText("No messages found.")).toBeInTheDocument();
 
-    expect(screen.getByTestId("page-info")).toHaveTextContent("Page 1 of 1 (Total: 0 messages)");
+    expect(screen.getByTestId("page-info")).toHaveTextContent(
+      "Page 1 of 1 (Total: 0 messages)",
+    );
 
     expect(screen.queryByTestId("message-list")).not.toBeInTheDocument();
   });
@@ -100,13 +102,13 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("message-list")).toBeInTheDocument()
+      expect(screen.getByTestId("message-list")).toBeInTheDocument(),
     );
 
     expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
@@ -123,23 +125,23 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument(),
     );
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "George Washington"
+      "George Washington",
     );
     expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
-      "Thomas Jefferson"
+      "Thomas Jefferson",
     );
     expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
-      "John Adams"
+      "John Adams",
     );
   });
 
@@ -150,17 +152,17 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-info")).toBeInTheDocument()
+      expect(screen.getByTestId("page-info")).toBeInTheDocument(),
     );
 
     expect(screen.getByTestId("page-info")).toHaveTextContent(
-      "Page 1 of 1 (Total: 3 messages)"
+      "Page 1 of 1 (Total: 3 messages)",
     );
   });
 
@@ -171,13 +173,13 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-size-selector")).toBeInTheDocument()
+      expect(screen.getByTestId("page-size-selector")).toBeInTheDocument(),
     );
 
     const selector = screen.getByTestId("page-size-selector");
@@ -187,7 +189,7 @@ describe("ChatPage tests", () => {
 
     await waitFor(() => {
       const calls = axiosMock.history.get.filter(
-        (req) => req.url === "/api/chat/get"
+        (req) => req.url === "/api/chat/get",
       );
       const last = calls[calls.length - 1];
       expect(last.params.size).toBe(20);
@@ -202,13 +204,13 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatPage")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatPage")).toBeInTheDocument(),
     );
 
     expect(screen.queryByTestId("pagination-first")).not.toBeInTheDocument();
@@ -224,20 +226,20 @@ describe("ChatPage tests", () => {
         totalPages: 5,
         totalElements: 50,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-first")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-first")).toBeInTheDocument(),
     );
 
     expect(screen.getByTestId("pagination-prev")).toBeInTheDocument();
     expect(screen.getByTestId("pagination-next")).toBeInTheDocument();
     expect(screen.getByTestId("pagination-last")).toBeInTheDocument();
     expect(screen.getByTestId("pagination-info")).toHaveTextContent(
-      "Page 1 of 5"
+      "Page 1 of 5",
     );
   });
 
@@ -248,13 +250,13 @@ describe("ChatPage tests", () => {
         totalPages: 5,
         totalElements: 50,
       },
-      userCommonsFixtures.threeUserCommons
+      userCommonsFixtures.threeUserCommons,
     );
 
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-first")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-first")).toBeInTheDocument(),
     );
 
     expect(screen.getByTestId("pagination-first")).toBeDisabled();
@@ -283,15 +285,15 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-next")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-next")).toBeInTheDocument(),
     );
 
     fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() =>
       expect(screen.getByTestId("pagination-info")).toHaveTextContent(
-        "Page 2 of 3"
-      )
+        "Page 2 of 3",
+      ),
     );
   });
 
@@ -315,23 +317,23 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-next")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-next")).toBeInTheDocument(),
     );
 
     fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() =>
       expect(screen.getByTestId("pagination-info")).toHaveTextContent(
-        "Page 2 of 3"
-      )
+        "Page 2 of 3",
+      ),
     );
 
     fireEvent.click(screen.getByTestId("pagination-prev"));
 
     await waitFor(() =>
       expect(screen.getByTestId("pagination-info")).toHaveTextContent(
-        "Page 1 of 3"
-      )
+        "Page 1 of 3",
+      ),
     );
   });
 
@@ -355,25 +357,25 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-next")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-next")).toBeInTheDocument(),
     );
 
     fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 2 of 5")
+      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 2 of 5"),
     );
 
     fireEvent.click(screen.getByTestId("pagination-next"));
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 3 of 5")
+      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 3 of 5"),
     );
 
     fireEvent.click(screen.getByTestId("pagination-first"));
 
     await waitFor(() =>
-      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 1 of 5")
+      expect(screen.getByTestId("page-info")).toHaveTextContent("Page 1 of 5"),
     );
   });
 
@@ -397,15 +399,15 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("pagination-last")).toBeInTheDocument()
+      expect(screen.getByTestId("pagination-last")).toBeInTheDocument(),
     );
 
     fireEvent.click(screen.getByTestId("pagination-last"));
 
     await waitFor(() =>
       expect(screen.getByTestId("pagination-info")).toHaveTextContent(
-        "Page 5 of 5"
-      )
+        "Page 5 of 5",
+      ),
     );
 
     expect(screen.getByTestId("pagination-next")).toBeDisabled();
@@ -418,7 +420,7 @@ describe("ChatPage tests", () => {
     renderChatPage();
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument(),
     );
   });
 
@@ -450,7 +452,7 @@ describe("ChatPage tests", () => {
         totalPages: 1,
         totalElements: 3,
       },
-      [{ userId: 1, username: "TestUser" }]
+      [{ userId: 1, username: "TestUser" }],
     );
 
     renderChatPage();
@@ -465,15 +467,15 @@ describe("ChatPage tests", () => {
 
     expect(renderedMessages[0]).toHaveAttribute(
       "data-testid",
-      "ChatMessageDisplay-3"
+      "ChatMessageDisplay-3",
     );
     expect(renderedMessages[1]).toHaveAttribute(
       "data-testid",
-      "ChatMessageDisplay-2"
+      "ChatMessageDisplay-2",
     );
     expect(renderedMessages[2]).toHaveAttribute(
       "data-testid",
-      "ChatMessageDisplay-1"
+      "ChatMessageDisplay-1",
     );
   });
 });

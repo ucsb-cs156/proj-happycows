@@ -7,7 +7,7 @@ import { useBackend } from "main/utils/useBackend";
 
 const ChatDisplay = ({ commonsId, refreshRate: refreshRateProp }) => {
   const initialMessagePageSize = 10;
-  
+
   // Stryker disable all
   const refreshRate = refreshRateProp ?? 2000;
 

@@ -61,11 +61,11 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument(),
     );
   });
 
@@ -83,11 +83,11 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={2000} />{" "}
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() =>
-      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument()
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument(),
     );
   });
 
@@ -102,7 +102,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -121,7 +121,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -147,7 +147,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -158,17 +158,17 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "George Washington"
+      "George Washington",
     );
     expect(
-      screen.getByTestId("ChatMessageDisplay-1-Message")
+      screen.getByTestId("ChatMessageDisplay-1-Message"),
     ).toHaveTextContent("Hello World");
 
     expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
-      "Thomas Jefferson"
+      "Thomas Jefferson",
     );
     expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
-      "John Adams"
+      "John Adams",
     );
   });
 
@@ -184,7 +184,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -192,10 +192,10 @@ describe("ChatDisplay tests", () => {
     });
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "Anonymous"
+      "Anonymous",
     );
     expect(
-      screen.getByTestId("ChatMessageDisplay-1-Message")
+      screen.getByTestId("ChatMessageDisplay-1-Message"),
     ).toHaveTextContent("Hello World");
   });
 
@@ -213,7 +213,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -239,7 +239,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -264,7 +264,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -293,7 +293,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -325,7 +325,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -336,7 +336,7 @@ describe("ChatDisplay tests", () => {
       () => {
         expect(screen.getByTestId("ChatDisplay-viewAll")).toBeInTheDocument();
       },
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
 
     expect(screen.getByText("View all 25 messages")).toBeInTheDocument();
@@ -359,7 +359,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -383,7 +383,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -406,7 +406,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -436,7 +436,7 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
@@ -465,12 +465,12 @@ describe("ChatDisplay tests", () => {
         <MemoryRouter>
           <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-        "SpecificUser"
+        "SpecificUser",
       );
     });
   });
