@@ -22,11 +22,14 @@ Empty.args = {
 
 Empty.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
-      return HttpResponse.json({ content: [] }, { status: 200 });
+    http.get("/api/chat/get", () => {
+      return HttpResponse.json(
+        { content: [], totalPages: 0, totalElements: 0 },
+        { status: 200 },
+      );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
+    http.get("/api/usercommons/commons/all", () => {
       return HttpResponse.json([], { status: 200 });
     }),
   ],
@@ -40,17 +43,18 @@ OneMessage.args = {
 
 OneMessage.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.oneChatMessage,
           totalPages: 1,
+          totalElements: 1,
         },
         { status: 200 },
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
+    http.get("/api/usercommons/commons/all", () => {
       return HttpResponse.json(userCommonsFixtures.oneUserCommons, {
         status: 200,
       });
@@ -66,17 +70,18 @@ ThreeMessages.args = {
 
 ThreeMessages.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.threeChatMessages,
           totalPages: 1,
+          totalElements: 3,
         },
         { status: 200 },
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
+    http.get("/api/usercommons/commons/all", () => {
       return HttpResponse.json(userCommonsFixtures.threeUserCommons, {
         status: 200,
       });
@@ -92,17 +97,18 @@ TwelveMessages.args = {
 
 TwelveMessages.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.twelveChatMessages,
           totalPages: 2,
+          totalElements: 12,
         },
         { status: 200 },
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
+    http.get("/api/usercommons/commons/all", () => {
       return HttpResponse.json(userCommonsFixtures.tenUserCommons, {
         status: 200,
       });
