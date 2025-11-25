@@ -48,7 +48,12 @@ public class CommonsWebIT extends WebTestCase {
         page.getByTestId("commonsCard-name-1").click();
   
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("List Commons").click();
+        page.getByRole(
+                        AriaRole.LINK,
+                        new Page.GetByRoleOptions()
+                                .setName("List Commons")
+                                .setExact(true))
+                .click();
   
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("Web Test Commons");
 
@@ -96,7 +101,12 @@ public class CommonsWebIT extends WebTestCase {
         // move to the list commons page to verify that the information is there
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("List Commons").click();
+        page.getByRole(
+                        AriaRole.LINK,
+                        new Page.GetByRoleOptions()
+                                .setName("List Commons")
+                                .setExact(true))
+                .click();
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.name")).hasText("Web Test Commons 2");
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.startingBalance")).hasText("9000");
         assertThat(page.getByTestId("CommonsTable-cell-row-0-col-commons.cowPrice")).hasText("50");
