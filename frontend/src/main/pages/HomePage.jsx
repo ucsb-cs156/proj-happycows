@@ -3,7 +3,7 @@ import { Card, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import CommonsList from "main/components/Commons/CommonsList";
+import CommonsList from "main/components/Commons/CommonsListv2";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import { commonsNotJoined } from "main/utils/commonsUtils";
