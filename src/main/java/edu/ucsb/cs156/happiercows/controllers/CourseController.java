@@ -49,7 +49,7 @@ public class CourseController extends ApiController {
 
     @Operation(summary = "Create a new course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/post")
+    @PostMapping("")
 
     public Course postCourse(
         @Parameter(
@@ -98,5 +98,18 @@ public class CourseController extends ApiController {
         courseRepository.save(course);
 
         return course;
+    }
+
+    @Operation(summary = "Delete a single course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteCourse(@Parameter(name = "id") @RequestParam Long id) {
+        Course course =
+            courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        courseRepository.delete(course);
+        return genericMessage("Course with id %s deleted".formatted(id));
     }
 }
