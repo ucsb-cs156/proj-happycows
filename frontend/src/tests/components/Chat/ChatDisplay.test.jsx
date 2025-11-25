@@ -33,6 +33,8 @@ describe("ChatDisplay tests", () => {
       defaultOptions: {
         queries: {
           retry: false,
+          staleTime: 0,
+          cacheTime: 0,
         },
       },
     });
@@ -40,8 +42,53 @@ describe("ChatDisplay tests", () => {
     axiosMock.resetHistory();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await queryClient.cancelQueries();
     queryClient.clear();
+  });
+
+  test("renders with refreshRate false (test branch)", async () => {
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: chatMessageFixtures.threeChatMessages,
+      totalElements: 3,
+    });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument()
+    );
+  });
+
+  test("renders with default refreshRate 2000 (normal usage)", async () => {
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: chatMessageFixtures.threeChatMessages,
+      totalElements: 3,
+    });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={2000} />{" "}
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument()
+    );
   });
 
   test("renders without crashing", async () => {
@@ -53,9 +100,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -72,9 +119,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -98,9 +145,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -111,17 +158,17 @@ describe("ChatDisplay tests", () => {
     expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "George Washington",
+      "George Washington"
     );
     expect(
-      screen.getByTestId("ChatMessageDisplay-1-Message"),
+      screen.getByTestId("ChatMessageDisplay-1-Message")
     ).toHaveTextContent("Hello World");
 
     expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
-      "Thomas Jefferson",
+      "Thomas Jefferson"
     );
     expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
-      "John Adams",
+      "John Adams"
     );
   });
 
@@ -135,9 +182,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -145,10 +192,10 @@ describe("ChatDisplay tests", () => {
     });
 
     expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "Anonymous",
+      "Anonymous"
     );
     expect(
-      screen.getByTestId("ChatMessageDisplay-1-Message"),
+      screen.getByTestId("ChatMessageDisplay-1-Message")
     ).toHaveTextContent("Hello World");
   });
 
@@ -164,9 +211,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -176,65 +223,96 @@ describe("ChatDisplay tests", () => {
     expect(screen.queryByTestId("ChatDisplay-viewAll")).not.toBeInTheDocument();
   });
 
-  test("shows view all link when messages > 10", async () => {
-    const twelveChatMessages = chatMessageFixtures.twelveChatMessages || [
-      ...chatMessageFixtures.threeChatMessages,
-      {
-        id: 4,
-        userId: 1,
-        message: "Message 4",
-        timestamp: "2023-08-18T03:00:00",
-      },
-      {
-        id: 5,
-        userId: 2,
-        message: "Message 5",
-        timestamp: "2023-08-18T03:01:00",
-      },
-      {
-        id: 6,
-        userId: 3,
-        message: "Message 6",
-        timestamp: "2023-08-18T03:02:00",
-      },
-      {
-        id: 7,
-        userId: 1,
-        message: "Message 7",
-        timestamp: "2023-08-18T03:03:00",
-      },
-      {
-        id: 8,
-        userId: 2,
-        message: "Message 8",
-        timestamp: "2023-08-18T03:04:00",
-      },
-      {
-        id: 9,
-        userId: 3,
-        message: "Message 9",
-        timestamp: "2023-08-18T03:05:00",
-      },
-      {
-        id: 10,
-        userId: 1,
-        message: "Message 10",
-        timestamp: "2023-08-18T03:06:00",
-      },
-      {
-        id: 11,
-        userId: 2,
-        message: "Message 11",
-        timestamp: "2023-08-18T03:07:00",
-      },
-      {
-        id: 12,
-        userId: 3,
-        message: "Message 12",
-        timestamp: "2023-08-18T03:08:00",
-      },
-    ];
+  test("boundary: shows view all link when totalElements is exactly 10", async () => {
+    const tenMessages = chatMessageFixtures.twelveChatMessages.slice(0, 10);
 
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: tenMessages,
+      totalElements: 10,
+    });
+    axiosMock
+      .onGet("/api/usercommons/commons/all")
+      .reply(200, userCommonsFixtures.threeUserCommons);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("ChatDisplay-viewAll")).toBeInTheDocument();
+    expect(screen.getByText("View all 10 messages")).toBeInTheDocument();
+  });
+
+  test("view all link container has correct styling", async () => {
+    const twelveChatMessages = chatMessageFixtures.twelveChatMessages || [];
+
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: twelveChatMessages,
+      totalElements: 12,
+    });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatDisplay-viewAll")).toBeInTheDocument();
+    });
+
+    const viewAllContainer = screen.getByTestId("ChatDisplay-viewAll");
+
+    expect(viewAllContainer).toHaveStyle({
+      padding: "8px",
+      textAlign: "center",
+      backgroundColor: "#f8f9fa",
+      borderBottom: "1px solid #dee2e6",
+    });
+  });
+
+  test("message list container has correct styles for scrolling and layout", async () => {
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: chatMessageFixtures.threeChatMessages,
+      totalElements: 3,
+    });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
+    });
+
+    const messageElement = screen.getByTestId("ChatMessageDisplay-1");
+    const scrollContainer = messageElement.parentElement;
+
+    expect(scrollContainer).toHaveStyle({
+      display: "flex",
+      flexDirection: "column-reverse",
+      overflowY: "scroll",
+      maxHeight: "300px",
+    });
+  });
+
+  test("shows view all link when messages > 10", async () => {
+    const twelveChatMessages = chatMessageFixtures.twelveChatMessages;
     axiosMock
       .onGet("/api/chat/get")
       .reply(200, { content: twelveChatMessages, totalElements: 25 });
@@ -245,9 +323,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -258,13 +336,39 @@ describe("ChatDisplay tests", () => {
       () => {
         expect(screen.getByTestId("ChatDisplay-viewAll")).toBeInTheDocument();
       },
-      { timeout: 5000 },
+      { timeout: 5000 }
     );
 
     expect(screen.getByText("View all 25 messages")).toBeInTheDocument();
 
     const link = screen.getByText("View all 25 messages").closest("a");
     expect(link).toHaveAttribute("href", "/chat/1");
+  });
+
+  test("limits rendered messages to initialMessagePageSize (10)", async () => {
+    const twelveMessages = chatMessageFixtures.twelveChatMessages;
+
+    axiosMock.onGet("/api/chat/get").reply(200, {
+      content: twelveMessages,
+      totalElements: 12,
+    });
+    axiosMock.onGet("/api/usercommons/commons/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
+        </MemoryRouter>
+      </QueryClientProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument();
+    });
+
+    const renderedMessages = screen.getAllByTestId(/^ChatMessageDisplay-\d+$/);
+
+    expect(renderedMessages.length).toBe(10);
   });
 
   test("handles empty content array", async () => {
@@ -277,9 +381,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -300,9 +404,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -330,9 +434,9 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
@@ -359,14 +463,14 @@ describe("ChatDisplay tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={commonsId} refreshRate={false} />
         </MemoryRouter>
-      </QueryClientProvider>,
+      </QueryClientProvider>
     );
 
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-        "SpecificUser",
+        "SpecificUser"
       );
     });
   });

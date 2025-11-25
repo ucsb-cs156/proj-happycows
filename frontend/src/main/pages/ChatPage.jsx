@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Container, Card, Form, Button } from "react-bootstrap";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import ChatMessageCreate from "main/components/Chat/ChatMessageCreate";
@@ -10,9 +10,9 @@ export default function ChatPage() {
   const { commonsId } = useParams();
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const refreshRate = 10;
-
+  
   // Stryker disable all
+  const refreshRate = 2000;
 
   const { data: messagesPage, isLoading: messagesLoading } = useBackend(
     [`/api/chat/get`, commonsId, currentPage, pageSize],
@@ -26,7 +26,7 @@ export default function ChatPage() {
       },
     },
     { content: [], totalPages: 0, totalElements: 0 },
-    { refetchInterval: refreshRate },
+    { refetchInterval: refreshRate }
   );
 
   const { data: userCommonsList } = useBackend(
@@ -68,19 +68,12 @@ export default function ChatPage() {
   return (
     <BasicLayout>
       <Container data-testid="ChatPage">
-        {/* <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1>Chat Messages</h1>
-          <Link to={`/play/${commonsId}`} data-testid="back-to-commons-link">
-            <Button variant="outline-primary">Back to {commons.name || "Commons"}</Button>
-          </Link>
-        </div> */}
         <div className="mb-3">
           <Form.Label>Messages per page:</Form.Label>
           <Form.Select
             value={pageSize}
             onChange={handlePageSizeChange}
             data-testid="page-size-selector"
-            style={{ width: "150px" }}
           >
             <option value={10}>10</option>
             <option value={20}>20</option>
@@ -98,18 +91,6 @@ export default function ChatPage() {
             <ChatMessageCreate commonsId={commonsId} />
           </Card.Body>
         </Card>
-
-        {messagesLoading && (
-          <div className="text-center py-5">
-            <div
-              className="spinner-border"
-              role="status"
-              data-testid="loading-spinner"
-            >
-              <span className="visually-hidden">Loading...</span>
-            </div>
-          </div>
-        )}
 
         {!messagesLoading && sortedMessages.length === 0 && (
           <Card className="text-center py-5">

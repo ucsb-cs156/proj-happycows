@@ -5,11 +5,11 @@ import { useBackend } from "main/utils/useBackend";
 
 // Props for storybook manual injection
 
-const ChatDisplay = ({ commonsId }) => {
+const ChatDisplay = ({ commonsId, refreshRate: refreshRateProp }) => {
   const initialMessagePageSize = 10;
-  const refreshRate = 10;
-
+  
   // Stryker disable all
+  const refreshRate = refreshRateProp ?? 2000;
 
   const { data: messagesPage } = useBackend(
     [`/api/chat/get`],
@@ -49,7 +49,7 @@ const ChatDisplay = ({ commonsId }) => {
   }, {});
 
   const totalElements = messagesPage.totalElements || 0;
-  const hasMoreMessages = totalElements > initialMessagePageSize;
+  const hasMoreMessages = totalElements >= initialMessagePageSize;
 
   return (
     <div data-testid="ChatDisplay">
