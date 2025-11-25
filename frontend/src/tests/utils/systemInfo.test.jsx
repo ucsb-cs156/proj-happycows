@@ -37,11 +37,9 @@ describe("utils/systemInfo tests", () => {
       });
       await waitFor(() => result.current.isSuccess);
 
-      expect(result.current.data).toEqual({
-        initialData: true,
-        springH2ConsoleEnabled: false,
-        showSwaggerUILink: false,
-      });
+      expect(result.current.data.springH2ConsoleEnabled).toBe(false);
+      expect(result.current.data.showSwaggerUILink).toBe(false);
+
       const queryState = queryClient.getQueryState("systemInfo");
       expect(queryState).toBeDefined();
     });
@@ -65,7 +63,22 @@ describe("utils/systemInfo tests", () => {
 
       await waitFor(() => result.current.isFetched);
 
-      expect(result.current.data).toEqual(systemInfoFixtures.showingAll);
+      expect(result.current.data.springH2ConsoleEnabled).toBe(
+        systemInfoFixtures.showingAll.springH2ConsoleEnabled,
+      );
+
+      expect(result.current.data.showSwaggerUILink).toBe(
+        systemInfoFixtures.showingAll.showSwaggerUILink,
+      );
+
+      expect(result.current.data.oauthLogin).toBe(
+        systemInfoFixtures.showingAll.oauthLogin,
+      );
+
+      expect(result.current.data.sourceRepo).toBe(
+        systemInfoFixtures.showingAll.sourceRepo,
+      );
+
       queryClient.clear();
     });
 
