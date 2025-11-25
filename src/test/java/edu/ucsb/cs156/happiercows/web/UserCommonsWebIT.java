@@ -37,9 +37,6 @@ public class UserCommonsWebIT extends WebTestCase {
         // Join commons
         page.getByTestId("commonsCard-button-Join-1").click();
 
-        // Visit commons
-        page.getByTestId("commonsCard-button-Visit-1").click();
-        
         // Buy cows
 
         // Click buy cow button
