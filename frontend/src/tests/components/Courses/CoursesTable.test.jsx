@@ -10,8 +10,11 @@ import {
   onDeleteSuccess,
 } from "main/utils/courseUtils";
 
-const mockMutate = vi.fn();
-const mockUseBackendMutation = vi.fn(() => ({ mutate: mockMutate }));
+const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
+  const mutate = vi.fn();
+  const useBackendMutationMock = vi.fn(() => ({ mutate }));
+  return { mockMutate: mutate, mockUseBackendMutation: useBackendMutationMock };
+});
 
 vi.mock("main/utils/useBackend", async (importOriginal) => {
   const actual = await importOriginal();
@@ -37,8 +40,9 @@ describe("CoursesTable tests", () => {
   const expectedFields = ["id", "code", "name", "term"];
 
   beforeEach(() => {
-    mockMutate.mockClear();
-    mockUseBackendMutation.mockClear();
+    mockMutate.mockReset();
+    mockUseBackendMutation.mockReset();
+    mockUseBackendMutation.mockReturnValue({ mutate: mockMutate });
     mockedNavigate.mockClear();
   });
 
@@ -144,15 +148,11 @@ describe("CoursesTable tests", () => {
   });
 
   test("Supports overriding the testIdPrefix prop", () => {
-    renderTable(
-      coursesFixtures.threeCourses,
-      currentUserFixtures.adminUser,
-      { testIdPrefix: "CustomCourses" },
-    );
+    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser, {
+      testIdPrefix: "CustomCourses",
+    });
 
-    expect(
-      screen.getByTestId("CustomCourses-header-code"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("CustomCourses-header-code")).toBeInTheDocument();
     expect(
       screen.getByTestId("CustomCourses-cell-row-0-col-code"),
     ).toHaveTextContent("CMPSC 156");
