@@ -26,7 +26,7 @@ tbody tr:nth-child(even) {background-color: #f2f2f2;}
 <tbody>
 <tr>
 <td><a href="javadoc">javadoc</a></td>
-<td><a href="storybook">storybook</a></td>
+<td><a href="chromatic">chromatic</a></td>
 </tr>
 </tbody>
 </table>
@@ -73,7 +73,7 @@ tbody tr:nth-child(even) {background-color: #f2f2f2;}
 <th>Branch</th>
 <th>Author</th>
 <th>Javadoc</th>
-<th>Storybook</th>
+<th>Chromatic</th>
 </tr>
 </thead>
 <tbody>
@@ -83,7 +83,7 @@ tbody tr:nth-child(even) {background-color: #f2f2f2;}
 <td>{{pr.headRefName}}</td>
 <td>{{pr.author.login}}</td>
 <td><a href="prs/{{pr.number}}/javadoc">javadoc</a></td>
-<td><a href="prs/{{pr.number}}/storybook">storybook</a></td>
+<td><a href="prs/{{pr.number}}/chromatic">chromatic</a></td>
 </tr>
 {% endfor %}
 </tbody>
