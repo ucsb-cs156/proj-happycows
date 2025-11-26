@@ -378,7 +378,7 @@ jobs:
     - name: Build redirect files
       working-directory: frontend
       run: | # Create redirect files to redirect to the storybook online
-          mkdir -p chromatic_static
+          mkdir -p chromatic_static_${{ matrix.value.number }}
           echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.storybookUrl}}>" > chromatic_static_${{ matrix.value.number }}/index.html
           echo "<meta http-equiv=refresh content=0;url=${{steps.run_chromatic.outputs.url}}>" > chromatic_static_${{ matrix.value.number }}/build.html
 
