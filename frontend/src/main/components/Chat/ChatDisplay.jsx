@@ -1,72 +1,94 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import { useBackend } from "main/utils/useBackend";
 
-// Props for storybook manual injection
-
 const ChatDisplay = ({ commonsId }) => {
-  const initialMessagePageSize = 100;
-  const refreshRate = 2000;
+  const [messages, setMessages] = useState([]);
+
+  const [page, setPage] = useState(0);
+
+  const [isLastPage, setIsLastPage] = useState(false);
+
+  const processedMessageIds = useRef(new Set());
 
   // Stryker disable all
-
   const { data: messagesPage } = useBackend(
-    [`/api/chat/get`],
+    ["/api/chat/get", page],
     {
       method: "GET",
-      url: `/api/chat/get`,
+      url: "/api/chat/get",
       params: {
         commonsId: commonsId,
-        page: 0,
-        size: initialMessagePageSize,
+        page: page,
+        size: 10,
       },
     },
-    { content: [] },
-    { refetchInterval: refreshRate },
+    { content: [], last: true },
   );
 
   const { data: userCommonsList } = useBackend(
-    [`/api/usercommons/commons/all`],
+    ["/api/usercommons/commons/all", commonsId],
     {
       method: "GET",
       url: "/api/usercommons/commons/all",
-      params: {
-        commonsId: commonsId,
-      },
+      params: { commonsId },
     },
     [],
-    { refetchInterval: refreshRate },
   );
 
+  useEffect(() => {
+    // if (!messagesPage || !messagesPage.content) return;
+
+    const newMessages = messagesPage.content.filter((msg) => {
+      if (processedMessageIds.current.has(msg.id)) return false;
+      processedMessageIds.current.add(msg.id);
+      return true;
+    });
+
+    if (newMessages.length === 0) return;
+
+    setMessages((old) => [...old, ...newMessages]);
+    setIsLastPage(messagesPage.last);
+  }, [messagesPage]);
+
   // Stryker restore all
-
-  const sortedMessages = messagesPage.content.sort((a, b) => b.id - a.id);
-
   const userIdToUsername = userCommonsList.reduce((acc, user) => {
     acc[user.userId] = user.username || "";
     return acc;
   }, {});
 
+  const sortedMessages = [...messages].sort((a, b) => b.id - a.id);
+
   return (
     <div
+      data-testid="ChatDisplay"
       style={{
         display: "flex",
         flexDirection: "column-reverse",
         overflowY: "scroll",
         maxHeight: "300px",
       }}
-      data-testid="ChatDisplay"
     >
-      {Array.isArray(sortedMessages) &&
-        sortedMessages.slice(0, initialMessagePageSize).map((message) => (
-          <ChatMessageDisplay
-            key={message.id}
-            message={{
-              ...message,
-              username: userIdToUsername[message.userId],
-            }}
-          />
-        ))}
+      {sortedMessages.map((message) => (
+        <ChatMessageDisplay
+          key={message.id}
+          message={{
+            ...message,
+            username: userIdToUsername[message.userId],
+          }}
+        />
+      ))}
+
+      {!isLastPage ? (
+        <button
+          data-testid="MoreMessagesButton"
+          onClick={() => setPage(page + 1)}
+        >
+          More messages
+        </button>
+      ) : (
+        <div data-testid="NoMoreMessages">[no more messages]</div>
+      )}
     </div>
   );
 };
