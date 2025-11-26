@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import React from "react";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
 import userCommonsFixtures from "fixtures/userCommonsFixtures";
@@ -8,6 +9,7 @@ import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
 
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import { vi } from "vitest";
 
 describe("ChatDisplay tests", () => {
   const queryClient = new QueryClient();
@@ -94,7 +96,7 @@ describe("ChatDisplay tests", () => {
     expect(axiosMock.history.get[0].params).toEqual({
       commonsId: 1,
       page: 0,
-      size: 100,
+      size: 10,
     });
     expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
@@ -165,15 +167,15 @@ describe("ChatDisplay tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBe(3);
     });
-    expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
-    expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
-    expect(axiosMock.history.get[1].params).toEqual({
+    expect(axiosMock.history.get[2].url).toBe("/api/currentUser");
+    expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
+    expect(axiosMock.history.get[0].params).toEqual({
       commonsId: 1,
       page: 0,
-      size: 100,
+      size: 10,
     });
-    expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
-    expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
+    expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
 
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
@@ -189,61 +191,94 @@ describe("ChatDisplay tests", () => {
     );
   });
 
-  test("displays cuts off at 100 messages", async () => {
-    //arrange
+  test("loads 10 messages first, then 2 older messages after clicking More messages", async () => {
+    axiosMock
+      .onGet("/api/chat/get", {
+        params: { commonsId: 1, page: 0, size: 10 },
+      })
+      .reply(200, {
+        content: chatMessageFixtures.twelveChatMessages.slice(0, 10),
+        last: false,
+      });
 
     axiosMock
-      .onGet("/api/chat/get")
-      .reply(200, { content: chatMessageFixtures.oneHundredMessages });
-    axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/chat/get", {
+        params: { commonsId: 1, page: 1, size: 10 },
+      })
+      .reply(200, {
+        content: chatMessageFixtures.twelveChatMessages.slice(10),
+        last: true,
+      });
 
-    //act
+    axiosMock
+      .onGet("/api/usercommons/commons/all", {
+        params: { commonsId: 1 },
+      })
+      .reply(200, userCommonsFixtures.tenUserCommons);
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay commonsId={1} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    //assert
     await waitFor(() => {
-      expect(axiosMock.history.get.length).toBe(3);
+      const topLevel = screen.getAllByTestId(/^ChatMessageDisplay-\d+$/);
+      expect(topLevel).toHaveLength(10);
     });
-    expect(axiosMock.history.get[0].url).toBe("/api/currentUser");
-    expect(axiosMock.history.get[1].url).toBe("/api/chat/get");
-    expect(axiosMock.history.get[1].params).toEqual({
-      commonsId: 1,
-      page: 0,
-      size: 100,
-    });
-    expect(axiosMock.history.get[2].url).toBe("/api/usercommons/commons/all");
-    expect(axiosMock.history.get[2].params).toEqual({ commonsId: 1 });
+
+    expect(screen.getByTestId("MoreMessagesButton")).toBeInTheDocument();
+
+    screen.getByTestId("MoreMessagesButton").click();
 
     await waitFor(() => {
-      expect(screen.getByTestId("ChatMessageDisplay-11")).toBeInTheDocument();
+      const topLevel = screen.getAllByTestId(/^ChatMessageDisplay-\d+$/);
+      expect(topLevel).toHaveLength(12);
     });
 
-    expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
-    expect(screen.getByTestId("ChatMessageDisplay-3")).toBeInTheDocument();
+    expect(screen.getByTestId("NoMoreMessages")).toBeInTheDocument();
+  });
 
-    expect(
-      screen.queryByTestId("ChatMessageDisplay-1"),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId("ChatMessageDisplay-2"),
-    ).not.toBeInTheDocument();
+  test("initial render shows More messages button before data loads", () => {
+    axiosMock.onGet("/api/chat/get").reply(() => new Promise(() => {}));
+    axiosMock.onGet("/api/usercommons/commons/all").reply([]);
 
-    expect(
-      screen.queryByText("This should not appear"),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("This should also be cut off"),
-    ).not.toBeInTheDocument();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={1} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
-    expect(screen.getByText("This should appear, though")).toBeInTheDocument();
-    expect(screen.getByText("This one too!")).toBeInTheDocument();
+    expect(screen.getByTestId("MoreMessagesButton")).toBeInTheDocument();
+  });
+
+  test("initial MoreMessagesButton appears before backend data arrives", () => {
+    const queryClient = new QueryClient();
+
+    const originalUseState = React.useState;
+
+    const spy = vi.spyOn(React, "useState");
+
+    spy.mockImplementation((initial) => {
+      if (initial === false) {
+        return [false, vi.fn()];
+      }
+      return originalUseState(initial);
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatDisplay commonsId={1} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    expect(screen.getByTestId("MoreMessagesButton")).toBeInTheDocument();
+
+    spy.mockRestore();
   });
 });

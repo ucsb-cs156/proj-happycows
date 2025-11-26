@@ -21,10 +21,8 @@ describe("CourseTable tests", () => {
   const testId = "CourseTable";
 
   test("renders empty table correctly", () => {
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
 
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -33,7 +31,6 @@ describe("CourseTable tests", () => {
       </QueryClientProvider>,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -48,10 +45,8 @@ describe("CourseTable tests", () => {
   });
 
   test("Has the expected column headers, content and buttons for admin user", () => {
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
 
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -63,7 +58,6 @@ describe("CourseTable tests", () => {
       </QueryClientProvider>,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -102,10 +96,8 @@ describe("CourseTable tests", () => {
   });
 
   test("Has the expected column headers, content for ordinary user", () => {
-    // arrange
     const currentUser = currentUserFixtures.userOnly;
 
-    // act
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -117,7 +109,6 @@ describe("CourseTable tests", () => {
       </QueryClientProvider>,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -147,10 +138,8 @@ describe("CourseTable tests", () => {
   });
 
   test("Edit button navigates to the edit page", async () => {
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
 
-    // act - render the component
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -162,7 +151,6 @@ describe("CourseTable tests", () => {
       </QueryClientProvider>,
     );
 
-    // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
       "1",
     );
@@ -175,20 +163,16 @@ describe("CourseTable tests", () => {
     );
     expect(editButton).toBeInTheDocument();
 
-    // act - click the edit button
     fireEvent.click(editButton);
 
-    // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith("/course/edit/1"),
     );
   });
 
   test("Delete button calls delete callback", async () => {
-    // arrange
     const currentUser = currentUserFixtures.adminUser;
 
-    // act - render the component
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -200,7 +184,6 @@ describe("CourseTable tests", () => {
       </QueryClientProvider>,
     );
 
-    // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
       "1",
     );
@@ -213,7 +196,6 @@ describe("CourseTable tests", () => {
     );
     expect(deleteButton).toBeInTheDocument();
 
-    // act - click the delete button
     fireEvent.click(deleteButton);
   });
 });
