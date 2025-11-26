@@ -70,11 +70,11 @@ describe("CommonsFeaturesForm tests", () => {
       SOME_OTHER_FEATURE: true,
     };
 
-    render(
-      <CommonsFeaturesForm features={features} onSubmit={onSubmit} />,
-    );
+    render(<CommonsFeaturesForm features={features} onSubmit={onSubmit} />);
 
-    expect(screen.getByLabelText("Farmers Can See Leaderboard")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Farmers Can See Leaderboard"),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("Some Other Feature")).toBeInTheDocument();
   });
 
@@ -187,9 +187,7 @@ describe("CommonsFeaturesForm tests", () => {
 
   it("handles empty features object", () => {
     const onSubmit = vi.fn();
-    render(
-      <CommonsFeaturesForm features={{}} onSubmit={onSubmit} />,
-    );
+    render(<CommonsFeaturesForm features={{}} onSubmit={onSubmit} />);
 
     // Should render without crashing
     expect(
@@ -197,4 +195,3 @@ describe("CommonsFeaturesForm tests", () => {
     ).toBeInTheDocument();
   });
 });
-
