@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">CourseController.java</span></div><h1>CourseController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Course;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-<span class="fc" id="L12">@Slf4j</span>
+<span class="fc" id="L15">@Slf4j</span>
 @Tag(name = &quot;Course&quot;)
 @RequestMapping(&quot;/api/course&quot;)
 @RestController
-<span class="fc" id="L16">public class CourseController extends ApiController {</span>
+<span class="fc" id="L19">public class CourseController extends ApiController {</span>
     @Autowired
     private CourseRepository courseRepository;
 
@@ -26,8 +29,27 @@ import org.springframework.web.bind.annotation.*;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Course&gt; allOrganisations() {
-<span class="fc" id="L29">        Iterable&lt;Course&gt; courses = courseRepository.findAll();</span>
-<span class="fc" id="L30">        return courses;</span>
+<span class="fc" id="L32">        Iterable&lt;Course&gt; courses = courseRepository.findAll();</span>
+<span class="fc" id="L33">        return courses;</span>
+    }
+
+    @Operation(summary = &quot;Get a course by id&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public Course getCourseById(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
+<span class="fc" id="L41">        Course course = courseRepository.findById(id)</span>
+<span class="fc" id="L42">                .orElseThrow(() -&gt; new EntityNotFoundException(Course.class, id));</span>
+<span class="fc" id="L43">        return course;</span>
+    }
+
+    @Operation(summary = &quot;Create a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;&quot;)
+    public Course postCourse(
+            @Parameter(name = &quot;course&quot;) @RequestBody CourseDTO courseDTO) {
+<span class="fc" id="L51">        Course savedCourse = courseRepository.save(courseDTO.toCourse());</span>
+<span class="fc" id="L52">        return savedCourse;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
