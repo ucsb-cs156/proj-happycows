@@ -2,20 +2,21 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Course;
+import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +34,27 @@ public class CourseControllerTests extends ControllerTestCase {
     public void logged_out_users_cannot_get_all() throws Exception {
         mockMvc.perform(get("/api/course/all"))
                 .andExpect(status().is(403)); // logged out users can't get all
+    }
+
+    @Test
+    public void logged_out_users_cannot_get_by_id() throws Exception {
+        mockMvc.perform(get("/api/course/1"))
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    public void logged_out_users_cannot_post() throws Exception {
+        CourseDTO courseDTO = CourseDTO.builder()
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        mockMvc.perform(post("/api/course")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(courseDTO)))
+                .andExpect(status().is(403));
     }
 
     // Regular users positive tests
@@ -68,6 +90,99 @@ public class CourseControllerTests extends ControllerTestCase {
 
         verify(courseRepository, times(1)).findAll();
         String expectedJson = mapper.writeValueAsString(expectedCourses);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void logged_in_user_cannot_get_course_by_id() throws Exception {
+        mockMvc.perform(get("/api/course/1"))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void logged_in_user_cannot_post_course() throws Exception {
+        CourseDTO courseDTO = CourseDTO.builder()
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        mockMvc.perform(post("/api/course")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(courseDTO)))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_get_course_by_id() throws Exception {
+
+        Course course = Course.builder()
+            .id(7L)
+            .code("CMPSC 156")
+            .name("Advanced App Programming")
+            .term("F24")
+            .build();
+
+        when(courseRepository.findById(7L)).thenReturn(Optional.of(course));
+
+        MvcResult response = mockMvc.perform(get("/api/course/7"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseRepository, times(1)).findById(7L);
+        String expectedJson = mapper.writeValueAsString(course);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_cannot_get_course_when_it_does_not_exist() throws Exception {
+        when(courseRepository.findById(7L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/course/7"))
+                .andExpect(status().isNotFound());
+
+        verify(courseRepository, times(1)).findById(7L);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_post_new_course() throws Exception {
+
+        CourseDTO courseDTO = CourseDTO.builder()
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        Course course = Course.builder()
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        Course savedCourse = Course.builder()
+                .id(123L)
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        when(courseRepository.save(course)).thenReturn(savedCourse);
+
+        MvcResult response = mockMvc.perform(post("/api/course")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(courseDTO)))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseRepository, times(1)).save(course);
+        String expectedJson = mapper.writeValueAsString(savedCourse);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }

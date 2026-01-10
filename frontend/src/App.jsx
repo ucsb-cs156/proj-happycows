@@ -19,6 +19,7 @@ import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
+import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
@@ -29,6 +30,8 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+import DeveloperPage from "main/pages/DeveloperPage";
+import ChatHistoryPage from "main/pages/ChatHistoryPage";
 
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -41,6 +44,7 @@ function App() {
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
       <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
+      <Route path="/admin/listcommonsv2" element={<AdminListCommonsPageV2 />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
       <Route
@@ -66,6 +70,8 @@ function App() {
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
       />
+      <Route path="/developer" element={<DeveloperPage />} />
+      <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
     </>
   ) : null;
 
@@ -74,6 +80,7 @@ function App() {
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
+      <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
     </>
   ) : null;
 

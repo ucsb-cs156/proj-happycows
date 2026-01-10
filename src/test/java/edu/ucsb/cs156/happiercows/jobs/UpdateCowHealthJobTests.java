@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -386,5 +387,13 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
                 Assertions.assertEquals("Error calling getNumUsers(117)",
                                 thrown.getMessage());
+        }
+
+        @Test
+        void commons_plus_builder_service_getter_returns_value_from_constructor() {
+                var job = new UpdateCowHealthJob(commonsRepository, userCommonsRepository,
+                                userRepository, commonsPlusBuilderService);
+
+                assertSame(commonsPlusBuilderService, job.getCommonsPlusBuilderService());
         }
 }

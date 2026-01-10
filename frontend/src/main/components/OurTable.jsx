@@ -42,39 +42,55 @@ export default function OurTable({
     <div {...getTableProps()}>
       <Table style={tableStyle} {...getTableProps()} striped bordered hover>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  data-testid={`${testid}-header-${column.id}`}
-                >
-                  {column.render("Header")}
-                  <span
-                    data-testid={`${testid}-header-${column.id}-sort-carets`}
-                  >
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
+          {headerGroups.map((headerGroup) => {
+            const { key: hgKey, ...hgProps } =
+              headerGroup.getHeaderGroupProps();
+            return (
+              <tr key={hgKey} {...hgProps}>
+                {headerGroup.headers.map((column) => {
+                  const headerProps = column.getHeaderProps(
+                    column.getSortByToggleProps(),
+                  );
+                  const { key: colKey, ...restHeaderProps } = headerProps;
+                  return (
+                    <th
+                      key={colKey}
+                      {...restHeaderProps}
+                      data-testid={`${testid}-header-${column.id}`}
+                    >
+                      {column.render("Header")}
+                      <span
+                        data-testid={`${testid}-header-${column.id}-sort-carets`}
+                      >
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? " 🔽"
+                            : " 🔼"
+                          : ""}
+                      </span>
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
         <tbody {...getTableBodyProps()}>
           {rows
             .slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
             .map((row) => {
               prepareRow(row);
+              const rowProps = row.getRowProps();
+              const { key: rowKey, ...restRowProps } = rowProps;
               return (
-                <tr {...row.getRowProps()}>
+                <tr key={rowKey} {...restRowProps}>
                   {row.cells.map((cell, _index) => {
+                    const cellProps = cell.getCellProps();
+                    const { key: cellKey, ...restCellProps } = cellProps;
                     return (
                       <td
-                        {...cell.getCellProps()}
+                        key={cellKey}
+                        {...restCellProps}
                         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
                       >
                         {cell.render("Cell")}
