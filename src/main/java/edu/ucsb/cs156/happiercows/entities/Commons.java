@@ -38,6 +38,8 @@ public class Commons {
     private int carryingCapacity;
     private double degradationRate;
 
+    private boolean hide;
+
     // these defaults match old behavior
     @Enumerated(EnumType.STRING)
     @Builder.Default
