@@ -94,6 +94,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(expectedDefaults.get("capacityPerUser"), actualDefaults.get("capacityPerUser"));
         assertEquals(expectedDefaults.get("aboveCapacityHealthUpdateStrategy"), actualDefaults.get("aboveCapacityHealthUpdateStrategy"));
         assertEquals(expectedDefaults.get("belowCapacityHealthUpdateStrategy"), actualDefaults.get("belowCapacityHealthUpdateStrategy"));
+        assertEquals(false, actualDefaults.get("hidden"));
     }
 
 
@@ -115,6 +116,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -130,6 +132,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -168,6 +171,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -181,6 +185,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         // don't include null values to simulate old frontend
@@ -222,6 +227,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(true)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -235,6 +241,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(true)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -271,6 +278,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -282,6 +290,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -337,6 +346,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -353,6 +363,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -385,6 +396,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         commons.setAboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
         parameters.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop.name());
         commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop);
+
+        parameters.setHidden(true);
+        commons.setHidden(parameters.isHidden());
 
         requestBody = objectMapper.writeValueAsString(parameters);
 
@@ -420,6 +434,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -435,6 +450,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         var objectMapperWithoutNulls = objectMapper.copy()
@@ -476,6 +492,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -489,6 +506,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -548,6 +566,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -561,6 +580,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);

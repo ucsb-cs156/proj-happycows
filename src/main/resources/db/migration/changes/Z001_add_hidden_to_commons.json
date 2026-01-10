@@ -2,7 +2,7 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "Z001_add_hide_to_commons",
+        "id": "Z001_add_hidden_to_commons",
         "author": "pconrad",
         "preConditions": [
           {
@@ -13,7 +13,7 @@
               {
                 "columnExists": {
                   "tableName": "COMMONS",
-                  "columnName": "HIDE"
+                  "columnName": "HIDDEN"
                 }
               }
             ]
@@ -26,7 +26,7 @@
               "columns": [
                 {
                   "column": {
-                    "name": "HIDE",
+                    "name": "HIDDEN",
                     "type": "BOOLEAN",
                     "defaultValue": "false"
                   }
