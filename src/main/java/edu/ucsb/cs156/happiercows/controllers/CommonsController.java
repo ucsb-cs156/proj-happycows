@@ -222,7 +222,8 @@ public class CommonsController extends ApiController {
                 .showLeaderboard(params.getShowLeaderboard())
                 .showChat(params.getShowChat())
                 .capacityPerUser(params.getCapacityPerUser())
-                .carryingCapacity(params.getCarryingCapacity());
+                .carryingCapacity(params.getCarryingCapacity())
+                .hidden(params.isHidden());
 
         // ok to set null values for these, so old backend still works
         if (params.getAboveCapacityHealthUpdateStrategy() != null) {
