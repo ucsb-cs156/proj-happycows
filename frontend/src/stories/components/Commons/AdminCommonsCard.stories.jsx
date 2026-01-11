@@ -1,6 +1,5 @@
 import React from "react";
 
-import commonsFixtures from "fixtures/commonsFixtures";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
