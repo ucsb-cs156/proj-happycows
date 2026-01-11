@@ -66,6 +66,7 @@ describe("AdminEditCommonsPage tests", () => {
         showChat: false,
         aboveCapacityHealthUpdateStrategy: "strat1",
         belowCapacityHealthUpdateStrategy: "strat2",
+        hidden: false,
       });
       axiosMock.onPut("/api/commons/update").reply(200, {
         id: 5,
@@ -82,6 +83,7 @@ describe("AdminEditCommonsPage tests", () => {
         showChat: false,
         aboveCapacityHealthUpdateStrategy: "strat2",
         belowCapacityHealthUpdateStrategy: "strat3",
+        hidden: true,
       });
     });
 
@@ -122,6 +124,7 @@ describe("AdminEditCommonsPage tests", () => {
         screen.getByLabelText(/When below capacity/);
       const showLeaderboardField = screen.getByLabelText(/Show Leaderboard\?/);
       const showChatField = screen.getByLabelText(/Show Chat?\?/);
+      const hiddenField = screen.getByLabelText(/Hidden/);
 
       expect(nameField).toHaveValue("Seths Common");
       expect(startingDateField).toHaveValue("2022-03-05");
@@ -136,6 +139,7 @@ describe("AdminEditCommonsPage tests", () => {
       expect(belowCapacityHealthUpdateStrategyField).toHaveValue("strat2");
       expect(showLeaderboardField).not.toBeChecked();
       expect(showChatField).not.toBeChecked();
+      expect(hiddenField).not.toBeChecked();
     });
 
     test("Changes when you click Update", async () => {
@@ -164,6 +168,7 @@ describe("AdminEditCommonsPage tests", () => {
         screen.getByLabelText(/When below capacity/);
       const showLeaderboardField = screen.getByLabelText(/Show Leaderboard\?/);
       const showChatField = screen.getByLabelText(/Show Chat?\?/);
+      const hiddenField = screen.getByLabelText(/Hidden/);
 
       expect(nameField).toHaveValue("Seths Common");
       expect(startingDateField).toHaveValue("2022-03-05");
@@ -178,6 +183,7 @@ describe("AdminEditCommonsPage tests", () => {
       expect(belowCapacityHealthUpdateStrategyField).toHaveValue("strat2");
       expect(showLeaderboardField).not.toBeChecked();
       expect(showChatField).not.toBeChecked();
+      expect(hiddenField).not.toBeChecked();
 
       const submitButton = screen.getByText("Update");
 
@@ -200,6 +206,7 @@ describe("AdminEditCommonsPage tests", () => {
       });
       fireEvent.click(showLeaderboardField);
       fireEvent.click(showChatField);
+      fireEvent.click(hiddenField);
 
       fireEvent.click(submitButton);
 
@@ -226,6 +233,7 @@ describe("AdminEditCommonsPage tests", () => {
           belowCapacityHealthUpdateStrategy: "strat3",
           showLeaderboard: true,
           showChat: true,
+          hidden: true,
         }),
       ); // posted object
     });

@@ -106,7 +106,17 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
       >
         <Card.Header style={headerStyle}>
           <Card.Title className="mb-0">
-            {commons.name} (ID: {commons.id})
+            <Row>
+              <Col>
+                {commons.name} (ID: {commons.id})
+              </Col>
+              <Col>
+                <div>
+                  <strong>Hidden:&nbsp;</strong>
+                  {String(commons.hidden)}
+                </div>
+              </Col>
+            </Row>
           </Card.Title>
         </Card.Header>
         <Card.Body style={bodyStyle}>

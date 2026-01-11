@@ -47,6 +47,7 @@ export default function CommonsEditPage() {
         commons.belowCapacityHealthUpdateStrategy,
       showLeaderboard: commons.showLeaderboard,
       showChat: commons.showChat,
+      hidden: commons.hidden,
     },
   });
 

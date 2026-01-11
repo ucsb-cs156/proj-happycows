@@ -78,6 +78,7 @@ describe("AdminCreateCommonsPage tests", () => {
       aboveCapacityHealthUpdateStrategy: "strat2",
       belowCapacityHealthUpdateStrategy: "strat3",
       showLeaderboard: false,
+      hidden: false,
     });
 
     render(
@@ -135,6 +136,7 @@ describe("AdminCreateCommonsPage tests", () => {
 
     const expectedCommons = {
       name: "My New Commons",
+      hidden: false,
       startingBalance: 500,
       cowPrice: 10,
       milkPrice: 5,
