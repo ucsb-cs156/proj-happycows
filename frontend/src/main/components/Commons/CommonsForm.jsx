@@ -145,7 +145,19 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
             </Form.Control.Feedback>
           </Form.Group>
         </Col>
-        <Col md={6}>
+        <Col md={2}>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="hidden">Hidden</Form.Label>
+            <Form.Check
+              type="switch"
+              id="hidden"
+              data-testid={`${testid}-hidden`}
+              defaultChecked={DefaultVals.hidden}
+              {...register("hidden")}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={4}>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="startingBalance">Starting Balance</Form.Label>
             <OverlayTrigger

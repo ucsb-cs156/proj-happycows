@@ -15,10 +15,12 @@ const commonsPlusFixtures = {
         showChat: false,
         capacityPerUser: 50,
         carryingCapacity: 100,
+        hidden: false,
       },
       totalCows: 10,
       totalUsers: 2,
       effectiveCapacity: 100,
+      hidden: false,
     },
     {
       commons: {
@@ -35,6 +37,7 @@ const commonsPlusFixtures = {
         showChat: true,
         capacityPerUser: 5,
         carryingCapacity: 42,
+        hidden: true,
       },
       totalCows: 0,
       totalUsers: 1,
@@ -55,6 +58,7 @@ const commonsPlusFixtures = {
         showChat: true,
         capacityPerUser: 50,
         carryingCapacity: 123,
+        hidden: false,
       },
       totalCows: 0,
       totalUsers: 1,
