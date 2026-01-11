@@ -28,6 +28,12 @@ export default defineConfig([
       reactRefresh.configs.vite,
       reactPlugin.configs.flat.recommended,
     ],
+    // Add settings to avoid "React version not specified" warning
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
