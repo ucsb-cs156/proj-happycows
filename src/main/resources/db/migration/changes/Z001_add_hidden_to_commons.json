@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "Z001_add_hidden_to_commons",
+        "author": "pconrad",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "COMMONS",
+                  "columnName": "HIDDEN"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "COMMONS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "HIDDEN",
+                    "type": "BOOLEAN",
+                    "defaultValue": "false"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
