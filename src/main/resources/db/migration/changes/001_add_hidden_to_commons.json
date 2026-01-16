@@ -2,7 +2,7 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "Z001_add_hidden_to_commons",
+        "id": "001-Add-Hidden-To-Commons",
         "author": "pconrad",
         "preConditions": [
           {
