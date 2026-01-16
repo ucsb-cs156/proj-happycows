@@ -131,13 +131,13 @@
                 {
                   "column": {
                     "name": "ABOVE_CAPACITY_HEALTH_UPDATE_STRATEGY",
-                    "type": "ENUM('Constant', 'Linear', 'Mattanjah', 'Milan', 'Noop')"
+                    "type": "VARCHAR(255)"
                   }
                 },
                 {
                   "column": {
                     "name": "BELOW_CAPACITY_HEALTH_UPDATE_STRATEGY",
-                    "type": "ENUM('Constant', 'Linear', 'Mattanjah', 'Milan', 'Noop')"
+                    "type": "VARCHAR(255)"
                   }
                 },
                 {
@@ -471,7 +471,7 @@
                 {
                   "column": {
                     "name": "LOG",
-                    "type": "VARCHAR(1000000000)"
+                    "type": "VARCHAR(1048576)"
                   }
                 },
                 {
@@ -842,13 +842,13 @@
                 {
                   "column": {
                     "name": "ABOVE_CAPACITY_HEALTH_UPDATE_STRATEGY",
-                    "type": "ENUM('Constant', 'Linear', 'Mattanjah', 'Milan', 'Noop')"
+                    "type": "VARCHAR(255)"
                   }
                 },
                 {
                   "column": {
                     "name": "BELOW_CAPACITY_HEALTH_UPDATE_STRATEGY",
-                    "type": "ENUM('Constant', 'Linear', 'Mattanjah', 'Milan', 'Noop')"
+                    "type": "VARCHAR(255)"
                   }
                 },
                 {
