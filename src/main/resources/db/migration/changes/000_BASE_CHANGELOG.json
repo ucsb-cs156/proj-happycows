@@ -1,8 +1,8 @@
 { "databaseChangeLog": [
   {
     "changeSet": {
-      "id": "1768457493699-1",
-      "author": "djensen (generated)",
+      "id": "000-ANNOUNCEMENT",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -13,7 +13,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_9"
+                    "primaryKeyName": "ANNOUNCEMENT_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -64,8 +64,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-2",
-      "author": "djensen (generated)",
+      "id": "000-CHAT_MESSAGE",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -76,7 +76,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_8"
+                    "primaryKeyName": "CHAT_MESSAGE_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -151,8 +151,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-3",
-      "author": "djensen (generated)",
+      "id": "000-COMMONS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -163,7 +163,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_6"
+                    "primaryKeyName": "COMMONS_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -283,8 +283,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-4",
-      "author": "djensen (generated)",
+      "id": "000-COMMONSTATS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -295,7 +295,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_E"
+                    "primaryKeyName": "COMMONSTATS_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -346,8 +346,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-5",
-      "author": "djensen (generated)",
+      "id": "000-COURSES",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -358,7 +358,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_63"
+                    "primaryKeyName": "COURSES_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -394,8 +394,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-6",
-      "author": "djensen (generated)",
+      "id": "000-COWDEATH",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -406,7 +406,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_1"
+                    "primaryKeyName": "COWDEATH_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -457,8 +457,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-7",
-      "author": "djensen (generated)",
+      "id": "000-JOBS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -469,7 +469,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_2"
+                    "primaryKeyName": "JOBS_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -517,8 +517,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-8",
-      "author": "djensen (generated)",
+      "id": "000-PROFITS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -529,7 +529,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_18"
+                    "primaryKeyName": "PROFITS_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -592,8 +592,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-9",
-      "author": "djensen (generated)",
+      "id": "000-REPORTS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -604,8 +604,8 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_6C"
-                  },
+                    "primaryKeyName": "REPORTS_PK"
+                    },
                   "name": "ID",
                   "type": "BIGINT"
                 }
@@ -733,8 +733,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-10",
-      "author": "djensen (generated)",
+      "id": "000-REPORT_LINES",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -745,7 +745,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_F"
+                    "primaryKeyName": "REPORT_LINES_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -847,8 +847,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-11",
-      "author": "djensen (generated)",
+      "id": "000-STUDENT",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -859,7 +859,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_B"
+                    "primaryKeyName": "STUDENT_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -907,8 +907,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-12",
-      "author": "djensen (generated)",
+      "id": "000-USERS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -919,7 +919,7 @@
                   "constraints": {
                     "nullable": false,
                     "primaryKey": true,
-                    "primaryKeyName": "CONSTRAINT_4"
+                    "primaryKeyName": "USERS_PK"
                   },
                   "name": "ID",
                   "type": "BIGINT"
@@ -1018,8 +1018,8 @@
   
   {
     "changeSet": {
-      "id": "1768457493699-13",
-      "author": "djensen (generated)",
+      "id": "000-USER_COMMONS",
+      "author": "djensen",
       "changes": [
         {
           "createTable": {
@@ -1115,12 +1115,12 @@
   {
     "changeSet": {
       "id": "1768457493699-14",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "addPrimaryKey": {
             "columnNames": "COMMONS_ID, USER_ID",
-            "constraintName": "CONSTRAINT_19",
+            "constraintName": "USER_COMMONS_PK",
             "tableName": "USER_COMMONS"
           }
         }
@@ -1132,7 +1132,7 @@
   {
     "changeSet": {
       "id": "1768457493699-15",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "createIndex": {
@@ -1145,7 +1145,7 @@
               }
             ]
             ,
-            "indexName": "FK6CNYG220JFOJ622KO4YQNNP7E_INDEX_1",
+            "indexName": "IDX_USER_COMMONS_USER_ID",
             "tableName": "USER_COMMONS"
           }
         }
@@ -1157,7 +1157,7 @@
   {
     "changeSet": {
       "id": "1768457493699-16",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "createIndex": {
@@ -1170,7 +1170,7 @@
               }
             ]
             ,
-            "indexName": "FKFH1TLH54KLAULNN26M771ALCC_INDEX_1",
+            "indexName": "IDX_USER_COMMONS_COMMONS_ID",
             "tableName": "USER_COMMONS"
           }
         }
@@ -1182,7 +1182,7 @@
   {
     "changeSet": {
       "id": "1768457493699-17",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "createIndex": {
@@ -1195,7 +1195,7 @@
               }
             ]
             ,
-            "indexName": "FKKJPYGUUYD5SHXTABV9V5JPE6X_INDEX_2",
+            "indexName": "IDX_JOBS_CREATED_BY_ID",
             "tableName": "JOBS"
           }
         }
@@ -1207,7 +1207,7 @@
   {
     "changeSet": {
       "id": "1768457493699-18",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "createIndex": {
@@ -1225,7 +1225,7 @@
               }
             ]
             ,
-            "indexName": "FKROO2WF44PMEAU6I2C0R9V7195_INDEX_1",
+            "indexName": "IDX_PROFITS_COMMONS_USER",
             "tableName": "PROFITS"
           }
         }
@@ -1237,13 +1237,13 @@
   {
     "changeSet": {
       "id": "1768457493699-19",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "addForeignKeyConstraint": {
             "baseColumnNames": "USER_ID",
             "baseTableName": "USER_COMMONS",
-            "constraintName": "FK6CNYG220JFOJ622KO4YQNNP7E",
+            "constraintName": "FK_USER_COMMONS_USERS",
             "deferrable": false,
             "initiallyDeferred": false,
             "onDelete": "RESTRICT",
@@ -1261,13 +1261,13 @@
   {
     "changeSet": {
       "id": "1768457493699-20",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "addForeignKeyConstraint": {
             "baseColumnNames": "COMMONS_ID",
             "baseTableName": "USER_COMMONS",
-            "constraintName": "FKFH1TLH54KLAULNN26M771ALCC",
+            "constraintName": "FK_USER_COMMONS_COMMONS",
             "deferrable": false,
             "initiallyDeferred": false,
             "onDelete": "RESTRICT",
@@ -1285,13 +1285,13 @@
   {
     "changeSet": {
       "id": "1768457493699-21",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "addForeignKeyConstraint": {
             "baseColumnNames": "CREATED_BY_ID",
             "baseTableName": "JOBS",
-            "constraintName": "FKKJPYGUUYD5SHXTABV9V5JPE6X",
+            "constraintName": "FK_JOBS_USERS",
             "deferrable": false,
             "initiallyDeferred": false,
             "onDelete": "RESTRICT",
@@ -1309,13 +1309,13 @@
   {
     "changeSet": {
       "id": "1768457493699-22",
-      "author": "djensen (generated)",
+      "author": "djensen",
       "changes": [
         {
           "addForeignKeyConstraint": {
             "baseColumnNames": "COMMONS_ID,USER_ID",
             "baseTableName": "PROFITS",
-            "constraintName": "FKROO2WF44PMEAU6I2C0R9V7195",
+            "constraintName": "FK_PROFITS_USER_COMMONS",
             "deferrable": false,
             "initiallyDeferred": false,
             "onDelete": "RESTRICT",
