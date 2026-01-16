@@ -35,4 +35,6 @@ public class CreateCommonsParams {
 
     private String aboveCapacityHealthUpdateStrategy;
     private String belowCapacityHealthUpdateStrategy;
+
+    private boolean hidden;
 }

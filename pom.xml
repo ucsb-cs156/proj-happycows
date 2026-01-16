@@ -123,6 +123,13 @@
             <artifactId>spring-security-config</artifactId>
         </dependency>
 
+	<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-maven-plugin -->
+    	<dependency>
+      	    <groupId>org.liquibase</groupId>
+      	    <artifactId>liquibase-maven-plugin</artifactId>
+      	    <version>4.29.2</version>
+    	</dependency>
+
         <!-- https://central.sonatype.com/artifact/org.apache.commons/commons-csv/1.10.0 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
