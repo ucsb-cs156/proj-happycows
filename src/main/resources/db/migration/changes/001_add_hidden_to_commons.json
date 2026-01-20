@@ -2,8 +2,8 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "User-Suspended-Field",
-        "author": "JeffreyM",
+        "id": "001-Add-Hidden-To-Commons",
+        "author": "pconrad",
         "preConditions": [
           {
             "onFail": "MARK_RAN"
@@ -12,8 +12,8 @@
             "not": [
               {
                 "columnExists": {
-                  "tableName": "USERS",
-                  "columnName": "SUSPENDED"
+                  "tableName": "COMMONS",
+                  "columnName": "HIDDEN"
                 }
               }
             ]
@@ -22,11 +22,11 @@
         "changes": [
           {
             "addColumn": {
-              "tableName": "USERS",
+              "tableName": "COMMONS",
               "columns": [
                 {
                   "column": {
-                    "name": "SUSPENDED",
+                    "name": "HIDDEN",
                     "type": "BOOLEAN",
                     "defaultValue": "false"
                   }

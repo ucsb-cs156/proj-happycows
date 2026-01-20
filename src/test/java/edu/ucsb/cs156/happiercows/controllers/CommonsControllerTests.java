@@ -1,8 +1,39 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MvcResult;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
@@ -12,35 +43,8 @@ import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
-import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
-import lombok.With;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MvcResult;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
 @WebMvcTest(controllers = CommonsController.class)
 public class CommonsControllerTests extends ControllerTestCase {
@@ -94,6 +98,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(expectedDefaults.get("capacityPerUser"), actualDefaults.get("capacityPerUser"));
         assertEquals(expectedDefaults.get("aboveCapacityHealthUpdateStrategy"), actualDefaults.get("aboveCapacityHealthUpdateStrategy"));
         assertEquals(expectedDefaults.get("belowCapacityHealthUpdateStrategy"), actualDefaults.get("belowCapacityHealthUpdateStrategy"));
+        assertEquals(false, actualDefaults.get("hidden"));
     }
 
 
@@ -115,6 +120,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -130,6 +136,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -168,6 +175,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -181,6 +189,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         // don't include null values to simulate old frontend
@@ -222,6 +231,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(true)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -235,6 +245,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(true)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -271,6 +282,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
@@ -282,6 +294,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -337,6 +350,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -353,6 +367,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -368,6 +383,12 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().isCreated());
 
         verify(commonsRepository, times(1)).save(commons);
+                when(commonsRepository.findById(0L))
+                .thenReturn(Optional.of(commons));
+
+        // When we look up the commons it should have the values from "before" the update
+        when(commonsRepository.findById(0L))
+                .thenReturn(Optional.of(commons));
 
         parameters.setMilkPrice(parameters.getMilkPrice() + 3.00);
         commons.setMilkPrice(parameters.getMilkPrice());
@@ -386,11 +407,12 @@ public class CommonsControllerTests extends ControllerTestCase {
         parameters.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop.name());
         commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Noop);
 
+        parameters.setHidden(true);
+        commons.setHidden(parameters.isHidden());
+
         requestBody = objectMapper.writeValueAsString(parameters);
 
-        when(commonsRepository.findById(0L))
-                .thenReturn(Optional.of(commons));
-
+        // When we save the commons, it should be the values from after the update.
         when(commonsRepository.save(commons))
                 .thenReturn(commons);
 
@@ -420,6 +442,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -435,6 +458,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
                 .build();
 
         var objectMapperWithoutNulls = objectMapper.copy()
@@ -476,6 +500,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -489,6 +514,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -548,6 +574,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         Commons commons = Commons.builder()
@@ -561,6 +588,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showChat(false)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
+                .hidden(false)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -596,6 +624,76 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().isBadRequest()).andReturn();
 
         assertInstanceOf(IllegalArgumentException.class, response.getResolvedException());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void updateCommonsTest_hiddenCanBeToggled() throws Exception {
+        LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+
+        CreateCommonsParams parameters = CreateCommonsParams.builder()
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .degradationRate(8.49)
+                .showLeaderboard(false)
+                .showChat(false)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .hidden(true)
+                .build();
+
+        Commons commons = Commons.builder()
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .degradationRate(8.49)
+                .showLeaderboard(false)
+                .showChat(false)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .hidden(true)
+                .build();
+
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        when(commonsRepository.save(commons))
+                .thenReturn(commons);
+
+        mockMvc
+                .perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isCreated());
+
+        verify(commonsRepository, times(1)).save(commons);
+
+        assertEquals(true, commons.isHidden());
+        parameters.setHidden(false);
+        commons.setHidden(parameters.isHidden());
+
+        requestBody = objectMapper.writeValueAsString(parameters);
+
+        when(commonsRepository.findById(0L))
+                .thenReturn(Optional.of(commons));
+
+        when(commonsRepository.save(commons))
+                .thenReturn(commons);
+
+        mockMvc
+                .perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isNoContent()).andReturn();
+
+        assertEquals(false, commons.isHidden());
+        verify(commonsRepository, times(1)).save(commons);
     }
 
     // This common SHOULD be in the repository

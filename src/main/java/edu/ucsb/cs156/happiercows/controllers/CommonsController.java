@@ -83,6 +83,7 @@ public class CommonsController extends ApiController {
                 .capacityPerUser(defaultCapacityPerUser)
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultAboveCapacityHealthUpdateStrategy))
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultBelowCapacityHealthUpdateStrategy))
+                .hidden(false)
                 .build();
 
         return ResponseEntity.ok().body(defaultCommons);
@@ -184,6 +185,8 @@ public class CommonsController extends ApiController {
         if (params.getCarryingCapacity() < 1) {
             throw new IllegalArgumentException("Carrying Capacity cannot be less than 1");
         }
+
+        updated.setHidden(params.isHidden());
         commonsRepository.save(updated);
 
         return ResponseEntity.status(status).build();
@@ -219,7 +222,8 @@ public class CommonsController extends ApiController {
                 .showLeaderboard(params.getShowLeaderboard())
                 .showChat(params.getShowChat())
                 .capacityPerUser(params.getCapacityPerUser())
-                .carryingCapacity(params.getCarryingCapacity());
+                .carryingCapacity(params.getCarryingCapacity())
+                .hidden(params.isHidden());
 
         // ok to set null values for these, so old backend still works
         if (params.getAboveCapacityHealthUpdateStrategy() != null) {

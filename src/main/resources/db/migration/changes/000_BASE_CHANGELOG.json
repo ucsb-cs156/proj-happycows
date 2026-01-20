@@ -1,0 +1,1129 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "000-USERS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "USERS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "ADMIN",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "EMAIL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "EMAIL_VERIFIED",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "FAMILY_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "FULL_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "GIVEN_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "GOOGLE_SUB",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "HOSTED_DOMAIN",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LAST_ONLINE",
+                    "type": "TIMESTAMP WITH TIME ZONE"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LOCALE",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "PICTURE_URL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "SUSPENDED",
+                    "type": "BOOLEAN"
+                  }
+                }
+              ],
+              "tableName": "USERS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-COMMONS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "COMMONS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "ABOVE_CAPACITY_HEALTH_UPDATE_STRATEGY",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "BELOW_CAPACITY_HEALTH_UPDATE_STRATEGY",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "CAPACITY_PER_USER",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "CARRYING_CAPACITY",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COW_PRICE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "DEGRADATION_RATE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LAST_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "MILK_PRICE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "SHOW_CHAT",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "SHOW_LEADERBOARD",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "STARTING_BALANCE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "STARTING_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                }
+              ],
+              "tableName": "COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-USER_COMMONS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COW_DEATHS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COW_HEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COWS_BOUGHT",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COWS_SOLD",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_OF_COWS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "TOTAL_WEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "USERNAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "USER_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                }
+              ],
+              "tableName": "USER_COMMONS"
+            }
+          },
+          {
+            "addPrimaryKey": {
+              "columnNames": "COMMONS_ID, USER_ID",
+              "constraintName": "USER_COMMONS_PK",
+              "tableName": "USER_COMMONS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "USER_ID",
+              "baseTableName": "USER_COMMONS",
+              "constraintName": "FK_USER_COMMONS_USERS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "USERS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "COMMONS_ID",
+              "baseTableName": "USER_COMMONS",
+              "constraintName": "FK_USER_COMMONS_COMMONS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-PROFITS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "PROFITS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "AMOUNT",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "AVG_COW_HEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_COWS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "TIMESTAMP",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "USER_ID",
+                    "type": "BIGINT"
+                  }
+                }
+              ],
+              "tableName": "PROFITS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "COMMONS_ID,USER_ID",
+              "baseTableName": "PROFITS",
+              "constraintName": "FK_PROFITS_USER_COMMONS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "COMMONS_ID,USER_ID",
+              "referencedTableName": "USER_COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-JOBS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "JOBS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CREATED_AT",
+                    "type": "TIMESTAMP WITH TIME ZONE"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LOG",
+                    "type": "VARCHAR(1048576)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "STATUS",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "UPDATED_AT",
+                    "type": "TIMESTAMP WITH TIME ZONE"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CREATED_BY_ID",
+                    "type": "BIGINT"
+                  }
+                }
+              ],
+              "tableName": "JOBS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "CREATED_BY_ID",
+              "baseTableName": "JOBS",
+              "constraintName": "FK_JOBS_USERS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "USERS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-COURSES",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "COURSES_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CODE",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "TERM",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ],
+              "tableName": "COURSES"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-ANNOUNCEMENT",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "ANNOUNCEMENT_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "ANNOUNCEMENT_TEXT",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "END_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "START_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                }
+              ],
+              "tableName": "ANNOUNCEMENT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-CHAT_MESSAGE",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "CHAT_MESSAGE_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "DM",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "HIDDEN",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "MESSAGE",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "TIMESTAMP",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "TO_USER_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "USER_ID",
+                    "type": "BIGINT"
+                  }
+                }
+              ],
+              "tableName": "CHAT_MESSAGE"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-COMMONSTATS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "COMMONSTATS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "AVG_HEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CREATE_DATE",
+                    "type": "TIMESTAMP WITH TIME ZONE"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_COWS",
+                    "type": "INT"
+                  }
+                }
+              ],
+              "tableName": "COMMONSTATS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-COWDEATH",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "COWDEATH_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "AVG_HEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COWS_KILLED",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "USER_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "ZONED_DATE_TIME",
+                    "type": "TIMESTAMP"
+                  }
+                }
+              ],
+              "tableName": "COWDEATH"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-REPORTS",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "REPORTS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "ABOVE_CAPACITY_HEALTH_UPDATE_STRATEGY",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "BELOW_CAPACITY_HEALTH_UPDATE_STRATEGY",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "CARRYING_CAPACITY",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COMMONS_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COW_PRICE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CREATE_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "DEGRADATION_RATE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "MILK_PRICE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_COWS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_USERS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "SHOW_LEADERBOARD",
+                    "type": "BOOLEAN"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "STARTING_BALANCE",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "STARTING_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                }
+              ],
+              "tableName": "REPORTS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-REPORT_LINES",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "REPORT_LINES_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "AVG_COW_HEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COW_DEATHS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COWS_BOUGHT",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "COWS_SOLD",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "CREATE_DATE",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "NUM_OF_COWS",
+                    "type": "INT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "REPORT_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "TOTAL_WEALTH",
+                    "type": "DOUBLE PRECISION"
+                  }
+                },
+                {
+                  "column": {
+                    "constraints": {
+                      "nullable": false
+                    },
+                    "name": "USER_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "USERNAME",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ],
+              "tableName": "REPORT_LINES"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "000-STUDENT",
+        "author": "djensen",
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "STUDENT_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COURSE_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "EMAIL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "FIRST_MIDDLE_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LAST_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "PERM",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ],
+              "tableName": "STUDENT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
