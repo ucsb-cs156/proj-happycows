@@ -38,6 +38,8 @@ public class Commons {
     private int carryingCapacity;
     private double degradationRate;
 
+    private boolean hidden;
+
     // these defaults match old behavior
     @Enumerated(EnumType.STRING)
     @Builder.Default
@@ -52,11 +54,11 @@ public class Commons {
     private List&lt;UserCommons&gt; joinedUsers;
 
     public boolean gameInProgress() {
-<span class="fc" id="L55">        LocalDateTime today = LocalDateTime.now();</span>
-<span class="fc bfc" id="L56" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
-<span class="fc" id="L57">            return true;</span>
+<span class="fc" id="L57">        LocalDateTime today = LocalDateTime.now();</span>
+<span class="fc bfc" id="L58" title="All 4 branches covered.">        if (startingDate.isBefore(today) &amp;&amp; lastDate.isAfter(today)) {</span>
+<span class="fc" id="L59">            return true;</span>
         }
-<span class="fc" id="L59">        return false;</span>
+<span class="fc" id="L61">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
