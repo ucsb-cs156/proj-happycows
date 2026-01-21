@@ -87,6 +87,26 @@ const commonsPlusFixtures = {
       effectiveCapacity: 23,
     },
   ],
+  commonsPlusShowLeaderboardTrue: {
+    commons: {
+      id: 5,
+      name: "Test2",
+      cowPrice: 10.0,
+      milkPrice: 1.0,
+      startingBalance: 100.0,
+      startingDate: "2022-11-11T00:00:00",
+      lastDate: "2022-11-11T00:00:00",
+      endingDate: null,
+      degradationRate: 3.0,
+      showLeaderboard: true,
+      showChat: true,
+      capacityPerUser: 1,
+      carryingCapacity: 23,
+    },
+    totalCows: 0,
+    totalUsers: 0,
+    effectiveCapacity: 23,
+  },
 };
 
 export default commonsPlusFixtures;
