@@ -58,3 +58,8 @@ code {
   background-color: rgb(54, 124, 57);
   /* New background color on hover */
 }
+
+.expand-icon {
+  color: rgb(110, 110, 110);
+  font-size: 10px;
+}
