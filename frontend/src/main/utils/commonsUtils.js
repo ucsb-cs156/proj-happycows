@@ -15,7 +15,12 @@ export function cellToAxiosParamsDelete(cell) {
   };
 }
 
-export function commonsNotJoined(commons, commonsJoined) {
+export function filterCommonsNotJoinedAndNotHidden(commons, commonsJoined) {
   const joinedIdList = commonsJoined.map((c) => c.id);
-  return commons.filter((f) => !joinedIdList.includes(f.id));
+  return commons.filter((f) => !f.hidden && !joinedIdList.includes(f.id));
+}
+
+export function filterCommonsJoinedAndNotHidden(commons, commonsJoined) {
+  const joinedIdList = commonsJoined.map((c) => c.id);
+  return commons.filter((f) => !f.hidden && joinedIdList.includes(f.id));
 }

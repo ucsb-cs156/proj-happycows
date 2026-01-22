@@ -3,7 +3,7 @@ import commonsFixtures from "fixtures/commonsFixtures";
 import { vi } from "vitest";
 import {
   cellToAxiosParamsDelete,
-  commonsNotJoined,
+  filterCommonsNotJoinedAndNotHidden,
   onDeleteSuccess,
 } from "main/utils/commonsUtils";
 
@@ -52,7 +52,7 @@ describe("CommonsUtils", () => {
     });
   });
 
-  describe("commonsNotJoined", () => {
+  describe("filterCommonsNotJoinedAndNotHidden", () => {
     test("it computes the correct result", () => {
       // arrange
       const allCommons = commonsFixtures.sevenCommons;
@@ -65,7 +65,10 @@ describe("CommonsUtils", () => {
       ];
 
       // act
-      const result = commonsNotJoined(allCommons, commonsJoined);
+      const result = filterCommonsNotJoinedAndNotHidden(
+        allCommons,
+        commonsJoined,
+      );
 
       // assert
       expect(result).toEqual(expectedCommonsNotJoined);

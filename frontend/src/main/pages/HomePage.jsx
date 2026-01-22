@@ -6,7 +6,10 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsList from "main/components/Commons/CommonsList";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
-import { commonsNotJoined } from "main/utils/commonsUtils";
+import {
+  filterCommonsJoinedAndNotHidden,
+  filterCommonsNotJoinedAndNotHidden,
+} from "main/utils/commonsUtils";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
 
 import "./HomePage.css";
@@ -41,9 +44,11 @@ export default function HomePage({ hour = null }) {
   // Stryker disable all : TODO: restructure this code to avoid the need for this disable
   useEffect(() => {
     if (currentUser?.root?.user?.commons) {
-      setCommonsJoined(currentUser.root.user.commons);
+      setCommonsJoined(
+        filterCommonsJoinedAndNotHidden(commons, currentUser.root.user.commons),
+      );
     }
-  }, [currentUser]);
+  }, [commons, currentUser]);
 
   const firstName = currentUser?.root?.user?.givenName || "";
   const time = hour === null ? new Date().getHours() : hour;
@@ -57,7 +62,10 @@ export default function HomePage({ hour = null }) {
   };
 
   //create a list of commons that the user hasn't joined for use in the "Join a New Commons" list.
-  const commonsNotJoinedList = commonsNotJoined(commons, commonsJoined);
+  const commonsNotJoinedList = filterCommonsNotJoinedAndNotHidden(
+    commons,
+    commonsJoined,
+  );
 
   return (
     <div
