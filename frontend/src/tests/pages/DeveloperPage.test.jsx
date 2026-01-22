@@ -33,7 +33,7 @@ describe("DeveloperPage tests", () => {
       .reply(200, apiCurrentUserFixtures.userOnly);
   });
 
-  test("renders branch information text and forwards system info to Inspector", async () => {
+  test("Developer Page has expected info", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -43,10 +43,7 @@ describe("DeveloperPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Github Branch Information"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText("The following SystemInfo is displayed in a JSON file."),
+      await screen.findByText("Developer Information"),
     ).toBeInTheDocument();
 
     const inspectorDiv = await screen.findByTestId("mock-inspector");
@@ -59,5 +56,9 @@ describe("DeveloperPage tests", () => {
     await waitFor(() => expect(mockInspector).toHaveBeenCalled());
     const inspectorProps = mockInspector.mock.calls.at(-1)[0];
     expect(inspectorProps.data).toEqual(systemInfoFixtures.showingAll);
+
+    // Check for the presence of the expand icon
+    expect(await screen.findByText("▶")).toBeInTheDocument();
+    expect(await screen.findByText("▶")).toHaveClass("expand-icon");
   });
 });
