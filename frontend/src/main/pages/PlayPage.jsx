@@ -65,8 +65,9 @@ export default function PlayPage() {
     matched = commonsforuser.some((com) => com.id === commonsPlus.commons.id);
   }
 
-  const allowed = commonsPlusExists && matched;
+  const allowed = commonsPlusExists && matched && !commonsPlus.commons.hidden;
   const notallowed = commonsPlusExists && !matched;
+  const hidden = commonsPlusExists && commonsPlus.commons.hidden;
 
   // Stryker disable all
   const { data: userCommonsProfits } = useBackend(
@@ -174,18 +175,21 @@ export default function PlayPage() {
         <Container>
           {!commonsPlus && <h1>This commons does not exist!</h1>}
           {notallowed && <h1>You have yet to join this commons!</h1>}
+          {hidden && (
+            <h1>This commons has been hidden by the site administrator.</h1>
+          )}
           {allowed && !!currentUser && (
             <CommonsPlay currentUser={currentUser} />
           )}
 
-          {!!commonsPlus && (
+          {allowed && !!commonsPlus && (
             <CommonsOverview
               commonsPlus={commonsPlus}
               currentUser={currentUser}
             />
           )}
           <br />
-          {!!userCommons && !!commonsPlus && (
+          {allowed && !!userCommons && !!commonsPlus && (
             <CardGroup>
               <ManageCows
                 userCommons={userCommons}
@@ -210,7 +214,7 @@ export default function PlayPage() {
         </Container>
       </BasicLayout>
       {(hasRole(currentUser, "ROLE_ADMIN") ||
-        (!!commonsPlus && commonsPlus.commons.showChat)) && (
+        (allowed && !!commonsPlus && commonsPlus.commons.showChat)) && (
         <div style={chatContainerStyle} data-testid="playpage-chat-div">
           {!!isChatOpen && <ChatPanel commonsId={commonsId} />}
           <Button

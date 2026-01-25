@@ -14,7 +14,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
 
   // Stryker restore all
   return (
-    <Card>
+    <Card data-testid="ManageCows">
       <Card.Header as="h5" className="woodenboardtable">
         Manage Cows
       </Card.Header>

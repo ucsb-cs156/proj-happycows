@@ -56,6 +56,7 @@ describe("PlayPage tests", () => {
       {
         id: 1,
         name: "Sample Commons",
+        hidden: false,
       },
     ]);
     axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
@@ -63,6 +64,7 @@ describe("PlayPage tests", () => {
         id: 1,
         name: "Sample Commons",
         showChat: true,
+        hidden: false,
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -80,6 +82,67 @@ describe("PlayPage tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    await waitFor(() => {
+      expect(screen.getByTestId("commonsPlay-title")).toBeInTheDocument();
+    });
+
+    for (const testId of [
+      "CommonsOverview",
+      "ManageCows",
+      "playpage-chat-div",
+    ]) {
+      expect(screen.getByTestId(testId)).toBeInTheDocument();
+    }
+    expect(
+      screen.queryByText(
+        "This commons has been hidden by the site administrator.",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("cannot join hidden commons", async () => {
+    axiosMock.onGet("/api/commons/all").reply(200, [
+      {
+        id: 1,
+        name: "Sample Commons",
+        hidden: true,
+      },
+    ]);
+    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+        showChat: true,
+        hidden: true,
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          "This commons has been hidden by the site administrator.",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    for (const testId of [
+      "commonsPlay-title",
+      "CommonsOverview",
+      "ManageCows",
+      "playpage-chat-div",
+    ]) {
+      expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
+    }
   });
 
   test("click buy button", async () => {
