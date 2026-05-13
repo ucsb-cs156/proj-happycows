@@ -7,7 +7,7 @@
 | prod | <https://happycows.dokku-00.cs.ucsb.edu/>     | 
 | qa   | <https://happycows-qa.dokku-00.cs.ucsb.edu/>  | 
 
-### Sprint Planning Doc for F25: 
+### Sprint Planning Doc: 
 - https://docs.google.com/document/d/1I_GrBD-ADTWGUCn0Pv_lk5mKb-H7hp_y1UgvRpwuj6s/edit?usp=sharing
 
 # F24 Deployments
