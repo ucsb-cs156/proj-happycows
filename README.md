@@ -2,6 +2,9 @@
 
 # Production Deployments 
 
+Note: CMPSC 156 Student teams should *not* change the prod/qa links below to match their team's links; you should maintain the README.md file 
+so that it can be merged into the <https://github.com/ucsb-cs156/proj-happycows/> repo at the end of the quarter.
+
 | Type | Link       | 
 |------|------------|
 | prod | <https://happycows.dokku-00.cs.ucsb.edu/>     | 
@@ -10,16 +13,16 @@
 ### Sprint Planning Doc: 
 - https://docs.google.com/document/d/1I_GrBD-ADTWGUCn0Pv_lk5mKb-H7hp_y1UgvRpwuj6s/edit?usp=sharing
 
-# F24 Deployments
+# S26 Deployments
 
 Tracks `main` branch:
 
 | Team | Tracks Main Branch       | QA Deployment |
 |------|--------------------------|---------------|
-| f24-05 | <https://happycows.dokku-05.cs.ucsb.edu/> | <https://happycows-qa.dokku-05.cs.ucsb.edu/> | 
-| f24-06 | <https://happycows.dokku-06.cs.ucsb.edu/>  | <https://happycows-qa.dokku-06.cs.ucsb.edu/> | 
-| f24-07 | <https://happycows.dokku-07.cs.ucsb.edu/>  | <https://happycows-qa.dokku-07.cs.ucsb.edu/> | 
-| f24-08 | <https://happycows.dokku-08.cs.ucsb.edu/>  | <https://happycows-qa.dokku-08.cs.ucsb.edu/> | 
+| s26-13 | <https://happycows.dokku-13.cs.ucsb.edu/> | <https://happycows-qa.dokku-13.cs.ucsb.edu/> | 
+| s26-14 | <https://happycows.dokku-14.cs.ucsb.edu/>  | <https://happycows-qa.dokku-14.cs.ucsb.edu/> | 
+| s26-15 | <https://happycows.dokku-15.cs.ucsb.edu/>  | <https://happycows-qa.dokku-15.cs.ucsb.edu/> | 
+| s26-16 | <https://happycows.dokku-16.cs.ucsb.edu/>  | <https://happycows-qa.dokku-16.cs.ucsb.edu/> | 
 
 # Description
 
