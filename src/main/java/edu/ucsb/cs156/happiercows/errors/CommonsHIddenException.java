@@ -1,7 +1,7 @@
 package edu.ucsb.cs156.happiercows.errors;
 
-public class CommonsHIddenException extends Exception {
-    public CommonsHIddenException(String messageString){
+public class CommonsHiddenException extends Exception {
+    public CommonsHiddenException(String messageString){
       super(messageString);
     }
   }
