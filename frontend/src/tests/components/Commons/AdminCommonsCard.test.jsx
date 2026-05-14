@@ -832,7 +832,7 @@ describe("AdminCommonsCard tests", () => {
     let capturedMutationFn;
 
     vi.spyOn(useBackend, "useBackendMutation").mockImplementation(
-      (mutationFn, config, deps) => {
+      (mutationFn, _config, _deps) => {
         capturedMutationFn = mutationFn;
         return {
           mutate: vi.fn(), // minimal stub so component doesn't crash
