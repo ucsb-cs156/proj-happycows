@@ -6,11 +6,14 @@ function RecordCommonStatsForm({
   testid = "RecordCommonStatsForm",
  }) {
   const { handleSubmit } = useForm(); //wraps form submission to handle the form data 
-  const onSubmit = (data) => { //create handler function
-    submitAction(data)
-  };
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} data-testid={testid}>
+    <Form onSubmit={handleSubmit(submitAction)} data-testid={testid}>
+      <Form.Group className="mb-3">
+        <Form.Text>
+          Record statistics for all commons.This will create a CommonStats
+          record for each commons with current health and profit data.
+        </Form.Text>
+      </Form.Group>
       <Button type="submit" data-testid="RecordCommonStatsForm-Submit-Button">Record Stats</Button>
     </Form>
   )
