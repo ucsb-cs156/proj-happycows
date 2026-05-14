@@ -12,7 +12,7 @@ import { useBackend } from "main/utils/useBackend";
 const PAGE_SIZE = 25;
 const REFRESH_RATE = 2000;
 
-const ChatHistoryPage = () => {
+const ChatHistoryPage = ({ readOnly = false }) => {
   const { commonsId } = useParams();
   const navigate = useNavigate();
   const loadMoreRef = useRef(null);
@@ -114,12 +114,18 @@ const ChatHistoryPage = () => {
           Back
         </Button>
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h2 className="mb-0">Chat History</h2>
+          <span className="text-muted">
+            Commons #{commonsId} {readOnly && "• Admin Read Only"}
+          </span>
           <span className="text-muted">Commons #{commonsId}</span>
         </div>
-        <div className="mb-4">
-          <ChatMessageCreate commonsId={commonsId} />
-        </div>
+
+        {!readOnly && (
+          <div className="mb-4">
+            <ChatMessageCreate commonsId={commonsId} />
+          </div>
+        )}
+
         <div
           style={{
             minHeight: "50vh",
