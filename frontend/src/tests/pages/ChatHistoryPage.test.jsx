@@ -747,4 +747,28 @@ describe("ChatHistoryPage", () => {
 
     useInfiniteQuerySpy.mockRestore();
   });
+
+  test("renders Admin Read Only text when readOnly is true", async () => {
+    setupCommonMocks();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+      hasNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage readOnly={true} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText(/Admin Read Only/i)).toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
 });
