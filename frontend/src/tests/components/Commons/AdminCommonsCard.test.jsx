@@ -823,4 +823,60 @@ describe("AdminCommonsCard tests", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  test("delete mutation builds correct axios params", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    let capturedMutationFn;
+
+    vi.spyOn(useBackend, "useBackendMutation").mockImplementation(
+      (mutationFn, config, deps) => {
+        capturedMutationFn = mutationFn;
+        return {
+          mutate: vi.fn(), // minimal stub so component doesn't crash
+        };
+      },
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const request = capturedMutationFn(commonItem);
+
+    expect(request).toEqual({
+      url: "/api/commons",
+      method: "DELETE",
+      params: { id: 1 },
+    });
+  });
+
+  test("chat button renders with correct href and testid", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatButton = screen.getByText("Chat");
+    expect(chatButton).toBeInTheDocument();
+
+    expect(chatButton).toHaveAttribute("href", "/admin/chat/1");
+
+    const testIdElement = screen.getByTestId("AdminCommonsCard-Chat-1");
+    expect(testIdElement).toBe(chatButton);
+    expect(chatButton).toHaveTextContent("Chat");
+  });
 });
