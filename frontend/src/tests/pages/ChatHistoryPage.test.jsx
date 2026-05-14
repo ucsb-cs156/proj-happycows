@@ -655,6 +655,35 @@ describe("ChatHistoryPage", () => {
     expect(unobserve).toHaveBeenCalled();
   });
 
+  test("renders create form when not readOnly (default)", async () => {
+    setupCommonMocks();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+      hasNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const create = screen.getByTestId("ChatMessageCreate");
+    expect(create).toBeInTheDocument();
+
+    expect(create).toHaveAttribute("data-commonsid", "1");
+
+    expect(screen.queryByText(/Admin Read Only/i)).not.toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
   test("renders read only mode without create form and shows banner", async () => {
     setupCommonMocks();
 
