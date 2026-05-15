@@ -183,7 +183,20 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
               key={message.id}
               className="d-flex justify-content-between align-items-start mb-2"
             >
-              <ChatMessageDisplay message={message} />
+              <div
+                style={
+                  message.hidden ? { opacity: 0.6, fontStyle: "italic" } : {}
+                }
+              >
+                <ChatMessageDisplay
+                  message={{
+                    ...message,
+                    message: message.hidden
+                      ? "[Message removed by admin]"
+                      : message.message,
+                  }}
+                />
+              </div>
 
               {isAdmin && (
                 <button
