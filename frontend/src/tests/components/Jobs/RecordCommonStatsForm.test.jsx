@@ -113,4 +113,18 @@ describe("RecordCommonStatsForm tests", () => {
       screen.getByText(/This will create a CommonStats/i),
     ).toBeInTheDocument();
   });
+
+  //Test 7: Form has proper structure with Form.Group
+  it("form has proper structure with Form.Group", async () => {
+    const { container } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    const formGroup = container.querySelector(".mb-3");
+    expect(formGroup).toBeInTheDocument();
+    expect(formGroup.tagName).toBe("DIV");
+  });
 });
