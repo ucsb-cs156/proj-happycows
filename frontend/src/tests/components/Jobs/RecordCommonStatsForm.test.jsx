@@ -142,4 +142,16 @@ describe("RecordCommonStatsForm tests", () => {
     );
     expect(submitButton).toHaveAttribute("type", "submit");
   });
-});
+  //Test 9: Default testid is "RecordCommonStatsForm"
+  it("default testid is RecordCommonStatsForm", async () => {
+    const { container } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    const form = container.querySelector('[data-testid="RecordCommonStatsForm"]');
+    expect(form).toBeInTheDocument();
+    expect(form.tagName).toBe("FORM");
+  });});
