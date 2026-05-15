@@ -79,7 +79,8 @@ const makeQueryClient = () =>
     },
   });
 
-const renderWithProviders = (ui) => {
+
+const renderWithProviders = (ui = <ChatHistoryPage />) => {
   const queryClient = makeQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
@@ -87,6 +88,9 @@ const renderWithProviders = (ui) => {
     </QueryClientProvider>,
   );
 };
+
+
+const keyToString = (k) => (Array.isArray(k) ? k.join("|") : String(k));
 
 describe("ChatHistoryPage", () => {
   const axiosMock = new AxiosMockAdapter(axios);
@@ -247,6 +251,11 @@ describe("ChatHistoryPage", () => {
     ).parentElement;
     expect(hiddenWrapper).toHaveStyle("opacity: 0.5");
     expect(hiddenWrapper).toHaveStyle("font-style: italic");
+    const visibleWrapper = screen.getByTestId(
+      "ChatMessageDisplay-10",
+    ).parentElement;
+    expect(visibleWrapper).not.toHaveStyle("opacity: 0.5");
+    expect(visibleWrapper).not.toHaveStyle("font-style: italic");
 
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
 
@@ -456,8 +465,12 @@ describe("ChatHistoryPage", () => {
       isFetchingNextPage: false,
     });
 
+    // non-admin
     renderWithProviders(<ChatHistoryPage isAdmin={false} />);
     const [, queryFnNonAdmin] = spy1.mock.calls[0];
+
+    const queryFnStr = queryFnNonAdmin.toString();
+    expect(queryFnStr).toContain("/api/chat/get");
 
     axiosMock
       .onGet("/api/chat/get", { params: { commonsId: 1, page: 2, size: 25 } })
@@ -488,8 +501,12 @@ describe("ChatHistoryPage", () => {
       isFetchingNextPage: false,
     });
 
+    // admin
+
     renderWithProviders(<ChatHistoryPage isAdmin={true} />);
     const [, queryFnAdmin] = spy2.mock.calls[0];
+    const queryFnStrAdmin = queryFnAdmin.toString();
+    expect(queryFnStrAdmin).toContain("/api/chat/admin/get");
 
     axiosMock
       .onGet("/api/chat/admin/get", {
@@ -611,6 +628,10 @@ describe("ChatHistoryPage", () => {
     renderWithProviders(<ChatHistoryPage isAdmin={true} />);
 
     expect(mutationSpy).toHaveBeenCalled();
+
+    expect(mutationSpy.mock.calls[0][2]).toEqual([
+      "/api/chat/admin/get?commonsId=1",
+    ]);
 
     const mutationFn = mutationSpy.mock.calls[0][0];
 
