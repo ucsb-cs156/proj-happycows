@@ -4,12 +4,10 @@ import { MemoryRouter } from "react-router";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
-// Ensure spy exists BEFORE mock (important for Stryker hoisting)
 const { ChatHistoryPageSpy } = vi.hoisted(() => ({
   ChatHistoryPageSpy: vi.fn(),
 }));
 
-// Mock BEFORE import
 vi.mock("main/pages/ChatHistoryPage", () => ({
   __esModule: true,
   default: (props) => {
