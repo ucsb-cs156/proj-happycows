@@ -96,4 +96,21 @@ describe("RecordCommonStatsForm tests", () => {
     );
     expect(submitButton).toHaveTextContent("Record Stats");
   });
+
+  //Test 6: Form contains correct descriptive text
+  it("form contains correct descriptive text about recording statistics", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    expect(
+      screen.getByText(/Record statistics for all commons/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/This will create a CommonStats/i),
+    ).toBeInTheDocument();
+  });
 });
