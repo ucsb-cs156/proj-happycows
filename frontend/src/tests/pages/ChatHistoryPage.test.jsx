@@ -176,7 +176,9 @@ describe("ChatHistoryPage", () => {
     expect(
       screen.queryByText(/Unable to load chat messages/i),
     ).not.toBeInTheDocument();
-    expect(screen.queryByText(/No messages available/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/No messages available/i),
+    ).not.toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
   });
@@ -259,12 +261,16 @@ describe("ChatHistoryPage", () => {
     );
 
     // hidden styling is applied on wrapper around ChatMessageDisplay
-    const hiddenWrapper = screen.getByTestId("ChatMessageDisplay-11").parentElement;
+    const hiddenWrapper = screen.getByTestId(
+      "ChatMessageDisplay-11",
+    ).parentElement;
     expect(hiddenWrapper).toHaveStyle("opacity: 0.5");
     expect(hiddenWrapper).toHaveStyle("font-style: italic");
 
     // non-hidden must NOT have hidden styling (kills inverted/always-on mutants)
-    const visibleWrapper = screen.getByTestId("ChatMessageDisplay-10").parentElement;
+    const visibleWrapper = screen.getByTestId(
+      "ChatMessageDisplay-10",
+    ).parentElement;
     expect(visibleWrapper).not.toHaveStyle("opacity: 0.5");
     expect(visibleWrapper).not.toHaveStyle("font-style: italic");
 
@@ -274,7 +280,9 @@ describe("ChatHistoryPage", () => {
   });
 
   test("falls back to Anonymous when user commons hook returns invalid data", () => {
-    vi.spyOn(backend, "useBackend").mockReturnValue({ data: { invalid: true } });
+    vi.spyOn(backend, "useBackend").mockReturnValue({
+      data: { invalid: true },
+    });
 
     const useInfiniteQuerySpy = mockInfiniteQuery({
       data: {
@@ -358,7 +366,9 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders(<ChatHistoryPage />);
 
-    expect(screen.getByText(/Scroll to load more messages/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Scroll to load more messages/i),
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(/Loading more messages.../i),
     ).not.toBeInTheDocument();
@@ -590,7 +600,9 @@ describe("ChatHistoryPage", () => {
   test("disables queries when commonsId is missing", () => {
     mockUseParams.mockImplementation(() => ({ commonsId: undefined }));
 
-    const useBackendSpy = vi.spyOn(backend, "useBackend").mockReturnValue({ data: [] });
+    const useBackendSpy = vi
+      .spyOn(backend, "useBackend")
+      .mockReturnValue({ data: [] });
 
     const useInfiniteQuerySpy = vi.spyOn(reactQuery, "useInfiniteQuery");
     useInfiniteQuerySpy.mockReturnValue({
@@ -638,9 +650,15 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders(<ChatHistoryPage />);
 
-    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent("Alice");
-    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent("Bob");
-    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent("Anonymous");
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "Alice",
+    );
+    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
+      "Bob",
+    );
+    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
+      "Anonymous",
+    );
 
     useInfiniteQuerySpy.mockRestore();
   });
@@ -711,11 +729,99 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders(<ChatHistoryPage />);
 
-    // Find the scroll container by inline style fragment
     const container = document.querySelector('div[style*="overflow-y: auto"]');
     expect(container).toBeTruthy();
     expect(container).toHaveStyle("background-color: white");
 
     useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("defaults to non-readOnly and non-admin", () => {
+    mockInfiniteQuery();
+
+    renderWithProviders();
+
+    expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument();
+
+    expect(screen.queryByText(/Admin Read Only/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(/ChatHistoryPage-delete-/),
+    ).not.toBeInTheDocument();
+  });
+
+  test("observer is created with threshold 1.0", async () => {
+    mockInfiniteQuery({ hasNextPage: true });
+
+    renderWithProviders();
+
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
+
+    const options = globalThis.IntersectionObserver.mock.calls[0][1];
+    expect(options).toEqual({ threshold: 1.0 });
+  });
+
+  test("observer reacts to dependency changes", async () => {
+    const fetchNextPage = vi.fn();
+
+    const spy = mockInfiniteQuery({
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage,
+    });
+
+    const { rerender } = renderWithProviders();
+
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
+
+    intersectionCallback?.([{ isIntersecting: true }]);
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+
+    spy.mockReturnValue({
+      ...spy.mock.results[0].value,
+      isFetchingNextPage: true,
+    });
+
+    rerender(<ChatHistoryPage />);
+
+    intersectionCallback?.([{ isIntersecting: true }]);
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
+  });
+
+  test("scroll container has correct layout styling", () => {
+    mockInfiniteQuery();
+
+    renderWithProviders();
+
+    const container = screen.getByTestId("ChatHistoryPage-message-container");
+
+    expect(container).toHaveStyle("min-height: 50vh");
+    expect(container).toHaveStyle("max-height: 70vh");
+    expect(container).toHaveStyle("border: 1px solid #dee2e6");
+    expect(container).toHaveStyle("border-radius: 0.5rem");
+    expect(container).toHaveStyle("padding: 1rem");
+  });
+
+  test("does NOT show empty state when messages exist", () => {
+    mockInfiniteQuery({
+      status: "success",
+      data: {
+        pages: [
+          {
+            content: [{ id: 1, userId: 5, hidden: false }],
+          },
+        ],
+      },
+    });
+
+    renderWithProviders();
+
+    expect(
+      screen.queryByText(/No messages available for this commons/i),
+    ).not.toBeInTheDocument();
   });
 });
