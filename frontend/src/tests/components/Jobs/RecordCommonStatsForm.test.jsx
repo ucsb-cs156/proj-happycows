@@ -25,7 +25,7 @@ describe("RecordCommonStatsForm tests", () => {
       </QueryClientProvider>,
     );
     expect(screen.getByText(/Record statistics for all commons/i)).toBeInTheDocument();
-    expect(screen.getByText("RecordCommonStatsForm-Submit-Button")).toBeInTheDocument();
+    expect(screen.getByTestId("RecordCommonStatsForm-Submit-Button")).toBeInTheDocument();
   });
   //Test 2: Submit button is present and clickable
   it("user can sucessfully submit the job", async () => {
