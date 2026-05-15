@@ -175,14 +175,14 @@ const AdminJobsPage = () => {
   const objectToAxiosParamsRecordCommonStats = () => ({
     url: `/api/jobs/launch/recordcommonstats`,
     method: "POST",
-  })
+  });
 
   // Stryker disable all
   const RecordCommonStatsMutation = useBackendMutation(
     objectToAxiosParamsRecordCommonStats,
     {},
     ["/api/jobs/all"],
-  )
+  );
   // Stryker restore all
   const submitRecordCommonStatsJob = async () => {
     toast("Submitted Job: Record Common Stats");
