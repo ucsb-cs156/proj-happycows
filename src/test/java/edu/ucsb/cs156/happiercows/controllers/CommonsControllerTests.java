@@ -794,6 +794,46 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
+    public void joinHiddenCommonsThrowsHiddenCommonsException() throws Exception {
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Example Commons")
+                .hidden(true)
+                .build();
+
+        UserCommons uc = UserCommons.builder()
+                .user(currentUserService.getUser())
+                .commons(c)
+                .username("Fake user")
+                .totalWealth(0)
+                .numOfCows(0)
+                .cowHealth(100)
+                .build();
+
+        
+        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+
+        
+        //try to join the commons but it should throw an error
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().isForbidden()).andReturn();
+        
+        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(2L, 1L);
+        verify(userCommonsRepository, times(0)).save(uc);
+
+        //ensure that the error matches
+        Map<String, Object> responseMap = responseToJson(response);
+        assertEquals(responseMap.get("message"), "Commons with id 2 is hidden and cannot be joined");
+        assertEquals(responseMap.get("type"), "CommonsHiddenException");
+    }
+
+
+    @WithMockUser(roles = {"USER"})
+    @Test
     public void joinCommonsTest() throws Exception {
 
         Commons c = Commons.builder()
@@ -1432,4 +1472,3 @@ public class CommonsControllerTests extends ControllerTestCase {
     }
 
 }
-
