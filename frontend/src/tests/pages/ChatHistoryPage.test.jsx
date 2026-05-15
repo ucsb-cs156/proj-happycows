@@ -824,4 +824,23 @@ describe("ChatHistoryPage", () => {
       screen.queryByText(/No messages available for this commons/i),
     ).not.toBeInTheDocument();
   });
+
+  test("default (non-admin) view never shows delete buttons", () => {
+    mockInfiniteQuery({
+      data: {
+        pages: [
+          {
+            content: [
+              { id: 1, userId: 5, hidden: false },
+              { id: 2, userId: 7, hidden: false },
+            ],
+          },
+        ],
+      },
+    });
+
+    renderWithProviders(<ChatHistoryPage />);
+
+    expect(screen.queryAllByTestId(/ChatHistoryPage-delete-/)).toHaveLength(0);
+  });
 });
