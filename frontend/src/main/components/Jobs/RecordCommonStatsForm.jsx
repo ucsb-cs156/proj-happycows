@@ -10,7 +10,7 @@ function RecordCommonStatsForm({
     <Form onSubmit={handleSubmit(submitAction)} data-testid={testid}>
       <Form.Group className="mb-3">
         <Form.Text>
-          Record statistics for all commons.This will create a CommonStats
+          Record statistics for all commons. This will create a CommonStats
           record for each commons with current health and profit data.
         </Form.Text>
       </Form.Group>
