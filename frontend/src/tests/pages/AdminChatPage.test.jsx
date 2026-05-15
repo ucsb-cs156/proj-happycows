@@ -4,12 +4,12 @@ import { MemoryRouter } from "react-router";
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
-// Ensure the spy exists before vi.mock factory runs (important for Stryker + hoisting)
+// Ensure spy exists BEFORE mock (important for Stryker hoisting)
 const { ChatHistoryPageSpy } = vi.hoisted(() => ({
   ChatHistoryPageSpy: vi.fn(),
 }));
 
-// Mock ChatHistoryPage BEFORE importing AdminChatPage
+// Mock BEFORE import
 vi.mock("main/pages/ChatHistoryPage", () => ({
   __esModule: true,
   default: (props) => {
@@ -29,46 +29,50 @@ describe("AdminChatPage tests (coverage + Stryker)", () => {
     render(
       <MemoryRouter>
         <AdminChatPage />
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
-  test("exports a component and renders", () => {
+  test("renders component and child", () => {
     expect(AdminChatPage).toBeDefined();
 
     renderPage();
 
-    // Wrapper renders the mocked child (kills mutants that return null / don't render)
     expect(screen.getByTestId("ChatHistoryPageMock")).toBeInTheDocument();
     expect(ChatHistoryPageSpy).toHaveBeenCalledTimes(1);
   });
 
-  test("passes readOnly=true exactly (kills boolean literal + removed prop mutants)", () => {
+  test("passes readOnly=true correctly", () => {
     renderPage();
 
     const props = ChatHistoryPageSpy.mock.calls[0][0];
 
-    // Prop must exist
     expect(Object.prototype.hasOwnProperty.call(props, "readOnly")).toBe(true);
-
-    // Must be strictly boolean true (not truthy, not string)
     expect(props.readOnly).toBe(true);
     expect(typeof props.readOnly).toBe("boolean");
   });
 
-  test("passes only the expected props (kills extra/changed props mutants)", () => {
+  test("passes isAdmin=true correctly", () => {
     renderPage();
 
     const props = ChatHistoryPageSpy.mock.calls[0][0];
 
-    // Ensures wrapper doesn't start passing other props or remove readOnly
-    expect(Object.keys(props)).toStrictEqual(["readOnly"]);
+    expect(Object.prototype.hasOwnProperty.call(props, "isAdmin")).toBe(true);
+    expect(props.isAdmin).toBe(true);
+    expect(typeof props.isAdmin).toBe("boolean");
   });
 
-  test("renders ChatHistoryPage exactly once per render (kills duplication mutants)", () => {
+  test("passes exactly the expected props (strict check for Stryker)", () => {
+    renderPage();
+
+    const props = ChatHistoryPageSpy.mock.calls[0][0];
+
+    expect(Object.keys(props)).toStrictEqual(["readOnly", "isAdmin"]);
+  });
+
+  test("renders exactly once per render", () => {
     renderPage();
     expect(ChatHistoryPageSpy).toHaveBeenCalledTimes(1);
 
-    // Render again in same test to ensure counts track correctly
     renderPage();
     expect(ChatHistoryPageSpy).toHaveBeenCalledTimes(2);
   });
