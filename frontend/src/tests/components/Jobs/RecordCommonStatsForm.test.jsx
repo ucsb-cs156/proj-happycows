@@ -151,7 +151,10 @@ describe("RecordCommonStatsForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-    const form = container.querySelector('[data-testid="RecordCommonStatsForm"]');
+    const form = container.querySelector(
+      '[data-testid="RecordCommonStatsForm"]',
+    );
     expect(form).toBeInTheDocument();
     expect(form.tagName).toBe("FORM");
-  });});
+  });
+});
