@@ -1,11 +1,11 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-function RecordCommonStatsForm({ 
+function RecordCommonStatsForm({
   submitAction = () => {},
   testid = "RecordCommonStatsForm",
- }) {
-  const { handleSubmit } = useForm(); //wraps form submission to handle the form data 
+}) {
+  const { handleSubmit } = useForm(); //wraps form submission to handle the form data
   return (
     <Form onSubmit={handleSubmit(submitAction)} data-testid={testid}>
       <Form.Group className="mb-3">
@@ -14,9 +14,11 @@ function RecordCommonStatsForm({
           record for each commons with current health and profit data.
         </Form.Text>
       </Form.Group>
-      <Button type="submit" data-testid="RecordCommonStatsForm-Submit-Button">Record Stats</Button>
+      <Button type="submit" data-testid="RecordCommonStatsForm-Submit-Button">
+        Record Stats
+      </Button>
     </Form>
-  )
+  );
 }
 
 export default RecordCommonStatsForm;

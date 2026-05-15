@@ -14,7 +14,6 @@ vi.mock("react-router", async () => ({
 }));
 
 describe("RecordCommonStatsForm tests", () => {
-
   //Test 1: Component renders without crashing
   it("renders the fallback text correctlyl", async () => {
     render(
@@ -24,8 +23,12 @@ describe("RecordCommonStatsForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-    expect(screen.getByText(/Record statistics for all commons/i)).toBeInTheDocument();
-    expect(screen.getByTestId("RecordCommonStatsForm-Submit-Button")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Record statistics for all commons/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("RecordCommonStatsForm-Submit-Button"),
+    ).toBeInTheDocument();
   });
   //Test 2: Submit button is present and clickable
   it("user can sucessfully submit the job", async () => {
@@ -37,10 +40,12 @@ describe("RecordCommonStatsForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-    const submitButton = screen.getByTestId("RecordCommonStatsForm-Submit-Button");
+    const submitButton = screen.getByTestId(
+      "RecordCommonStatsForm-Submit-Button",
+    );
     fireEvent.click(submitButton);
     await waitFor(() => {
       expect(submitAction).toHaveBeenCalled();
-    })
+    });
   });
 });
