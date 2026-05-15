@@ -77,6 +77,8 @@ describe("RecordCommonStatsForm tests", () => {
         </Router>
       </QueryClientProvider>,
     );
-    expect(container.querySelector(`[data-testid="${customTestId}"]`)).toBeInTheDocument();
+    expect(
+      container.querySelector(`[data-testid="${customTestId}"]`),
+    ).toBeInTheDocument();
   });
 });
