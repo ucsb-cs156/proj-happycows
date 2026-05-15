@@ -127,4 +127,19 @@ describe("RecordCommonStatsForm tests", () => {
     expect(formGroup).toBeInTheDocument();
     expect(formGroup.tagName).toBe("DIV");
   });
+
+  //Test 8: Submit button has type="submit"
+  it("submit button has type submit attribute", async () => {
+    const { container } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    const submitButton = container.querySelector(
+      'button[data-testid="RecordCommonStatsForm-Submit-Button"]',
+    );
+    expect(submitButton).toHaveAttribute("type", "submit");
+  });
 });
