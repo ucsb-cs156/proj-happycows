@@ -29,7 +29,7 @@ describe("AdminChatPage tests (coverage + Stryker)", () => {
     render(
       <MemoryRouter>
         <AdminChatPage />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
   test("renders component and child", () => {
