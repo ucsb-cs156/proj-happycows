@@ -21,6 +21,7 @@ package-lock.json
 # Maven
 
 /target
+.m2/
 
 ### STS ###
 .apt_generated
@@ -55,4 +56,3 @@ build/
 
 ### .DS_Store ###
 .DS_Store
-
