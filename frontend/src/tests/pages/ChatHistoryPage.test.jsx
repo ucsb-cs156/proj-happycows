@@ -90,7 +90,7 @@ const renderWithProviders = (ui = <ChatHistoryPage />) => {
 };
 
 
-const keyToString = (k) => (Array.isArray(k) ? k.join("|") : String(k));
+// const keyToString = (k) => (Array.isArray(k) ? k.join("|") : String(k));
 
 describe("ChatHistoryPage", () => {
   const axiosMock = new AxiosMockAdapter(axios);
