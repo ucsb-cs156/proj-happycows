@@ -2,11 +2,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 
-function CourseForm({
-  initialCourse,
-  submitAction,
-  buttonLabel = "Create",
-}) {
+function CourseForm({ initialCourse, submitAction, buttonLabel = "Create" }) {
   const {
     register,
     formState: { errors },

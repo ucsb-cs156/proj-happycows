@@ -15,11 +15,9 @@ export default function AdminCoursesCreatePage() {
     toast(`Course created - id: ${course.id} code: ${course.code}`);
   };
 
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    ["/api/course/all"],
-  );
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, [
+    "/api/course/all",
+  ]);
 
   const submitAction = async (data) => {
     mutation.mutate(data);

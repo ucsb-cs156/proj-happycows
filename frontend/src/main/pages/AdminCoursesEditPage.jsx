@@ -28,11 +28,9 @@ export default function AdminCoursesEditPage() {
     );
   };
 
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    [`/api/course/${id}`],
-  );
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, [
+    `/api/course/${id}`,
+  ]);
 
   const submitAction = async (data) => {
     mutation.mutate(data);

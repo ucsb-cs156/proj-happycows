@@ -71,9 +71,7 @@ describe("AdminCoursesEditPage tests", () => {
     );
 
     expect(await screen.findByText("Edit Course")).toBeInTheDocument();
-    expect(await screen.findByLabelText("Course Code")).toHaveValue(
-      "CHEM 123",
-    );
+    expect(await screen.findByLabelText("Course Code")).toHaveValue("CHEM 123");
     expect(screen.getByLabelText("Course Name")).toHaveValue(
       "Environmental Chemistry",
     );
@@ -103,9 +101,7 @@ describe("AdminCoursesEditPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByLabelText("Course Code")).toHaveValue(
-      "CHEM 123",
-    );
+    expect(await screen.findByLabelText("Course Code")).toHaveValue("CHEM 123");
 
     fireEvent.change(screen.getByLabelText("Course Name"), {
       target: { value: "Advanced Environmental Chemistry" },
