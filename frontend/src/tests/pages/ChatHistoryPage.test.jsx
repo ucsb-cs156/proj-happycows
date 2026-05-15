@@ -5,7 +5,6 @@ import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { vi, describe, test, beforeEach, beforeAll, expect } from "vitest";
-
 import * as reactQuery from "react-query";
 import * as backend from "main/utils/useBackend";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
@@ -15,14 +14,12 @@ import ChatHistoryPage from "main/pages/ChatHistoryPage";
  */
 vi.mock("main/layouts/BasicLayout/BasicLayout", () => ({
   __esModule: true,
-  default: ({ children }) => <div data-testid="BasicLayout">{children}</div>,
+  default: ({ children }) => <>{children}</>,
 }));
 
 vi.mock("main/components/Chat/ChatMessageCreate", () => ({
   __esModule: true,
-  default: ({ commonsId }) => (
-    <div data-testid="ChatMessageCreate" data-commonsid={String(commonsId)} />
-  ),
+  default: () => <div data-testid="ChatMessageCreate" />,
 }));
 
 vi.mock("main/components/Chat/ChatMessageDisplay", () => ({
@@ -37,7 +34,7 @@ vi.mock("main/components/Chat/ChatMessageDisplay", () => ({
 }));
 
 /**
- * Router hook mocks (CRITICAL: keep these stable across tests)
+ * Router hook mocks (keep stable across tests)
  */
 const mockUseParams = vi.fn(() => ({ commonsId: 1 }));
 const mockNavigate = vi.fn();
@@ -79,18 +76,20 @@ const makeQueryClient = () =>
     },
   });
 
-
+/**
+ * Correct renderWithProviders:
+ * - MUST render JSX (not `{ui}`) or hooks never run and spies won't capture calls. [1](https://kawasakimotorscorpusa.sharepoint.com/sites/AKMGPEQuality/Shared%20Documents/REFERENCE%20DOCUMENTS/John%20Deere%20Warranty%20Processing/John%20Deere%20Claim%20Processing/deere_mark_gui/build/DeereMarkUploaded/xref-DeereMarkUploaded.html?web=1)
+ * - Supports rerender reliably.
+ */
 const renderWithProviders = (ui = <ChatHistoryPage />) => {
   const queryClient = makeQueryClient();
-  return render(
+  const Wrapper = ({ children }) => (
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter>{ui}</MemoryRouter>
-    </QueryClientProvider>,
+      <MemoryRouter>{children}</MemoryRouter>
+    </QueryClientProvider>
   );
+  return render(ui, { wrapper: Wrapper });
 };
-
-
-// const keyToString = (k) => (Array.isArray(k) ? k.join("|") : String(k));
 
 describe("ChatHistoryPage", () => {
   const axiosMock = new AxiosMockAdapter(axios);
@@ -110,16 +109,12 @@ describe("ChatHistoryPage", () => {
   };
 
   beforeEach(() => {
-    // IMPORTANT: do NOT use restoreAllMocks() here; it resets vi.fn implementations
     vi.clearAllMocks();
-
     axiosMock.reset();
     axiosMock.resetHistory();
 
-    // default params
     mockUseParams.mockImplementation(() => ({ commonsId: 1 }));
 
-    // default backend hooks
     vi.spyOn(backend, "useBackend").mockReturnValue({
       data: [
         { userId: 5, username: "Alice" },
@@ -181,9 +176,7 @@ describe("ChatHistoryPage", () => {
     expect(
       screen.queryByText(/Unable to load chat messages/i),
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/No messages available/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/No messages available/i)).not.toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
   });
@@ -219,6 +212,26 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
+  test("renders create form when not readOnly; hides it when readOnly and shows banner", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      data: { pages: [{ content: [] }] },
+    });
+
+    const { rerender } = renderWithProviders(
+      <ChatHistoryPage readOnly={false} />,
+    );
+
+    expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument();
+    expect(screen.queryByText(/Admin Read Only/i)).not.toBeInTheDocument();
+
+    rerender(<ChatHistoryPage readOnly={true} />);
+
+    expect(screen.getByText(/Admin Read Only/i)).toBeInTheDocument();
+    expect(screen.queryByTestId("ChatMessageCreate")).not.toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
   test("renders messages, maps usernames, and applies hidden styling", () => {
     const useInfiniteQuerySpy = mockInfiniteQuery({
       status: "success",
@@ -246,14 +259,12 @@ describe("ChatHistoryPage", () => {
     );
 
     // hidden styling is applied on wrapper around ChatMessageDisplay
-    const hiddenWrapper = screen.getByTestId(
-      "ChatMessageDisplay-11",
-    ).parentElement;
+    const hiddenWrapper = screen.getByTestId("ChatMessageDisplay-11").parentElement;
     expect(hiddenWrapper).toHaveStyle("opacity: 0.5");
     expect(hiddenWrapper).toHaveStyle("font-style: italic");
-    const visibleWrapper = screen.getByTestId(
-      "ChatMessageDisplay-10",
-    ).parentElement;
+
+    // non-hidden must NOT have hidden styling (kills inverted/always-on mutants)
+    const visibleWrapper = screen.getByTestId("ChatMessageDisplay-10").parentElement;
     expect(visibleWrapper).not.toHaveStyle("opacity: 0.5");
     expect(visibleWrapper).not.toHaveStyle("font-style: italic");
 
@@ -263,12 +274,12 @@ describe("ChatHistoryPage", () => {
   });
 
   test("falls back to Anonymous when user commons hook returns invalid data", () => {
-    vi.spyOn(backend, "useBackend").mockReturnValue({
-      data: { invalid: true },
-    });
+    vi.spyOn(backend, "useBackend").mockReturnValue({ data: { invalid: true } });
 
     const useInfiniteQuerySpy = mockInfiniteQuery({
-      data: { pages: [{ content: [{ id: 21, userId: 999, hidden: false }] }] },
+      data: {
+        pages: [{ content: [{ id: 21, userId: 999, hidden: false }] }],
+      },
     });
 
     renderWithProviders(<ChatHistoryPage />);
@@ -295,30 +306,6 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("renders create form when not readOnly; hides it when readOnly and shows banner", () => {
-    const useInfiniteQuerySpy = mockInfiniteQuery({
-      data: { pages: [{ content: [] }] },
-    });
-
-    const { rerender } = renderWithProviders(<ChatHistoryPage />);
-
-    expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument();
-    expect(screen.queryByText(/Admin Read Only/i)).not.toBeInTheDocument();
-
-    rerender(
-      <QueryClientProvider client={makeQueryClient()}>
-        <MemoryRouter>
-          <ChatHistoryPage readOnly={true} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(screen.getByText(/Admin Read Only/i)).toBeInTheDocument();
-    expect(screen.queryByTestId("ChatMessageCreate")).not.toBeInTheDocument();
-
-    useInfiniteQuerySpy.mockRestore();
-  });
-
   test("shows updating indicator when refreshing current messages (isFetching true, not isFetchingNextPage)", () => {
     const useInfiniteQuerySpy = mockInfiniteQuery({
       isFetching: true,
@@ -328,6 +315,21 @@ describe("ChatHistoryPage", () => {
     renderWithProviders(<ChatHistoryPage />);
 
     expect(screen.getByText(/Updating conversation.../i)).toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("does NOT show updating indicator while fetching next page", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      isFetching: true,
+      isFetchingNextPage: true,
+    });
+
+    renderWithProviders(<ChatHistoryPage />);
+
+    expect(
+      screen.queryByText(/Updating conversation.../i),
+    ).not.toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
   });
@@ -344,6 +346,23 @@ describe("ChatHistoryPage", () => {
     expect(
       screen.queryByText(/Scroll to load more messages/i),
     ).not.toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("status indicator shows 'Scroll to load more messages' when hasNextPage true and not fetching next page", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      hasNextPage: true,
+      isFetchingNextPage: false,
+    });
+
+    renderWithProviders(<ChatHistoryPage />);
+
+    expect(screen.getByText(/Scroll to load more messages/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Loading more messages.../i),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("[no more messages]")).not.toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
   });
@@ -431,7 +450,6 @@ describe("ChatHistoryPage", () => {
 
   test("fetchNextPage is called only when intersecting, hasNextPage true, and not already fetching next page", async () => {
     const fetchNextPage = vi.fn();
-
     const useInfiniteQuerySpy = mockInfiniteQuery({
       hasNextPage: true,
       isFetchingNextPage: false,
@@ -453,7 +471,27 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("captures queryFn: non-admin uses /api/chat/get; admin uses /api/chat/admin/get; pageParam controls page", async () => {
+  test("does NOT call fetchNextPage when intersecting but already fetching next page", async () => {
+    const fetchNextPage = vi.fn();
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      hasNextPage: true,
+      isFetchingNextPage: true,
+      fetchNextPage,
+    });
+
+    renderWithProviders(<ChatHistoryPage />);
+
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
+
+    intersectionCallback?.([{ isIntersecting: true }]);
+    expect(fetchNextPage).not.toHaveBeenCalled();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("captures queryFn + queryKey: uses ['chatHistory', commonsId] and correct admin/non-admin URLs", async () => {
     // non-admin
     const spy1 = vi.spyOn(reactQuery, "useInfiniteQuery");
     spy1.mockReturnValue({
@@ -465,12 +503,12 @@ describe("ChatHistoryPage", () => {
       isFetchingNextPage: false,
     });
 
-    // non-admin
     renderWithProviders(<ChatHistoryPage isAdmin={false} />);
-    const [, queryFnNonAdmin] = spy1.mock.calls[0];
 
-    const queryFnStr = queryFnNonAdmin.toString();
-    expect(queryFnStr).toContain("/api/chat/get");
+    const [keyNonAdmin, queryFnNonAdmin] = spy1.mock.calls[0];
+
+    // matches: useInfiniteQuery(["chatHistory", commonsId], fetchChatPage, ...) [1](https://kawasakimotorscorpusa.sharepoint.com/sites/AKMGPEQuality/Shared%20Documents/REFERENCE%20DOCUMENTS/John%20Deere%20Warranty%20Processing/John%20Deere%20Claim%20Processing/deere_mark_gui/build/DeereMarkUploaded/xref-DeereMarkUploaded.html?web=1)
+    expect(keyNonAdmin).toEqual(["chatHistory", 1]);
 
     axiosMock
       .onGet("/api/chat/get", { params: { commonsId: 1, page: 2, size: 25 } })
@@ -501,12 +539,10 @@ describe("ChatHistoryPage", () => {
       isFetchingNextPage: false,
     });
 
-    // admin
-
     renderWithProviders(<ChatHistoryPage isAdmin={true} />);
-    const [, queryFnAdmin] = spy2.mock.calls[0];
-    const queryFnStrAdmin = queryFnAdmin.toString();
-    expect(queryFnStrAdmin).toContain("/api/chat/admin/get");
+
+    const [keyAdmin, queryFnAdmin] = spy2.mock.calls[0];
+    expect(keyAdmin).toEqual(["chatHistory", 1]);
 
     axiosMock
       .onGet("/api/chat/admin/get", {
@@ -542,8 +578,8 @@ describe("ChatHistoryPage", () => {
     renderWithProviders(<ChatHistoryPage />);
 
     const [, , options] = useInfiniteQuerySpy.mock.calls[0];
-
     const pages = [{}, {}];
+
     expect(options.getNextPageParam({ last: false }, pages)).toBe(pages.length);
     expect(options.getNextPageParam({ last: true }, pages)).toBeUndefined();
     expect(options.getNextPageParam(undefined, pages)).toBeUndefined();
@@ -554,9 +590,7 @@ describe("ChatHistoryPage", () => {
   test("disables queries when commonsId is missing", () => {
     mockUseParams.mockImplementation(() => ({ commonsId: undefined }));
 
-    const useBackendSpy = vi
-      .spyOn(backend, "useBackend")
-      .mockReturnValue({ data: [] });
+    const useBackendSpy = vi.spyOn(backend, "useBackend").mockReturnValue({ data: [] });
 
     const useInfiniteQuerySpy = vi.spyOn(reactQuery, "useInfiniteQuery");
     useInfiniteQuerySpy.mockReturnValue({
@@ -584,7 +618,7 @@ describe("ChatHistoryPage", () => {
       data: [
         { userId: 1, username: "Alice" },
         { userId: 2, username: "Bob" },
-        { userId: 3, username: null }, // test fallback to ""
+        { userId: 3, username: null },
       ],
     });
 
@@ -604,23 +638,15 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders(<ChatHistoryPage />);
 
-    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
-      "Alice",
-    );
-    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent(
-      "Bob",
-    );
-
-    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
-      "Anonymous",
-    );
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent("Alice");
+    expect(screen.getByTestId("ChatMessageDisplay-2-User")).toHaveTextContent("Bob");
+    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent("Anonymous");
 
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("delete mutation is configured with correct API request", () => {
+  test("delete mutation is configured with correct API request and invalidate key", () => {
     const mutationSpy = vi.spyOn(backend, "useBackendMutation");
-
     const useInfiniteQuerySpy = mockInfiniteQuery({
       data: { pages: [{ content: [] }] },
     });
@@ -629,12 +655,12 @@ describe("ChatHistoryPage", () => {
 
     expect(mutationSpy).toHaveBeenCalled();
 
+    // invalidate/refetch key must match EXACTLY (kills key mutants)
     expect(mutationSpy.mock.calls[0][2]).toEqual([
       "/api/chat/admin/get?commonsId=1",
     ]);
 
     const mutationFn = mutationSpy.mock.calls[0][0];
-
     const result = mutationFn(123);
 
     expect(result).toEqual({
@@ -648,51 +674,48 @@ describe("ChatHistoryPage", () => {
 
   test("deleteMutation onSuccess is defined", () => {
     const mutationSpy = vi.spyOn(backend, "useBackendMutation");
-
     mockInfiniteQuery();
 
     renderWithProviders(<ChatHistoryPage isAdmin={true} />);
 
     const options = mutationSpy.mock.calls[0][1];
-
     expect(options).toHaveProperty("onSuccess");
     expect(typeof options.onSuccess).toBe("function");
-  });
-
-  test("maps empty username to empty string before display fallback", () => {
-    vi.spyOn(backend, "useBackend").mockReturnValue({
-      data: [{ userId: 3, username: null }],
-    });
-
-    const useInfiniteQuerySpy = mockInfiniteQuery({
-      data: {
-        pages: [{ content: [{ id: 3, userId: 3 }] }],
-      },
-    });
-
-    renderWithProviders(<ChatHistoryPage />);
-
-    expect(screen.getByTestId("ChatMessageDisplay-3-User")).toHaveTextContent(
-      "Anonymous",
-    );
-
-    useInfiniteQuerySpy.mockRestore();
   });
 
   test("deleteMutation onSuccess callback executes", () => {
     const mutationSpy = vi.spyOn(backend, "useBackendMutation");
-
-    mockInfiniteQuery({
-      data: { pages: [{ content: [] }] },
-    });
+    mockInfiniteQuery({ data: { pages: [{ content: [] }] } });
 
     renderWithProviders(<ChatHistoryPage isAdmin={true} />);
 
     const options = mutationSpy.mock.calls[0][1];
-
     expect(options).toHaveProperty("onSuccess");
     expect(typeof options.onSuccess).toBe("function");
 
     options.onSuccess();
+  });
+
+  test("scroll container has white background styling", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      data: {
+        pages: [
+          {
+            content: [{ id: 99, userId: 5, hidden: false }],
+            last: true,
+          },
+        ],
+      },
+      hasNextPage: false,
+    });
+
+    renderWithProviders(<ChatHistoryPage />);
+
+    // Find the scroll container by inline style fragment
+    const container = document.querySelector('div[style*="overflow-y: auto"]');
+    expect(container).toBeTruthy();
+    expect(container).toHaveStyle("background-color: white");
+
+    useInfiniteQuerySpy.mockRestore();
   });
 });
