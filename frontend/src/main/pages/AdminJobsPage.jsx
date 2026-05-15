@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import SetCowHealthForm from "main/components/Jobs/SetCowHealthForm";
-import RecordCommonStatsForm from "main/components/Jobs/RecordCommonStatsForm";
 
 const AdminJobsPage = () => {
   // *** Test job ***
