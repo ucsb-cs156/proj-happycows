@@ -9,9 +9,6 @@ import * as reactQuery from "react-query";
 import * as backend from "main/utils/useBackend";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
 
-/**
- * Mock leaf components/layout so we only test ChatHistoryPage behavior.
- */
 vi.mock("main/layouts/BasicLayout/BasicLayout", () => ({
   __esModule: true,
   default: ({ children }) => <>{children}</>,
@@ -33,9 +30,6 @@ vi.mock("main/components/Chat/ChatMessageDisplay", () => ({
   ),
 }));
 
-/**
- * Router hook mocks (keep stable across tests)
- */
 const mockUseParams = vi.fn(() => ({ commonsId: 1 }));
 const mockNavigate = vi.fn();
 
@@ -49,9 +43,6 @@ vi.mock("react-router", async () => {
   };
 });
 
-/**
- * IntersectionObserver harness
- */
 const observe = vi.fn();
 const unobserve = vi.fn();
 let intersectionCallback = null;
@@ -76,11 +67,6 @@ const makeQueryClient = () =>
     },
   });
 
-/**
- * Correct renderWithProviders:
- * - MUST render JSX (not `{ui}`) or hooks never run and spies won't capture calls. [1](https://kawasakimotorscorpusa.sharepoint.com/sites/AKMGPEQuality/Shared%20Documents/REFERENCE%20DOCUMENTS/John%20Deere%20Warranty%20Processing/John%20Deere%20Claim%20Processing/deere_mark_gui/build/DeereMarkUploaded/xref-DeereMarkUploaded.html?web=1)
- * - Supports rerender reliably.
- */
 const renderWithProviders = (ui = <ChatHistoryPage />) => {
   const queryClient = makeQueryClient();
   const Wrapper = ({ children }) => (
@@ -260,14 +246,12 @@ describe("ChatHistoryPage", () => {
       "Bob",
     );
 
-    // hidden styling is applied on wrapper around ChatMessageDisplay
     const hiddenWrapper = screen.getByTestId(
       "ChatMessageDisplay-11",
     ).parentElement;
     expect(hiddenWrapper).toHaveStyle("opacity: 0.5");
     expect(hiddenWrapper).toHaveStyle("font-style: italic");
 
-    // non-hidden must NOT have hidden styling (kills inverted/always-on mutants)
     const visibleWrapper = screen.getByTestId(
       "ChatMessageDisplay-10",
     ).parentElement;
@@ -517,7 +501,6 @@ describe("ChatHistoryPage", () => {
 
     const [keyNonAdmin, queryFnNonAdmin] = spy1.mock.calls[0];
 
-    // matches: useInfiniteQuery(["chatHistory", commonsId], fetchChatPage, ...) [1](https://kawasakimotorscorpusa.sharepoint.com/sites/AKMGPEQuality/Shared%20Documents/REFERENCE%20DOCUMENTS/John%20Deere%20Warranty%20Processing/John%20Deere%20Claim%20Processing/deere_mark_gui/build/DeereMarkUploaded/xref-DeereMarkUploaded.html?web=1)
     expect(keyNonAdmin).toEqual(["chatHistory", 1]);
 
     axiosMock
@@ -538,7 +521,6 @@ describe("ChatHistoryPage", () => {
     spy1.mockRestore();
     axiosMock.resetHistory();
 
-    // admin
     const spy2 = vi.spyOn(reactQuery, "useInfiniteQuery");
     spy2.mockReturnValue({
       data: { pages: [{ content: [] }] },
