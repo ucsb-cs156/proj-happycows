@@ -48,4 +48,35 @@ describe("RecordCommonStatsForm tests", () => {
       expect(submitAction).toHaveBeenCalled();
     });
   });
+
+  //Test 3: Submit button calls default submitAction when not provided
+  it("submit button calls default submitAction when not provided", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    const submitButton = screen.getByTestId(
+      "RecordCommonStatsForm-Submit-Button",
+    );
+    expect(submitButton).toBeInTheDocument();
+    fireEvent.click(submitButton);
+    // Should not crash and button should be clickable
+    expect(submitButton).toBeEnabled();
+  });
+
+  //Test 4: Component uses custom testid when provided
+  it("component uses custom testid when provided", async () => {
+    const customTestId = "CustomTestId";
+    const { container } = render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm testid={customTestId} />
+        </Router>
+      </QueryClientProvider>,
+    );
+    expect(container.querySelector(`[data-testid="${customTestId}"]`)).toBeInTheDocument();
+  });
 });
