@@ -81,4 +81,19 @@ describe("RecordCommonStatsForm tests", () => {
       container.querySelector(`[data-testid="${customTestId}"]`),
     ).toBeInTheDocument();
   });
+
+  //Test 5: Submit button has correct text
+  it("submit button displays correct text", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <RecordCommonStatsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+    const submitButton = screen.getByTestId(
+      "RecordCommonStatsForm-Submit-Button",
+    );
+    expect(submitButton).toHaveTextContent("Record Stats");
+  });
 });
