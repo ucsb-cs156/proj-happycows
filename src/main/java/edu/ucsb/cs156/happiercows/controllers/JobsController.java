@@ -148,7 +148,7 @@ public class JobsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/launch/updatecowhealthsinglecommons")
     public Job updateCowHealth(
-         @Parameter(name="commonsId") @RequestParam Long commonsId
+        @Parameter(name="commonsId") @RequestParam Long commonsId
     ) { 
         JobContextConsumer updateCowHealthJobInd = updateCowHealthJobFactoryInd.create(commonsId);
         return jobService.runAsJob(updateCowHealthJobInd);
