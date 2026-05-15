@@ -27,6 +27,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  mockUseParams.mockReturnValue({ commonsId: 1 });
   observe.mockClear();
   unobserve.mockClear();
   if (typeof globalThis.IntersectionObserver?.mockClear === "function") {
@@ -35,14 +36,22 @@ beforeEach(() => {
   intersectionCallback = null;
 });
 
+const mockUseParams = vi.fn(() => ({ commonsId: 1 }));
 const mockNavigate = vi.fn();
+
+vi.mock("main/components/Chat/ChatMessageCreate", () => ({
+  __esModule: true,
+  default: ({ commonsId }) => (
+    <div data-testid="ChatMessageCreate" data-commonsid={commonsId} />
+  ),
+}));
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
   return {
     __esModule: true,
     ...actual,
-    useParams: () => ({ commonsId: 1 }),
+    useParams: () => mockUseParams(),
     useNavigate: () => mockNavigate,
   };
 });
@@ -644,5 +653,151 @@ describe("ChatHistoryPage", () => {
 
     unmount();
     expect(unobserve).toHaveBeenCalled();
+  });
+
+  test("renders create form when not readOnly (default)", async () => {
+    setupCommonMocks();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+      hasNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const create = screen.getByTestId("ChatMessageCreate");
+    expect(create).toBeInTheDocument();
+
+    expect(create).toHaveAttribute("data-commonsid", "1");
+
+    expect(screen.queryByText(/Admin Read Only/i)).not.toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("renders read only mode without create form and shows banner", async () => {
+    setupCommonMocks();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+      hasNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage readOnly={true} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText(/Admin Read Only/i)).toBeInTheDocument();
+    expect(screen.queryByTestId("ChatMessageCreate")).not.toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("disables queries when commonsId is missing", () => {
+    mockUseParams.mockReturnValue({ commonsId: undefined });
+
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
+    useBackendSpy.mockReturnValue({ data: [] });
+
+    const useInfiniteQuerySpy = vi.spyOn(reactQuery, "useInfiniteQuery");
+    useInfiniteQuerySpy.mockReturnValue({
+      data: { pages: [] },
+      status: "success",
+      fetchNextPage: vi.fn(),
+      hasNextPage: false,
+      isFetching: false,
+      isFetchingNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const backendCall = useBackendSpy.mock.calls[0];
+    expect(backendCall[3]).toEqual({ refetchInterval: 2000, enabled: false });
+
+    const infiniteOptions = useInfiniteQuerySpy.mock.calls[0][2];
+    expect(infiniteOptions.enabled).toBe(false);
+
+    useInfiniteQuerySpy.mockRestore();
+    useBackendSpy.mockRestore();
+  });
+
+  test("fetches next page when observer intersects and not fetching", async () => {
+    setupCommonMocks();
+
+    const fetchNextPage = vi.fn();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      hasNextPage: true,
+      isFetchingNextPage: false,
+      fetchNextPage,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() =>
+      expect(globalThis.IntersectionObserver).toHaveBeenCalled(),
+    );
+
+    intersectionCallback?.([{ isIntersecting: true }]);
+
+    expect(fetchNextPage).toHaveBeenCalled();
+
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("renders Admin Read Only text when readOnly is true", async () => {
+    setupCommonMocks();
+
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+      hasNextPage: false,
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ChatHistoryPage readOnly={true} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByText(/Admin Read Only/i)).toBeInTheDocument();
+
+    useInfiniteQuerySpy.mockRestore();
   });
 });
