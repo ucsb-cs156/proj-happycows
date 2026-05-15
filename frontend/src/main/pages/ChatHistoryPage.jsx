@@ -185,17 +185,10 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
             >
               <div
                 style={
-                  message.hidden ? { opacity: 0.6, fontStyle: "italic" } : {}
+                  message.hidden ? { opacity: 0.5, fontStyle: "italic" } : {}
                 }
               >
-                <ChatMessageDisplay
-                  message={{
-                    ...message,
-                    message: message.hidden
-                      ? "[Message removed by admin]"
-                      : message.message,
-                  }}
-                />
+                <ChatMessageDisplay message={message} />
               </div>
 
               {isAdmin && (
