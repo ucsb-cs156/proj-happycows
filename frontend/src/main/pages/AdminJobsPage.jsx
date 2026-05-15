@@ -93,8 +93,8 @@ const AdminJobsPage = () => {
   };
   // *** RecordCommonStats job ***
   const objectToAxiosParamsRecordCommonStatsJob = () => ({
-    url: '/api/jobs/launch/recordcommonstats',
-    method: "POST"
+    url: "/api/jobs/launch/recordcommonstats",
+    method: "POST",
   });
   const RecordCommonStatsMutation = useBackendMutation(
     objectToAxiosParamsRecordCommonStatsJob,
@@ -105,7 +105,7 @@ const AdminJobsPage = () => {
   const submitRecordCommonStatsJob = async () => {
     toast("Submitted Job: Record Common Stats");
     RecordCommonStatsMutation.mutate();
-  }
+  };
 
   // *** MilkTheCows job ***
 
@@ -201,7 +201,7 @@ const AdminJobsPage = () => {
     },
     {
       name: "Record Common Stats",
-      form: <RecordCommonStatsForm submitAction={submitRecordCommonStatsJob}/>
+      form: <RecordCommonStatsForm submitAction={submitRecordCommonStatsJob} />,
     },
     {
       name: "Milk The Cows",
