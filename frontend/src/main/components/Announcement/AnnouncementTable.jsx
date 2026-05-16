@@ -16,7 +16,7 @@ export default function AnnouncementTable({
   };
 
   // Stryker disable next-line all : TODO try to make a good test for this
-  const deleteCallback = async (cell) => {
+  const deleteCallback = async (_cell) => {
     alert("Delete functionality not yet implemented");
   };
 
