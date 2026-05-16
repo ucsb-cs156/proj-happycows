@@ -77,6 +77,7 @@ export default function AdminAnnouncementsPage() {
         <AnnouncementTable
           announcements={announcements}
           currentUser={currentUser}
+          commonsId={commonsId}
         />
       </div>
     </BasicLayout>
