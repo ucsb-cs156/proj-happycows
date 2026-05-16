@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
