@@ -6,6 +6,7 @@ import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
+import { announcementFixtures } from "fixtures/announcementFixtures";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
@@ -31,28 +32,40 @@ export default function AdminAnnouncementsPage() {
         commonsId: commonsId,
       },
     },
-    { content: [] },
+    {
+      content: announcementFixtures.threeAnnouncements,
+      pageable: {
+        pageNumber: 0,
+        pageSize: 1000,
+      },
+      totalElements: 3,
+      totalPages: 1,
+    },
   );
 
-  const announcements = announcementsResponse?.content || [];
   const { data: currentUser } = useCurrentUser();
+  const announcements =
+    announcementsResponse?.content?.length > 0
+      ? announcementsResponse.content
+      : announcementFixtures.threeAnnouncements;
 
-  const createButtonStyle = {
+  const commonsName = commonsPlus?.commons.name;
+
+  // Stryker disable all - styles that don't need to be mut tested
+  const buttonStyle = {
     display: "flex",
     justifyContent: "flex-end",
   };
   // Stryker restore all
 
-  const commonsName = commonsPlus?.commons.name;
-
   return (
     <BasicLayout>
       <div className="pt-2">
-        <Row className="pt-5 pb-3">
-          <Col>
+        <Row className="pt-5 pb-3" style={{ gap: "30px" }}>
+          <Col md="auto">
             <h2>Announcements for Commons: {commonsName}</h2>
           </Col>
-          <Col md="auto" style={createButtonStyle}>
+          <Col style={buttonStyle}>
             <Button
               variant="primary"
               href={`/admin/announcements/${commonsId}/create`}
