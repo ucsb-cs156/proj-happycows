@@ -15,7 +15,6 @@ export default function AnnouncementTable({
     navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
   };
 
-  // Stryker disable next-line all : TODO try to make a good test for this
   const deleteCallback = async (_cell) => {
     alert("Delete functionality not yet implemented");
   };

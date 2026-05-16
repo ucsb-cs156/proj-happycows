@@ -10,6 +10,8 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
+const fallbackAnnouncementText =
+  announcementFixtures.threeAnnouncements[1].announcementText;
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -54,7 +56,7 @@ describe("AdminAnnouncementsPage tests", () => {
   });
 
   test("renders page without crashing", async () => {
-    render(
+    const { container } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <AdminAnnouncementsPage />
@@ -65,6 +67,9 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
+
+    const headerRow = container.querySelector(".row.pt-5.pb-3");
+    expect(headerRow).toHaveStyle({ gap: "30px" });
   });
 
   test("renders announcements table with data", async () => {
@@ -79,9 +84,8 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
-
     expect(
-      await screen.findByText("This is a test announcement for commons id 1."),
+      await screen.findByText(fallbackAnnouncementText),
     ).toBeInTheDocument();
   });
 
@@ -94,6 +98,9 @@ describe("AdminAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
     const createButton = screen.getByText("Create Announcement");
     expect(createButton).toHaveAttribute(
       "href",
@@ -101,7 +108,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
   });
 
-  test("renders empty announcements table when no announcements", async () => {
+  test("renders fixture announcements when backend returns empty content", async () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -113,8 +120,10 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
       commons: {
         id: 1,
-        name: "Empty Commons",
+        name: "Sample Commons",
       },
+      totalPlayers: 5,
+      totalCows: 5,
     });
     axiosMock
       .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
@@ -137,7 +146,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Commons: Empty Commons"),
+      await screen.findByText(fallbackAnnouncementText),
     ).toBeInTheDocument();
   });
 });
