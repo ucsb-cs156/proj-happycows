@@ -22,8 +22,8 @@ export default function AdminAnnouncementsPage() {
     },
   );
 
-  const { data: announcements } = useBackend(
-    [`/api/announcements/getbycommonsid?commonsi=Id=${commonsId}`],
+  const { data: announcementsResponse } = useBackend(
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
     {
       method: "GET",
       url: "/api/announcements/getbycommonsid",
@@ -31,8 +31,10 @@ export default function AdminAnnouncementsPage() {
         commonsId: commonsId,
       },
     },
+    { content: [] },
   );
-
+  
+  const announcements = announcementsResponse?.content || [];
   const { data: currentUser } = useCurrentUser();
   // Stryker restore all
 
