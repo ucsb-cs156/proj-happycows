@@ -24,7 +24,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
     );
 
     expect(screen.getByText("Edit Announcement")).toBeInTheDocument();
-    expect(screen.getByText("Not implemented yet; coming soon!")).toBeInTheDocument();
+    expect(
+      screen.getByText("Not implemented yet; coming soon!"),
+    ).toBeInTheDocument();
     expect(screen.getByText("Commons ID: 1")).toBeInTheDocument();
     expect(screen.getByText("Announcement ID: 2")).toBeInTheDocument();
   });
