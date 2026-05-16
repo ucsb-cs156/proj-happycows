@@ -39,9 +39,7 @@ describe("CoursesForm tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <Router>
-          <CoursesForm
-            initialContents={coursesFixtures.oneCourse}
-          />
+          <CoursesForm initialContents={coursesFixtures.oneCourse} />
         </Router>
       </QueryClientProvider>,
     );
@@ -86,9 +84,7 @@ describe("CoursesForm tests", () => {
     const submitButton = screen.getByText(/Create/);
     fireEvent.click(submitButton);
 
-    await screen.findByText(
-      /Code is required./,
-    );
+    await screen.findByText(/Code is required./);
     expect(screen.getByText(/Name is required./)).toBeInTheDocument();
     expect(screen.getByText(/Term is required./)).toBeInTheDocument();
   });
