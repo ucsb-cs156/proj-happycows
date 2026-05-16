@@ -32,6 +32,7 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import DeveloperPage from "main/pages/DeveloperPage";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
+import AdminChatPage from "main/pages/AdminChatPage";
 
 function App() {
   const { data: currentUser } = useCurrentUser();
@@ -72,6 +73,7 @@ function App() {
       />
       <Route path="/developer" element={<DeveloperPage />} />
       <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
+      <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
     </>
   ) : null;
 
