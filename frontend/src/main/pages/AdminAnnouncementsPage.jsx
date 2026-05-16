@@ -4,6 +4,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
+import { useCurrentUser } from "main/utils/currentUser";
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 
 export default function AdminAnnouncementsPage() {
@@ -32,7 +33,7 @@ export default function AdminAnnouncementsPage() {
     },
   );
 
-  const { data: currentUser } = userCurrentUser();
+  const { data: currentUser } = useCurrentUser();
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
