@@ -379,6 +379,8 @@
         </activation>
         <properties>
             <springProfiles>integration</springProfiles>
+            <frontend.dependency.skip>false</frontend.dependency.skip>
+            <frontend.build.skip>false</frontend.build.skip>
         </properties>
         <dependencies>
             <dependency>
@@ -389,6 +391,55 @@
         </dependencies>
         <build>
             <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>compute-frontend-skip-flags</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <condition property="frontend.dependency.skip" value="true" else="false">
+                                    <and>
+                                        <uptodate>
+                                            <srcfiles dir="${project.basedir}/frontend" includes="package.json,package-lock.json"/>
+                                            <mapper type="merge" to="${project.build.directory}/frontend-deps.marker"/>
+                                        </uptodate>
+                                    </and>
+                                </condition>
+                                <condition property="frontend.build.skip" value="true" else="false">
+                                    <and>
+                                        <equals arg1="${frontend.dependency.skip}" arg2="true"/>
+                                        <uptodate>
+                                            <srcfiles dir="${project.basedir}/frontend/src" includes="**/*"/>
+                                            <srcfiles dir="${project.basedir}/frontend" includes="vite.config.js"/>
+                                            <mapper type="merge" to="${project.basedir}/frontend/build"/>
+                                        </uptodate>
+                                    </and>
+                                </condition>
+                                <echo message="frontend.dependency.skip=${frontend.dependency.skip}"/>
+                                <echo message="frontend.build.skip=${frontend.build.skip}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>create-deps-marker</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <touch file="${project.build.directory}/frontend-deps.marker" mkdirs="true" unless="${frontend.dependency.skip}"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
@@ -414,6 +465,7 @@
                     </goals>
                     <configuration>
                     <arguments>ci</arguments>
+                    <skip>${frontend.dependency.skip}</skip>
                     </configuration>
                 </execution>
                 <execution>
@@ -423,6 +475,7 @@
                     </goals>
                     <configuration>
                     <arguments>run build</arguments>
+                    <skip>${frontend.build.skip}</skip>
                     </configuration>
                 </execution>
                 </executions>
@@ -435,8 +488,9 @@
                     <phase>generate-resources</phase>
                     <configuration>
                         <target>
+                        <echo message="Frontend build skip=${frontend.build.skip} (true=skipped, false=executed)"/>
                         <copy todir="${project.build.outputDirectory}/public">
-                            <fileset dir="${project.basedir}/frontend/build" />
+                            <fileset dir="${project.basedir}/frontend/build" erroronmissingdir="false"/>
                         </copy>
                         </target>
                     </configuration>
@@ -458,6 +512,8 @@
             </activation>
             <properties>
                 <springProfiles>production</springProfiles>
+                <frontend.dependency.skip>false</frontend.dependency.skip>
+                <frontend.build.skip>false</frontend.build.skip>
             </properties>
             <dependencies>
                 <dependency>
@@ -468,6 +524,55 @@
             </dependencies>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>3.0.0</version>
+                        <executions>
+                            <execution>
+                                <id>compute-frontend-skip-flags</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <condition property="frontend.dependency.skip" value="true" else="false">
+                                            <and>
+                                                <uptodate>
+                                                    <srcfiles dir="${project.basedir}/frontend" includes="package.json,package-lock.json"/>
+                                                    <mapper type="merge" to="${project.build.directory}/frontend-deps.marker"/>
+                                                </uptodate>
+                                            </and>
+                                        </condition>
+                                        <condition property="frontend.build.skip" value="true" else="false">
+                                            <and>
+                                                <equals arg1="${frontend.dependency.skip}" arg2="true"/>
+                                                <uptodate>
+                                                    <srcfiles dir="${project.basedir}/frontend/src" includes="**/*"/>
+                                                    <srcfiles dir="${project.basedir}/frontend" includes="vite.config.js"/>
+                                                    <mapper type="merge" to="${project.basedir}/frontend/build"/>
+                                                </uptodate>
+                                            </and>
+                                        </condition>
+                                        <echo message="frontend.dependency.skip=${frontend.dependency.skip}"/>
+                                        <echo message="frontend.build.skip=${frontend.build.skip}"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>create-deps-marker</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <touch file="${project.build.directory}/frontend-deps.marker" mkdirs="true" unless="${frontend.dependency.skip}"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>com.github.eirslett</groupId>
                         <artifactId>frontend-maven-plugin</artifactId>
@@ -493,6 +598,7 @@
                                 </goals>
                                 <configuration>
                                     <arguments>ci</arguments>
+                                    <skip>${frontend.dependency.skip}</skip>
                                 </configuration>
                             </execution>
                             <execution>
@@ -502,6 +608,7 @@
                                 </goals>
                                 <configuration>
                                     <arguments>run build</arguments>
+                                    <skip>${frontend.build.skip}</skip>
                                 </configuration>
                             </execution>
                         </executions>
@@ -514,8 +621,9 @@
                                 <phase>generate-resources</phase>
                                 <configuration>
                                     <target>
+                                        <echo message="Frontend build skip=${frontend.build.skip} (true=skipped, false=executed)"/>
                                         <copy todir="${project.build.outputDirectory}/public">
-                                            <fileset dir="${project.basedir}/frontend/build" />
+                                            <fileset dir="${project.basedir}/frontend/build" erroronmissingdir="false"/>
                                         </copy>
                                     </target>
                                 </configuration>
