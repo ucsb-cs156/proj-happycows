@@ -33,19 +33,26 @@ export default function AdminAnnouncementsPage() {
     },
     { content: [] },
   );
-  
+
   const announcements = announcementsResponse?.content || [];
   const { data: currentUser } = useCurrentUser();
+
+  const createButtonStyle = {
+    display: "flex",
+    justifyContent: "flex-end",
+  };
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
-  
+
   return (
     <BasicLayout>
       <div className="pt-2">
-        <Row className="pt-5">
+        <Row className="pt-5 pb-3">
           <Col>
             <h2>Announcements for Commons: {commonsName}</h2>
+          </Col>
+          <Col md="auto" style={createButtonStyle}>
             <Button
               variant="primary"
               href={`/admin/announcements/${commonsId}/create`}
@@ -54,7 +61,10 @@ export default function AdminAnnouncementsPage() {
             </Button>
           </Col>
         </Row>
-        <AnnouncementTable announcements={announcements} currentUser={currentUser} />
+        <AnnouncementTable
+          announcements={announcements}
+          currentUser={currentUser}
+        />
       </div>
     </BasicLayout>
   );
