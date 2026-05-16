@@ -4,6 +4,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
+import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
@@ -19,10 +20,23 @@ export default function AdminAnnouncementsPage() {
       },
     },
   );
+
+  const { data: announcements } = useBackend(
+    [`/api/announcements/getbycommonsid?commonsi=Id=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/getbycommonsid",
+      params: {
+        commonsId: commonsId,
+      },
+    },
+  );
+
+  const { data: currentUser } = userCurrentUser();
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
-
+  
   return (
     <BasicLayout>
       <div className="pt-2">
@@ -37,6 +51,7 @@ export default function AdminAnnouncementsPage() {
             </Button>
           </Col>
         </Row>
+        <AnnouncementTable announcements={announcements} currentUser={currentUser} />
       </div>
     </BasicLayout>
   );
