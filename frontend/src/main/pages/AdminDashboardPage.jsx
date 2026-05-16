@@ -116,6 +116,6 @@ export default function AdminDashboardPage() {
           <p>Future analytics and breakdowns will be added here.</p>
         </Card.Body>
       </Card>
-    </Container>
+    </BasicLayout>
   );
 }
