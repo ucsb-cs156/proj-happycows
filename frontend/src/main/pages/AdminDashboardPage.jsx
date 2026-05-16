@@ -6,7 +6,7 @@ export default function AdminDashboardPage() {
   const { id } = useParams();
 
   return (
-    <Container>
+    <BasicLayout>
       <h1 className="mb-4">Dashboard</h1>
 
       <p>
