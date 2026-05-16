@@ -149,13 +149,28 @@ describe("AdminChatPage", () => {
       </QueryClientProvider>,
     );
 
-    const container = await screen.findByTestId("AdminChatPage-message-container");
+    const container = await screen.findByTestId(
+      "AdminChatPage-message-container",
+    );
     expect(container).toHaveStyle("min-height: 50vh");
     expect(container).toHaveStyle("max-height: 70vh");
     expect(container).toHaveStyle("overflow-y: auto");
+    expect(container).toHaveStyle("border: 1px solid #dee2e6");
+    expect(container).toHaveStyle("border-radius: 0.5rem");
+    expect(container).toHaveStyle("padding: 1rem");
+    expect(container).toHaveStyle("background-color: white");
 
     expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
+    expect(screen.getByTestId("ChatMessageDisplay-1-User")).toHaveTextContent(
+      "George Washington",
+    );
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
+    expect(
+      screen.queryByText(/No messages available for this commons/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Unable to load chat messages/i),
+    ).not.toBeInTheDocument();
   });
 
   test("does not show ChatMessageCreate (read-only view)", () => {
@@ -193,9 +208,7 @@ describe("AdminChatPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(
-      screen.getByText("Chat History (Admin View)"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Chat History (Admin View)")).toBeInTheDocument();
     expect(screen.getByText("Commons #1")).toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
     useBackendSpy.mockRestore();
@@ -261,6 +274,28 @@ describe("AdminChatPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
+  test("does not show error message when status is success", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: [] }] },
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminChatPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.queryByText(/Unable to load chat messages/i),
+    ).not.toBeInTheDocument();
+    useInfiniteQuerySpy.mockRestore();
+  });
+
   test("shows empty state when there are no messages after loading", () => {
     const useInfiniteQuerySpy = mockInfiniteQuery({
       status: "success",
@@ -280,6 +315,28 @@ describe("AdminChatPage", () => {
     expect(
       screen.getByText(/No messages available for this commons/i),
     ).toBeInTheDocument();
+    useInfiniteQuerySpy.mockRestore();
+  });
+
+  test("does not show empty state when messages are present", () => {
+    const useInfiniteQuerySpy = mockInfiniteQuery({
+      status: "success",
+      data: { pages: [{ content: chatMessageFixtures.threeChatMessages }] },
+    });
+
+    const queryClient = new QueryClient();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminChatPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.queryByText(/No messages available for this commons/i),
+    ).not.toBeInTheDocument();
     useInfiniteQuerySpy.mockRestore();
   });
 
