@@ -55,18 +55,30 @@ export default function AdminDashboardPage() {
       <h3 className="mt-4">Commons Details</h3>
       <Card className="mb-3">
         <Card.Body>
-          <p><strong>Name:</strong> --</p>
-          <p><strong>Status:</strong> --</p>
-          <p><strong>Start Date:</strong> --</p>
+          <p>
+            <strong>Name:</strong> --
+          </p>
+          <p>
+            <strong>Status:</strong> --
+          </p>
+          <p>
+            <strong>Start Date:</strong> --
+          </p>
         </Card.Body>
       </Card>
 
       <h3 className="mt-4">Participation Metrics</h3>
       <Card className="mb-3">
         <Card.Body>
-          <p><strong>Active Farmers:</strong> --</p>
-          <p><strong>Inactive Farmers:</strong> --</p>
-          <p><strong>Avg Cows per Farmer:</strong> --</p>
+          <p>
+            <strong>Active Farmers:</strong> --
+          </p>
+          <p>
+            <strong>Inactive Farmers:</strong> --
+          </p>
+          <p>
+            <strong>Avg Cows per Farmer:</strong> --
+          </p>
         </Card.Body>
       </Card>
 
