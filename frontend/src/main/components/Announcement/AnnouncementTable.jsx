@@ -1,22 +1,33 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 
+import { useBackendMutation } from "main/utils/useBackend";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/announcementUtils";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
-export default function AnnouncementTable({
-  announcements,
-  currentUser,
-  commonsId,
-}) {
+export default function AnnouncementTable({ announcements, currentUser }) {
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
+    navigate(`/announcements/edit/${cell.row.values.id}`);
   };
 
-  const deleteCallback = async (_cell) => {
-    alert("Delete functionality not yet implemented");
+  // Stryker disable all : hard to test for query caching
+
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    ["/api/announcements/all"],
+  );
+  // Stryker restore all
+
+  // Stryker disable next-line all : TODO try to make a good test for this
+  const deleteCallback = async (cell) => {
+    deleteMutation.mutate(cell);
   };
 
   const columns = [

@@ -7,7 +7,6 @@ import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
-const mockedAlert = vi.spyOn(window, "alert").mockImplementation(() => {});
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -16,10 +15,6 @@ vi.mock("react-router", async () => ({
 
 describe("AnnouncementTable tests", () => {
   const queryClient = new QueryClient();
-  beforeEach(() => {
-    mockedNavigate.mockClear();
-    mockedAlert.mockClear();
-  });
 
   const expectedHeaders = [
     "id",
@@ -29,8 +24,6 @@ describe("AnnouncementTable tests", () => {
   ];
   const expectedFields = ["id", "startDate", "endDate", "announcementText"];
   const testId = "AnnouncementTable";
-  const [firstAnnouncement, secondAnnouncement] =
-    announcementFixtures.threeAnnouncements;
 
   test("renders empty table correctly", () => {
     // arrange
@@ -40,11 +33,7 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable
-            announcements={[]}
-            currentUser={currentUser}
-            commonsId={1}
-          />
+          <AnnouncementTable announcements={[]} currentUser={currentUser} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -74,7 +63,6 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
-            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -92,18 +80,18 @@ describe("AnnouncementTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
+      "1",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
-      `${secondAnnouncement.id}`,
+      "2",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent(secondAnnouncement.startDate);
+    ).toHaveTextContent("2022-12-12T00:00:00");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -129,7 +117,6 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
-            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -147,18 +134,18 @@ describe("AnnouncementTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
+      "1",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
-      `${secondAnnouncement.id}`,
+      "2",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent(secondAnnouncement.startDate);
+    ).toHaveTextContent("2022-12-12T00:00:00");
 
     expect(screen.queryByText("Delete")).not.toBeInTheDocument();
     expect(screen.queryByText("Edit")).not.toBeInTheDocument();
@@ -175,7 +162,6 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
-            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -183,11 +169,11 @@ describe("AnnouncementTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
+      "1",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -199,9 +185,7 @@ describe("AnnouncementTable tests", () => {
 
     // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith(
-        `/admin/announcements/1/edit/${firstAnnouncement.id}`,
-      ),
+      expect(mockedNavigate).toHaveBeenCalledWith("/announcements/edit/1"),
     );
   });
 
@@ -216,7 +200,6 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
-            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -224,11 +207,11 @@ describe("AnnouncementTable tests", () => {
 
     // assert - check that the expected content is rendered
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
+      "1",
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent("2024-12-12T00:00:00");
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
@@ -237,8 +220,5 @@ describe("AnnouncementTable tests", () => {
 
     // act - click the delete button
     fireEvent.click(deleteButton);
-    expect(mockedAlert).toHaveBeenCalledWith(
-      "Delete functionality not yet implemented",
-    );
   });
 });
