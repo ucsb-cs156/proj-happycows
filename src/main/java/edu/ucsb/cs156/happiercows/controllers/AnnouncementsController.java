@@ -116,6 +116,36 @@ public class AnnouncementsController extends ApiController{
         return ResponseEntity.ok(announcements);
     }
 
+    @Operation(summary = "Get current announcements", description = "Get current announcements for a commons.")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/current")
+    public ResponseEntity<Object> getCurrentAnnouncements(
+        @Parameter(description = "The id of the commons") @RequestParam Long commonsId) {
+
+        User user = getCurrentUser().getUser();
+        Long userId = user.getId();
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            Optional<UserCommons> userCommonsLookup =
+                userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+
+            if (!userCommonsLookup.isPresent()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("User is not a member of this commons.");
+            }
+        }
+
+        int MAX_ANNOUNCEMENTS = 1000;
+        Page<Announcement> announcements =
+            announcementRepository.findCurrentByCommonsId(
+                commonsId,
+                PageRequest.of(0, MAX_ANNOUNCEMENTS, Sort.by("startDate").descending())
+            );
+
+        return ResponseEntity.ok(announcements.getContent());
+    }
+
     @Operation(summary = "Get announcements by id", description = "Get announcement by its id.")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/getbyid")
