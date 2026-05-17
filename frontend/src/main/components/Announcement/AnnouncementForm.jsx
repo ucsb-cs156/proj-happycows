@@ -81,7 +81,7 @@ function AnnouncementForm({
             validate: (value) =>
               !value ||
               !startDate ||
-              value >= startDate ||
+              value > startDate ||
               "End Date must be after Start Date.",
           })}
         />

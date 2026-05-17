@@ -100,6 +100,121 @@ describe("AnnouncementForm tests", () => {
     // });
   });
 
+  test("renders custom button label", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm buttonLabel="Update" />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Update")).toBeInTheDocument();
+  });
+
+  test("calls submitAction when form is valid", async () => {
+    const mockSubmit = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm submitAction={mockSubmit} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-startDate`), {
+      target: { value: "2026-05-17T14:00" },
+    });
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: "Hello world" },
+    });
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    await waitFor(() => expect(mockSubmit).toHaveBeenCalled());
+    expect(mockSubmit.mock.calls[0][0]).toEqual({
+      startDate: "2026-05-17T14:00",
+      endDate: "",
+      announcementText: "Hello world",
+    });
+  });
+
+  test("calls submitAction with end date when provided", async () => {
+    const mockSubmit = vi.fn();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm submitAction={mockSubmit} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-startDate`), {
+      target: { value: "2026-05-17T14:00" },
+    });
+    fireEvent.change(screen.getByTestId(`${testId}-endDate`), {
+      target: { value: "2026-12-17T14:00" },
+    });
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: "Hello world" },
+    });
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    await waitFor(() => expect(mockSubmit).toHaveBeenCalled());
+    expect(mockSubmit.mock.calls[0][0]).toEqual({
+      startDate: "2026-05-17T14:00",
+      endDate: "2026-12-17T14:00",
+      announcementText: "Hello world",
+    });
+  });
+
+  test("invalid start date format shows error", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-startDate`), {
+      target: { value: "not-a-date" },
+    });
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: "Hello" },
+    });
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    expect(
+      await screen.findByText(
+        /Start Date is required and must be provided in ISO format./,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  test("that end date equal to start date is invalid", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startInput = screen.getByTestId(`${testId}-startDate`);
+    const endInput = screen.getByTestId(`${testId}-endDate`);
+    const submitButton = screen.getByText(/Create/);
+
+    fireEvent.change(startInput, { target: { value: "2026-05-17T14:00" } });
+    fireEvent.change(endInput, { target: { value: "2026-05-17T14:00" } });
+    fireEvent.click(submitButton);
+
+    expect(
+      await screen.findByText(/End Date must be after Start Date./),
+    ).toBeInTheDocument();
+  });
+
   test("that end date must be after start date", async () => {
     render(
       <QueryClientProvider client={queryClient}>

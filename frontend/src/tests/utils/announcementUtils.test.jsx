@@ -30,9 +30,17 @@ describe("AnnouncementUtils", () => {
       );
     });
 
-    test("returns empty values unchanged", () => {
+    test("returns non-datetime-local values unchanged", () => {
       expect(datetimeLocalToIsoDateTime("")).toBe("");
       expect(datetimeLocalToIsoDateTime(null)).toBe(null);
+      expect(datetimeLocalToIsoDateTime(undefined)).toBe(undefined);
+      expect(datetimeLocalToIsoDateTime(0)).toBe(0);
+    });
+
+    test("does not modify values that do not match datetime-local format", () => {
+      expect(datetimeLocalToIsoDateTime("2024-12-12T00:00:00.000Z")).toBe(
+        "2024-12-12T00:00:00.000Z",
+      );
     });
   });
 
