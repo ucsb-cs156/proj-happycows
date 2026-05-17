@@ -37,6 +37,8 @@ import java.util.Optional;
 @Slf4j
 public class AnnouncementsController extends ApiController{
 
+    private static final int ANNOUNCEMENT_TEXT_MAX_LENGTH = 255;
+
     @Autowired
     private AnnouncementRepository announcementRepository;
 
@@ -77,6 +79,10 @@ public class AnnouncementsController extends ApiController{
 
         if (announcementText.isBlank()) {
             return ResponseEntity.badRequest().body("Announcement cannot be empty.");
+        }
+        if (announcementText.length() > ANNOUNCEMENT_TEXT_MAX_LENGTH) {
+            return ResponseEntity.badRequest().body(
+                String.format("Announcement must be %d characters or fewer.", ANNOUNCEMENT_TEXT_MAX_LENGTH));
         }
         if (endDate != null && startDate.isAfter(endDate)) {
             return ResponseEntity.badRequest().body("Start date must be before end date.");
@@ -161,6 +167,10 @@ public class AnnouncementsController extends ApiController{
 
         if (announcementText.isBlank()) {
             return ResponseEntity.badRequest().body("Announcement cannot be empty.");
+        }
+        if (announcementText.length() > ANNOUNCEMENT_TEXT_MAX_LENGTH) {
+            return ResponseEntity.badRequest().body(
+                String.format("Announcement must be %d characters or fewer.", ANNOUNCEMENT_TEXT_MAX_LENGTH));
         }
 
         if (startDate == null) {

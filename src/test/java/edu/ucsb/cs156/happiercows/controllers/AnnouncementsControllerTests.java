@@ -187,6 +187,23 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotPostAnnouncementThatIsTooLong() throws Exception {
+
+        // arrange
+        Long commonsId = 1L;
+        String announcement = "a".repeat(256);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        //act
+        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
     @WithMockUser(roles = {"USER"})
     @Test
     public void userCannotPostAnnouncementWithEndBeforeStart() throws Exception {
@@ -614,6 +631,27 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // assert
         verify(announcementRepository, times(0)).findByAnnouncementId(id);
+        verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotEditAnnouncementThatIsTooLong() throws Exception {
+
+        // arrange
+        Long id = 0L;
+        Long commonsId = 1L;
+        String announcement = "a".repeat(256);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
+
+        //act
+        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 }

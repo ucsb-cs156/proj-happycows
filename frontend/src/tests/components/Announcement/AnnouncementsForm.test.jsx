@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { announcementFixtures } from "fixtures/announcementFixtures";
+import { ANNOUNCEMENT_TEXT_MAX_LENGTH } from "main/utils/announcementUtils";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { vi } from "vitest";
 
@@ -213,6 +214,57 @@ describe("AnnouncementForm tests", () => {
     expect(
       await screen.findByText(/End Date must be after Start Date./),
     ).toBeInTheDocument();
+  });
+
+  test("shows max length error when announcement reaches character limit", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: "a".repeat(ANNOUNCEMENT_TEXT_MAX_LENGTH) },
+    });
+
+    expect(
+      await screen.findByText(
+        `Announcement must be ${ANNOUNCEMENT_TEXT_MAX_LENGTH} characters or fewer.`,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(`${testId}-announcementText`)).toHaveClass(
+      "is-invalid",
+    );
+  });
+
+  test("rejects announcement text longer than max length", async () => {
+    const mockSubmit = vi.fn();
+    const tooLongText = "a".repeat(ANNOUNCEMENT_TEXT_MAX_LENGTH + 1);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm submitAction={mockSubmit} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-startDate`), {
+      target: { value: "2026-05-17T14:00" },
+    });
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: tooLongText },
+    });
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    expect(
+      await screen.findByText(
+        `Announcement must be ${ANNOUNCEMENT_TEXT_MAX_LENGTH} characters or fewer.`,
+      ),
+    ).toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   test("that end date must be after start date", async () => {
