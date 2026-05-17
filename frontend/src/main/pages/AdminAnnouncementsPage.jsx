@@ -6,7 +6,6 @@ import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
-import { announcementFixtures } from "fixtures/announcementFixtures";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
@@ -32,22 +31,10 @@ export default function AdminAnnouncementsPage() {
         commonsId: commonsId,
       },
     },
-    {
-      content: announcementFixtures.threeAnnouncements,
-      pageable: {
-        pageNumber: 0,
-        pageSize: 1000,
-      },
-      totalElements: 3,
-      totalPages: 1,
-    },
   );
 
   const { data: currentUser } = useCurrentUser();
-  const announcements =
-    announcementsResponse?.content?.length > 0
-      ? announcementsResponse.content
-      : announcementFixtures.threeAnnouncements;
+  const announcements = announcementsResponse?.content ?? [];
 
   const commonsName = commonsPlus?.commons.name;
 
