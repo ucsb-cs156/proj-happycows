@@ -10,6 +10,7 @@ function AnnouncementForm({
   // Stryker disable all
   const {
     register,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm({ defaultValues: initialContents || {} });
@@ -18,6 +19,7 @@ function AnnouncementForm({
   const navigate = useNavigate();
 
   const testIdPrefix = "AnnouncementForm";
+  const startDate = watch("startDate");
 
   // For explanation, see: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
   // Note that even this complex regex may still need some tweaks
@@ -76,8 +78,16 @@ function AnnouncementForm({
           // Stryker disable next-line all
           {...register("endDate", {
             pattern: isodate_regex,
+            validate: (value) =>
+              !value ||
+              !startDate ||
+              value >= startDate ||
+              "End Date must be after Start Date.",
           })}
         />
+        <Form.Control.Feedback type="invalid">
+          {errors.endDate?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">

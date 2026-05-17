@@ -3,6 +3,7 @@ import { vi } from "vitest";
 import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
+  datetimeLocalToIsoDateTime,
 } from "main/utils/announcementUtils";
 
 const mockToast = vi.fn();
@@ -16,6 +17,25 @@ vi.mock("react-toastify", async () => {
 });
 
 describe("AnnouncementUtils", () => {
+  describe("datetimeLocalToIsoDateTime", () => {
+    test("appends seconds when datetime-local omits them", () => {
+      expect(datetimeLocalToIsoDateTime("2024-12-12T00:00")).toBe(
+        "2024-12-12T00:00:00",
+      );
+    });
+
+    test("leaves values with seconds unchanged", () => {
+      expect(datetimeLocalToIsoDateTime("2024-12-12T00:00:00")).toBe(
+        "2024-12-12T00:00:00",
+      );
+    });
+
+    test("returns empty values unchanged", () => {
+      expect(datetimeLocalToIsoDateTime("")).toBe("");
+      expect(datetimeLocalToIsoDateTime(null)).toBe(null);
+    });
+  });
+
   describe("onDeleteSuccess", () => {
     test("It puts the message on console.log and in a toast", () => {
       // arrange

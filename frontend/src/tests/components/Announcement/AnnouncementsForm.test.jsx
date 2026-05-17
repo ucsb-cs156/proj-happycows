@@ -99,4 +99,26 @@ describe("AnnouncementForm tests", () => {
     //     expect(screen.getByText(/End must be provided in ISO format./)).toBeInTheDocument();
     // });
   });
+
+  test("that end date must be after start date", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startInput = screen.getByTestId(`${testId}-startDate`);
+    const endInput = screen.getByTestId(`${testId}-endDate`);
+    const submitButton = screen.getByText(/Create/);
+
+    fireEvent.change(startInput, { target: { value: "2026-05-17T14:00" } });
+    fireEvent.change(endInput, { target: { value: "2026-05-17T13:00" } });
+    fireEvent.click(submitButton);
+
+    expect(
+      await screen.findByText(/End Date must be after Start Date./),
+    ).toBeInTheDocument();
+  });
 });
