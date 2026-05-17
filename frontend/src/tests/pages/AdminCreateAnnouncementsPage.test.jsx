@@ -74,8 +74,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     );
 
     const heading = await screen.findByRole("heading", { level: 2 });
-    expect(heading).toHaveTextContent("Create Announcement");
-    expect(heading).toHaveTextContent("for Commons Sample Commons");
+    expect(heading).toHaveTextContent(
+      "Create Announcement for Commons Sample Commons",
+    );
   });
 
   test("correct href for create announcements button as an admin", async () => {
@@ -226,7 +227,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     );
 
     const heading = await screen.findByRole("heading", { level: 2 });
-    expect(heading).toHaveTextContent("for Commons Sample Commons");
+    expect(heading).toHaveTextContent(
+      "Create Announcement for Commons Sample Commons",
+    );
 
     const startDateField = screen.getByTestId("AnnouncementForm-startDate");
     const endDateField = screen.getByTestId("AnnouncementForm-endDate");
