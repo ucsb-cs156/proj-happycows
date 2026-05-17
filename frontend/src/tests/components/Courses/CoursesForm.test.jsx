@@ -15,7 +15,11 @@ vi.mock("react-router", async () => ({
 describe("CoursesForm tests", () => {
   const queryClient = new QueryClient();
 
-  const expectedHeaders = ["Code", "Name", "Term"];
+  const expectedHeaders = [
+    "Course Code (e.g. 'CHEM 123' or 'INT 94MW')",
+    "Name",
+    "Term",
+  ];
   const testId = "CoursesForm";
 
   test("renders correctly with no initialContents", async () => {

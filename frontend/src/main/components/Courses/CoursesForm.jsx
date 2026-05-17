@@ -40,7 +40,9 @@ function CoursesForm({
       )}
 
       <Form.Group className="mb-3">
-        <Form.Label htmlFor="code">Code</Form.Label>
+        <Form.Label htmlFor="code">
+          Course Code (e.g. 'CHEM 123' or 'INT 94MW')
+        </Form.Label>
         <Form.Control
           // Stryker disable next-line all
           data-testid={testIdPrefix + "-code"}
