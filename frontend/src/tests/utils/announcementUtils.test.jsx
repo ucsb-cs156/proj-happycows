@@ -35,6 +35,13 @@ describe("AnnouncementUtils", () => {
       expect(datetimeLocalToIsoDateTime(null)).toBe(null);
       expect(datetimeLocalToIsoDateTime(undefined)).toBe(undefined);
       expect(datetimeLocalToIsoDateTime(0)).toBe(0);
+
+      const nonStringWithIsoShape = {
+        toString: () => "2024-12-12T00:00",
+      };
+      expect(datetimeLocalToIsoDateTime(nonStringWithIsoShape)).toBe(
+        nonStringWithIsoShape,
+      );
     });
 
     test("does not modify values that do not match datetime-local format", () => {
