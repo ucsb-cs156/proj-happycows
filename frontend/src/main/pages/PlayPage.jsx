@@ -14,8 +14,7 @@ import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.jpg";
 import ChatPanel from "main/components/Chat/ChatPanel";
 import ManageCowsModal from "main/components/Commons/ManageCowsModal";
-import CurrentAnnouncements from "main/components/Announcements/CurrentAnnouncements";
-
+import CurrentAnnouncements from "main/components/Announcement/CurrentAnnouncements";
 export default function PlayPage() {
   const { commonsId } = useParams();
   const { data: currentUser } = useCurrentUser();
