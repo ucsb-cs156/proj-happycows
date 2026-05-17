@@ -30,10 +30,12 @@ vi.mock("react-router", async () => {
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");
+  const toast = (x) => mockToast(x);
+  toast.error = (x) => mockToast(x);
   return {
     __esModule: true,
     ...originalModule,
-    toast: (x) => mockToast(x),
+    toast,
   };
 });
 
@@ -52,6 +54,14 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
   });
 
   test("renders page without crashing", async () => {
@@ -63,7 +73,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Announcement")).toBeInTheDocument();
+    const heading = await screen.findByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent("Create Announcement");
+    expect(heading).toHaveTextContent("for Commons Sample Commons");
   });
 
   test("correct href for create announcements button as an admin", async () => {
@@ -213,7 +225,8 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Announcement")).toBeInTheDocument();
+    const heading = await screen.findByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent("for Commons Sample Commons");
 
     const startDateField = screen.getByTestId("AnnouncementForm-startDate");
     const endDateField = screen.getByTestId("AnnouncementForm-endDate");

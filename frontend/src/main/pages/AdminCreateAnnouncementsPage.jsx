@@ -3,12 +3,27 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AnnouncementForm from "main/components/Announcement/AnnouncementForm";
 import { Navigate } from "react-router";
 import { toast } from "react-toastify";
-import { useBackendMutation } from "main/utils/useBackend";
+import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { datetimeLocalToIsoDateTime } from "main/utils/announcementUtils";
 import { useParams } from "react-router";
 
 const AdminCreateAnnouncementsPage = () => {
   const { commonsId } = useParams();
+
+  // Stryker disable all
+  const { data: commonsPlus } = useBackend(
+    [`/api/commons/plus?id=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/commons/plus",
+      params: {
+        id: commonsId,
+      },
+    },
+  );
+  // Stryker restore all
+
+  const commonsName = commonsPlus?.commons.name;
 
   const objectToAxiosParams = (newAnnouncement) => {
     const params = {
@@ -61,7 +76,11 @@ const AdminCreateAnnouncementsPage = () => {
 
   return (
     <BasicLayout>
-      <h2>Create Announcement</h2>
+      <h2>
+        Create Announcement
+        <br />
+        for Commons {commonsName}
+      </h2>
       <AnnouncementForm submitAction={submitAction} />
     </BasicLayout>
   );
