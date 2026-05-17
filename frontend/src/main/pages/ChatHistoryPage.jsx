@@ -7,12 +7,13 @@ import axios from "axios";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import ChatMessageDisplay from "main/components/Chat/ChatMessageDisplay";
 import ChatMessageCreate from "main/components/Chat/ChatMessageCreate";
+import { useBackendMutation } from "main/utils/useBackend";
 import { useBackend } from "main/utils/useBackend";
 
 const PAGE_SIZE = 25;
 const REFRESH_RATE = 2000;
 
-const ChatHistoryPage = ({ readOnly = false }) => {
+const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
   const { commonsId } = useParams();
   const navigate = useNavigate();
   const loadMoreRef = useRef(null);
@@ -38,14 +39,37 @@ const ChatHistoryPage = ({ readOnly = false }) => {
       }, {})
     : {};
 
-  const fetchChatPage = async ({ pageParam = 0 }) => {
-    const response = await axios.get("/api/chat/get", {
-      params: {
-        commonsId: commonsId,
-        page: pageParam,
-        size: PAGE_SIZE,
+  const deleteMutation = useBackendMutation(
+    (id) => ({
+      url: "/api/chat/hide",
+      method: "PUT",
+      params: { chatMessageId: id },
+    }),
+    {
+      onSuccess: () => {
+        // React Query will refetch automatically if keys match
       },
-    });
+    },
+    [`/api/chat/admin/get?commonsId=${commonsId}`], // IMPORTANT
+  );
+
+  const handleDelete = (id) => {
+    if (window.confirm("Delete this message?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const fetchChatPage = async ({ pageParam = 0 }) => {
+    const response = await axios.get(
+      isAdmin ? "/api/chat/admin/get" : "/api/chat/get",
+      {
+        params: {
+          commonsId,
+          page: pageParam,
+          size: PAGE_SIZE,
+        },
+      },
+    );
     return response.data;
   };
 
@@ -155,7 +179,28 @@ const ChatHistoryPage = ({ readOnly = false }) => {
             </div>
           )}
           {messages.map((message) => (
-            <ChatMessageDisplay key={message.id} message={message} />
+            <div
+              key={message.id}
+              className="d-flex justify-content-between align-items-start mb-2"
+            >
+              <div
+                style={
+                  message.hidden ? { opacity: 0.5, fontStyle: "italic" } : {}
+                }
+              >
+                <ChatMessageDisplay message={message} />
+              </div>
+
+              {isAdmin && (
+                <button
+                  className="btn btn-danger btn-sm ms-2"
+                  data-testid={`ChatHistoryPage-delete-${message.id}`}
+                  onClick={() => handleDelete(message.id)}
+                >
+                  Delete
+                </button>
+              )}
+            </div>
           ))}
           <div
             ref={loadMoreRef}
