@@ -4,10 +4,27 @@ import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/announcementUtils";
 import { vi } from "vitest";
 
+const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
+  const mutate = vi.fn();
+  const useBackendMutationMock = vi.fn(() => ({ mutate }));
+  return { mockMutate: mutate, mockUseBackendMutation: useBackendMutationMock };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useBackendMutation: mockUseBackendMutation,
+  };
+});
+
 const mockedNavigate = vi.fn();
-const mockedAlert = vi.spyOn(window, "alert").mockImplementation(() => {});
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -17,8 +34,10 @@ vi.mock("react-router", async () => ({
 describe("AnnouncementTable tests", () => {
   const queryClient = new QueryClient();
   beforeEach(() => {
+    mockMutate.mockReset();
+    mockUseBackendMutation.mockReset();
+    mockUseBackendMutation.mockReturnValue({ mutate: mockMutate });
     mockedNavigate.mockClear();
-    mockedAlert.mockClear();
   });
 
   const expectedHeaders = [
@@ -32,24 +51,23 @@ describe("AnnouncementTable tests", () => {
   const [firstAnnouncement, secondAnnouncement] =
     announcementFixtures.threeAnnouncements;
 
-  test("renders empty table correctly", () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act
-    render(
+  const renderTable = (announcements, currentUser, commonsId = 1) => {
+    return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <AnnouncementTable
-            announcements={[]}
+            announcements={announcements}
             currentUser={currentUser}
-            commonsId={1}
+            commonsId={commonsId}
           />
         </MemoryRouter>
       </QueryClientProvider>,
     );
+  };
 
-    // assert
+  test("renders empty table correctly", () => {
+    renderTable([], currentUserFixtures.adminUser);
+
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -64,23 +82,11 @@ describe("AnnouncementTable tests", () => {
   });
 
   test("Has the expected column headers, content and buttons for admin user", () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-            commonsId={1}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -119,23 +125,11 @@ describe("AnnouncementTable tests", () => {
   });
 
   test("Has the expected column headers, content for ordinary user", () => {
-    // arrange
-    const currentUser = currentUserFixtures.userOnly;
-
-    // act
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-            commonsId={1}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.userOnly,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -165,39 +159,16 @@ describe("AnnouncementTable tests", () => {
   });
 
   test("Edit button navigates to the edit page", async () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-            commonsId={1}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
-
-    // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
     );
-    expect(editButton).toBeInTheDocument();
-
-    // act - click the edit button
     fireEvent.click(editButton);
 
-    // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith(
         `/admin/announcements/1/edit/${firstAnnouncement.id}`,
@@ -205,40 +176,31 @@ describe("AnnouncementTable tests", () => {
     );
   });
 
-  test("Delete button calls delete callback", async () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-            commonsId={1}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+  test("Delete button calls delete mutation", async () => {
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
-
-    // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      `${firstAnnouncement.id}`,
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
     );
-    expect(deleteButton).toBeInTheDocument();
-
-    // act - click the delete button
     fireEvent.click(deleteButton);
-    expect(mockedAlert).toHaveBeenCalledWith(
-      "Delete functionality not yet implemented",
+
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
+  });
+
+  test("Configures delete mutation with expected args", () => {
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
+      5,
+    );
+
+    expect(mockUseBackendMutation).toHaveBeenCalledWith(
+      cellToAxiosParamsDelete,
+      expect.objectContaining({ onSuccess: onDeleteSuccess }),
+      ["/api/announcements/getbycommonsid?commonsId=5"],
     );
   });
 });

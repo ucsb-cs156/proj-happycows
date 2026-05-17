@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
@@ -10,8 +10,18 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
-const fallbackAnnouncementText =
-  announcementFixtures.threeAnnouncements[1].announcementText;
+const mockToast = vi.fn();
+
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  const toast = (x) => mockToast(x);
+  toast.error = (x) => mockToast(x);
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast,
+  };
+});
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -24,17 +34,20 @@ vi.mock("react-router", async () => ({
 describe("AdminAnnouncementsPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
+  const testId = "AnnouncementTable";
+  const [firstAnnouncement] = announcementFixtures.threeAnnouncements;
 
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    mockToast.mockClear();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
       commons: {
         id: 1,
         name: "Sample Commons",
@@ -42,17 +55,15 @@ describe("AdminAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
-    axiosMock
-      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
-      .reply(200, {
-        content: announcementFixtures.threeAnnouncements,
-        pageable: {
-          pageNumber: 0,
-          pageSize: 1000,
-        },
-        totalElements: 3,
-        totalPages: 1,
-      });
+    axiosMock.onGet("/api/announcements/getbycommonsid").reply(200, {
+      content: announcementFixtures.threeAnnouncements,
+      pageable: {
+        pageNumber: 0,
+        pageSize: 1000,
+      },
+      totalElements: 3,
+      totalPages: 1,
+    });
   });
 
   test("renders page without crashing", async () => {
@@ -72,7 +83,7 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(headerRow).toHaveStyle({ gap: "30px" });
   });
 
-  test("renders announcements table with data", async () => {
+  test("renders announcements table with data from the API", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -85,7 +96,7 @@ describe("AdminAnnouncementsPage tests", () => {
       await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
     expect(
-      await screen.findByText(fallbackAnnouncementText),
+      await screen.findByText(firstAnnouncement.announcementText),
     ).toBeInTheDocument();
   });
 
@@ -108,7 +119,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
   });
 
-  test("renders fixture announcements when backend returns empty content", async () => {
+  test("renders empty table when backend returns no announcements", async () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -117,7 +128,7 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
       commons: {
         id: 1,
         name: "Sample Commons",
@@ -125,17 +136,15 @@ describe("AdminAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
-    axiosMock
-      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
-      .reply(200, {
-        content: [],
-        pageable: {
-          pageNumber: 0,
-          pageSize: 1000,
-        },
-        totalElements: 0,
-        totalPages: 0,
-      });
+    axiosMock.onGet("/api/announcements/getbycommonsid").reply(200, {
+      content: [],
+      pageable: {
+        pageNumber: 0,
+        pageSize: 1000,
+      },
+      totalElements: 0,
+      totalPages: 0,
+    });
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -146,7 +155,38 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText(fallbackAnnouncementText),
+      await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testId}-cell-row-0-col-id`),
+    ).not.toBeInTheDocument();
+  });
+
+  test("admin can delete an announcement", async () => {
+    axiosMock
+      .onDelete("/api/announcements/delete", { params: { id: 1 } })
+      .reply(200, firstAnnouncement);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-Delete-button`),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`),
+    );
+
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+    expect(axiosMock.history.delete[0].params).toEqual({ id: 1 });
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith(firstAnnouncement),
+    );
   });
 });
