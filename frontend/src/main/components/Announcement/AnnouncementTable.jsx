@@ -1,6 +1,10 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
-
+import { useBackendMutation } from "main/utils/useBackend";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/announcementUtils";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
@@ -15,8 +19,14 @@ export default function AnnouncementTable({
     navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
   };
 
-  const deleteCallback = async (_cell) => {
-    alert("Delete functionality not yet implemented");
+  const deleteMutation = useBackendMutation(
+    cellToAxiosParamsDelete,
+    { onSuccess: onDeleteSuccess },
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+  );
+
+  const deleteCallback = async (cell) => {
+    deleteMutation.mutate(cell);
   };
 
   const columns = [
