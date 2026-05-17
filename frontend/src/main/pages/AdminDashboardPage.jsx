@@ -1,12 +1,13 @@
 import React from "react";
 import { useParams } from "react-router";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
 
   return (
-    <Container>
+    <BasicLayout>
       <h1 className="mb-4">Dashboard</h1>
 
       <p>
@@ -116,6 +117,6 @@ export default function AdminDashboardPage() {
           <p>Future analytics and breakdowns will be added here.</p>
         </Card.Body>
       </Card>
-    </Container>
+    </BasicLayout>
   );
 }
