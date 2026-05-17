@@ -8,6 +8,7 @@ import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/announcementUtils";
+import { formatDateTime } from "main/utils/dateUtils";
 import { vi } from "vitest";
 
 const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
@@ -40,12 +41,7 @@ describe("AnnouncementTable tests", () => {
     mockedNavigate.mockClear();
   });
 
-  const expectedHeaders = [
-    "id",
-    "Start Date ISO Format",
-    "End Date ISO Format",
-    "Announcement",
-  ];
+  const expectedHeaders = ["id", "Start Date", "End Date", "Announcement"];
   const expectedFields = ["id", "startDate", "endDate", "announcementText"];
   const testId = "AnnouncementTable";
   const [firstAnnouncement, secondAnnouncement] =
@@ -102,14 +98,14 @@ describe("AnnouncementTable tests", () => {
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.startDate));
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       `${secondAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent(secondAnnouncement.startDate);
+    ).toHaveTextContent(formatDateTime(secondAnnouncement.startDate));
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -145,14 +141,14 @@ describe("AnnouncementTable tests", () => {
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent(firstAnnouncement.startDate);
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.startDate));
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       `${secondAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent(secondAnnouncement.startDate);
+    ).toHaveTextContent(formatDateTime(secondAnnouncement.startDate));
 
     expect(screen.queryByText("Delete")).not.toBeInTheDocument();
     expect(screen.queryByText("Edit")).not.toBeInTheDocument();
