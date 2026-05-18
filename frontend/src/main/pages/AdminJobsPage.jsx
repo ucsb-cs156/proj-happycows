@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";
 import SetCowHealthForm from "main/components/Jobs/SetCowHealthForm";
+import RecordCommonStatsJobForm from "main/components/Jobs/RecordCommonStatsJobForm";
 
 const AdminJobsPage = () => {
   // *** Test job ***
@@ -170,6 +171,24 @@ const AdminJobsPage = () => {
     InstructorReportSpecificCommonsMutation.mutate(data);
   };
 
+const objectToAxiosParamsRecordCommonStatsJob = () => ({
+  url: `/api/jobs/launch/recordcommonstats`,
+  method: "POST",
+});
+
+// Stryker disable all
+const RecordCommonStatsMutation = useBackendMutation(
+  objectToAxiosParamsRecordCommonStatsJob,
+  {},
+  ["/api/jobs/all"],
+);
+// Stryker restore all
+
+const submitRecordCommonStatsJob = async () => {
+  toast("Submitted Job: Record Common Stats");
+  RecordCommonStatsMutation.mutate();
+};
+
   const jobLaunchers = [
     {
       name: "Test Job",
@@ -198,6 +217,10 @@ const AdminJobsPage = () => {
           submitAction={submitInstructorReportSpecificCommonsJob}
         />
       ),
+    },
+    {
+      name: "Record Common Stats",
+      form: <RecordCommonStatsJobForm submitAction={submitRecordCommonStatsJob} />,
     },
   ];
 
