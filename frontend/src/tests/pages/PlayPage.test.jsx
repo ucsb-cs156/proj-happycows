@@ -294,17 +294,19 @@ describe("PlayPage tests", () => {
     expect(closeIcon).toHaveStyle("font-size: 30px;");
 
     expect(chatButton).toHaveStyle(`
-      width: 60px;
-      height: 60px;
-      border-radius: 25%;
-      background-color: rgb(173, 216, 230);
-      color: rgb(0, 0, 0);
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-    `);
+  width: 60px;
+  height: 60px;
+  border-radius: 25%;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+`);
 
-    expect(chatButton.style.color).toBe("black");
+    expect(["lightblue", "rgb(173, 216, 230)"]).toContain(
+      chatButton.style.backgroundColor,
+    );
+
+    expect(["black", "rgb(0, 0, 0)"]).toContain(chatButton.style.color);
 
     expect(chatContainer).toHaveStyle(`
       width: 550px;
