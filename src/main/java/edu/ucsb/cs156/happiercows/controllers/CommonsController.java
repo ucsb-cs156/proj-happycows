@@ -7,6 +7,7 @@ import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
@@ -287,8 +288,15 @@ public class CommonsController extends ApiController {
         Long userId = u.getId();
         String username = u.getFullName();
 
+        //if the commons is not found, throw a EntityNotFoundException
+        //if the commons is hidden, throw a CommonsHiddenException
         Commons joinedCommons = commonsRepository.findById(commonsId)
                 .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+            
+        if (joinedCommons.isHidden()) {
+            throw new CommonsHiddenException("Commons with id " + commonsId + " is hidden and cannot be joined");
+        }
+
         Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
         if (userCommonsLookup.isPresent()) {
