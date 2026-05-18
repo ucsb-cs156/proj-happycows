@@ -171,23 +171,23 @@ const AdminJobsPage = () => {
     InstructorReportSpecificCommonsMutation.mutate(data);
   };
 
-const objectToAxiosParamsRecordCommonStatsJob = () => ({
-  url: `/api/jobs/launch/recordcommonstats`,
-  method: "POST",
-});
+  const objectToAxiosParamsRecordCommonStatsJob = () => ({
+    url: `/api/jobs/launch/recordcommonstats`,
+    method: "POST",
+  });
 
-// Stryker disable all
-const RecordCommonStatsMutation = useBackendMutation(
-  objectToAxiosParamsRecordCommonStatsJob,
-  {},
-  ["/api/jobs/all"],
-);
-// Stryker restore all
+  // Stryker disable all
+  const RecordCommonStatsMutation = useBackendMutation(
+    objectToAxiosParamsRecordCommonStatsJob,
+    {},
+    ["/api/jobs/all"],
+  );
+  // Stryker restore all
 
-const submitRecordCommonStatsJob = async () => {
-  toast("Submitted Job: Record Common Stats");
-  RecordCommonStatsMutation.mutate();
-};
+  const submitRecordCommonStatsJob = async () => {
+    toast("Submitted Job: Record Common Stats");
+    RecordCommonStatsMutation.mutate();
+  };
 
   const jobLaunchers = [
     {
@@ -220,7 +220,9 @@ const submitRecordCommonStatsJob = async () => {
     },
     {
       name: "Record Common Stats",
-      form: <RecordCommonStatsJobForm submitAction={submitRecordCommonStatsJob} />,
+      form: (
+        <RecordCommonStatsJobForm submitAction={submitRecordCommonStatsJob} />
+      ),
     },
   ];
 
