@@ -109,11 +109,9 @@ export default function PlayPage() {
   // Stryker restore all
 
   // Stryker disable all
-  const mutationbuy = useBackendMutation(
-    objectToAxiosParamsBuy,
-    null,
-    [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
-  );
+  const mutationbuy = useBackendMutation(objectToAxiosParamsBuy, null, [
+    `/api/usercommons/forcurrentuser?commonsId=${commonsId}`,
+  ]);
   // Stryker restore all
 
   const onBuy = (userCommons, numCows) => {
