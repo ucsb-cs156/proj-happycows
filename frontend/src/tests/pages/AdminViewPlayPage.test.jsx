@@ -174,15 +174,17 @@ describe("AdminViewPlayPage tests", () => {
 
     // Check styles for the chat button
     expect(chatButton).toHaveStyle(`
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: lightblue;
-            color: black;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-        `);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(173, 216, 230);
+    color: rgb(0, 0, 0);
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+`);
+
+    expect(chatButton.style.color).toBe("black");
 
     // Check styles for the chat container
     expect(chatContainer).toHaveStyle(`
@@ -225,11 +227,29 @@ describe("AdminViewPlayPage tests", () => {
 
   test("renders when userCommons is falsy but commonsPlus is truthy", async () => {
     // Mock the response so that userCommons is falsy but commonsPlus is truthy
+    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
+
     axiosMock
-      .onGet("/api/usercommons", {
-        params: { userId: 1, commonsId: 1 },
+      .onGet("/api/announcements/current", {
+        params: { commonsId: 1 },
       })
-      .reply(200, null);
+      .reply(200, []);
+
+    axiosMock
+      .onGet("/api/profits/all", {
+        params: {
+          userId: 1,
+          commonsId: 1,
+        },
+      })
+      .reply(200, []);
 
     render(
       <QueryClientProvider client={queryClient}>
