@@ -174,17 +174,19 @@ describe("AdminViewPlayPage tests", () => {
 
     // Check styles for the chat button
     expect(chatButton).toHaveStyle(`
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgb(173, 216, 230);
-    color: rgb(0, 0, 0);
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
 `);
 
-    expect(chatButton.style.color).toBe("black");
+    expect(["lightblue", "rgb(173, 216, 230)"]).toContain(
+      chatButton.style.backgroundColor,
+    );
+
+    expect(["black", "rgb(0, 0, 0)"]).toContain(chatButton.style.color);
 
     // Check styles for the chat container
     expect(chatContainer).toHaveStyle(`
