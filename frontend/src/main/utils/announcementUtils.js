@@ -1,5 +1,7 @@
 import { toast } from "react-toastify";
 
+export const ANNOUNCEMENT_TEXT_MAX_LENGTH = 255;
+
 // datetime-local inputs use "YYYY-MM-DDTHH:mm"; Spring ISO.DATE_TIME expects seconds.
 export function datetimeLocalToIsoDateTime(value) {
   if (
