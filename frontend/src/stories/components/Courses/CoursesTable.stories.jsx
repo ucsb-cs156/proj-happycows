@@ -5,7 +5,7 @@ import { coursesFixtures } from "fixtures/coursesFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 export default {
-  title: "components/courses/CoursesTable",
+  title: "components/Courses/CoursesTable",
   component: CoursesTable,
 };
 
