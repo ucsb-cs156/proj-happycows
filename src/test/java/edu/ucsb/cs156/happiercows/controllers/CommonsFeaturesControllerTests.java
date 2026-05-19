@@ -18,6 +18,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -83,7 +85,211 @@ public class CommonsFeaturesControllerTests extends ControllerTestCase {
                 feature.isEnabled() == false
         ));
     }
-    
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_when_commonsId_missing() throws Exception {
+        String requestBody = "{\"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"commonsId is required\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_when_commonsId_is_null() throws Exception {
+        String requestBody = "{\"commonsId\": null, \"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"commonsId is required\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_parses_string_commonsId() throws Exception {
+        long commonsId = 123L;
+
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+        when(commonsFeatureRepository.findByCommonsIdAndFeature(commonsId, "FARMERS_CAN_SEE_LEADERBOARD"))
+                .thenReturn(Optional.empty());
+        when(commonsFeatureRepository.save(any(CommonsFeature.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String requestBody = "{\"commonsId\": \"123\", \"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertEquals("{\"message\":\"Commons features updated successfully\"}", response.getResponse().getContentAsString());
+        verify(commonsFeatureRepository).save(argThat(feature ->
+                feature.getCommonsId() == commonsId &&
+                "FARMERS_CAN_SEE_LEADERBOARD".equals(feature.getFeature()) &&
+                feature.isEnabled() == false
+        ));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_when_commonsId_malformed() throws Exception {
+        String requestBody = "{\"commonsId\": \"abc\", \"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"commonsId is required\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_when_commonsId_has_unrecognized_type() throws Exception {
+        String requestBody = "{\"commonsId\": true, \"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"commonsId is required\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_throws_entity_not_found_when_commons_does_not_exist() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(false);
+
+        String requestBody = "{\"commonsId\": 7, \"FARMERS_CAN_SEE_LEADERBOARD\": false}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        assertNotNull(response.getResolvedException());
+        assertInstanceOf(Exception.class, response.getResolvedException());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_for_unknown_feature_key() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+
+        String requestBody = "{\"commonsId\": 7, \"UNKNOWN_FEATURE\": true}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"Unknown commons feature: UNKNOWN_FEATURE\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_returns_bad_request_when_no_features_are_provided() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+
+        String requestBody = "{\"commonsId\": 7}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        assertEquals("{\"message\":\"At least one commons feature must be provided\"}", response.getResponse().getContentAsString());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_parses_numeric_feature_value() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+        when(commonsFeatureRepository.findByCommonsIdAndFeature(commonsId, "FARMERS_CAN_SEE_LEADERBOARD"))
+                .thenReturn(Optional.empty());
+        when(commonsFeatureRepository.save(any(CommonsFeature.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String requestBody = "{\"commonsId\": 7, \"FARMERS_CAN_SEE_LEADERBOARD\": 1}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertEquals("{\"message\":\"Commons features updated successfully\"}", response.getResponse().getContentAsString());
+        verify(commonsFeatureRepository).save(argThat(feature -> feature.isEnabled()));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_parses_string_feature_value() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+        when(commonsFeatureRepository.findByCommonsIdAndFeature(commonsId, "FARMERS_CAN_SEE_LEADERBOARD"))
+                .thenReturn(Optional.empty());
+        when(commonsFeatureRepository.save(any(CommonsFeature.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        String requestBody = "{\"commonsId\": 7, \"FARMERS_CAN_SEE_LEADERBOARD\": \"false\"}";
+
+        MvcResult response = mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertEquals("{\"message\":\"Commons features updated successfully\"}", response.getResponse().getContentAsString());
+        verify(commonsFeatureRepository).save(argThat(feature -> !feature.isEnabled()));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void postCommonsFeatures_throws_for_invalid_feature_value_type() throws Exception {
+        long commonsId = 7L;
+        when(commonsRepository.existsById(commonsId)).thenReturn(true);
+
+        String requestBody = "{\"commonsId\": 7, \"FARMERS_CAN_SEE_LEADERBOARD\": [true]}";
+
+        mockMvc.perform(post("/api/commonsfeatures")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest());
+    }
+
     @WithMockUser(roles = { "USER" })
     @Test
     public void getCommonsFeatures_returns_list_of_features_for_user() throws Exception {
