@@ -204,6 +204,28 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanPostAnnouncementWithMaxLengthText() throws Exception {
+
+        // arrange
+        Long commonsId = 1L;
+        Long id = 0L;
+        String announcement = "a".repeat(255);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+
+        when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+
+        //act
+        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+    }
+
     @WithMockUser(roles = {"USER"})
     @Test
     public void userCannotPostAnnouncementWithEndBeforeStart() throws Exception {
@@ -653,5 +675,29 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // assert
         verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanEditAnnouncementWithMaxLengthText() throws Exception {
+
+        // arrange
+        Long id = 0L;
+        Long commonsId = 1L;
+        String announcement = "a".repeat(255);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
+
+        Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        when(announcementRepository.save(any(Announcement.class))).thenReturn(editedAnnouncementObj);
+
+        //act
+        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
     }
 }
