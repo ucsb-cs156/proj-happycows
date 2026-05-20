@@ -6,8 +6,6 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminChatPage from "main/pages/AdminChatPage";
-import AdminListCommonsPage from "main/pages/AdminListCommonPage";
-import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
