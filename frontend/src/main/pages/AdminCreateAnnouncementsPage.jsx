@@ -35,7 +35,34 @@ export default function AdminCreateAnnouncementsPage() {
   );
 
   const toBackendDate = (dateTimeLocal) => {
-    return `${dateTimeLocal}:00.000-08:00`;
+    const date = new Date(dateTimeLocal);
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    const pad = (n) => String(n).padStart(2, "0");
+    const timezone = date
+      .toLocaleTimeString("en-us", { timeZoneName: "short" })
+      .split(" ")
+      .pop();
+
+    return `${days[date.getDay()]} ${
+      months[date.getMonth()]
+    } ${pad(date.getDate())} ${pad(date.getHours())}:${pad(
+      date.getMinutes(),
+    )}:00 ${timezone} ${date.getFullYear()}`;
   };
 
   const submitAction = (data) => {
