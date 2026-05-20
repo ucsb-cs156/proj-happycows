@@ -139,7 +139,14 @@ describe("CoursesTable tests", () => {
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
     );
+
     fireEvent.click(deleteButton);
+
+    const confirmDeleteButton = await screen.getByTestId(
+      `${testId}-Modal-Delete`,
+    );
+
+    fireEvent.click(confirmDeleteButton);
 
     await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
     const cellArg = mockMutate.mock.calls[0][0];
@@ -149,7 +156,7 @@ describe("CoursesTable tests", () => {
 
   test("Supports overriding the testIdPrefix prop", () => {
     renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser, {
-      testIdPrefix: "CustomCourses",
+      testid: "CustomCourses",
     });
 
     expect(screen.getByTestId("CustomCourses-header-code")).toBeInTheDocument();
