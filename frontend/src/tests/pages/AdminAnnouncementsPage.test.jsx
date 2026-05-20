@@ -8,6 +8,7 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
+import { announcementFixtures } from "fixtures/announcementFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
@@ -33,9 +34,20 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
   });
 
   test("renders page without crashing", async () => {
+    axiosMock.onGet("/api/announcements/getbycommonsid").reply(200, {
+      content: [],
+    });
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -57,6 +69,11 @@ describe("AdminAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, {
+        content: announcementFixtures.threeAnnouncements,
+      });
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -69,6 +86,13 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).toHaveTextContent("1");
+    expect(screen.getByText("Create Announcement").closest("a")).toHaveAttribute(
+      "href",
+      "/admin/announcements/1/create",
+    );
   });
 
   test("correct href for announcements button as an admin", async () => {
