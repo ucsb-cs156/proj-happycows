@@ -25,6 +25,7 @@ import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
 import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
+import AdminDashboardPage from "main/pages/AdminDashboardPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
@@ -50,6 +51,7 @@ function App() {
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
+      <Route path="/admin/dashboard/:id" element={<AdminDashboardPage />} />
       <Route
         path="/admin/createstudents"
         element={<AdminStudentsCreatePage />}
