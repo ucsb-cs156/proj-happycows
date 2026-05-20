@@ -28,6 +28,7 @@ describe("AdminAnnouncementsPage tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    queryClient.clear();
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
@@ -92,6 +93,27 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       screen.getByText("Create Announcement").closest("a"),
     ).toHaveAttribute("href", "/admin/announcements/1/create");
+  });
+
+  test("falls back to an empty announcements list when content is missing", async () => {
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, {});
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
   });
 
   test("correct href for announcements button as an admin", async () => {
