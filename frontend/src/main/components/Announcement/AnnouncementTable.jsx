@@ -17,20 +17,18 @@ export default function AnnouncementTable({
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    if (commonsId) {
-      navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
-    } else {
-      navigate(`/announcements/edit/${cell.row.values.id}`);
-    }
+    navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
   };
 
+  // Stryker disable all : hard to test query caching
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
     [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
   );
+  // Stryker restore all
 
-  const deleteCallback = async (cell) => {
+  const deleteCallback = (cell) => {
     deleteMutation.mutate(cell);
   };
 

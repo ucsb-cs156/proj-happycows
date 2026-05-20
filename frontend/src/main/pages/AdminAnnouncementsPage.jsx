@@ -11,6 +11,7 @@ export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
   const { data: currentUser } = useCurrentUser();
 
+  // Stryker disable all : hard to test query caching
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${commonsId}`],
     {
@@ -33,8 +34,10 @@ export default function AdminAnnouncementsPage() {
     },
     [],
   );
+  // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
+  const announcementData = announcements?.content || [];
 
   return (
     <BasicLayout>
@@ -51,11 +54,7 @@ export default function AdminAnnouncementsPage() {
             </Button>
 
             <AnnouncementTable
-              announcements={
-                Array.isArray(announcements?.content)
-                  ? announcements.content
-                  : []
-              }
+              announcements={announcementData}
               currentUser={currentUser}
               commonsId={commonsId}
             />
