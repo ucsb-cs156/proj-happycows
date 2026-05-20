@@ -46,7 +46,9 @@ describe("CommonsFeaturesForm tests", () => {
     expect(
       screen.getByLabelText("Farmers Can See Leaderboard"),
     ).toBeInTheDocument();
-    expect(screen.getByTestId("CommonsFeaturesForm-FARMERS_CAN_SEE_LEADERBOARD")).toBeChecked();
+    expect(
+      screen.getByTestId("CommonsFeaturesForm-FARMERS_CAN_SEE_LEADERBOARD"),
+    ).toBeChecked();
   });
 
   it("formats feature names correctly", () => {
