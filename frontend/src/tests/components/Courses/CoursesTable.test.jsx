@@ -152,6 +152,52 @@ describe("CoursesTable tests", () => {
     const cellArg = mockMutate.mock.calls[0][0];
     expect(cellArg.row.values.id).toBe(1);
     expect(cellArg.row.values.code).toBe("CMPSC 156");
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
+  test("Pressing Keep this Course in Modal cancels the deletion", async () => {
+    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
+
+    fireEvent.click(deleteButton);
+
+    const cancelDeleteButton = await screen.getByTestId(
+      `${testId}-Modal-Cancel`,
+    );
+
+    fireEvent.click(cancelDeleteButton);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
+  test("Exiting the modal pop up cancels the deletion", async () => {
+    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
+
+    fireEvent.click(deleteButton);
+
+    const closeButton = await screen.getByLabelText("Close");
+
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
   test("Supports overriding the testIdPrefix prop", () => {
@@ -198,5 +244,27 @@ describe("CoursesTable tests", () => {
       expect.objectContaining({ onSuccess: onDeleteSuccess }),
       ["/api/course/all"],
     );
+  });
+
+  test("Clicking Delete button opens the modal for adminUser", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+
+    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+
+    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete-button`,
+    );
+
+    fireEvent.click(deleteButton);
+
+    // Verify that the modal is shown by checking for the "modal-open" class
+    await waitFor(() => {
+      expect(document.body).toHaveClass("modal-open");
+    });
   });
 });
