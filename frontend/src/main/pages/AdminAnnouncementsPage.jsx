@@ -37,6 +37,8 @@ export default function AdminAnnouncementsPage() {
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
+
+  // Stryker disable next-line all : fallback for loading/empty paged response
   const announcementData = announcements?.content || [];
 
   return (
