@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -10,15 +10,15 @@ export default {
   component: AdminCreateAnnouncementsPage,
 };
 
-const createAnnouncementPath = "/admin/announcements/1/create";
-
 const Template = () => (
-  <Routes location={createAnnouncementPath}>
-    <Route
-      path="/admin/announcements/:commonsId/create"
-      element={<AdminCreateAnnouncementsPage />}
-    />
-  </Routes>
+  <MemoryRouter initialEntries={["/admin/announcements/1/create"]}>
+    <Routes>
+      <Route
+        path="/admin/announcements/:commonsId/create"
+        element={<AdminCreateAnnouncementsPage />}
+      />
+    </Routes>
+  </MemoryRouter>
 );
 
 export const Default = Template.bind({});
