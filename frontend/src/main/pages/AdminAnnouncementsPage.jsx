@@ -4,22 +4,31 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
+import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
+import { useCurrentUser } from "main/utils/currentUser";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
+  const { data: currentUser } = useCurrentUser();
 
-  // Stryker disable all
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${commonsId}`],
     {
       method: "GET",
       url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+      params: { id: commonsId },
     },
   );
-  // Stryker restore all
+
+  const { data: announcements } = useBackend(
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/getbycommonsid",
+      params: { commonsId },
+    },
+    [],
+  );
 
   const commonsName = commonsPlus?.commons.name;
 
@@ -35,6 +44,12 @@ export default function AdminAnnouncementsPage() {
             >
               Create Announcement
             </Button>
+
+            <AnnouncementTable
+              announcements={announcements}
+              currentUser={currentUser}
+              commonsId={commonsId}
+            />
           </Col>
         </Row>
       </div>

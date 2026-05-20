@@ -5,31 +5,30 @@ import { useNavigate, useParams } from "react-router";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
-export default function AdminCreateAnnouncementsPage() {
-  const { commonsId } = useParams();
+export default function AdminEditAnnouncementsPage() {
+  const { commonsId, announcementId } = useParams();
   const navigate = useNavigate();
 
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
+  const { data: announcement } = useBackend(
+    [`/api/announcements/getbyid?id=${announcementId}`],
     {
       method: "GET",
-      url: "/api/commons/plus",
-      params: { id: commonsId },
+      url: "/api/announcements/getbyid",
+      params: {
+        id: announcementId,
+      },
     },
   );
 
   const mutation = useBackendMutation(
-    (announcement) => ({
-      method: "POST",
-      url: "/api/announcements/post",
-      data: {
-        ...announcement,
-        commonsId: Number(commonsId),
-      },
+    (updatedAnnouncement) => ({
+      method: "PUT",
+      url: "/api/announcements/put",
+      data: updatedAnnouncement,
     }),
     {
       onSuccess: () => {
-        toast("Announcement created");
+        toast("Announcement updated");
         navigate(`/admin/announcements/${commonsId}`);
       },
     },
@@ -39,14 +38,18 @@ export default function AdminCreateAnnouncementsPage() {
     mutation.mutate(data);
   };
 
-  const commonsName = commonsPlus?.commons.name;
-
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Create Announcement</h1>
-        <h2>for Commons: {commonsName}</h2>
-        <AnnouncementForm submitAction={submitAction} buttonLabel="Create" />
+        <h1>Edit Announcement</h1>
+
+        {announcement && (
+          <AnnouncementForm
+            initialContents={announcement}
+            submitAction={submitAction}
+            buttonLabel="Update"
+          />
+        )}
       </div>
     </BasicLayout>
   );
