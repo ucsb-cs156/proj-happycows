@@ -37,7 +37,7 @@ export default function AdminAnnouncementsPage() {
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
-  const announcements = announcementsPage?.content ?? [];
+  const announcements = announcementsPage.content ?? [];
 
   return (
     <BasicLayout>
