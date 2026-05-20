@@ -9,6 +9,7 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
+const mockToast = vi.fn();
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -18,6 +19,15 @@ vi.mock("react-router", async () => ({
   }),
   useNavigate: () => mockedNavigate,
 }));
+
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
 
 describe("AdminEditAnnouncementsPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
@@ -35,6 +45,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     mockedNavigate.mockClear();
+    mockToast.mockClear();
 
     axiosMock
       .onGet("/api/currentUser")
@@ -117,6 +128,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith("/admin/announcements/1"),
     );
+    expect(mockToast).toHaveBeenCalledWith("Announcement updated");
   });
 
   test("submits edit announcement without end date", async () => {
@@ -152,5 +164,6 @@ describe("AdminEditAnnouncementsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
 
     expect(axiosMock.history.put[0].params).not.toHaveProperty("endDate");
+    expect(mockToast).toHaveBeenCalledWith("Announcement updated");
   });
 });

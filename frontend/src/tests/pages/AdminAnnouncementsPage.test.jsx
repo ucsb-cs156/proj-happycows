@@ -3,63 +3,56 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
-import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
-import AdminListCommonsPage from "main/pages/AdminListCommonPage";
-import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { vi } from "vitest";
-
-const mockedNavigate = vi.fn();
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
     commonsId: 1,
   }),
-  useNavigate: () => mockedNavigate,
 }));
 
 describe("AdminAnnouncementsPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
-  const queryClient = new QueryClient();
+
+  const getQueryClient = () =>
+    new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
 
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-  });
 
-  test("renders page without crashing", async () => {
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminAnnouncementsPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-  });
-
-  test("renders announcements with correct commons name", async () => {
-    axiosMock
-      .onGet("/api/currentUser")
-      .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
       commons: {
         id: 1,
         name: "Sample Commons",
       },
-      totalPlayers: 5,
-      totalCows: 5,
     });
+  });
+
+  test("renders page without crashing", async () => {
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, { content: [] });
 
     render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={getQueryClient()}>
         <MemoryRouter>
           <AdminAnnouncementsPage />
         </MemoryRouter>
@@ -71,30 +64,51 @@ describe("AdminAnnouncementsPage tests", () => {
     ).toBeInTheDocument();
   });
 
-  test("correct href for announcements button as an admin", async () => {
-    const testId = "CommonsTable";
+  test("renders announcements with correct commons name", async () => {
     axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, {
+        content: [
+          {
+            id: 1,
+            commonsId: 1,
+            startDate: "2026-05-21T21:17:00.000-07:00",
+            endDate: "2026-05-22T21:17:00.000-07:00",
+            announcementText: "hello announcement",
+          },
+        ],
+      });
 
     render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={getQueryClient()}>
         <MemoryRouter>
-          <AdminListCommonsPage />
+          <AdminAnnouncementsPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
     expect(
-      await screen.findByTestId(`${testId}-cell-row-0-col-commons.id`),
-    ).toHaveTextContent("1");
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(await screen.findByText("hello announcement")).toBeInTheDocument();
+  });
 
-    const announcementsButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Announcements-button`,
+  test("renders empty table when announcements response has no content", async () => {
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, {});
+
+    render(
+      <QueryClientProvider client={getQueryClient()}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-    expect(announcementsButton).toHaveAttribute(
-      "href",
-      "/admin/announcements/1",
-    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Stryker was here")).not.toBeInTheDocument();
   });
 });

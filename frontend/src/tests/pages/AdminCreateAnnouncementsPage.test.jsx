@@ -10,6 +10,7 @@ import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
+const mockToast = vi.fn();
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
@@ -18,6 +19,15 @@ vi.mock("react-router", async () => ({
   }),
   useNavigate: () => mockedNavigate,
 }));
+
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
 
 describe("AdminCreateAnnouncementsPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
@@ -35,6 +45,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     mockedNavigate.mockClear();
+    mockToast.mockClear();
 
     axiosMock
       .onGet("/api/currentUser")
@@ -50,6 +61,9 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", { params: { commonsId: 1 } })
+      .reply(200, { content: [] });
   });
 
   test("renders page without crashing", async () => {
@@ -125,6 +139,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith("/admin/announcements/1"),
     );
+    expect(mockToast).toHaveBeenCalledWith("Announcement created");
   });
 
   test("submits create announcement without end date", async () => {
@@ -155,5 +170,6 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].params).not.toHaveProperty("endDate");
+    expect(mockToast).toHaveBeenCalledWith("Announcement created");
   });
 });
