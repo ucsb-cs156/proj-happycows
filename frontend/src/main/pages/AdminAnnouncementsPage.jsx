@@ -47,9 +47,7 @@ export default function AdminAnnouncementsPage() {
             </Button>
 
             <AnnouncementTable
-              announcements={
-                Array.isArray(announcements) ? announcements : []
-              }
+              announcements={Array.isArray(announcements) ? announcements : []}
               currentUser={currentUser}
               commonsId={commonsId}
             />

@@ -22,10 +22,10 @@ export default function AdminCreateAnnouncementsPage() {
     (announcement) => ({
       method: "POST",
       url: "/api/announcements/post",
-      data: {
-        ...announcement,
-        commonsId: Number(commonsId),
+      params: {
+        commonsId: commonsId,
       },
+      data: announcement,
     }),
     {
       onSuccess: () => {
@@ -46,6 +46,7 @@ export default function AdminCreateAnnouncementsPage() {
       <div className="pt-2">
         <h1>Create Announcement</h1>
         <h2>for Commons: {commonsName}</h2>
+
         <AnnouncementForm submitAction={submitAction} buttonLabel="Create" />
       </div>
     </BasicLayout>
