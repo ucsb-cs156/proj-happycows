@@ -38,6 +38,7 @@ export default function AdminAnnouncementsPage() {
         <Row className="pt-5">
           <Col>
             <h2>Announcements for Commons: {commonsName}</h2>
+
             <Button
               variant="primary"
               href={`/admin/announcements/${commonsId}/create`}
@@ -46,7 +47,9 @@ export default function AdminAnnouncementsPage() {
             </Button>
 
             <AnnouncementTable
-              announcements={announcements}
+              announcements={
+                Array.isArray(announcements) ? announcements : []
+              }
               currentUser={currentUser}
               commonsId={commonsId}
             />
