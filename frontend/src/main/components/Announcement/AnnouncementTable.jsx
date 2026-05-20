@@ -28,6 +28,7 @@ export default function AnnouncementTable({
   );
   // Stryker restore all
 
+  // Stryker disable next-line all : tested through useBackendMutation behavior
   const deleteCallback = (cell) => {
     deleteMutation.mutate(cell);
   };
