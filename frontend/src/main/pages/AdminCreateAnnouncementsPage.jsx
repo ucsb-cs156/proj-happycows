@@ -22,9 +22,6 @@ export default function AdminCreateAnnouncementsPage() {
     (announcement) => ({
       method: "POST",
       url: "/api/announcements/post",
-      params: {
-        commonsId: commonsId,
-      },
       data: announcement,
     }),
     {
@@ -36,7 +33,12 @@ export default function AdminCreateAnnouncementsPage() {
   );
 
   const submitAction = (data) => {
-    mutation.mutate(data);
+    mutation.mutate({
+      ...data,
+      commonsId: Number(commonsId),
+      startDate: `${data.startDate}:00`,
+      endDate: data.endDate ? `${data.endDate}:00` : null,
+    });
   };
 
   const commonsName = commonsPlus?.commons.name;
