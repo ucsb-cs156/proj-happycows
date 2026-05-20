@@ -14,15 +14,17 @@ export default function AdminCreateAnnouncementsPage() {
     {
       method: "GET",
       url: "/api/commons/plus",
-      params: { id: commonsId },
+      params: {
+        id: commonsId,
+      },
     },
   );
 
   const mutation = useBackendMutation(
-    (announcement) => ({
-      method: "POST",
+    (params) => ({
       url: "/api/announcements/post",
-      params: announcement,
+      method: "POST",
+      params,
     }),
     {
       onSuccess: () => {
@@ -33,12 +35,17 @@ export default function AdminCreateAnnouncementsPage() {
   );
 
   const submitAction = (data) => {
-    mutation.mutate({
+    const params = {
       commonsId: Number(commonsId),
       startDate: `${data.startDate}:00`,
-      endDate: data.endDate ? `${data.endDate}:00` : "",
       announcementText: data.announcementText,
-    });
+    };
+
+    if (data.endDate) {
+      params.endDate = `${data.endDate}:00`;
+    }
+
+    mutation.mutate(params);
   };
 
   const commonsName = commonsPlus?.commons.name;
