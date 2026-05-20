@@ -25,7 +25,7 @@ export default function AnnouncementTable({
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/announcements/getbycommonsid", commonsId],
+    ["/api/announcements/all"],
   );
   // Stryker restore all
 

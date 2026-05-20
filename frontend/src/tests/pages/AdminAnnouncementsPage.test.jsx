@@ -89,10 +89,9 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       screen.getByTestId("AnnouncementTable-cell-row-0-col-id"),
     ).toHaveTextContent("1");
-    expect(screen.getByText("Create Announcement").closest("a")).toHaveAttribute(
-      "href",
-      "/admin/announcements/1/create",
-    );
+    expect(
+      screen.getByText("Create Announcement").closest("a"),
+    ).toHaveAttribute("href", "/admin/announcements/1/create");
   });
 
   test("correct href for announcements button as an admin", async () => {
