@@ -37,6 +37,7 @@ public class SystemInfoControllerTests extends ControllerTestCase {
         .springH2ConsoleEnabled(true)
         .sourceRepo("https://github.com/ucsb-cs156/proj-happycows")
         .oauthLogin("/oauth2/authorization/google")
+        .featureFlags("")
         .build();
     when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
     String expectedJson = mapper.writeValueAsString(systemInfo);
@@ -64,6 +65,7 @@ public class SystemInfoControllerTests extends ControllerTestCase {
         .springH2ConsoleEnabled(true)
         .sourceRepo("https://github.com/ucsb-cs156/proj-happycows")
         .oauthLogin("/oauth2/authorization/google")
+        .featureFlags("")
         .build();
     when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
     String expectedJson = mapper.writeValueAsString(systemInfo);
@@ -91,6 +93,7 @@ public class SystemInfoControllerTests extends ControllerTestCase {
         .springH2ConsoleEnabled(true)
         .sourceRepo("https://github.com/ucsb-cs156/proj-happycows")
         .oauthLogin("/oauth2/authorization/google")
+        .featureFlags("")
         .build();
     when(mockSystemInfoService.getSystemInfo()).thenReturn(systemInfo);
     String expectedJson = mapper.writeValueAsString(systemInfo);
