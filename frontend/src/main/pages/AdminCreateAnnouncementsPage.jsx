@@ -37,12 +37,12 @@ export default function AdminCreateAnnouncementsPage() {
   const submitAction = (data) => {
     const params = {
       commonsId: Number(commonsId),
-      startDate: `${data.startDate}:00`,
       announcementText: data.announcementText,
+      startDate: `${data.startDate.replace("T", " ")}:00`,
     };
 
     if (data.endDate) {
-      params.endDate = `${data.endDate}:00`;
+      params.endDate = `${data.endDate.replace("T", " ")}:00`;
     }
 
     mutation.mutate(params);
