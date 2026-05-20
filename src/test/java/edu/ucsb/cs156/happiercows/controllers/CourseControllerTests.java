@@ -269,7 +269,54 @@ public class CourseControllerTests extends ControllerTestCase {
         assertEquals("Course with id 67 not found", json.get("message"));
         }
 
+        @WithMockUser(roles = {"ADMIN", "USER"})
+        @Test
+        public void admin_can_delete_a_course() throws Exception {
+        // arrange
 
+        Course course1 =
+                Course.builder()
+                .code("cs156")
+                .name("adv app dev")
+                .term("s26")
+                .build();
 
+        when(courseRepository.findById(eq(15L))).thenReturn(Optional.of(course1));
 
+        // act
+        MvcResult response =
+                mockMvc
+                .perform(delete("/api/course").param("id", "15").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(15L);
+        verify(courseRepository, times(1)).delete(any());
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 15 deleted", json.get("message"));
+        }
+
+        @WithMockUser(roles = {"ADMIN", "USER"})
+        @Test
+        public void
+        admin_tries_to_delete_non_existant_course_and_gets_right_error_message()
+                throws Exception {
+        // arrange
+
+        when(courseRepository.findById(eq(15L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response =
+                mockMvc
+                .perform(delete("/api/course").param("id", "15").with(csrf()))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(15L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 15 not found", json.get("message"));
+        }
 }
