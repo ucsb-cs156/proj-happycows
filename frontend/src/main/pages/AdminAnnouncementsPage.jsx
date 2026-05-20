@@ -16,7 +16,9 @@ export default function AdminAnnouncementsPage() {
     {
       method: "GET",
       url: "/api/commons/plus",
-      params: { id: commonsId },
+      params: {
+        id: commonsId,
+      },
     },
   );
 
@@ -25,7 +27,9 @@ export default function AdminAnnouncementsPage() {
     {
       method: "GET",
       url: "/api/announcements/getbycommonsid",
-      params: { commonsId },
+      params: {
+        commonsId,
+      },
     },
     [],
   );
@@ -47,7 +51,11 @@ export default function AdminAnnouncementsPage() {
             </Button>
 
             <AnnouncementTable
-              announcements={Array.isArray(announcements) ? announcements : []}
+              announcements={
+                Array.isArray(announcements?.content)
+                  ? announcements.content
+                  : []
+              }
               currentUser={currentUser}
               commonsId={commonsId}
             />
