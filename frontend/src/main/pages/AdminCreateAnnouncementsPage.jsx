@@ -34,15 +34,19 @@ export default function AdminCreateAnnouncementsPage() {
     },
   );
 
+  const toBackendDate = (dateTimeLocal) => {
+    return `${dateTimeLocal}:00.000-08:00`;
+  };
+
   const submitAction = (data) => {
     const params = {
       commonsId: Number(commonsId),
       announcementText: data.announcementText,
-      startDate: `${data.startDate.replace("T", " ")}:00`,
+      startDate: toBackendDate(data.startDate),
     };
 
     if (data.endDate) {
-      params.endDate = `${data.endDate.replace("T", " ")}:00`;
+      params.endDate = toBackendDate(data.endDate);
     }
 
     mutation.mutate(params);
