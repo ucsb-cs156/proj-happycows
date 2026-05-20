@@ -247,8 +247,6 @@ describe("CoursesTable tests", () => {
   });
 
   test("Clicking Delete button opens the modal for adminUser", async () => {
-    const currentUser = currentUserFixtures.adminUser;
-
     renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
 
     // Verify that the modal is hidden by checking for the absence of the "modal-open" class
