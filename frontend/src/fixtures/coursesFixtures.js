@@ -1,11 +1,11 @@
 export const coursesFixtures = {
   oneCourse: [
-	  {
-    id: 1,
-    code: "CMPSC 156",
-    name: "Advanced Applications Programming",
-    term: "F25",
-  },
+    {
+      id: 1,
+      code: "CMPSC 156",
+      name: "Advanced Applications Programming",
+      term: "F25",
+    },
   ],
   threeCourses: [
     {
