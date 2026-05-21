@@ -56,7 +56,10 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
             <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>
 
             {announcements.length > 0 && (
-              <div className="mt-3">
+              <div
+                className="mt-3"
+                data-testid="announcements-container"
+              >
                 {announcements.map((announcement) => (
                   <Alert
                     key={announcement.id}
