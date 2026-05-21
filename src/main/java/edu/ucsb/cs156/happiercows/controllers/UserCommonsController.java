@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,7 +73,7 @@ public class UserCommonsController extends ApiController {
   @PutMapping("/buy")
   public ResponseEntity<String> putUserCommonsByIdBuy(
           @Parameter(name="commonsId") @RequestParam Long commonsId,
-          @Parameter(name="numCows") @RequestParam int numCows) throws NotEnoughMoneyException, JsonProcessingException{
+          @Parameter(name="numCows") @RequestParam int numCows) throws NotEnoughMoneyException, CommonsHiddenException, JsonProcessingException{
 
         User u = getCurrentUser().getUser();
         Long userId = u.getId();
@@ -83,7 +83,9 @@ public class UserCommonsController extends ApiController {
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
-
+        if(commons.isHidden()){
+          throw new CommonsHiddenException("This commons is hidden and you cannot buy cow in it!");
+        }
         if(userCommons.getTotalWealth() >= (commons.getCowPrice() * numCows)){
           userCommons.setTotalWealth(userCommons.getTotalWealth() - (commons.getCowPrice() * numCows));
           userCommons.setNumOfCows(userCommons.getNumOfCows() + numCows);
@@ -103,7 +105,7 @@ public class UserCommonsController extends ApiController {
   @PutMapping("/sell")
   public ResponseEntity<String> putUserCommonsByIdSell(
           @Parameter(name="commonsId") @RequestParam Long commonsId,
-          @Parameter(name="numCows") @RequestParam int numCows) throws NoCowsException, JsonProcessingException {
+          @Parameter(name="numCows") @RequestParam int numCows) throws NoCowsException, CommonsHiddenException, JsonProcessingException {
         User u = getCurrentUser().getUser();
         Long userId = u.getId();
 
@@ -112,8 +114,11 @@ public class UserCommonsController extends ApiController {
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+        
 
-
+        if(commons.isHidden()){
+          throw new CommonsHiddenException("This commons is hidden and you cannot sell cow in it!");
+        }
         if(userCommons.getNumOfCows() >= numCows ){
           double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
           userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
