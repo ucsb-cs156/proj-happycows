@@ -244,6 +244,14 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
             >
               Chat
             </Button>
+            <Button
+              variant="info"
+              size="sm"
+              href={`/admin/dashboard/${commons.id}`}
+              data-testid={`AdminCommonsCard-Dashboard-${commons.id}`}
+            >
+              Dashboard
+            </Button>
           </div>
         </Card.Body>
       </Card>
