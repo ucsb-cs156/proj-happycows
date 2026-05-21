@@ -6,5 +6,3 @@ const AdminChatPage = () => {
 };
 
 export default AdminChatPage;
-
-//testing
