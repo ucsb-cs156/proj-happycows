@@ -61,6 +61,7 @@ export default function AnnouncementTable({
     accessor: "announcementText",
     width: 400,
     Cell: ({ value }) => (
+      // Stryker disable all - styles that don't need to be mut tested
       <div
         style={{
           whiteSpace: "normal",

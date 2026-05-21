@@ -99,6 +99,21 @@ describe("AnnouncementTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
     ).toHaveTextContent(formatDateTime(firstAnnouncement.startDate));
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).not.toHaveTextContent(firstAnnouncement.startDate);
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-endDate`),
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.endDate));
+
+    const announcementCell = screen.getByTestId(
+      `${testId}-cell-row-0-col-announcementText`,
+    );
+    expect(announcementCell.querySelector("div")).toHaveStyle({
+      whiteSpace: "normal",
+      wordBreak: "break-word",
+      maxWidth: "400px",
+    });
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
       `${secondAnnouncement.id}`,

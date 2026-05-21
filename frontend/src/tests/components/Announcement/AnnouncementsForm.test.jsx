@@ -216,6 +216,28 @@ describe("AnnouncementForm tests", () => {
     ).toBeInTheDocument();
   });
 
+  test("short announcement text is not marked invalid", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.change(screen.getByTestId(`${testId}-announcementText`), {
+      target: { value: "Short announcement" },
+    });
+
+    const announcementField = screen.getByTestId(`${testId}-announcementText`);
+    expect(announcementField).not.toHaveClass("is-invalid");
+    expect(
+      screen.queryByText(
+        `Announcement must be ${ANNOUNCEMENT_TEXT_MAX_LENGTH} characters or fewer.`,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   test("shows max length error when announcement reaches character limit", async () => {
     render(
       <QueryClientProvider client={queryClient}>
