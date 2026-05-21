@@ -141,9 +141,7 @@ describe("CommonsOverview tests", () => {
       screen.getByText("This is an active announcement"),
     ).toBeInTheDocument();
 
-    expect(
-      screen.getByTestId("announcements-container"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("announcements-container")).toBeInTheDocument();
   });
 
   test("Does not display announcement alert when there are no announcements", async () => {
