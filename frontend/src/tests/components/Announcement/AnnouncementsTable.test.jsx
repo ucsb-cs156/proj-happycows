@@ -33,7 +33,11 @@ describe("AnnouncementTable tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={[]} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={[]}
+            currentUser={currentUser}
+            commonsId={1}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -63,6 +67,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -117,6 +122,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -162,6 +168,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -185,7 +192,9 @@ describe("AnnouncementTable tests", () => {
 
     // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/announcements/edit/1"),
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        "/admin/announcements/1/edit/1",
+      ),
     );
   });
 
@@ -200,6 +209,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
