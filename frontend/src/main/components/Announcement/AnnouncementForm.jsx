@@ -1,6 +1,7 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { ANNOUNCEMENT_TEXT_MAX_LENGTH } from "main/utils/announcementUtils";
 
 function AnnouncementForm({
   initialContents,
@@ -10,6 +11,7 @@ function AnnouncementForm({
   // Stryker disable all
   const {
     register,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm({ defaultValues: initialContents || {} });
@@ -18,6 +20,13 @@ function AnnouncementForm({
   const navigate = useNavigate();
 
   const testIdPrefix = "AnnouncementForm";
+  const startDate = watch("startDate");
+  const announcementText = watch("announcementText");
+  const announcementTextMaxLengthMessage = `Announcement must be ${ANNOUNCEMENT_TEXT_MAX_LENGTH} characters or fewer.`;
+  const atMaxAnnouncementLength =
+    (announcementText?.length ?? 0) >= ANNOUNCEMENT_TEXT_MAX_LENGTH;
+  const announcementTextInvalid =
+    Boolean(errors.announcementText) || atMaxAnnouncementLength;
 
   // For explanation, see: https://stackoverflow.com/questions/3143070/javascript-regex-iso-datetime
   // Note that even this complex regex may still need some tweaks
@@ -76,8 +85,16 @@ function AnnouncementForm({
           // Stryker disable next-line all
           {...register("endDate", {
             pattern: isodate_regex,
+            validate: (value) =>
+              !value ||
+              !startDate ||
+              value > startDate ||
+              "End Date must be after Start Date.",
           })}
         />
+        <Form.Control.Feedback type="invalid">
+          {errors.endDate?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group className="mb-3">
@@ -88,13 +105,19 @@ function AnnouncementForm({
           data-testid={testIdPrefix + "-announcementText"}
           id="announcementText"
           rows={5}
-          isInvalid={Boolean(errors.announcementText)}
+          maxLength={ANNOUNCEMENT_TEXT_MAX_LENGTH}
+          isInvalid={announcementTextInvalid}
           {...register("announcementText", {
             required: "Announcement is required.",
+            maxLength: {
+              value: ANNOUNCEMENT_TEXT_MAX_LENGTH,
+              message: announcementTextMaxLengthMessage,
+            },
           })}
         />
         <Form.Control.Feedback type="invalid">
-          {errors.announcementText?.message}
+          {errors.announcementText?.message ||
+            (atMaxAnnouncementLength && announcementTextMaxLengthMessage)}
         </Form.Control.Feedback>
       </Form.Group>
 
