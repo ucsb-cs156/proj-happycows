@@ -237,11 +237,12 @@ describe("ChatHistoryPage", () => {
       hasNextPage: false,
     });
 
-    renderWithProviders(<ChatHistoryPage />);
+    renderWithProviders();
 
     expect(screen.getByTestId("ChatMessageDisplay-10-User")).toHaveTextContent(
       "Alice",
     );
+
     expect(screen.getByTestId("ChatMessageDisplay-11-User")).toHaveTextContent(
       "Bob",
     );
@@ -249,13 +250,15 @@ describe("ChatHistoryPage", () => {
     const hiddenWrapper = screen.getByTestId(
       "ChatMessageDisplay-11",
     ).parentElement;
-    expect(hiddenWrapper).toHaveStyle("opacity: 0.5");
+
+    expect(hiddenWrapper).toHaveStyle("opacity: 0.6");
     expect(hiddenWrapper).toHaveStyle("font-style: italic");
 
     const visibleWrapper = screen.getByTestId(
       "ChatMessageDisplay-10",
     ).parentElement;
-    expect(visibleWrapper).not.toHaveStyle("opacity: 0.5");
+
+    expect(visibleWrapper).not.toHaveStyle("opacity: 0.6");
     expect(visibleWrapper).not.toHaveStyle("font-style: italic");
 
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
