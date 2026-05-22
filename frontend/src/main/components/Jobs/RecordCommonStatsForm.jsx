@@ -8,7 +8,7 @@ function RecordCommonStatsForm({ submitAction }) {
     <Form onSubmit={handleSubmit(submitAction)}>
       <p>Click this button to record common stats!</p>
       <Button type="submit" data-testid="RecordCommonStats-Submit-Button">
-        Record Common Stats
+        Record Stats
       </Button>
     </Form>
   );
