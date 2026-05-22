@@ -27,8 +27,7 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
         <Row>
           <Col>
             <Card.Title>
-              Today is day
-              {daysSinceTimestamp(commonsPlus.commons.startingDate)}!
+              Today is day {daysSinceTimestamp(commonsPlus.commons.startingDate)}!
             </Card.Title>
             <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>
           </Col>
