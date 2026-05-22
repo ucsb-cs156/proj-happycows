@@ -54,13 +54,11 @@ export default function AdminListCommonsPage() {
                 data-testid="AdminListCommonsPage-Search"
                 className="search-input"
               />
-              <span className="search-icon-wrapper">
-                🔍
-              </span>
+              <span className="search-icon-wrapper">🔍</span>
             </div>
           </Col>
           <Col md={3} style={DownloadButtonStyle}>
-            <Button 
+            <Button
               href="/api/commonstats/downloadAll"
               variant="outline-success"
               style={{ borderRadius: "30px", padding: "10px 20px" }}
@@ -76,5 +74,3 @@ export default function AdminListCommonsPage() {
     </BasicLayout>
   );
 }
-
-

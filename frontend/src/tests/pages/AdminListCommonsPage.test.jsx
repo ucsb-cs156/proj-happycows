@@ -280,19 +280,17 @@ describe("AdminListCommonPage tests", () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, [
-        {
-          commons: { id: 1, name: "Anacapa" },
-        },
-        {
-          commons: { id: 2, name: "Santa Cruz" },
-        },
-        {
-          commons: { id: 3, name: "Santa Rosa" },
-        },
-      ]);
+    axiosMock.onGet("/api/commons/allplus").reply(200, [
+      {
+        commons: { id: 1, name: "Anacapa" },
+      },
+      {
+        commons: { id: 2, name: "Santa Cruz" },
+      },
+      {
+        commons: { id: 3, name: "Santa Rosa" },
+      },
+    ]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -320,4 +318,3 @@ describe("AdminListCommonPage tests", () => {
     expect(screen.queryByText("Santa Rosa")).not.toBeInTheDocument();
   });
 });
-
