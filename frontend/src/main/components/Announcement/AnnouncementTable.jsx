@@ -1,6 +1,5 @@
 import React from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
-
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
@@ -8,24 +7,25 @@ import {
 } from "main/utils/announcementUtils";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
+import { formatDateTime } from "main/utils/dateUtils";
 
-export default function AnnouncementTable({ announcements, currentUser }) {
+export default function AnnouncementTable({
+  announcements,
+  currentUser,
+  commonsId,
+}) {
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/announcements/edit/${cell.row.values.id}`);
+    navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
   };
-
-  // Stryker disable all : hard to test for query caching
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/announcements/all"],
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
   );
-  // Stryker restore all
 
-  // Stryker disable next-line all : TODO try to make a good test for this
   const deleteCallback = async (cell) => {
     deleteMutation.mutate(cell);
   };
@@ -33,19 +33,17 @@ export default function AnnouncementTable({ announcements, currentUser }) {
   const columns = [
     {
       Header: "id",
-      accessor: "id", // accessor is the "key" in the data
+      accessor: "id",
     },
     {
-      Header: "Start Date ISO Format",
+      Header: "Start Date",
       accessor: "startDate",
+      Cell: ({ value }) => formatDateTime(value),
     },
     {
-      Header: "End Date ISO Format",
+      Header: "End Date",
       accessor: "endDate",
-    },
-    {
-      Header: "Announcement",
-      accessor: "announcementText",
+      Cell: ({ value }) => formatDateTime(value),
     },
   ];
 
@@ -57,6 +55,24 @@ export default function AnnouncementTable({ announcements, currentUser }) {
       ButtonColumn("Delete", "danger", deleteCallback, "AnnouncementTable"),
     );
   }
+
+  columns.push({
+    Header: "Announcement",
+    accessor: "announcementText",
+    width: 400,
+    Cell: ({ value }) => (
+      // Stryker disable all - styles that don't need to be mut tested
+      <div
+        style={{
+          whiteSpace: "normal",
+          wordBreak: "break-word",
+          maxWidth: "400px",
+        }}
+      >
+        {value}
+      </div>
+    ),
+  });
 
   return (
     <OurTable
