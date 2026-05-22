@@ -32,3 +32,26 @@ adminListPage.parameters = {
     }),
   ],
 };
+
+export const adminListPageEmpty = () => <AdminListCommonPage />;
+
+adminListPageEmpty.parameters = {
+  msw: [
+    http.get("/api/currentUser", () => {
+      return HttpResponse.json(apiCurrentUserFixtures.adminUser, {
+        status: 200,
+      });
+    }),
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, {
+        status: 200,
+      });
+    }),
+    http.get("/api/commons/allplus", () => {
+      return HttpResponse.json([], {
+        status: 200,
+      });
+    }),
+  ],
+};
+
