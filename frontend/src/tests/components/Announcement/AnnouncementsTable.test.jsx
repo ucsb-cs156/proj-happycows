@@ -4,7 +4,26 @@ import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/announcementUtils";
+import { formatDateTime } from "main/utils/dateUtils";
 import { vi } from "vitest";
+
+const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
+  const mutate = vi.fn();
+  const useBackendMutationMock = vi.fn(() => ({ mutate }));
+  return { mockMutate: mutate, mockUseBackendMutation: useBackendMutationMock };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useBackendMutation: mockUseBackendMutation,
+  };
+});
 
 const mockedNavigate = vi.fn();
 
@@ -15,30 +34,36 @@ vi.mock("react-router", async () => ({
 
 describe("AnnouncementTable tests", () => {
   const queryClient = new QueryClient();
+  beforeEach(() => {
+    mockMutate.mockReset();
+    mockUseBackendMutation.mockReset();
+    mockUseBackendMutation.mockReturnValue({ mutate: mockMutate });
+    mockedNavigate.mockClear();
+  });
 
-  const expectedHeaders = [
-    "id",
-    "Start Date ISO Format",
-    "End Date ISO Format",
-    "Announcement",
-  ];
+  const expectedHeaders = ["id", "Start Date", "End Date", "Announcement"];
   const expectedFields = ["id", "startDate", "endDate", "announcementText"];
   const testId = "AnnouncementTable";
+  const [firstAnnouncement, secondAnnouncement] =
+    announcementFixtures.threeAnnouncements;
 
-  test("renders empty table correctly", () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act
-    render(
+  const renderTable = (announcements, currentUser, commonsId = 1) => {
+    return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AnnouncementTable announcements={[]} currentUser={currentUser} />
+          <AnnouncementTable
+            announcements={announcements}
+            currentUser={currentUser}
+            commonsId={commonsId}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
+  };
 
-    // assert
+  test("renders empty table correctly", () => {
+    renderTable([], currentUserFixtures.adminUser);
+
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -53,22 +78,11 @@ describe("AnnouncementTable tests", () => {
   });
 
   test("Has the expected column headers, content and buttons for admin user", () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -80,18 +94,33 @@ describe("AnnouncementTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
+      `${firstAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent("2024-12-12T00:00:00");
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.startDate));
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
+    ).not.toHaveTextContent(firstAnnouncement.startDate);
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-endDate`),
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.endDate));
+
+    const announcementCell = screen.getByTestId(
+      `${testId}-cell-row-0-col-announcementText`,
+    );
+    expect(announcementCell.querySelector("div")).toHaveStyle({
+      whiteSpace: "normal",
+      wordBreak: "break-word",
+      maxWidth: "400px",
+    });
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
-      "2",
+      `${secondAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent("2022-12-12T00:00:00");
+    ).toHaveTextContent(formatDateTime(secondAnnouncement.startDate));
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -107,22 +136,11 @@ describe("AnnouncementTable tests", () => {
   });
 
   test("Has the expected column headers, content for ordinary user", () => {
-    // arrange
-    const currentUser = currentUserFixtures.userOnly;
-
-    // act
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.userOnly,
     );
 
-    // assert
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
@@ -134,91 +152,66 @@ describe("AnnouncementTable tests", () => {
     });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
+      `${firstAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent("2024-12-12T00:00:00");
+    ).toHaveTextContent(formatDateTime(firstAnnouncement.startDate));
 
     expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent(
-      "2",
+      `${secondAnnouncement.id}`,
     );
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-startDate`),
-    ).toHaveTextContent("2022-12-12T00:00:00");
+    ).toHaveTextContent(formatDateTime(secondAnnouncement.startDate));
 
     expect(screen.queryByText("Delete")).not.toBeInTheDocument();
     expect(screen.queryByText("Edit")).not.toBeInTheDocument();
   });
 
   test("Edit button navigates to the edit page", async () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
-
-    // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent("2024-12-12T00:00:00");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
     );
-    expect(editButton).toBeInTheDocument();
-
-    // act - click the edit button
     fireEvent.click(editButton);
 
-    // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/announcements/edit/1"),
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        `/admin/announcements/1/edit/${firstAnnouncement.id}`,
+      ),
     );
   });
 
-  test("Delete button calls delete callback", async () => {
-    // arrange
-    const currentUser = currentUserFixtures.adminUser;
-
-    // act - render the component
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AnnouncementTable
-            announcements={announcementFixtures.threeAnnouncements}
-            currentUser={currentUser}
-          />
-        </MemoryRouter>
-      </QueryClientProvider>,
+  test("Delete button calls delete mutation", async () => {
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
     );
-
-    // assert - check that the expected content is rendered
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-0-col-startDate`),
-    ).toHaveTextContent("2024-12-12T00:00:00");
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
     );
-    expect(deleteButton).toBeInTheDocument();
-
-    // act - click the delete button
     fireEvent.click(deleteButton);
+
+    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
+  });
+
+  test("Configures delete mutation with expected args", () => {
+    renderTable(
+      announcementFixtures.threeAnnouncements,
+      currentUserFixtures.adminUser,
+      5,
+    );
+
+    expect(mockUseBackendMutation).toHaveBeenCalledWith(
+      cellToAxiosParamsDelete,
+      expect.objectContaining({ onSuccess: onDeleteSuccess }),
+      ["/api/announcements/getbycommonsid?commonsId=5"],
+    );
   });
 });
