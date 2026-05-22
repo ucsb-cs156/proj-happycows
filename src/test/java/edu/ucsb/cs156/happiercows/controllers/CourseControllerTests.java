@@ -186,4 +186,121 @@ public class CourseControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+        // PUT tests
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void logged_in_user_cannot_put_course() throws Exception {
+        CourseDTO courseDTO = CourseDTO.builder()
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        mockMvc.perform(put("/api/course/7")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(courseDTO)))
+                .andExpect(status().is(403));
+    }
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_update_existing_course() throws Exception {
+        Course existing = Course.builder()
+                .id(7L)
+                .code("CMPSC 156")
+                .name("Updated Name")
+                .term("F24")
+                .build();
+
+        CourseDTO update = CourseDTO.builder()
+                .code("CHEM 123")
+                .name("chemistry")
+                .term("S26")
+                .build();
+
+        Course updated = Course.builder()
+                .id(7L)
+                .code("CHEM 123")
+                .name("chemistry")
+                .term("S26")
+                .build();
+
+        when(courseRepository.findById(7L)).thenReturn(Optional.of(existing));
+        when(courseRepository.save(existing)).thenReturn(updated);
+
+        MvcResult response = mockMvc.perform(put("/api/course/7")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(update)))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseRepository, times(1)).save(existing);
+        String expectedJson = mapper.writeValueAsString(updated);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_cannot_update_course_that_does_not_exist() throws Exception {
+        CourseDTO update = CourseDTO.builder()
+                .code("CMPSC 156")
+                .name("Updated Name")
+                .term("S26")
+                .build();
+
+        when(courseRepository.findById(7L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/course/7")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(update)))
+                .andExpect(status().isNotFound());
+
+        verify(courseRepository, times(1)).findById(7L);
+    }
+
+    // DELETE tests
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void logged_in_user_cannot_delete_course() throws Exception {
+        mockMvc.perform(delete("/api/course/7")
+                .with(csrf()))
+                .andExpect(status().is(403));
+        }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_delete_existing_course() throws Exception {
+        Course course = Course.builder()
+                .id(7L)
+                .code("CMPSC 156")
+                .name("Advanced App Programming")
+                .term("F24")
+                .build();
+
+        when(courseRepository.findById(7L)).thenReturn(Optional.of(course));
+
+        MvcResult response = mockMvc.perform(delete("/api/course/7")
+                .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseRepository, times(1)).delete(course);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals("{\"message\":\"Course with id 7 deleted\"}", responseString);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_cannot_delete_course_that_does_not_exist() throws Exception {
+        when(courseRepository.findById(7L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/course/7")
+                .with(csrf()))
+                .andExpect(status().isNotFound());
+
+        verify(courseRepository, times(1)).findById(7L);
+    }   
 }
