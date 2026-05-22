@@ -51,4 +51,33 @@ public class CourseController extends ApiController {
         Course savedCourse = courseRepository.save(courseDTO.toCourse());
         return savedCourse;
     }
+
+    @Operation(summary = "Update a course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public Course updateCourse(
+        @Parameter(name = "id") @PathVariable Long id,
+        @RequestBody CourseDTO courseDTO) {
+      Course course = courseRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+      course.setCode(courseDTO.getCode());
+      course.setName(courseDTO.getName());
+      course.setTerm(courseDTO.getTerm());
+
+      courseRepository.save(course);
+      return course;
+    }
+
+    @Operation(summary = "Delete a course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public Object deleteCourse(
+        @Parameter(name = "id") @PathVariable Long id) {
+      Course course = courseRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+      courseRepository.delete(course);
+      return genericMessage("Course with id %s deleted".formatted(id));
+    }
 }
