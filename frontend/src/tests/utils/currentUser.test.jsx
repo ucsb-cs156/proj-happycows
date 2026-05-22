@@ -40,7 +40,9 @@ describe("utils/currentUser tests", () => {
       const { result } = renderHook(() => useCurrentUser(), {
         wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      // FIX: Force waitFor to evaluate an assertion
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.data.loggedIn).toBe(false);
       expect(result.current.data.root).toBe(null);
@@ -69,7 +71,9 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      // FIX: Force waitFor to evaluate an assertion
+      await waitFor(() => expect(result.current.isFetched).toBe(true));
+
       expect(result.current.data.loggedIn).toBe(true);
       expect(result.current.data.root).toBeTruthy();
 
@@ -78,7 +82,13 @@ describe("utils/currentUser tests", () => {
     });
 
     test("useCurrentUser when API unreachable", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
@@ -93,15 +103,21 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      // FIX: Force waitFor to pause until the post-fetch state officially updates!
+      await waitFor(() => expect(result.current.isFetched).toBe(true));
+
       expect(console.error).toHaveBeenCalled();
       const errorMessage = console.error.mock.calls[0][0];
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
       restoreConsole();
 
-      await waitFor(() =>
-        expect(result.current.data).toEqual({ loggedIn: false, root: null }),
-      );
+      // Now that we genuinely waited for the fetch to update the state,
+      // if the mutant returns {}, result.current.data will be {}.
+      // These assertions will strike it down instantly.
+      expect(result.current.data.loggedIn).toBe(false);
+      expect(result.current.data.root).toBe(null);
+      expect(result.current.data).toEqual({ loggedIn: false, root: null });
+
       queryClient.clear();
       axiosMock.restore();
     });
@@ -123,7 +139,9 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      // FIX: Force waitFor to evaluate an assertion
+      await waitFor(() => expect(result.current.isFetched).toBe(true));
+
       expect(console.error).toHaveBeenCalled();
       const errorMessage = console.error.mock.calls[0][0];
       expect(errorMessage).toMatch(/Error getting roles: /);

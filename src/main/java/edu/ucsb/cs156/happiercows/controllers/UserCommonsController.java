@@ -19,6 +19,7 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,6 +81,11 @@ public class UserCommonsController extends ApiController {
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
           ()->new EntityNotFoundException(Commons.class, commonsId));
+
+        if (commons.isHidden()) {
+            throw new CommonsHiddenException();
+        }
+
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
@@ -109,6 +115,11 @@ public class UserCommonsController extends ApiController {
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
           ()->new EntityNotFoundException(Commons.class, commonsId));
+
+          if (commons.isHidden()) {
+            throw new CommonsHiddenException();
+          }
+
         UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
