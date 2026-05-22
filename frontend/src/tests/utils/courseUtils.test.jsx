@@ -36,11 +36,8 @@ describe("courseUtils tests", () => {
       const result = cellToAxiosParamsDelete(cell);
 
       expect(result).toEqual({
-        url: "/api/course",
+        url: `/api/course/${cell.row.values.id}`,
         method: "DELETE",
-        params: {
-          id: 42,
-        },
       });
     });
   });
