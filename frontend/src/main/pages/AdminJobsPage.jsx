@@ -47,10 +47,10 @@ const AdminJobsPage = () => {
   );
   // Stryker restore all
 
-const submitRecordCommonStatsJob = async () => {
-  toast("Submitted Job: Record Common Stats");
-  RecordCommonStatsMutation.mutate();
-};
+  const submitRecordCommonStatsJob = async () => {
+    toast("Submitted Job: Record Common Stats");
+    RecordCommonStatsMutation.mutate();
+  };
 
   // *** SetCowHealth job ***
 
