@@ -14,7 +14,7 @@ import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.jpg";
 import ChatPanel from "main/components/Chat/ChatPanel";
 import ManageCowsModal from "main/components/Commons/ManageCowsModal";
-import CurrentAnnouncements from "main/components/Announcement/CurrentAnnouncements";
+
 export default function PlayPage() {
   const { commonsId } = useParams();
   const { data: currentUser } = useCurrentUser();
@@ -93,7 +93,6 @@ export default function PlayPage() {
       },
     },
   );
-
   // Stryker restore all
 
   // Stryker disable all
@@ -189,10 +188,6 @@ export default function PlayPage() {
             <h1>This commons has been hidden by the site administrator.</h1>
           )}
 
-          {allowed && !!currentAnnouncements && (
-            <CurrentAnnouncements announcements={currentAnnouncements} />
-          )}
-
           {allowed && !!currentUser && (
             <CommonsPlay currentUser={currentUser} />
           )}
@@ -201,9 +196,12 @@ export default function PlayPage() {
             <CommonsOverview
               commonsPlus={commonsPlus}
               currentUser={currentUser}
+              currentAnnouncements={currentAnnouncements}
             />
           )}
+
           <br />
+
           {allowed && !!userCommons && !!commonsPlus && (
             <CardGroup>
               <ManageCows
@@ -228,6 +226,7 @@ export default function PlayPage() {
           )}
         </Container>
       </BasicLayout>
+
       {(hasRole(currentUser, "ROLE_ADMIN") ||
         (allowed && !!commonsPlus && commonsPlus.commons.showChat)) && (
         <div style={chatContainerStyle} data-testid="playpage-chat-div">
