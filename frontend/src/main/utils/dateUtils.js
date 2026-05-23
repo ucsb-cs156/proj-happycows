@@ -25,6 +25,26 @@ const hourInSeconds = 60 * minutesInSeconds;
 const dayInSeconds = 24 * hourInSeconds;
 const weekInSeconds = 7 * dayInSeconds;
 
+export function formatDateTime(dateTimeString) {
+  if (!dateTimeString) {
+    return "";
+  }
+
+  const date = new Date(dateTimeString);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+}
+
 export function formatTime(timeString) {
   if (!timeString) {
     return "";

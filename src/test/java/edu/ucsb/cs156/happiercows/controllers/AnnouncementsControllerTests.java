@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,6 +62,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     @Autowired
     ObjectMapper mapper;
 
+
+    private Date asDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+
     //* */ post tests
     @WithMockUser(roles = {"ADMIN"})
     @Test
@@ -70,12 +78,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
-        Date end = sdf.parse("2025-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+        LocalDateTime end = LocalDateTime.parse("2025-03-03T17:39:43");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
@@ -102,11 +110,11 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
@@ -159,11 +167,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long userId = 1L;
         String announcement = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
@@ -178,6 +184,44 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).save(any(Announcement.class));
     }
 
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotPostAnnouncementThatIsTooLong() throws Exception {
+
+        // arrange
+        Long commonsId = 1L;
+        String announcement = "a".repeat(256);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        //act
+        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanPostAnnouncementAtMaxLength() throws Exception {
+
+        // arrange
+        Long commonsId = 1L;
+        Long id = 0L;
+        String announcement = "a".repeat(255);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
+
+        //act
+        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+    }
+
     @WithMockUser(roles = {"USER"})
     @Test
     public void userCannotPostAnnouncementWithEndBeforeStart() throws Exception {
@@ -187,12 +231,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Announcement";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
-        Date end = sdf.parse("2022-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+        LocalDateTime end = LocalDateTime.parse("2022-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
@@ -216,11 +258,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
@@ -571,11 +611,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long id = 0L;
         Long commonsId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
@@ -590,10 +628,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         String editedAnnouncement = "Hello world edited!";
-        Date editedStart = sdf.parse("2023-03-03T17:39:43.000-08:00");
-        Date editedEnd = sdf.parse("2025-03-03T17:39:43.000-08:00");
+        LocalDateTime editedStart = LocalDateTime.parse("2023-03-03T17:39:43");
+        LocalDateTime editedEnd = LocalDateTime.parse("2025-03-03T17:39:43");
 
-        Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(editedStart).endDate(editedEnd).announcementText(editedAnnouncement).build();
+        Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(editedStart)).endDate(asDate(editedEnd)).announcementText(editedAnnouncement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
@@ -645,11 +683,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long commonsId = 1L;
         Long userId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
@@ -672,9 +708,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long commonsId = 1L;
         Long userId = 1L;
         String announcement = "Hello world!";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.empty());
 
@@ -699,11 +733,9 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long commonsId = 1L;
         Long userId = 1L;
         String announcement = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         UserCommons userCommons = UserCommons.builder().build();
@@ -727,12 +759,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long commonsId = 1L;
         Long userId = 1L;
         String announcement = "Announcement";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
-        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
-        Date end = sdf.parse("2022-03-03T17:39:43.000-08:00");
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+        LocalDateTime end = LocalDateTime.parse("2022-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         UserCommons userCommons = UserCommons.builder().build();
@@ -745,5 +775,47 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // assert
         verify(announcementRepository, times(0)).findByAnnouncementId(id);
         verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCannotEditAnnouncementThatIsTooLong() throws Exception {
+
+        // arrange
+        Long id = 0L;
+        Long commonsId = 1L;
+        String announcement = "a".repeat(256);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
+
+        //act
+        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(announcementRepository, times(0)).save(any(Announcement.class));
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanEditAnnouncementAtMaxLength() throws Exception {
+
+        // arrange
+        Long id = 0L;
+        Long commonsId = 1L;
+        String announcement = "a".repeat(255);
+        LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
+
+        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
+
+        //act
+        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
     }
 }
