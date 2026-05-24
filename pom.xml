@@ -3,13 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath /> <!-- lookup parent from repository -->
-    </parent>
+        <relativePath /> </parent>
     <groupId>edu.ucsb.cs156</groupId>
     <artifactId>happycows</artifactId>
     <version>1.1.0</version>
@@ -36,9 +34,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
-        <!--
-        https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
 
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -108,29 +103,23 @@
             <version>3.9.1</version>
         </dependency>
 
-        <!-- To help with testing async jobs; see http://www.awaitility.org/
-        https://stackoverflow.com/a/46227996 -->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>4.2.0</version>
         </dependency>
 
-        <!-- to manage security context in async threads; see:
-        https://www.baeldung.com/spring-security-async-principal-propagation -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
         </dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-maven-plugin -->
-    	<dependency>
-      	    <groupId>org.liquibase</groupId>
-      	    <artifactId>liquibase-maven-plugin</artifactId>
-      	    <version>4.29.2</version>
-    	</dependency>
+    <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-maven-plugin</artifactId>
+            <version>4.29.2</version>
+        </dependency>
 
-        <!-- https://central.sonatype.com/artifact/org.apache.commons/commons-csv/1.10.0 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
@@ -154,14 +143,10 @@
                     <compilerArgument>-proc:full</compilerArgument>
                 </configuration>
             </plugin>
-            <!-- This fixes a problem as explained in this SO article:
-            https://stackoverflow.com/a/61936537/13960329
-            -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
                 <configuration>
-                <!-- Activate the use of TCP to transmit events to the plugin -->
                 <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/>
                 </configuration>
             </plugin>
@@ -196,7 +181,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Test case coverage report -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -350,7 +334,6 @@
                 </dependency>
             </dependencies>
         </profile>
-        <!-- to run with this profile use "WIREMOCK=true mvn spring-boot:run" -->
         <profile>
         <id>wiremock</id>
         <activation>
@@ -369,7 +352,6 @@
             </dependency>
         </dependencies>
         </profile>
-        <!-- to run with this profile use "INTEGRATION=true mvn spring-boot:run" -->
         <profile>
         <id>integration</id>
         <activation>
@@ -437,7 +419,7 @@
                     </execution>
                     <execution>
                     <id>copy frontend build</id>
-                    <phase>generate-resources</phase>
+                    <phase>process-resources</phase>
                     <configuration>
                         <skip>${frontend.build.skip}</skip>
                         <target>
@@ -558,7 +540,7 @@
                         <version>3.0.0</version>
                         <executions>
                             <execution>
-                                <phase>generate-resources</phase>
+                                <phase>process-resources</phase>
                                 <configuration>
                                     <target>
                                         <copy todir="${project.build.outputDirectory}/public">
