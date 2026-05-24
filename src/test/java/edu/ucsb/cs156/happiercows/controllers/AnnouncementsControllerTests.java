@@ -81,8 +81,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
         LocalDateTime end = LocalDateTime.parse("2025-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).endDate(end).announcementText(announcement).build();
-
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
@@ -111,8 +109,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
-
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
 
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
 
