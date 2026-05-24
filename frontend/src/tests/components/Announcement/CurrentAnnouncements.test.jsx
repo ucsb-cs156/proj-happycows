@@ -205,4 +205,33 @@ describe("CurrentAnnouncements tests", () => {
       screen.getByTestId("CurrentAnnouncements-toggle-2"),
     ).toHaveTextContent("Show more");
   });
+  test("renders message field when announcementText is missing", () => {
+    const announcements = [
+      {
+        id: 1,
+        message: "Fallback message text",
+      },
+    ];
+
+    render(<CurrentAnnouncements announcements={announcements} />);
+
+    expect(screen.getByText("Fallback message text")).toBeInTheDocument();
+  });
+
+  test("renders empty text when announcementText and message are missing", () => {
+    const announcements = [
+      {
+        id: 1,
+      },
+    ];
+
+    render(<CurrentAnnouncements announcements={announcements} />);
+
+    expect(
+      screen.getByTestId("CurrentAnnouncements-announcement-1"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("CurrentAnnouncements-toggle-1"),
+    ).not.toBeInTheDocument();
+  });
 });
