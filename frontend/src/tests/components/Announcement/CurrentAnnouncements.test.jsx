@@ -227,9 +227,12 @@ describe("CurrentAnnouncements tests", () => {
 
     render(<CurrentAnnouncements announcements={announcements} />);
 
-    expect(
-      screen.getByTestId("CurrentAnnouncements-announcement-1"),
-    ).toBeInTheDocument();
+    const announcement = screen.getByTestId(
+      "CurrentAnnouncements-announcement-1",
+    );
+
+    expect(announcement).toBeInTheDocument();
+    expect(announcement.textContent).toBe("");
     expect(
       screen.queryByTestId("CurrentAnnouncements-toggle-1"),
     ).not.toBeInTheDocument();
