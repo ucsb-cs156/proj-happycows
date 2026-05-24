@@ -889,6 +889,30 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(responseMap.get("type"), "EntityNotFoundException");
     }
 
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void join_hidden_commons_throws_exception() throws Exception {
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Hidden Commons")
+                .hidden(true)
+                .build();
+
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        verify(commonsRepository, times(1)).findById(eq(2L));
+
+        Map<String, Object> responseMap = responseToJson(response);
+
+        assertEquals("CommonsHiddenException", responseMap.get("type"));
+        assertEquals("This commons is hidden and cannot be joined!", responseMap.get("message"));
+    }
+
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void deleteCommons_test_admin_exists() throws Exception {

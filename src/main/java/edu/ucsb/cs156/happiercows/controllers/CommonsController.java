@@ -6,6 +6,7 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
@@ -281,7 +282,7 @@ public class CommonsController extends ApiController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(value = "/join", produces = "application/json")
     public ResponseEntity<String> joinCommon(
-            @Parameter(name="commonsId") @RequestParam Long commonsId) throws Exception {
+            @Parameter(name="commonsId") @RequestParam Long commonsId) throws CommonsHiddenException, Exception {
 
         User u = getCurrentUser().getUser();
         Long userId = u.getId();
@@ -289,6 +290,11 @@ public class CommonsController extends ApiController {
 
         Commons joinedCommons = commonsRepository.findById(commonsId)
                 .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+
+        if (joinedCommons.isHidden()) {
+            throw new CommonsHiddenException("This commons is hidden and cannot be joined!");
+        }
+
         Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
         if (userCommonsLookup.isPresent()) {
