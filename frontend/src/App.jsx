@@ -70,6 +70,7 @@ function App() {
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
       />
+      <Route path="/admin/chat/:commonsId" element={<ChatHistoryPage />} />
       <Route path="/developer" element={<DeveloperPage />} />
       <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
     </>
