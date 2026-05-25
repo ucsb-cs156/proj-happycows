@@ -42,6 +42,9 @@ public class SystemInfoServiceImpl extends SystemInfoService {
   @Value("${git.commit.id.abbrev:unknown}")
   private String commitId;
 
+  @Value("${app.feature_flags:}")
+  private String featureFlags;
+
   public static String githubUrl(String repo, String commit) {
     return commit != null && repo != null ? repo + "/commit/" + commit : null;
   }
@@ -60,6 +63,7 @@ public class SystemInfoServiceImpl extends SystemInfoService {
     .commitId(this.commitId)
     .githubUrl(githubUrl(this.sourceRepo, this.commitId))
     .oauthLogin(this.oauthLogin)
+    .featureFlags(featureFlags)
     .build();
   log.info("getSystemInfo returns {}",si);
   return si;
