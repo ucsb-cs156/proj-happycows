@@ -90,7 +90,7 @@ const AdminEditAnnouncementsPage = () => {
     <BasicLayout>
       <h2>Edit Announcement for Commons {commonsName}</h2>
       <AnnouncementForm
-        initialAnnouncement={announcement}
+        initialContents={announcement}
         submitAction={submitAction} 
         buttonLabel="Update"
       />

@@ -13,6 +13,18 @@ export function datetimeLocalToIsoDateTime(value) {
   return value;
 }
 
+// Convert ISO datetime to datetime-local format (YYYY-MM-DDTHH:mm)
+export function isoDateTimeToDatetimeLocal(value) {
+  if (typeof value === "string") {
+    // Handle ISO format: "YYYY-MM-DDTHH:mm:ss" or "YYYY-MM-DDTHH:mm:ss.SSS"
+    const match = value.match(/^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})/);
+    if (match) {
+      return match[1];
+    }
+  }
+  return value;
+}
+
 export function onDeleteSuccess(message) {
   console.log(message);
   toast(message);
