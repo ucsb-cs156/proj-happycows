@@ -1,7 +1,7 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   ANNOUNCEMENT_TEXT_MAX_LENGTH,
   isoDateTimeToDatetimeLocal,
@@ -13,15 +13,19 @@ function AnnouncementForm({
   buttonLabel = "Create",
 }) {
   // Convert ISO dates to datetime-local format for form input
-  const convertedInitialContents = initialContents
-    ? {
-        ...initialContents,
-        startDate: isoDateTimeToDatetimeLocal(initialContents.startDate),
-        endDate: initialContents.endDate
-          ? isoDateTimeToDatetimeLocal(initialContents.endDate)
-          : undefined,
-      }
-    : {};
+  const convertedInitialContents = useMemo(
+    () =>
+      initialContents
+        ? {
+            ...initialContents,
+            startDate: isoDateTimeToDatetimeLocal(initialContents.startDate),
+            endDate: initialContents.endDate
+              ? isoDateTimeToDatetimeLocal(initialContents.endDate)
+              : undefined,
+          }
+        : {},
+    [initialContents],
+  );
 
   // Stryker disable all
   const {
