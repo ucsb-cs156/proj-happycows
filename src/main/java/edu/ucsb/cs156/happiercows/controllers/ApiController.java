@@ -10,6 +10,7 @@ import edu.ucsb.cs156.happiercows.services.CurrentUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public abstract class ApiController {
     );
   }
 
-  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class})
+  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, CommonsHiddenException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Object handleBadRequest(Throwable e) {
     return Map.of(

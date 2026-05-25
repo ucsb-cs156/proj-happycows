@@ -16,8 +16,18 @@ const timestampToDate = (timestamp) => {
 const daysSinceTimestamp = (date) => {
   var today = new Date();
   var startingDate = new Date(date);
-  var timeDiff = Math.abs(today.getTime() - startingDate.getTime());
-  return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  // calculate difference in calendar days (ignore time-of-day)
+  var utcToday = Date.UTC(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+  );
+  var utcStart = Date.UTC(
+    startingDate.getFullYear(),
+    startingDate.getMonth(),
+    startingDate.getDate(),
+  );
+  return Math.floor((utcToday - utcStart) / (1000 * 3600 * 24));
 };
 
 const minutesInSeconds = 60;
