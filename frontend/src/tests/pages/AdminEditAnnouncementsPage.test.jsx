@@ -130,9 +130,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
       );
 
       expect(mutationSpy).toHaveBeenCalled();
-      expect(mutationSpy.mock.calls[1][2]).toEqual(["/api/announcements?id=1"]);
+      expect(mutationSpy.mock.calls[0][2]).toEqual(["/api/announcements?id=1"]);
 
-      const mutationFn = mutationSpy.mock.calls[1][0];
+      const mutationFn = mutationSpy.mock.calls[0][0];
       const result = mutationFn({
         id: 1,
         startDate: "2024-12-12T00:00",
@@ -169,7 +169,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         </QueryClientProvider>,
       );
 
-      const mutationFn = mutationSpy.mock.calls[1][0];
+      const mutationFn = mutationSpy.mock.calls[0][0];
       const result = mutationFn({
         id: 1,
         startDate: "2024-12-12T00:00",
@@ -205,7 +205,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         </QueryClientProvider>,
       );
 
-      const options = mutationSpy.mock.calls[1][1];
+      const options = mutationSpy.mock.calls[0][1];
       options.onSuccess({
         id: 1,
         startDate: "2024-12-12T00:00:00",
