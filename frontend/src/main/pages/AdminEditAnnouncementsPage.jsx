@@ -8,7 +8,7 @@ import { datetimeLocalToIsoDateTime } from "main/utils/announcementUtils";
 import { useParams } from "react-router";
 
 const AdminEditAnnouncementsPage = () => {
-  const { commonsId, announcementId} = useParams();
+  const { commonsId, announcementId } = useParams();
 
   // Stryker disable all
   const { data: commonsPlus } = useBackend(
@@ -16,8 +16,8 @@ const AdminEditAnnouncementsPage = () => {
     {
       method: "GET",
       url: "/api/commons/plus",
-      params: { 
-        id: commonsId
+      params: {
+        id: commonsId,
       },
     },
   );
@@ -27,7 +27,7 @@ const AdminEditAnnouncementsPage = () => {
       method: "GET",
       url: "/api/announcements/getbyid",
       params: {
-        id: announcementId
+        id: announcementId,
       },
     },
   );
@@ -91,7 +91,7 @@ const AdminEditAnnouncementsPage = () => {
       <h2>Edit Announcement for Commons {commonsName}</h2>
       <AnnouncementForm
         initialContents={announcement}
-        submitAction={submitAction} 
+        submitAction={submitAction}
         buttonLabel="Update"
       />
     </BasicLayout>
