@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -186,4 +188,88 @@ public class CourseControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+
+        @WithMockUser(roles = {"ADMIN", "USER"})
+        @Test
+        public void admin_can_edit_an_existing_course() throws Exception {
+        // arrange
+
+        Course courseOrig =
+                Course.builder()
+                .code("cs156")
+                .name("adv app dev")
+                .term("s26")
+                .build();
+
+        Course courseEdited =
+                Course.builder()
+                .code("cs8")
+                .name("intro py")
+                .term("f23")
+                .build();
+
+        String requestBody = mapper.writeValueAsString(courseEdited);
+
+        when(courseRepository.findById(eq(67L)))
+                .thenReturn(Optional.of(courseOrig));
+
+        // act
+        MvcResult response =
+                mockMvc
+                .perform(
+                        put("/api/course")
+                        .param("id", "67")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(67L);
+        verify(courseRepository, times(1))
+                .save(courseEdited); // should be saved with correct user
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(requestBody, responseString);
+        }
+
+        @WithMockUser(roles = {"ADMIN", "USER"})
+        @Test
+        public void admin_cannot_edit_course_that_does_not_exist() throws Exception {
+        // arrange
+
+        Course editedCourse =
+                Course.builder()
+                .code("cs156")
+                .name("adv app dev")
+                .term("s26")
+                .build();
+
+        String requestBody = mapper.writeValueAsString(editedCourse);
+
+        when(courseRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+        // act
+        MvcResult response =
+                mockMvc
+                .perform(
+                        put("/api/course")
+                        .param("id", "67")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody)
+                        .with(csrf()))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+        // assert
+        verify(courseRepository, times(1)).findById(67L);
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("Course with id 67 not found", json.get("message"));
+        }
+
+
+
+
 }
