@@ -403,6 +403,103 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         assertEquals(expectedResponseString, responseString);
     }
 
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userCanGetCurrentAnnouncements() throws Exception {
+
+        // arrange
+        Long id1 = 0L;
+        Long id2 = 1L;
+        Long commonsId = 1L;
+        Long userId = 1L;
+        String announcement1 = "Current announcement 1";
+        String announcement2 = "Current announcement 2";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
+        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+
+        Announcement announcementObj1 = Announcement.builder().id(id1).commonsId(commonsId).startDate(start).announcementText(announcement1).build();
+        Announcement announcementObj2 = Announcement.builder().id(id2).commonsId(commonsId).startDate(start).announcementText(announcement2).build();
+
+        List<Announcement> announcementList = new ArrayList<>();
+        announcementList.add(announcementObj1);
+        announcementList.add(announcementObj2);
+
+        Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
+        Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
+
+        when(announcementRepository.findCurrentAnnouncementsByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+
+        UserCommons userCommons = UserCommons.builder().build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).findCurrentAnnouncementsByCommonsId(commonsId, pageable);
+        String responseString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(announcementPage);
+        assertEquals(expectedResponseString, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userCannotGetCurrentAnnouncementsIfNotInCommons() throws Exception {
+
+        // arrange
+        Long commonsId = 1L;
+        Long userId = 1L;
+
+        Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
+
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+
+        // act
+        mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // assert
+        verify(announcementRepository, times(0)).findCurrentAnnouncementsByCommonsId(commonsId, pageable);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanGetCurrentAnnouncements() throws Exception {
+
+        // arrange
+        Long id1 = 0L;
+        Long id2 = 1L;
+        Long commonsId = 1L;
+        String announcement1 = "Current announcement 1";
+        String announcement2 = "Current announcement 2";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
+        Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
+
+        Announcement announcementObj1 = Announcement.builder().id(id1).commonsId(commonsId).startDate(start).announcementText(announcement1).build();
+        Announcement announcementObj2 = Announcement.builder().id(id2).commonsId(commonsId).startDate(start).announcementText(announcement2).build();
+
+        List<Announcement> announcementList = new ArrayList<>();
+        announcementList.add(announcementObj1);
+        announcementList.add(announcementObj2);
+
+        Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
+        Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
+
+        when(announcementRepository.findCurrentAnnouncementsByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(announcementRepository, atLeastOnce()).findCurrentAnnouncementsByCommonsId(commonsId, pageable);
+        String responseString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(announcementPage);
+        assertEquals(expectedResponseString, responseString);
+    }
 
     @WithMockUser(roles = {"USER"})
     @Test

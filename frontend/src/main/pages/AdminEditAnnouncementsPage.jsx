@@ -5,18 +5,18 @@ import { useNavigate, useParams } from "react-router";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { toast } from "react-toastify";
 
-export default function AdminCreateAnnouncementsPage() {
-  const { commonsId } = useParams();
+export default function AdminEditAnnouncementsPage() {
+  const { commonsId, announcementId } = useParams();
   const navigate = useNavigate();
 
   // Stryker disable all : hard to test query caching
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
+  const { data: announcement } = useBackend(
+    [`/api/announcements/getbyid?id=${announcementId}`],
     {
       method: "GET",
-      url: "/api/commons/plus",
+      url: "/api/announcements/getbyid",
       params: {
-        id: commonsId,
+        id: announcementId,
       },
     },
   );
@@ -24,13 +24,13 @@ export default function AdminCreateAnnouncementsPage() {
 
   const mutation = useBackendMutation(
     (params) => ({
-      url: "/api/announcements/post",
-      method: "POST",
+      method: "PUT",
+      url: "/api/announcements/put",
       params,
     }),
     {
       onSuccess: () => {
-        toast("Announcement created");
+        toast("Announcement updated");
         navigate(`/admin/announcements/${commonsId}`);
       },
     },
@@ -67,10 +67,19 @@ export default function AdminCreateAnnouncementsPage() {
       date.getMinutes(),
     )}:00 ${timezone} ${date.getFullYear()}`;
   };
+
+  const toDateTimeLocal = (backendDate) => {
+    if (!backendDate) {
+      return "";
+    }
+
+    return backendDate.substring(0, 16);
+  };
   // Stryker restore all
 
   const submitAction = (data) => {
     const params = {
+      id: Number(data.id),
       commonsId: Number(commonsId),
       announcementText: data.announcementText,
       startDate: toBackendDate(data.startDate),
@@ -83,15 +92,24 @@ export default function AdminCreateAnnouncementsPage() {
     mutation.mutate(params);
   };
 
-  const commonsName = commonsPlus?.commons.name;
+  const initialContents = announcement && {
+    ...announcement,
+    startDate: toDateTimeLocal(announcement.startDate),
+    endDate: toDateTimeLocal(announcement.endDate),
+  };
 
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Create Announcement</h1>
-        <h2>for Commons: {commonsName}</h2>
+        <h1>Edit Announcement</h1>
 
-        <AnnouncementForm submitAction={submitAction} buttonLabel="Create" />
+        {initialContents && (
+          <AnnouncementForm
+            initialContents={initialContents}
+            submitAction={submitAction}
+            buttonLabel="Update"
+          />
+        )}
       </div>
     </BasicLayout>
   );
