@@ -95,8 +95,8 @@ function CoursesForm({
           // Stryker disable next-line all
           data-testid={testIdPrefix + "-cancel"}
         >
-        Cancel
-      </Button>
+          Cancel
+        </Button>
       )}
     </Form>
   );
