@@ -6,6 +6,7 @@ function CoursesForm({
   initialContents,
   submitAction,
   buttonLabel = "Create",
+  cancelDisabled = false,
 }) {
   // Stryker disable all
   const {
@@ -25,7 +26,6 @@ function CoursesForm({
         <Form.Group className="mb-3">
           <Form.Label htmlFor="id">Id</Form.Label>
           <Form.Control
-            // Stryker disable next-line all
             data-testid={testIdPrefix + "-id"}
             id="id"
             type="text"
@@ -35,10 +35,10 @@ function CoursesForm({
           />
         </Form.Group>
       )}
+
       <Form.Group className="mb-3">
         <Form.Label htmlFor="code">Code</Form.Label>
         <Form.Control
-          // Stryker disable next-line all
           data-testid={testIdPrefix + "-code"}
           id="code"
           type="text"
@@ -47,16 +47,18 @@ function CoursesForm({
             required: "Code is required.",
           })}
         />
+        <Form.Control.Feedback type="invalid">
+          {errors.code?.message}
+        </Form.Control.Feedback>
       </Form.Group>
+
       <Form.Group className="mb-3">
         <Form.Label htmlFor="name">Name</Form.Label>
         <Form.Control
-          // Stryker disable next-line all
           data-testid={testIdPrefix + "-name"}
           id="name"
           type="text"
           isInvalid={Boolean(errors.name)}
-          // Stryker disable next-line all
           {...register("name", {
             required: "Name is required.",
           })}
@@ -66,16 +68,17 @@ function CoursesForm({
       <Form.Group className="mb-3">
         <Form.Label htmlFor="term">Term</Form.Label>
         <Form.Control
-          // Stryker disable next-line all
           data-testid={testIdPrefix + "-term"}
           id="term"
           type="text"
           isInvalid={Boolean(errors.term)}
-          // Stryker disable next-line all
           {...register("term", {
             required: "Term is required.",
           })}
         />
+        <Form.Control.Feedback type="invalid">
+          {errors.term?.message}
+        </Form.Control.Feedback>
       </Form.Group>
 
       <Button
@@ -85,15 +88,16 @@ function CoursesForm({
       >
         {buttonLabel}
       </Button>
-
-      <Button
-        variant="Secondary"
-        onClick={() => navigate(-1)}
-        // Stryker disable next-line all
-        data-testid={testIdPrefix + "-cancel"}
-      >
+      {!cancelDisabled && (
+        <Button
+          variant="Secondary"
+          onClick={() => navigate(-1)}
+          // Stryker disable next-line all
+          data-testid={testIdPrefix + "-cancel"}
+        >
         Cancel
       </Button>
+      )}
     </Form>
   );
 }
