@@ -4,11 +4,14 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
+import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
+import { useCurrentUser } from "main/utils/currentUser";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
+  const { data: currentUser } = useCurrentUser();
 
-  // Stryker disable all
+  // Stryker disable all : hard to test query caching
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${commonsId}`],
     {
@@ -19,9 +22,24 @@ export default function AdminAnnouncementsPage() {
       },
     },
   );
+
+  const { data: announcements } = useBackend(
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/getbycommonsid",
+      params: {
+        commonsId,
+      },
+    },
+    [],
+  );
   // Stryker restore all
 
   const commonsName = commonsPlus?.commons.name;
+
+  // Stryker disable next-line all : fallback for loading/empty paged response
+  const announcementData = announcements?.content || [];
 
   return (
     <BasicLayout>
@@ -29,12 +47,19 @@ export default function AdminAnnouncementsPage() {
         <Row className="pt-5">
           <Col>
             <h2>Announcements for Commons: {commonsName}</h2>
+
             <Button
               variant="primary"
               href={`/admin/announcements/${commonsId}/create`}
             >
               Create Announcement
             </Button>
+
+            <AnnouncementTable
+              announcements={announcementData}
+              currentUser={currentUser}
+              commonsId={commonsId}
+            />
           </Col>
         </Row>
       </div>

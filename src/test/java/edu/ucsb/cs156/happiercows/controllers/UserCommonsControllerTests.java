@@ -1,5 +1,9 @@
 package edu.ucsb.cs156.happiercows.controllers;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
@@ -12,7 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
-
+ 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -410,5 +414,60 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_putUserCommonsByIdBuy_commons_hidden() throws Exception {
+        // set commons to be hidden
+        Commons hiddenCommons = Commons.builder()
+        .id(testCommons.getId())
+        .name(testCommons.getName())
+        .cowPrice(testCommons.getCowPrice())
+        .milkPrice(testCommons.getMilkPrice())
+        .startingBalance(testCommons.getStartingBalance())
+        .startingDate(testCommons.getStartingDate())
+        .hidden(true)
+        .build();
+        UserCommons testUserCommons = getTestUserCommons();
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(hiddenCommons));
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(testUserCommons));
+        // try to buy cow
+        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=1")
+                        .with(csrf()))
+                        .andExpect(status().isBadRequest()).andReturn();
+
+        //assert response
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals("CommonsHiddenException",jsonResponse.get("type"));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_putUserCommonsByIdSell_commons_hidden() throws Exception {
+        // set commons to be hidden
+        Commons hiddenCommons = Commons.builder()
+        .id(testCommons.getId())
+        .name(testCommons.getName())
+        .cowPrice(testCommons.getCowPrice())
+        .milkPrice(testCommons.getMilkPrice())
+        .startingBalance(testCommons.getStartingBalance())
+        .startingDate(testCommons.getStartingDate())
+        .hidden(true)
+        .build();
+        UserCommons testUserCommons = getTestUserCommons();
+
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(hiddenCommons));
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L)))
+            .thenReturn(Optional.of(testUserCommons));
+
+        // try to sell cow
+        MvcResult response = mockMvc.perform(
+            put("/api/usercommons/sell?commonsId=1&numCows=1").with(csrf()))
+            .andExpect(status().isBadRequest()).andReturn();
+
+        // return CommonsHiddenException
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals("CommonsHiddenException", jsonResponse.get("type"));
     }
 }
