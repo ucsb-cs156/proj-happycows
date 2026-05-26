@@ -728,6 +728,11 @@ describe("ChatHistoryPage", () => {
 
     const container = screen.getByTestId("ChatHistoryPage-message-container");
     expect(container).toHaveStyle("background-color: white");
+    const container = document.querySelector('div[style*="overflow-y: auto"]');
+    expect(container).toBeTruthy();
+    expect(["white", "rgb(255, 255, 255)"]).toContain(
+      container.style.backgroundColor,
+    );
 
     useInfiniteQuerySpy.mockRestore();
   });
