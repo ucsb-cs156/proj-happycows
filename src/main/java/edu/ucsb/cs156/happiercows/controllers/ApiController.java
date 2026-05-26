@@ -1,5 +1,5 @@
 package edu.ucsb.cs156.happiercows.controllers;
-
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
@@ -34,7 +34,7 @@ public abstract class ApiController {
     );
   }
 
-  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class})
+  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, CommonsHiddenException.class })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Object handleBadRequest(Throwable e) {
     return Map.of(

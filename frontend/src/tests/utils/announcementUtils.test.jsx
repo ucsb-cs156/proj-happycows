@@ -6,8 +6,10 @@ import {
 } from "main/utils/announcementUtils";
 
 const mockToast = vi.fn();
+
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");
+
   return {
     __esModule: true,
     ...originalModule,
@@ -27,12 +29,14 @@ describe("AnnouncementUtils", () => {
       // assert
       expect(mockToast).toHaveBeenCalledWith("abc");
       expect(console.log).toHaveBeenCalled();
+
       const message = console.log.mock.calls[0][0];
       expect(message).toMatch("abc");
 
       restoreConsole();
     });
   });
+
   describe("cellToAxiosParamsDelete", () => {
     test("It returns the correct params", () => {
       // arrange
@@ -43,7 +47,7 @@ describe("AnnouncementUtils", () => {
 
       // assert
       expect(result).toEqual({
-        url: "/api/announcements",
+        url: "/api/announcements/delete",
         method: "DELETE",
         params: { id: 1 },
       });
