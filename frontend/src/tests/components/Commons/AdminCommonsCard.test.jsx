@@ -446,6 +446,7 @@ describe("AdminCommonsCard tests", () => {
     expect(screen.getByText("Leaderboard")).toBeInTheDocument();
     expect(screen.getByText("Stats CSV")).toBeInTheDocument();
     expect(screen.getByText("Announcements")).toBeInTheDocument();
+    expect(screen.getByText("Chat")).toBeInTheDocument();
   });
 
   test("displays all field labels correctly", () => {
@@ -822,5 +823,23 @@ describe("AdminCommonsCard tests", () => {
         screen.queryByTestId("AdminCommonsCard-Modal-1"),
       ).not.toBeInTheDocument();
     });
+  });
+  test("chat button navigates to admin chat page", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatButton = screen.getByTestId("AdminCommonsCard-Chat-1");
+    fireEvent.click(chatButton);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/admin/chat/1");
   });
 });
