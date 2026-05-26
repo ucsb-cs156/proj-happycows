@@ -670,6 +670,23 @@ describe("AdminCommonsCard tests", () => {
     );
   });
 
+  test("chat button has correct href", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatButton = screen.getByTestId("AdminCommonsCard-Chat-1");
+    expect(chatButton).toHaveAttribute("href", "/admin/chat/1");
+  });
+
   test("handles null totalCows and effectiveCapacity", () => {
     const queryClient = new QueryClient();
     const commonItem = {
