@@ -1,8 +1,9 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter as Router } from "react-router";
 import TestJobsForm from "main/components/Jobs/TestJobForm";
 import jobsFixtures from "fixtures/jobsFixtures";
 import { vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 const mockedNavigate = vi.fn();
 
@@ -31,24 +32,26 @@ describe("TestJobsForm tests", () => {
 
     render(
       <Router>
-        <TestJobsForm jobs={jobsFixtures.sixJobs} />
+        <TestJobsForm submitAction={submitAction} jobs={jobsFixtures.sixJobs} />
       </Router>,
     );
 
     expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
     const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
     const sleepMs = screen.getByTestId("TestJobForm-sleepMs");
 
     expect(submitButton).toBeInTheDocument();
     expect(sleepMs).toHaveValue(1000);
 
-    fireEvent.change(sleepMs, { target: { value: "" } });
-    fireEvent.click(submitButton);
+    await userEvent.clear(sleepMs);
+    await userEvent.click(submitButton);
+
     expect(
       await screen.findByText("sleepMs is required (0 is ok)"),
     ).toBeInTheDocument();
     expect(submitAction).not.toBeCalled();
-    expect(screen.getByTestId("TestJobForm-sleepMs")).toHaveClass("is-invalid"); // tests for mutation to isInvalid={!!errors.sleepMs} idiom
+    expect(screen.getByTestId("TestJobForm-sleepMs")).toHaveClass("is-invalid");
   });
 
   it("validates that sleepMs is >= 0", async () => {
@@ -56,19 +59,23 @@ describe("TestJobsForm tests", () => {
 
     render(
       <Router>
-        <TestJobsForm jobs={jobsFixtures.sixJobs} />
+        <TestJobsForm submitAction={submitAction} jobs={jobsFixtures.sixJobs} />
       </Router>,
     );
 
     expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
     const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
     const sleepMs = screen.getByTestId("TestJobForm-sleepMs");
 
     expect(submitButton).toBeInTheDocument();
     expect(sleepMs).toHaveValue(1000);
 
-    fireEvent.change(sleepMs, { target: { value: "-1" } });
+    fireEvent.change(sleepMs, { target: { value: "-100" } });
+    expect(sleepMs).toHaveValue(-100);
+
     fireEvent.click(submitButton);
+
     expect(
       await screen.findByText(/sleepMs must be positive/i),
     ).toBeInTheDocument();
@@ -80,19 +87,22 @@ describe("TestJobsForm tests", () => {
 
     render(
       <Router>
-        <TestJobsForm jobs={jobsFixtures.sixJobs} />
+        <TestJobsForm submitAction={submitAction} jobs={jobsFixtures.sixJobs} />
       </Router>,
     );
 
     expect(await screen.findByTestId("TestJobForm-fail")).toBeInTheDocument();
+
     const submitButton = screen.getByTestId("TestJobForm-Submit-Button");
     const sleepMs = screen.getByTestId("TestJobForm-sleepMs");
 
     expect(submitButton).toBeInTheDocument();
     expect(sleepMs).toHaveValue(1000);
 
-    fireEvent.change(sleepMs, { target: { value: "70000" } });
-    fireEvent.click(submitButton);
+    await userEvent.clear(sleepMs);
+    await userEvent.type(sleepMs, "70000");
+    await userEvent.click(submitButton);
+
     expect(
       await screen.findByText(/sleepMs must be ≤ 60000/i),
     ).toBeInTheDocument();

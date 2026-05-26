@@ -31,8 +31,8 @@ describe("ChatPanel", () => {
 
     expect(screen.getByTestId("ChatMessageCreate")).toBeInTheDocument();
 
-    expect(screen.getByTestId("ChatPanel")).toHaveStyle(
-      "backgroundColor: white",
+    expect(["white", "rgb(255, 255, 255)"]).toContain(
+      screen.getByTestId("ChatPanel").style.backgroundColor,
     );
   });
 });
