@@ -33,7 +33,11 @@ export default function AdminCreateAnnouncementsPage() {
       commonsId,
       announcementText: announcement.announcementText,
     };
-    nonBlankParam(params, "startDate", toBackendDateTime(announcement.startDate));
+    nonBlankParam(
+      params,
+      "startDate",
+      toBackendDateTime(announcement.startDate),
+    );
     nonBlankParam(params, "endDate", toBackendDateTime(announcement.endDate));
 
     return {
@@ -48,11 +52,9 @@ export default function AdminCreateAnnouncementsPage() {
   };
 
   // Stryker disable all
-  const mutation = useBackendMutation(
-    objectToAxiosParams,
-    { onSuccess },
-    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
-  );
+  const mutation = useBackendMutation(objectToAxiosParams, { onSuccess }, [
+    `/api/announcements/getbycommonsid?commonsId=${commonsId}`,
+  ]);
   // Stryker restore all
 
   const submitAction = async (data) => {

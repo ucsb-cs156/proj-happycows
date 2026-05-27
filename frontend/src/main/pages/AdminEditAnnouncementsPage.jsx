@@ -54,7 +54,11 @@ export default function AdminEditAnnouncementsPage() {
       "startDate",
       toBackendDateTime(updatedAnnouncement.startDate),
     );
-    nonBlankParam(params, "endDate", toBackendDateTime(updatedAnnouncement.endDate));
+    nonBlankParam(
+      params,
+      "endDate",
+      toBackendDateTime(updatedAnnouncement.endDate),
+    );
 
     return {
       url: "/api/announcements/put",

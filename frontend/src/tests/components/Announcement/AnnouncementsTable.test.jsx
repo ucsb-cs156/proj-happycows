@@ -212,9 +212,7 @@ describe("AnnouncementTable tests", () => {
       </QueryClientProvider>,
     );
 
-    fireEvent.click(
-      screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`),
-    );
+    fireEvent.click(screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`));
 
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith(

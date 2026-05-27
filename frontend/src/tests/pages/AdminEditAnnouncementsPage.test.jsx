@@ -60,14 +60,13 @@ describe("AdminEditAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
-    axiosMock.onGet("/api/announcements/getbyid", { params: { id: 5 } }).reply(
-      200,
-      {
+    axiosMock
+      .onGet("/api/announcements/getbyid", { params: { id: 5 } })
+      .reply(200, {
         ...announcementFixtures.oneAnnouncement,
         id: 5,
         commonsId: 1,
-      },
-    );
+      });
   };
 
   test("renders and populates form with announcement data", async () => {
@@ -149,7 +148,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AnnouncementForm-id")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("AnnouncementForm-id"),
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId("AnnouncementForm-startDate"), {
       target: { value: "2004-12-10T00:12" },
@@ -202,7 +203,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AnnouncementForm-id")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("AnnouncementForm-id"),
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId("AnnouncementForm-startDate"), {
       target: { value: "" },
@@ -242,7 +245,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByTestId("AnnouncementForm-id")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("AnnouncementForm-id"),
+    ).toBeInTheDocument();
 
     const objectToAxiosParams = useBackendMutationSpy.mock.calls[0][0];
     const result = objectToAxiosParams({
