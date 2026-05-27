@@ -168,8 +168,8 @@ describe("AdminEditAnnouncementsPage tests", () => {
       id: 5,
       commonsId: 1,
       announcementText: "Updated announcement",
-      startDate: "Dec 10, 2004, 12:12:00 AM",
-      endDate: "Dec 10, 2004, 1:45:00 PM",
+      startDate: new Date("2004-12-10T00:12").toISOString(),
+      endDate: new Date("2004-12-10T13:45").toISOString(),
     });
     expect(mockToast).toHaveBeenCalledWith("Announcement updated - id: 5");
     expect(mockedNavigate).toHaveBeenCalledWith({

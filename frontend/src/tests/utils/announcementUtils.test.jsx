@@ -58,14 +58,22 @@ describe("AnnouncementUtils", () => {
 
     test("It formats an AM date for the backend", () => {
       expect(toBackendDateTime("2004-12-10T00:12")).toBe(
-        "Dec 10, 2004, 12:12:00 AM",
+        new Date("2004-12-10T00:12").toISOString(),
       );
     });
 
     test("It formats a PM date for the backend", () => {
       expect(toBackendDateTime("2004-12-10T13:45")).toBe(
-        "Dec 10, 2004, 1:45:00 PM",
+        new Date("2004-12-10T13:45").toISOString(),
       );
+    });
+
+    test("It sends an ISO instant instead of a timezone-less display string", () => {
+      const result = toBackendDateTime("2004-12-10T10:00");
+
+      expect(result).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(result).not.toContain("Dec");
+      expect(result).not.toContain("AM");
     });
   });
 });

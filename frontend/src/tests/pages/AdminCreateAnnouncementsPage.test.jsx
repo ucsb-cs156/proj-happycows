@@ -183,8 +183,8 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     expect(axiosMock.history.post[0].params).toEqual({
       commonsId: 1,
       announcementText: "Dated announcement",
-      startDate: "Dec 10, 2004, 12:12:00 AM",
-      endDate: "Dec 10, 2004, 1:45:00 PM",
+      startDate: new Date("2004-12-10T00:12").toISOString(),
+      endDate: new Date("2004-12-10T13:45").toISOString(),
     });
     expect(mockToast).toHaveBeenCalledWith("Announcement created - id: 6");
     expect(mockedNavigate).toHaveBeenCalledWith({
