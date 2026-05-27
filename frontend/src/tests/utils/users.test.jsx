@@ -12,15 +12,27 @@ vi.mock("react-router");
 
 describe("utils/users tests", () => {
   describe("useUsers tests", () => {
+    let axiosMock;
+
+    afterEach(() => {
+      axiosMock?.restore();
+    });
+
     test("useUsers initially retrieves initial data on timeout", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
 
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/admin/users").timeout();
 
       const restoreConsole = mockConsole();
@@ -40,14 +52,20 @@ describe("utils/users tests", () => {
     });
 
     test("useUsers hits error logic on 404", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
 
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/admin/users").reply(404);
 
       const restoreConsole = mockConsole();
@@ -61,17 +79,25 @@ describe("utils/users tests", () => {
     });
 
     test("useUsers returns correct data when api is mocked", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/admin/users").reply(200, usersFixtures.threeUsers);
 
       const { result } = renderHook(() => useUsers(), { wrapper });
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() =>
+        expect(result.current.data).toEqual(usersFixtures.threeUsers),
+      );
       expect(result.current.data).toEqual(usersFixtures.threeUsers);
     });
   });

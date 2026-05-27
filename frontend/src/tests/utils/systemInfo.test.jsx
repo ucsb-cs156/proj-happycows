@@ -10,6 +10,12 @@ import { vi } from "vitest";
 vi.mock("react-router");
 
 describe("utils/systemInfo tests", () => {
+  let axiosMock;
+
+  afterEach(() => {
+    axiosMock?.restore();
+  });
+
   describe("useSystemInfo tests", () => {
     test("useSystemInfo retrieves initial data", async () => {
       const queryClient = new QueryClient({
@@ -26,7 +32,7 @@ describe("utils/systemInfo tests", () => {
         </QueryClientProvider>
       );
 
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/systemInfo").timeoutOnce();
       axiosMock
         .onGet("/api/systemInfo")
@@ -45,14 +51,20 @@ describe("utils/systemInfo tests", () => {
     });
 
     test("useSystemInfo retrieves data from API", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
 
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock
         .onGet("/api/systemInfo")
         .reply(200, systemInfoFixtures.showingAll);
@@ -61,7 +73,11 @@ describe("utils/systemInfo tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() =>
+        expect(result.current.data.springH2ConsoleEnabled).toBe(
+          systemInfoFixtures.showingAll.springH2ConsoleEnabled,
+        ),
+      );
 
       expect(result.current.data.springH2ConsoleEnabled).toBe(
         systemInfoFixtures.showingAll.springH2ConsoleEnabled,
@@ -83,14 +99,20 @@ describe("utils/systemInfo tests", () => {
     });
 
     test("systemInfo when API unreachable", async () => {
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+        },
+      });
       const wrapper = ({ children }) => (
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>
       );
 
-      var axiosMock = new AxiosMockAdapter(axios);
+      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onGet("/api/systemInfo").reply(404);
 
       const restoreConsole = mockConsole();

@@ -34,7 +34,7 @@ function AnnouncementForm({
     reset,
     formState: { errors },
     handleSubmit,
-  } = useForm({ defaultValues: convertedInitialContents || {} });
+  } = useForm({ defaultValues: convertedInitialContents });
   // Stryker restore all
 
   // Update form values when initial data arrives

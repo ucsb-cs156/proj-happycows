@@ -79,6 +79,33 @@ describe("AnnouncementForm tests", () => {
     });
   });
 
+  test("renders correctly when initialContents has no endDate", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm
+            initialContents={{
+              ...announcementFixtures.oneAnnouncement,
+              endDate: undefined,
+            }}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startDateInput = await screen.findByTestId(`${testId}-startDate`);
+    const endDateInput = screen.getByTestId(`${testId}-endDate`);
+    const announcementTextInput = screen.getByTestId(
+      `${testId}-announcementText`,
+    );
+
+    expect(startDateInput).toHaveValue("2024-12-12T00:00");
+    expect(endDateInput).toHaveValue("");
+    expect(announcementTextInput).toHaveValue(
+      "System maintenance scheduled for next week.",
+    );
+  });
+
   test("that navigate(-1) is called when Cancel is clicked", async () => {
     render(
       <QueryClientProvider client={queryClient}>
