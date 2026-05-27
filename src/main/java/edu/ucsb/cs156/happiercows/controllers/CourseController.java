@@ -80,6 +80,26 @@ public class CourseController extends ApiController {
         return currCourse;  
 
     }
+
+
+    /**
+     * Delete a course
+     *
+     * @param id the id of the course to delete
+     * @return a message indicating the course was deleted
+     */
+    @Operation(summary = "Delete a Course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteCourse(@Parameter(name = "id") @RequestParam Long id) {
+        Course currCourse =
+            courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        courseRepository.delete(currCourse);
+        return genericMessage("Course with id %s deleted".formatted(id));
+  }
     
 
 }
