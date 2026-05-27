@@ -1431,5 +1431,27 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(100, commonsPlus.getEffectiveCapacity());
     }
 
+    @WithMockUser(roles = {"USER"})
+        @Test
+        public void join_hidden_commons_throws_exception() throws Exception {
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Example Commons")
+                .hidden(true)
+                .build();
+
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        verify(commonsRepository, times(1)).findById(eq(2L));
+
+        Map<String, Object> responseMap = responseToJson(response);
+        assertEquals("This commons is hidden.", responseMap.get("message"));
+        assertEquals("CommonsHiddenException", responseMap.get("type"));
+        }    
 }
 
