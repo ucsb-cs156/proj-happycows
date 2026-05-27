@@ -97,6 +97,6 @@ describe("CommonsOverview tests", () => {
       </QueryClientProvider>,
     );
     // Adjust the regex or text to match what daysSinceTimestamp returns for your fixture
-    expect(await screen.findByText(/Today is day/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Today is day /i)).toBeInTheDocument();
   });
 });
