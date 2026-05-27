@@ -134,19 +134,15 @@ describe("AdminListCommonPageV2 tests", () => {
 
   test("search bar filters commons correctly", async () => {
     setupAdminUser();
-
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, [
-      {
-        commons: { id: 1, name: "Anacapa" },
-      },
-      {
-        commons: { id: 2, name: "Santa Cruz" },
-      },
-      {
-        commons: { id: 3, name: "Santa Rosa" },
-      },
-    ]);
+
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, [
+        { commons: { id: 1, name: "Anacapa" } },
+        { commons: { id: 2, name: "Santa Cruz" } },
+        { commons: { id: 3, name: "Santa Rosa" } },
+      ]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -156,21 +152,32 @@ describe("AdminListCommonPageV2 tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Anacapa")).toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
+    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
+    expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
 
     const searchInput = screen.getByTestId("AdminListCommonsPage-Search");
+
     fireEvent.change(searchInput, { target: { value: "Santa" } });
 
-    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("AdminCommonsCard-1"),
+      ).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
+    expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
 
     fireEvent.change(searchInput, { target: { value: "Cruz" } });
 
-    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.queryByText("Santa Rosa")).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("AdminCommonsCard-3"),
+      ).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
+    expect(screen.queryByTestId("AdminCommonsCard-1")).not.toBeInTheDocument();
   });
 });
