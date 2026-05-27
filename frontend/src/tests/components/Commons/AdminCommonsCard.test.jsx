@@ -823,4 +823,26 @@ describe("AdminCommonsCard tests", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  test("clicking Chat button navigates to admin chat page", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    mockedNavigate.mockClear();
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatButton = screen.getByTestId("AdminCommonsCard-Chat-1");
+    expect(chatButton).toBeInTheDocument();
+    fireEvent.click(chatButton);
+
+    expect(mockedNavigate).toHaveBeenCalledWith("/admin/chat/1");
+  });
 });
