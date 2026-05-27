@@ -81,7 +81,9 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => expect(result.current.data.loggedIn).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isFetched).toBe(true);
+      });
 
       expect(result.current.data.loggedIn).toBe(true);
       expect(result.current.data.root).toBeTruthy();

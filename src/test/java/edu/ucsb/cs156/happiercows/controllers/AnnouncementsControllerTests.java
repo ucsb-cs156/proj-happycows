@@ -62,6 +62,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     @Autowired
     ObjectMapper mapper;
 
+
     private Date asDate(LocalDateTime localDateTime) {
         return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
