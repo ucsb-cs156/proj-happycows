@@ -1,35 +1,32 @@
-import React from "react";
-
-import CoursesTable from "main/components/Courses/CoursesTable";
+import CoursesForm from "main/components/Courses/CoursesForm";
 import { coursesFixtures } from "fixtures/coursesFixtures";
-import { currentUserFixtures } from "fixtures/currentUserFixtures";
 
 export default {
-  title: "components/courses/CoursesTable",
-  component: CoursesTable,
+  title: "components/Courses/CoursesForm",
+  component: CoursesForm,
 };
 
-const Template = (args) => <CoursesTable {...args} />;
-
-export const Empty = Template.bind({});
-Empty.args = {
-  courses: [],
+const Template = (args) => {
+  return <CoursesForm {...args} />;
 };
 
-export const ThreeCourses = Template.bind({});
-ThreeCourses.args = {
-  courses: coursesFixtures.threeCourses,
-  currentUser: currentUserFixtures.userOnly,
+export const Create = Template.bind({});
+
+Create.args = {
+  buttonLabel: "Create",
+  submitAction: (data) => {
+    console.log("Submit was clicked with data: ", data);
+    window.alert("Submit was clicked with data: " + JSON.stringify(data));
+  },
 };
 
-export const ThreeCoursesAdmin = Template.bind({});
-ThreeCoursesAdmin.args = {
-  courses: coursesFixtures.threeCourses,
-  currentUser: currentUserFixtures.adminUser,
-};
+export const Update = Template.bind({});
 
-export const OneCourseAdmin = Template.bind({});
-OneCourseAdmin.args = {
-  courses: coursesFixtures.oneCourse,
-  currentUser: currentUserFixtures.adminUser,
+Update.args = {
+  initialContents: coursesFixtures.oneCourse,
+  buttonLabel: "Update",
+  submitAction: (data) => {
+    console.log("Submit was clicked with data: ", data);
+    window.alert("Submit was clicked with data: " + JSON.stringify(data));
+  },
 };

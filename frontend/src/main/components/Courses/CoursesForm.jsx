@@ -38,7 +38,6 @@ function CoursesForm({
       <Form.Group className="mb-3">
         <Form.Label htmlFor="code">Code</Form.Label>
         <Form.Control
-          data-testid={testIdPrefix + "-code"}
           id="code"
           type="text"
           isInvalid={Boolean(errors.code)}
@@ -54,7 +53,6 @@ function CoursesForm({
       <Form.Group className="mb-3">
         <Form.Label htmlFor="name">Name</Form.Label>
         <Form.Control
-          data-testid={testIdPrefix + "-name"}
           id="name"
           type="text"
           isInvalid={Boolean(errors.name)}
@@ -70,7 +68,6 @@ function CoursesForm({
       <Form.Group className="mb-3">
         <Form.Label htmlFor="term">Term</Form.Label>
         <Form.Control
-          data-testid={testIdPrefix + "-term"}
           id="term"
           type="text"
           isInvalid={Boolean(errors.term)}
@@ -83,9 +80,7 @@ function CoursesForm({
         </Form.Control.Feedback>
       </Form.Group>
 
-      <Button type="submit" data-testid={testIdPrefix + "-submit"}>
-        {buttonLabel}
-      </Button>
+      <Button type="submit">{buttonLabel}</Button>
       <Button
         variant="secondary"
         onClick={() => navigate(-1)}
