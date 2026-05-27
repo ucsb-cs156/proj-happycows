@@ -20,7 +20,7 @@ describe("AnnouncementForm tests", () => {
   const testId = "AnnouncementForm";
 
   test("renders correctly with no initialContents", async () => {
-    const { rerender } = render(
+    render(
       <QueryClientProvider client={queryClient}>
         <Router>
           <AnnouncementForm />
