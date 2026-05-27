@@ -3,16 +3,24 @@ import { Row, Card, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 import { daysSinceTimestamp } from "main/utils/dateUtils";
+import CurrentAnnouncements from "main/components/Announcement/CurrentAnnouncements";
 
-export default function CommonsOverview({ commonsPlus, currentUser }) {
+export default function CommonsOverview({
+  commonsPlus,
+  currentUser,
+  currentAnnouncements,
+}) {
   let navigate = useNavigate();
+
   // Stryker disable all
   const leaderboardButtonClick = () => {
     navigate("/leaderboard/" + commonsPlus.commons.id);
   };
   // Stryker restore all
+
   const showLeaderboard =
     hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard;
+
   return (
     <Card data-testid="CommonsOverview">
       <Card.Header as="h5" className="woodenboardtable">
@@ -24,10 +32,12 @@ export default function CommonsOverview({ commonsPlus, currentUser }) {
           { backgroundColor: "rgb(245, 210, 140)" }
         }
       >
+        <CurrentAnnouncements announcements={currentAnnouncements} />
+
         <Row>
           <Col>
             <Card.Title>
-              Today is day
+              Today is day{" "}
               {daysSinceTimestamp(commonsPlus.commons.startingDate)}!
             </Card.Title>
             <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>

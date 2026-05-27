@@ -3,6 +3,7 @@ import {
   timestampToDate,
   daysSinceTimestamp,
   formatTime,
+  formatDateTime,
 } from "main/utils/dateUtils";
 
 describe("dateUtils tests", () => {
@@ -29,6 +30,23 @@ describe("dateUtils tests", () => {
     it("calculates days properly", () => {
       vi.useFakeTimers().setSystemTime(new Date("2022-06-01"));
       expect(daysSinceTimestamp(1653346250816)).toBe(9);
+    });
+  });
+
+  describe("formatDateTime tests", () => {
+    it("should return empty string for null or empty input", () => {
+      expect(formatDateTime(null)).toEqual("");
+      expect(formatDateTime("")).toEqual("");
+    });
+
+    it("should return empty string for invalid date", () => {
+      expect(formatDateTime("not-a-date")).toEqual("");
+    });
+
+    it("formats ISO date-time without seconds or timezone", () => {
+      expect(formatDateTime("2024-12-12T00:00:00")).toMatch(
+        /12\/12\/2024, 12:00 AM/,
+      );
     });
   });
 

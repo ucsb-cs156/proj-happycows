@@ -4,6 +4,8 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { Row, Col } from "react-bootstrap";
 import { useParams } from "react-router";
 import { useBackend } from "main/utils/useBackend";
+import { useCurrentUser } from "main/utils/currentUser";
+import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 
 export default function AdminAnnouncementsPage() {
   const { commonsId } = useParams();
@@ -19,16 +21,38 @@ export default function AdminAnnouncementsPage() {
       },
     },
   );
-  // Stryker restore all
+
+  const { data: announcementsResponse } = useBackend(
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/getbycommonsid",
+      params: {
+        commonsId: commonsId,
+      },
+    },
+  );
+
+  const { data: currentUser } = useCurrentUser();
+  const announcements = announcementsResponse?.content ?? [];
 
   const commonsName = commonsPlus?.commons.name;
+
+  // Stryker disable all - styles that don't need to be mut tested
+  const buttonStyle = {
+    display: "flex",
+    justifyContent: "flex-end",
+  };
+  // Stryker restore all
 
   return (
     <BasicLayout>
       <div className="pt-2">
-        <Row className="pt-5">
-          <Col>
+        <Row className="pt-5 pb-3" style={{ gap: "30px" }}>
+          <Col md="auto">
             <h2>Announcements for Commons: {commonsName}</h2>
+          </Col>
+          <Col style={buttonStyle}>
             <Button
               variant="primary"
               href={`/admin/announcements/${commonsId}/create`}
@@ -37,6 +61,11 @@ export default function AdminAnnouncementsPage() {
             </Button>
           </Col>
         </Row>
+        <AnnouncementTable
+          announcements={announcements}
+          currentUser={currentUser}
+          commonsId={commonsId}
+        />
       </div>
     </BasicLayout>
   );

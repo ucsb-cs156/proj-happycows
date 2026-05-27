@@ -41,6 +41,7 @@ describe("CommonsOverview tests", () => {
         </MemoryRouter>
       </QueryClientProvider>,
     );
+    expect(screen.getByText(/Today is day \d+!/)).toBeInTheDocument();
     expect(
       await screen.findByTestId("user-leaderboard-button"),
     ).toBeInTheDocument();
