@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
@@ -130,5 +130,47 @@ describe("AdminListCommonPageV2 tests", () => {
 
     expect(screen.queryByTestId("AdminCommonsCard-1")).not.toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
+  });
+
+  test("search bar filters commons correctly", async () => {
+    setupAdminUser();
+
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/commons/allplus").reply(200, [
+      {
+        commons: { id: 1, name: "Anacapa" },
+      },
+      {
+        commons: { id: 2, name: "Santa Cruz" },
+      },
+      {
+        commons: { id: 3, name: "Santa Rosa" },
+      },
+    ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminListCommonsPageV2 />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("Anacapa")).toBeInTheDocument();
+    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
+    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
+
+    const searchInput = screen.getByTestId("AdminListCommonsPage-Search");
+    fireEvent.change(searchInput, { target: { value: "Santa" } });
+
+    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
+    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
+    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
+
+    fireEvent.change(searchInput, { target: { value: "Cruz" } });
+
+    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
+    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
+    expect(screen.queryByText("Santa Rosa")).not.toBeInTheDocument();
   });
 });

@@ -275,46 +275,4 @@ describe("AdminListCommonPage tests", () => {
       "/api/commonstats/download?commonsId=1",
     );
   });
-
-  test("search bar filters commons correctly", async () => {
-    setupAdminUser();
-
-    const queryClient = new QueryClient();
-    axiosMock.onGet("/api/commons/allplus").reply(200, [
-      {
-        commons: { id: 1, name: "Anacapa" },
-      },
-      {
-        commons: { id: 2, name: "Santa Cruz" },
-      },
-      {
-        commons: { id: 3, name: "Santa Rosa" },
-      },
-    ]);
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminListCommonPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    expect(await screen.findByText("Anacapa")).toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
-
-    const searchInput = screen.getByTestId("AdminListCommonsPage-Search");
-    fireEvent.change(searchInput, { target: { value: "Santa" } });
-
-    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.getByText("Santa Rosa")).toBeInTheDocument();
-
-    fireEvent.change(searchInput, { target: { value: "Cruz" } });
-
-    expect(screen.queryByText("Anacapa")).not.toBeInTheDocument();
-    expect(screen.getByText("Santa Cruz")).toBeInTheDocument();
-    expect(screen.queryByText("Santa Rosa")).not.toBeInTheDocument();
-  });
 });

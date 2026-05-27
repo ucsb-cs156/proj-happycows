@@ -1,18 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsTable from "main/components/Commons/CommonsTable";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
-import { Button, Row, Col, Form } from "react-bootstrap";
+import { Button, Row, Col } from "react-bootstrap";
 
 export default function AdminListCommonsPage() {
   const { data: currentUser } = useCurrentUser();
-
-  const [query, setQuery] = useState("");
-
-  const handleQueryChange = (event) => {
-    setQuery(event.target.value);
-  };
 
   // Stryker disable  all
   const {
@@ -26,10 +20,6 @@ export default function AdminListCommonsPage() {
   );
   // Stryker restore  all
 
-  const filteredCommons = commons.filter((c) =>
-    c.commons.name.toLowerCase().includes(query.toLowerCase()),
-  );
-
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {
     display: "flex",
@@ -40,36 +30,17 @@ export default function AdminListCommonsPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <Row className="pt-5 page-header align-items-center">
-          <Col md={3}>
-            <h2 style={{ margin: 0 }}>Commons</h2>
+        <Row className="pt-5">
+          <Col>
+            <h2>Commons</h2>
           </Col>
-          <Col md={6}>
-            <div className="search-container">
-              <Form.Control
-                type="text"
-                placeholder="Search by name..."
-                value={query}
-                onChange={handleQueryChange}
-                data-testid="AdminListCommonsPage-Search"
-                className="search-input"
-              />
-              <span className="search-icon-wrapper">🔍</span>
-            </div>
-          </Col>
-          <Col md={3} style={DownloadButtonStyle}>
-            <Button
-              href="/api/commonstats/downloadAll"
-              variant="outline-success"
-              style={{ borderRadius: "30px", padding: "10px 20px" }}
-            >
+          <Col style={DownloadButtonStyle}>
+            <Button href="/api/commonstats/downloadAll">
               Download All Stats
             </Button>
           </Col>
         </Row>
-        <div style={{ animation: "fadeInDown 1s ease-out" }}>
-          <CommonsTable commons={filteredCommons} currentUser={currentUser} />
-        </div>
+        <CommonsTable commons={commons} currentUser={currentUser} />
       </div>
     </BasicLayout>
   );
