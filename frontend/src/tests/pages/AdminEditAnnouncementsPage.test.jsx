@@ -391,4 +391,35 @@ describe("AdminEditAnnouncementsPage tests", () => {
       mutationSpy.mockRestore();
     }
   });
+
+  test("page handles null editedAnnouncement and uses announcementId fallback", () => {
+    const queryClient = new QueryClient();
+    // Mock the announcement API to return null
+    axiosMock.onGet("/api/announcements/getbyid?id=1").reply(200, null);
+    const mutationSpy = vi.spyOn(backend, "useBackendMutation");
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminEditAnnouncementsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const mutationFn = mutationSpy.mock.calls[0][0];
+      // When editedAnnouncement is null, the mutation should still work
+      // and use announcementId from URL params
+      const result = mutationFn({
+        startDate: "2024-12-12T00:00",
+        announcementText: "Updated with null editedAnnouncement",
+      });
+
+      // This verifies the optional chaining ?.id properly handles null/undefined
+      expect(result.params.id).toEqual(1);
+      expect(result.params.startDate).toEqual("2024-12-12T00:00:00");
+    } finally {
+      mutationSpy.mockRestore();
+    }
+  });
 });

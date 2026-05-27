@@ -95,6 +95,30 @@ describe("AnnouncementForm tests", () => {
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
   });
 
+  test("that form fields are not reset when initialContents is not provided", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startInput = await screen.findByTestId(`${testId}-startDate`);
+    const endInput = screen.getByTestId(`${testId}-endDate`);
+    const announcementInput = screen.getByTestId(`${testId}-announcementText`);
+
+    // User types into form fields
+    fireEvent.change(startInput, { target: { value: "2026-05-17T14:00" } });
+    fireEvent.change(endInput, { target: { value: "2026-12-17T14:00" } });
+    fireEvent.change(announcementInput, { target: { value: "User typed this" } });
+
+    // Verify user input is preserved (would be cleared if mutation made condition always true)
+    expect(startInput).toHaveValue("2026-05-17T14:00");
+    expect(endInput).toHaveValue("2026-12-17T14:00");
+    expect(announcementInput).toHaveValue("User typed this");
+  });
+
   test("that the correct validations are performed", async () => {
     render(
       <QueryClientProvider client={queryClient}>
