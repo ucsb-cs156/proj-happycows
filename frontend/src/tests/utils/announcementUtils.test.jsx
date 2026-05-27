@@ -3,6 +3,7 @@ import { vi } from "vitest";
 import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
+  toBackendDateTime,
 } from "main/utils/announcementUtils";
 
 const mockToast = vi.fn();
@@ -22,13 +23,13 @@ describe("AnnouncementUtils", () => {
       const restoreConsole = mockConsole();
 
       // act
-      onDeleteSuccess("abc");
+      onDeleteSuccess({ id: 17 });
 
       // assert
-      expect(mockToast).toHaveBeenCalledWith("abc");
+      expect(mockToast).toHaveBeenCalledWith("Announcement deleted - id: 17");
       expect(console.log).toHaveBeenCalled();
       const message = console.log.mock.calls[0][0];
-      expect(message).toMatch("abc");
+      expect(message).toEqual({ id: 17 });
 
       restoreConsole();
     });
@@ -43,10 +44,28 @@ describe("AnnouncementUtils", () => {
 
       // assert
       expect(result).toEqual({
-        url: "/api/announcements",
+        url: "/api/announcements/delete",
         method: "DELETE",
         params: { id: 1 },
       });
+    });
+  });
+  describe("toBackendDateTime", () => {
+    test("It returns undefined for blank values", () => {
+      expect(toBackendDateTime()).toBeUndefined();
+      expect(toBackendDateTime("")).toBeUndefined();
+    });
+
+    test("It formats an AM date for the backend", () => {
+      expect(toBackendDateTime("2004-12-10T00:12")).toBe(
+        "Dec 10, 2004, 12:12:00 AM",
+      );
+    });
+
+    test("It formats a PM date for the backend", () => {
+      expect(toBackendDateTime("2004-12-10T13:45")).toBe(
+        "Dec 10, 2004, 1:45:00 PM",
+      );
     });
   });
 });

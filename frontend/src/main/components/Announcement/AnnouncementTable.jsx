@@ -9,11 +9,16 @@ import {
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
-export default function AnnouncementTable({ announcements, currentUser }) {
+export default function AnnouncementTable({
+  announcements,
+  currentUser,
+  commonsId,
+}) {
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/announcements/edit/${cell.row.values.id}`);
+    const rowCommonsId = commonsId || cell.row.values.commonsId;
+    navigate(`/admin/announcements/${rowCommonsId}/edit/${cell.row.values.id}`);
   };
 
   // Stryker disable all : hard to test for query caching
@@ -21,7 +26,7 @@ export default function AnnouncementTable({ announcements, currentUser }) {
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/announcements/all"],
+    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
   );
   // Stryker restore all
 

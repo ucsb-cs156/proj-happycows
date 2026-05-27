@@ -7,12 +7,31 @@ function AnnouncementForm({
   submitAction,
   buttonLabel = "Create",
 }) {
+  const toDateTimeLocal = (dateTimeString) => {
+    if (!dateTimeString) {
+      return "";
+    }
+    const date = new Date(dateTimeString);
+    const pad = (number) => String(number).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+      date.getDate(),
+    )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  };
+
+  const modifiedContents = initialContents
+    ? {
+        ...initialContents,
+        startDate: toDateTimeLocal(initialContents.startDate),
+        endDate: toDateTimeLocal(initialContents.endDate),
+      }
+    : {};
+
   // Stryker disable all
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm({ defaultValues: initialContents || {} });
+  } = useForm({ defaultValues: modifiedContents });
   // Stryker restore all
 
   const navigate = useNavigate();
@@ -55,13 +74,11 @@ function AnnouncementForm({
           type="datetime-local"
           isInvalid={Boolean(errors.startDate)}
           {...register("startDate", {
-            required: "StartDate is required.",
             pattern: isodate_regex,
           })}
         />
         <Form.Control.Feedback type="invalid">
-          {errors.startDate &&
-            "Start Date is required and must be provided in ISO format."}
+          {errors.startDate && "Start Date must be provided in ISO format."}
         </Form.Control.Feedback>
       </Form.Group>
 
