@@ -23,13 +23,16 @@ import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
+import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
+import AdminDashboardPage from "main/pages/AdminDashboardPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+import AdminEditAnnouncementsPage from "main/pages/AdminEditAnnouncementsPage";
 import DeveloperPage from "main/pages/DeveloperPage";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
 
@@ -46,7 +49,9 @@ function App() {
       <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
       <Route path="/admin/listcommonsv2" element={<AdminListCommonsPageV2 />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
+      <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
+      <Route path="/admin/dashboard/:id" element={<AdminDashboardPage />} />
       <Route
         path="/admin/createstudents"
         element={<AdminStudentsCreatePage />}
@@ -69,6 +74,10 @@ function App() {
       <Route
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
+      />
+      <Route
+        path="/admin/announcements/:commonsId/edit/:announcementId"
+        element={<AdminEditAnnouncementsPage />}
       />
       <Route path="/developer" element={<DeveloperPage />} />
       <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />

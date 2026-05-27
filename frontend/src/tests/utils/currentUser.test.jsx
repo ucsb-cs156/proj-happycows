@@ -69,7 +69,10 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() => {
+        expect(result.current.isFetched).toBe(true);
+      });
+
       expect(result.current.data.loggedIn).toBe(true);
       expect(result.current.data.root).toBeTruthy();
 
@@ -93,7 +96,10 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() => {
+        expect(result.current.isFetched).toBe(true);
+      });
+
       expect(console.error).toHaveBeenCalled();
       const errorMessage = console.error.mock.calls[0][0];
       expect(errorMessage).toMatch(/Error invoking axios.get:/);
@@ -123,7 +129,10 @@ describe("utils/currentUser tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() => {
+        expect(result.current.isFetched).toBe(true);
+      });
+
       expect(console.error).toHaveBeenCalled();
       const errorMessage = console.error.mock.calls[0][0];
       expect(errorMessage).toMatch(/Error getting roles: /);
