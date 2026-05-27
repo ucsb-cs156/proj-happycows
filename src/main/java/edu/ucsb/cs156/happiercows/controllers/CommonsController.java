@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 
 
 import java.util.Optional;
@@ -289,6 +290,10 @@ public class CommonsController extends ApiController {
 
         Commons joinedCommons = commonsRepository.findById(commonsId)
                 .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+
+        if (joinedCommons.isHidden()) {
+            throw new CommonsHiddenException();
+        }
         Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
         if (userCommonsLookup.isPresent()) {

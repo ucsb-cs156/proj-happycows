@@ -430,7 +430,7 @@ public void test_BuyCow_hidden_commons() throws Exception {
             .andExpect(status().is(400)).andReturn();
 
     // assert
-    String expectedString = "{\"message\":\"This commons is hidden and cannot be used to buy/sell cows.\",\"type\":\"CommonsHiddenException\"}";
+    String expectedString = "{\"message\":\"This commons is hidden.\",\"type\":\"CommonsHiddenException\"}";
     Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
     Map<String, Object> jsonResponse = responseToJson(response);
     assertEquals(expectedJson, jsonResponse);
@@ -454,7 +454,7 @@ public void test_SellCow_hidden_commons() throws Exception {
             .andExpect(status().is(400)).andReturn();
 
     // assert
-    String expectedString = "{\"message\":\"This commons is hidden and cannot be used to buy/sell cows.\",\"type\":\"CommonsHiddenException\"}";
+    String expectedString = "{\"message\":\"This commons is hidden.\",\"type\":\"CommonsHiddenException\"}";
     Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
     Map<String, Object> jsonResponse = responseToJson(response);
     assertEquals(expectedJson, jsonResponse);
