@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from "react-router";
 import CoursesForm from "main/components/Courses/CoursesForm";
 import { coursesFixtures } from "fixtures/coursesFixtures";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const mockedNavigate = vi.fn();
 vi.mock("react-router", async () => {
