@@ -140,6 +140,39 @@ describe("AnnouncementForm tests", () => {
     );
   });
 
+  test("rerender with null initialContents does not clear existing validation errors", async () => {
+    const { rerender } = render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    expect(
+      await screen.findByText(
+        /Start Date is required and must be provided in ISO format./,
+      ),
+    ).toBeInTheDocument();
+
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm initialContents={null} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    // If the guard at `if (initialContents)` is mutated to always true, reset({}) would clear errors.
+    expect(
+      screen.getByText(
+        /Start Date is required and must be provided in ISO format./,
+      ),
+    ).toBeInTheDocument();
+  });
+
   test("that the correct validations are performed", async () => {
     render(
       <QueryClientProvider client={queryClient}>

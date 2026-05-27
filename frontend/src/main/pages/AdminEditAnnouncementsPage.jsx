@@ -37,14 +37,15 @@ const AdminEditAnnouncementsPage = () => {
 
   const objectToAxiosParams = (editedAnnouncement) => {
     const idToUse = editedAnnouncement?.id ?? announcementId;
+    const endDate = editedAnnouncement?.endDate;
     const params = {
       id: idToUse,
       commonsId,
       startDate: datetimeLocalToIsoDateTime(editedAnnouncement?.startDate),
       announcementText: editedAnnouncement?.announcementText,
     };
-    if (editedAnnouncement?.endDate) {
-      params.endDate = datetimeLocalToIsoDateTime(editedAnnouncement?.endDate);
+    if (endDate) {
+      params.endDate = datetimeLocalToIsoDateTime(endDate);
     }
     return {
       url: "/api/announcements/put",
