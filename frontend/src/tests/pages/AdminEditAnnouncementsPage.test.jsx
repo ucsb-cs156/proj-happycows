@@ -363,4 +363,32 @@ describe("AdminEditAnnouncementsPage tests", () => {
       announcementText: "Just updated text",
     });
   });
+
+  test("mutation uses announcementId when form data has no id", () => {
+    const queryClient = new QueryClient();
+    const mutationSpy = vi.spyOn(backend, "useBackendMutation");
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminEditAnnouncementsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const mutationFn = mutationSpy.mock.calls[0][0];
+      // Test case: form data without id should use announcementId from URL params
+      const result = mutationFn({
+        startDate: "2024-12-12T00:00",
+        endDate: "2025-12-12T00:00",
+        announcementText: "Updated announcement",
+        // Note: no id property - should fall back to announcementId which is 1
+      });
+
+      expect(result.params.id).toEqual(1);
+    } finally {
+      mutationSpy.mockRestore();
+    }
+  });
 });

@@ -62,6 +62,21 @@ describe("AnnouncementForm tests", () => {
 
     expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
     expect(screen.getByText(`Id`)).toBeInTheDocument();
+
+    // Verify form fields are populated with initialContents data
+    await waitFor(() => {
+      const startDateInput = screen.getByTestId(`${testId}-startDate`);
+      const endDateInput = screen.getByTestId(`${testId}-endDate`);
+      const announcementTextInput = screen.getByTestId(
+        `${testId}-announcementText`,
+      );
+
+      expect(startDateInput).toHaveValue("2024-12-12T00:00");
+      expect(endDateInput).toHaveValue("2025-12-12T00:00");
+      expect(announcementTextInput).toHaveValue(
+        "System maintenance scheduled for next week.",
+      );
+    });
   });
 
   test("that navigate(-1) is called when Cancel is clicked", async () => {
