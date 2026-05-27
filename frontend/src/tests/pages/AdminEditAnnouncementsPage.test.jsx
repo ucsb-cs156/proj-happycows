@@ -121,9 +121,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/commons/plus?id=1")
       .reply(200, announcementFixtures.oneCommons);
-    axiosMock
-      .onGet("/api/announcements/getbyid?id=1")
-      .reply(200, null);
+    axiosMock.onGet("/api/announcements/getbyid?id=1").reply(200, null);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -134,7 +132,9 @@ describe("AdminEditAnnouncementsPage tests", () => {
     );
 
     // Page should render without crashing even if announcement data is null
-    expect(screen.getByTestId("AnnouncementForm-startDate")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("AnnouncementForm-startDate"),
+    ).toBeInTheDocument();
   });
 
   test("update mutation is configured with correct API request and invalidate key", () => {
