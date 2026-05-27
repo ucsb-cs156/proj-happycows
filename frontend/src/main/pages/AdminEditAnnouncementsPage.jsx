@@ -40,11 +40,11 @@ const AdminEditAnnouncementsPage = () => {
     const params = {
       id: idToUse,
       commonsId,
-      startDate: datetimeLocalToIsoDateTime(editedAnnouncement.startDate),
-      announcementText: editedAnnouncement.announcementText,
+      startDate: datetimeLocalToIsoDateTime(editedAnnouncement?.startDate),
+      announcementText: editedAnnouncement?.announcementText,
     };
-    if (editedAnnouncement.endDate) {
-      params.endDate = datetimeLocalToIsoDateTime(editedAnnouncement.endDate);
+    if (editedAnnouncement?.endDate) {
+      params.endDate = datetimeLocalToIsoDateTime(editedAnnouncement?.endDate);
     }
     return {
       url: "/api/announcements/put",

@@ -96,7 +96,7 @@ describe("AnnouncementForm tests", () => {
   });
 
   test("that form fields are not reset when initialContents is not provided", async () => {
-    render(
+    const { rerender } = render(
       <QueryClientProvider client={queryClient}>
         <Router>
           <AnnouncementForm />
@@ -111,12 +111,33 @@ describe("AnnouncementForm tests", () => {
     // User types into form fields
     fireEvent.change(startInput, { target: { value: "2026-05-17T14:00" } });
     fireEvent.change(endInput, { target: { value: "2026-12-17T14:00" } });
-    fireEvent.change(announcementInput, { target: { value: "User typed this" } });
+    fireEvent.change(announcementInput, {
+      target: { value: "User typed this" },
+    });
 
     // Verify user input is preserved (would be cleared if mutation made condition always true)
     expect(startInput).toHaveValue("2026-05-17T14:00");
     expect(endInput).toHaveValue("2026-12-17T14:00");
     expect(announcementInput).toHaveValue("User typed this");
+
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm initialContents={null} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    // Re-render with another falsy value should not reset user-entered fields.
+    expect(screen.getByTestId(`${testId}-startDate`)).toHaveValue(
+      "2026-05-17T14:00",
+    );
+    expect(screen.getByTestId(`${testId}-endDate`)).toHaveValue(
+      "2026-12-17T14:00",
+    );
+    expect(screen.getByTestId(`${testId}-announcementText`)).toHaveValue(
+      "User typed this",
+    );
   });
 
   test("that the correct validations are performed", async () => {

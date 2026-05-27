@@ -422,4 +422,36 @@ describe("AdminEditAnnouncementsPage tests", () => {
       mutationSpy.mockRestore();
     }
   });
+
+  test("mutation mapping handles null payload without crashing", () => {
+    const queryClient = new QueryClient();
+    const mutationSpy = vi.spyOn(backend, "useBackendMutation");
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter>
+            <AdminEditAnnouncementsPage />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      const mutationFn = mutationSpy.mock.calls[0][0];
+      const result = mutationFn(null);
+
+      expect(result).toEqual({
+        url: "/api/announcements/put",
+        method: "PUT",
+        params: {
+          id: 1,
+          commonsId: 1,
+          startDate: undefined,
+          announcementText: undefined,
+        },
+      });
+      expect(result.params).not.toHaveProperty("endDate");
+    } finally {
+      mutationSpy.mockRestore();
+    }
+  });
 });
