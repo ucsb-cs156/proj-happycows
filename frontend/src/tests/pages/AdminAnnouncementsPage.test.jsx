@@ -162,6 +162,40 @@ describe("AdminAnnouncementsPage tests", () => {
     useBackendSpy.mockRestore();
   });
 
+  test("renders empty announcements table when backend data is undefined", async () => {
+    const useBackendSpy = vi
+      .spyOn(useBackendModule, "useBackend")
+      .mockImplementation((queryKey) => {
+        if (queryKey[0] === "/api/commons/plus?id=1") {
+          return {
+            data: {
+              commons: {
+                id: 1,
+                name: "Sample Commons",
+              },
+            },
+          };
+        }
+        return { data: undefined };
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
+    useBackendSpy.mockRestore();
+  });
+
   test("correct href for announcements button as an admin", async () => {
     const testId = "CommonsTable";
     axiosMock
