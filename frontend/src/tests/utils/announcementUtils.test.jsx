@@ -82,6 +82,15 @@ describe("AnnouncementUtils", () => {
       expect(isoDateTimeToDatetimeLocal("2024-12-12")).toBe("2024-12-12");
       expect(isoDateTimeToDatetimeLocal("invalid")).toBe("invalid");
     });
+
+    test("handles timezone-aware ISO formats correctly", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T00:00:00Z")).toBe(
+        "2024-12-12T00:00",
+      );
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T14:30:00+00:00")).toBe(
+        "2024-12-12T14:30",
+      );
+    });
   });
 
   describe("onDeleteSuccess", () => {

@@ -116,6 +116,27 @@ describe("AdminEditAnnouncementsPage tests", () => {
     });
   });
 
+  test("handles missing announcement data gracefully", () => {
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/plus?id=1")
+      .reply(200, announcementFixtures.oneCommons);
+    axiosMock
+      .onGet("/api/announcements/getbyid?id=1")
+      .reply(200, null);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminEditAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // Page should render without crashing even if announcement data is null
+    expect(screen.getByTestId("AnnouncementForm-startDate")).toBeInTheDocument();
+  });
+
   test("update mutation is configured with correct API request and invalidate key", () => {
     const queryClient = new QueryClient();
     const mutationSpy = vi.spyOn(backend, "useBackendMutation");

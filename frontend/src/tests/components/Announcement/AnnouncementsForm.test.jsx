@@ -20,7 +20,7 @@ describe("AnnouncementForm tests", () => {
   const testId = "AnnouncementForm";
 
   test("renders correctly with no initialContents", async () => {
-    render(
+    const { rerender } = render(
       <QueryClientProvider client={queryClient}>
         <Router>
           <AnnouncementForm />
@@ -34,6 +34,12 @@ describe("AnnouncementForm tests", () => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
     });
+
+    // Verify form fields are empty when no initialContents provided
+    const startDateInput = screen.getByTestId(`${testId}-startDate`);
+    const endDateInput = screen.getByTestId(`${testId}-endDate`);
+    expect(startDateInput).toHaveValue("");
+    expect(endDateInput).toHaveValue("");
   });
 
   test("renders correctly when passing in initialContents", async () => {
