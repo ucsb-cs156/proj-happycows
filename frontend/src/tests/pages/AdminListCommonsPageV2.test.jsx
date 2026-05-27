@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
@@ -21,7 +22,6 @@ vi.mock("react-toastify", async () => {
 });
 
 const mockedNavigate = vi.fn();
-
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useNavigate: () => mockedNavigate,
@@ -65,8 +65,22 @@ describe("AdminListCommonPageV2 tests", () => {
       </QueryClientProvider>,
     );
 
+    // Existing assertions
     expect(screen.getByText("Commons")).toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
+
+    // ✅ Stryker-killers for style mutants:
+    // 1) <h2 style={{ margin: 0 }}>Commons</h2>
+    const heading = screen.getByRole("heading", { name: "Commons" });
+    expect(heading).toHaveStyle("margin: 0px");
+
+    // 2) Download All Stats button style={{ borderRadius: "30px", padding: "10px 20px" }}
+    const downloadAll = screen.getByRole("button", {
+      name: "Download All Stats",
+    });
+    expect(downloadAll).toHaveAttribute("href", "/api/commonstats/downloadAll");
+    expect(downloadAll).toHaveStyle("border-radius: 30px");
+    expect(downloadAll).toHaveStyle("padding: 10px 20px");
   });
 
   test("renders without crashing for admin user", () => {
@@ -93,7 +107,7 @@ describe("AdminListCommonPageV2 tests", () => {
       .onGet("/api/commons/allplus")
       .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
-    render(
+    const { container } = render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <AdminListCommonsPageV2 />
@@ -105,14 +119,18 @@ describe("AdminListCommonPageV2 tests", () => {
     expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
     expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
+
+    // ✅ Stryker-killers for animation style={{ animation: "fadeInDown 1s ease-out" }}
+    // Find any element with that inline animation style and assert it.
+    const animated = container.querySelector('[style*="fadeInDown"]');
+    expect(animated).toBeInTheDocument();
+    expect(animated).toHaveStyle("animation: fadeInDown 1s ease-out");
   });
 
   test("renders empty state when backend unavailable, user only", async () => {
     setupUserOnly();
-
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/commons/allplus").timeout();
-
     const restoreConsole = mockConsole();
 
     render(
@@ -126,8 +144,8 @@ describe("AdminListCommonPageV2 tests", () => {
     await waitFor(() => {
       expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
     });
-    restoreConsole();
 
+    restoreConsole();
     expect(screen.queryByTestId("AdminCommonsCard-1")).not.toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
   });
@@ -159,24 +177,20 @@ describe("AdminListCommonPageV2 tests", () => {
     const searchInput = screen.getByTestId("AdminListCommonsPage-Search");
 
     fireEvent.change(searchInput, { target: { value: "Santa" } });
-
     await waitFor(() => {
       expect(
         screen.queryByTestId("AdminCommonsCard-1"),
       ).not.toBeInTheDocument();
     });
-
     expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
     expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
 
     fireEvent.change(searchInput, { target: { value: "Cruz" } });
-
     await waitFor(() => {
       expect(
         screen.queryByTestId("AdminCommonsCard-3"),
       ).not.toBeInTheDocument();
     });
-
     expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
     expect(screen.queryByTestId("AdminCommonsCard-1")).not.toBeInTheDocument();
   });
