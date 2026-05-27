@@ -145,9 +145,9 @@ describe("CoursesIndexPage tests", () => {
     setupAdminUser();
 
     axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);
-    axiosMock
-      .onDelete("/api/course")
-      .reply(200, "Course with id 1 was deleted");
+    axiosMock.onDelete("/api/course/1").reply(200, {
+      message: "Course deleted!",
+    });
 
     render(
       <QueryClientProvider client={getQueryClient()}>
@@ -169,13 +169,12 @@ describe("CoursesIndexPage tests", () => {
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      expect(mockToast).toBeCalledWith("Course with id 1 was deleted");
+      expect(mockToast).toBeCalledWith("Course deleted!");
     });
 
     await waitFor(() => {
       expect(axiosMock.history.delete.length).toBe(1);
-      expect(axiosMock.history.delete[0].url).toBe("/api/course");
-      expect(axiosMock.history.delete[0].params).toEqual({ id: 1 });
+      expect(axiosMock.history.delete[0].url).toBe("/api/course/1");
     });
   });
 });

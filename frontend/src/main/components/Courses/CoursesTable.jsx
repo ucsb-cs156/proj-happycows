@@ -17,7 +17,7 @@ export default function CoursesTable({
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/admin/courses/edit/${cell.row.values.id}`);
+    navigate(`/admin/editcourses/${cell.row.values.id}`);
   };
 
   // Stryker disable all : hard to test query caching
@@ -53,19 +53,11 @@ export default function CoursesTable({
   ];
 
   if (hasRole(currentUser, "ROLE_ADMIN")) {
-    columns.push(
-      ButtonColumn("Edit", "primary", editCallback, testIdPrefix),
-    );
+    columns.push(ButtonColumn("Edit", "primary", editCallback, testIdPrefix));
     columns.push(
       ButtonColumn("Delete", "danger", deleteCallback, testIdPrefix),
     );
   }
 
-  return (
-    <OurTable
-      data={courses}
-      columns={columns}
-      testid={testIdPrefix}
-    />
-  );
+  return <OurTable data={courses} columns={columns} testid={testIdPrefix} />;
 }
