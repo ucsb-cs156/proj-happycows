@@ -137,11 +137,20 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
         >
           Back
         </Button>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <span className="text-muted">
-            Commons #{commonsId} {readOnly && "• Admin Read Only"}
-          </span>
-          <span className="text-muted">Commons #{commonsId}</span>
+        <div className="d-flex flex-column mb-3">
+          <div className="d-flex justify-content-between align-items-center">
+            <span className="text-muted">
+              Commons #{commonsId} {readOnly && "• Admin Read Only"}
+            </span>
+            <span className="text-muted">Commons #{commonsId}</span>
+          </div>
+
+          {isAdmin && (
+            <div className="text-muted mt-1" style={{ fontSize: "0.9rem" }}>
+              <span style={{ color: "red", fontWeight: "bold" }}>🚫</span> =
+              Deleted Message
+            </div>
+          )}
         </div>
 
         {!readOnly && (
@@ -181,17 +190,40 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
           {messages.map((message) => (
             <div
               key={message.id}
-              className="d-flex justify-content-between align-items-start mb-2"
+              className="d-flex align-items-start mb-2 border rounded p-2"
+              style={
+                message.hidden
+                  ? {
+                      backgroundColor: "#fff5f5",
+                      borderLeft: "4px solid red",
+                    }
+                  : {}
+              }
             >
-              <div
-                style={
-                  message.hidden ? { opacity: 0.5, fontStyle: "italic" } : {}
-                }
-              >
-                <ChatMessageDisplay message={message} />
+              <div className="flex-grow-1">
+                <div
+                  style={
+                    message.hidden ? { opacity: 0.6, fontStyle: "italic" } : {}
+                  }
+                >
+                  <ChatMessageDisplay message={message} />
+                </div>
+
+                {message.hidden && (
+                  <div
+                    className="mt-1"
+                    style={{
+                      color: "red",
+                      fontSize: "0.8rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    🚫 Message Deleted
+                  </div>
+                )}
               </div>
 
-              {isAdmin && (
+              {isAdmin && !message.hidden && (
                 <button
                   className="btn btn-danger btn-sm ms-2"
                   data-testid={`ChatHistoryPage-delete-${message.id}`}
