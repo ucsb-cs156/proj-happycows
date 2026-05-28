@@ -5,6 +5,7 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +29,28 @@ public class CourseController extends ApiController {
     @Operation(summary = "List all courses")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/all")
-    public Iterable<Course> allOrganisations() {
+    public Iterable<Course> allCourses() {
         Iterable<Course> courses = courseRepository.findAll();
         return courses;
     }
 
-    @Operation(summary = "Get a course by id")
+    @Operation(summary = "Create a course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("")
+    public Course postCourse(
+            @Parameter(name = "code") @RequestParam String code,
+            @Parameter(name = "name") @RequestParam String name,
+            @Parameter(name = "term") @RequestParam String term) {
+                Course course = new Course();
+                course.setCode(code);
+                course.setName(name);
+                course.setTerm(term);
+                Course savedCourse = courseRepository.save(course);
+
+                return savedCourse;
+    }
+
+    @Operation(summary = "Get a single course by id")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public Course getCourseById(
@@ -43,12 +60,37 @@ public class CourseController extends ApiController {
         return course;
     }
 
-    @Operation(summary = "Create a course")
+    @Operation(summary = "Update a single course")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("")
-    public Course postCourse(
-            @Parameter(name = "course") @RequestBody CourseDTO courseDTO) {
-        Course savedCourse = courseRepository.save(courseDTO.toCourse());
-        return savedCourse;
+    @PutMapping("/{id}")
+    public Course updateCourse(
+        @Parameter(name = "id") @PathVariable Long id,
+        @RequestBody @Valid Course incoming) {
+
+        Course course =
+            courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        course.setCode(incoming.getCode());
+        course.setName(incoming.getName());
+        course.setTerm(incoming.getTerm());
+
+        courseRepository.save(course);
+
+        return course;
+    }
+
+    @Operation(summary = "Delete a course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public Object deleteCourse(@Parameter(name = "id") @PathVariable Long id) {
+        Course course =
+            courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        courseRepository.delete(course);
+        return genericMessage("Course with id %s deleted".formatted(id));
     }
 }
