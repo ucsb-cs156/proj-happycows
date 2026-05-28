@@ -25,6 +25,10 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
     navigate(`/admin/editcommons/${commons.id}`);
   };
 
+  const handleDashboard = () => {
+    navigate(`/admin/dashboard/${commons.id}`);
+  };
+
   const handleDelete = () => {
     setShowModal(true);
   };
@@ -236,6 +240,15 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
             >
               Announcements
             </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleDashboard}
+              data-testid={`AdminCommonsCard-Dashboard-${commons.id}`}
+            >
+              Dashboard
+            </Button>
+
             <Button
               variant="secondary"
               size="sm"
