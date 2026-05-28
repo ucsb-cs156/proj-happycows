@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
+import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
@@ -346,6 +347,47 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, jsonResponse);
 
     }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_SellCow_commons_hidden() throws Exception {
+        // arrange
+        testCommons.setHidden(true);
+        UserCommons origUserCommons = getTestUserCommons();
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+
+        // act
+        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=1")
+                        .with(csrf())).andExpect(status().is(403)).andReturn();
+
+        // assert
+        String expectedString = "{\"message\":\"You cannot buy or sell in a hidden commons!\",\"type\":\"CommonsHiddenException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_BuyCow_commons_hidden() throws Exception {
+        // arrange
+        testCommons.setHidden(true);
+        UserCommons origUserCommons = getTestUserCommons();
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+
+        // act
+        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=1")
+                        .with(csrf())).andExpect(status().is(403)).andReturn();
+
+        // assert
+        String expectedString = "{\"message\":\"You cannot buy or sell in a hidden commons!\",\"type\":\"CommonsHiddenException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+    }
+
 
     @WithMockUser(roles = {"USER"})
     @Test
