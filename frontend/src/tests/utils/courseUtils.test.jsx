@@ -1,4 +1,3 @@
-import mockConsole from "tests/testutils/mockConsole";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
@@ -6,8 +5,10 @@ import {
 import { vi } from "vitest";
 
 const mockToast = vi.fn();
+
 vi.mock("react-toastify", async (importOriginal) => {
   const original = await importOriginal();
+
   return {
     ...original,
     toast: (message) => mockToast(message),
@@ -17,15 +18,11 @@ vi.mock("react-toastify", async (importOriginal) => {
 describe("courseUtils tests", () => {
   describe("onDeleteSuccess", () => {
     test("logs message and shows toast", () => {
-      const restoreConsole = mockConsole();
-
-      onDeleteSuccess("Course deleted!");
+      onDeleteSuccess({
+        message: "Course deleted!",
+      });
 
       expect(mockToast).toHaveBeenCalledWith("Course deleted!");
-      expect(console.log).toHaveBeenCalled();
-      expect(console.log.mock.calls[0][0]).toMatch("Course deleted!");
-
-      restoreConsole();
     });
   });
 
@@ -36,11 +33,8 @@ describe("courseUtils tests", () => {
       const result = cellToAxiosParamsDelete(cell);
 
       expect(result).toEqual({
-        url: "/api/course",
+        url: "/api/course/42",
         method: "DELETE",
-        params: {
-          id: 42,
-        },
       });
     });
   });

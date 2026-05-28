@@ -1,16 +1,12 @@
 import { toast } from "react-toastify";
 
 export function onDeleteSuccess(message) {
-  console.log(message);
-  toast(message);
+  toast(message.message);
 }
 
 export function cellToAxiosParamsDelete(cell) {
   return {
-    url: "/api/course",
+    url: `/api/course/${cell.row.values.id}`,
     method: "DELETE",
-    params: {
-      id: cell.row.values.id,
-    },
   };
 }

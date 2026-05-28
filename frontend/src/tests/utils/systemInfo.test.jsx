@@ -61,7 +61,7 @@ describe("utils/systemInfo tests", () => {
         wrapper,
       });
 
-      await waitFor(() => result.current.isFetched);
+      await waitFor(() => result.current.isSuccess);
 
       expect(result.current.data.springH2ConsoleEnabled).toBe(
         systemInfoFixtures.showingAll.springH2ConsoleEnabled,
