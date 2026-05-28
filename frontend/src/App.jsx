@@ -10,6 +10,7 @@ import LeaderboardPage from "main/pages/LeaderboardPage";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
 
+import AdminDashboardPage from "main/pages/AdminDashboardPage";
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
 import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
@@ -39,6 +40,7 @@ function App() {
 
   const adminRoutes = hasRole(currentUser, "ROLE_ADMIN") ? (
     <>
+      <Route path="/admin/dashboard/:id" element={<AdminDashboardPage />} />
       <Route path="/admin/users" element={<AdminUsersPage />} />
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
