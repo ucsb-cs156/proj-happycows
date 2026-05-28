@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonsFeaturesController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">CommonsFeaturesController.java</span></div><h1>CommonsFeaturesController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.CommonsFeature;
+import edu.ucsb.cs156.happiercows.enums.CommonsFeatures;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.repositories.CommonsFeatureRepository;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+<span class="fc" id="L28">@Slf4j</span>
+@Tag(name = &quot;Commons Features&quot;)
+@RequestMapping(&quot;/api/commonsfeatures&quot;)
+@RestController
+<span class="fc" id="L32">public class CommonsFeaturesController extends ApiController {</span>
+
+    @Autowired
+    private CommonsRepository commonsRepository;
+
+    @Autowired
+    private CommonsFeatureRepository commonsFeatureRepository;
+
+    @Operation(summary = &quot;List all commons features&quot;)
+    @GetMapping(&quot;&quot;)
+    public ResponseEntity&lt;List&lt;String&gt;&gt; getCommonsFeatures() {
+<span class="fc" id="L43">        return ResponseEntity.ok(</span>
+<span class="fc" id="L44">            Arrays.stream(CommonsFeatures.values())</span>
+<span class="fc" id="L45">                .map(Enum::name)</span>
+<span class="fc" id="L46">                .collect(Collectors.toList())</span>
+        );
+    }
+
+    @Operation(summary = &quot;Save commons feature settings&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;&quot;)
+    public ResponseEntity&lt;Object&gt; saveCommonsFeatures(@RequestBody Map&lt;String, Object&gt; requestBody) {
+<span class="fc" id="L54">        Long commonsId = getCommonsId(requestBody);</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (commonsId == null) {</span>
+<span class="fc" id="L56">            return ResponseEntity.badRequest().body(genericMessage(&quot;commonsId is required&quot;));</span>
+        }
+
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (!commonsRepository.existsById(commonsId)) {</span>
+<span class="fc" id="L60">            throw new EntityNotFoundException(Commons.class, commonsId);</span>
+        }
+
+<span class="fc" id="L63">        Map&lt;String, Boolean&gt; featureValues = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        for (Map.Entry&lt;String, Object&gt; entry : requestBody.entrySet()) {</span>
+<span class="fc" id="L65">            String key = entry.getKey();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">            if (&quot;commonsId&quot;.equals(key)) {</span>
+<span class="fc" id="L67">                continue;</span>
+            }
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">            if (!CommonsFeatures.isValidFeature(key)) {</span>
+<span class="fc" id="L71">                return ResponseEntity.badRequest().body(genericMessage(&quot;Unknown commons feature: &quot; + key));</span>
+            }
+
+<span class="fc" id="L74">            featureValues.put(key, parseBoolean(entry.getValue()));</span>
+<span class="fc" id="L75">        }</span>
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (featureValues.isEmpty()) {</span>
+<span class="fc" id="L78">            return ResponseEntity.badRequest().body(genericMessage(&quot;At least one commons feature must be provided&quot;));</span>
+        }
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        for (Map.Entry&lt;String, Boolean&gt; entry : featureValues.entrySet()) {</span>
+<span class="fc" id="L82">            String featureName = entry.getKey();</span>
+<span class="fc" id="L83">            boolean enabled = entry.getValue();</span>
+
+<span class="fc" id="L85">            CommonsFeature commonsFeature = commonsFeatureRepository</span>
+<span class="fc" id="L86">                    .findByCommonsIdAndFeature(commonsId, featureName)</span>
+<span class="fc" id="L87">                    .orElseGet(() -&gt; CommonsFeature.builder()</span>
+<span class="fc" id="L88">                            .commonsId(commonsId)</span>
+<span class="fc" id="L89">                            .feature(featureName)</span>
+<span class="fc" id="L90">                            .build());</span>
+
+<span class="fc" id="L92">            commonsFeature.setEnabled(enabled);</span>
+<span class="fc" id="L93">            commonsFeatureRepository.save(commonsFeature);</span>
+<span class="fc" id="L94">        }</span>
+
+<span class="fc" id="L96">        return ResponseEntity.ok(genericMessage(&quot;Commons features updated successfully&quot;));</span>
+    }
+
+    private Long getCommonsId(Map&lt;String, Object&gt; requestBody) {
+<span class="fc" id="L100">        Object value = requestBody.get(&quot;commonsId&quot;);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (value == null) {</span>
+<span class="fc" id="L102">            return null;</span>
+        }
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (value instanceof Number) {</span>
+<span class="fc" id="L106">            return ((Number) value).longValue();</span>
+        }
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (value instanceof String) {</span>
+            try {
+<span class="fc" id="L111">                return Long.valueOf((String) value);</span>
+<span class="fc" id="L112">            } catch (NumberFormatException e) {</span>
+<span class="fc" id="L113">                return null;</span>
+            }
+        }
+
+<span class="fc" id="L117">        return null;</span>
+    }
+
+    private boolean parseBoolean(Object value) {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (value instanceof Boolean) {</span>
+<span class="fc" id="L122">            return (Boolean) value;</span>
+        }
+
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (value instanceof Number) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            return ((Number) value).intValue() != 0;</span>
+        }
+
+<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (value instanceof String) {</span>
+<span class="fc" id="L130">            return Boolean.parseBoolean((String) value);</span>
+        }
+
+<span class="fc" id="L133">        throw new IllegalArgumentException(&quot;Invalid boolean value for commons feature&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
