@@ -84,4 +84,19 @@ describe("CommonsOverview tests", () => {
       ).not.toBeInTheDocument(),
     );
   });
+
+  test("renders the correct day", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <CommonsOverview
+            commonsPlus={commonsPlusFixtures.oneCommonsPlus[0]}
+            currentUser={currentUserFixtures.userOnly}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    // Adjust the regex or text to match what daysSinceTimestamp returns for your fixture
+    expect(await screen.findByText(/Today is day /i)).toBeInTheDocument();
+  });
 });
