@@ -175,6 +175,15 @@ describe("UserTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`),
     ).toHaveClass("btn-info");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Announcements-button`),
+    ).toHaveAttribute("href", "/admin/announcements/1");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Chat-button`),
+    ).toHaveClass("btn-primary");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Chat-button`),
+    ).toHaveAttribute("href", "/admin/chat/1");
   });
 });
 

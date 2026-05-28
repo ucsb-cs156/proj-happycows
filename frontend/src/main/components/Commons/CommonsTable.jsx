@@ -176,6 +176,7 @@ export default function CommonsTable({ commons, currentUser }) {
       testid,
     ),
     HrefButtonColumn("Announcements", "info", `/admin/announcements/`, testid),
+    HrefButtonColumn("Chat", "primary", `/admin/chat/`, testid),
   ];
 
   const columnsToDisplay = hasRole(currentUser, "ROLE_ADMIN")
