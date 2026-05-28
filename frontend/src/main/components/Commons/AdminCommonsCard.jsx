@@ -38,6 +38,10 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
     navigate(`/leaderboard/${commons.id}`);
   };
 
+  const handleChat = () => {
+    navigate(`/admin/chat/${commons.id}`);
+  };
+
   const formatDate = (dateString) => {
     return String(dateString).slice(0, 10);
   };
@@ -235,6 +239,14 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               data-testid={`AdminCommonsCard-Announcements-${commons.id}`}
             >
               Announcements
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleChat}
+              data-testid={`AdminCommonsCard-Chat-${commons.id}`}
+            >
+              Chat
             </Button>
           </div>
         </Card.Body>
