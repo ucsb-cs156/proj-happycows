@@ -49,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @WebMvcTest(controllers = AnnouncementsController.class)
 public class AnnouncementsControllerTests extends ControllerTestCase {
+    private static final ZoneId ANNOUNCEMENTS_TIME_ZONE = ZoneId.of("America/Los_Angeles");
 
     @MockBean
     AnnouncementRepository announcementRepository;
@@ -64,10 +65,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
 
     private Date asDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDateTime.atZone(ANNOUNCEMENTS_TIME_ZONE).toInstant());
     }
-
-
     //* */ post tests
     @WithMockUser(roles = {"ADMIN"})
     @Test

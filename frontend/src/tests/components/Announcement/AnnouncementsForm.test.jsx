@@ -34,6 +34,12 @@ describe("AnnouncementForm tests", () => {
       const header = screen.getByText(headerText);
       expect(header).toBeInTheDocument();
     });
+
+    // Verify form fields are empty when no initialContents provided
+    const startDateInput = screen.getByTestId(`${testId}-startDate`);
+    const endDateInput = screen.getByTestId(`${testId}-endDate`);
+    expect(startDateInput).toHaveValue("");
+    expect(endDateInput).toHaveValue("");
   });
 
   test("renders correctly when passing in initialContents", async () => {
@@ -56,6 +62,48 @@ describe("AnnouncementForm tests", () => {
 
     expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
     expect(screen.getByText(`Id`)).toBeInTheDocument();
+
+    // Verify form fields are populated with initialContents data
+    await waitFor(() => {
+      const startDateInput = screen.getByTestId(`${testId}-startDate`);
+      const endDateInput = screen.getByTestId(`${testId}-endDate`);
+      const announcementTextInput = screen.getByTestId(
+        `${testId}-announcementText`,
+      );
+
+      expect(startDateInput).toHaveValue("2024-12-12T00:00");
+      expect(endDateInput).toHaveValue("2025-12-12T00:00");
+      expect(announcementTextInput).toHaveValue(
+        "System maintenance scheduled for next week.",
+      );
+    });
+  });
+
+  test("renders correctly when initialContents has no endDate", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm
+            initialContents={{
+              ...announcementFixtures.oneAnnouncement,
+              endDate: undefined,
+            }}
+          />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startDateInput = await screen.findByTestId(`${testId}-startDate`);
+    const endDateInput = screen.getByTestId(`${testId}-endDate`);
+    const announcementTextInput = screen.getByTestId(
+      `${testId}-announcementText`,
+    );
+
+    expect(startDateInput).toHaveValue("2024-12-12T00:00");
+    expect(endDateInput).toHaveValue("");
+    expect(announcementTextInput).toHaveValue(
+      "System maintenance scheduled for next week.",
+    );
   });
 
   test("that navigate(-1) is called when Cancel is clicked", async () => {
@@ -72,6 +120,84 @@ describe("AnnouncementForm tests", () => {
     fireEvent.click(cancelButton);
 
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
+  });
+
+  test("that form fields are not reset when initialContents is not provided", async () => {
+    const { rerender } = render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const startInput = await screen.findByTestId(`${testId}-startDate`);
+    const endInput = screen.getByTestId(`${testId}-endDate`);
+    const announcementInput = screen.getByTestId(`${testId}-announcementText`);
+
+    // User types into form fields
+    fireEvent.change(startInput, { target: { value: "2026-05-17T14:00" } });
+    fireEvent.change(endInput, { target: { value: "2026-12-17T14:00" } });
+    fireEvent.change(announcementInput, {
+      target: { value: "User typed this" },
+    });
+
+    // Verify user input is preserved (would be cleared if mutation made condition always true)
+    expect(startInput).toHaveValue("2026-05-17T14:00");
+    expect(endInput).toHaveValue("2026-12-17T14:00");
+    expect(announcementInput).toHaveValue("User typed this");
+
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm initialContents={null} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    // Re-render with another falsy value should not reset user-entered fields.
+    expect(screen.getByTestId(`${testId}-startDate`)).toHaveValue(
+      "2026-05-17T14:00",
+    );
+    expect(screen.getByTestId(`${testId}-endDate`)).toHaveValue(
+      "2026-12-17T14:00",
+    );
+    expect(screen.getByTestId(`${testId}-announcementText`)).toHaveValue(
+      "User typed this",
+    );
+  });
+
+  test("rerender with null initialContents does not clear existing validation errors", async () => {
+    const { rerender } = render(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByTestId(`${testId}-submit`));
+
+    expect(
+      await screen.findByText(
+        /Start Date is required and must be provided in ISO format./,
+      ),
+    ).toBeInTheDocument();
+
+    rerender(
+      <QueryClientProvider client={queryClient}>
+        <Router>
+          <AnnouncementForm initialContents={null} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    // If the guard at `if (initialContents)` is mutated to always true, reset({}) would clear errors.
+    expect(
+      screen.getByText(
+        /Start Date is required and must be provided in ISO format./,
+      ),
+    ).toBeInTheDocument();
   });
 
   test("that the correct validations are performed", async () => {

@@ -4,6 +4,7 @@ import {
   onDeleteSuccess,
   cellToAxiosParamsDelete,
   datetimeLocalToIsoDateTime,
+  isoDateTimeToDatetimeLocal,
 } from "main/utils/announcementUtils";
 
 const mockToast = vi.fn();
@@ -47,6 +48,47 @@ describe("AnnouncementUtils", () => {
     test("does not modify values that do not match datetime-local format", () => {
       expect(datetimeLocalToIsoDateTime("2024-12-12T00:00:00.000Z")).toBe(
         "2024-12-12T00:00:00.000Z",
+      );
+    });
+  });
+
+  describe("isoDateTimeToDatetimeLocal", () => {
+    test("converts ISO datetime with seconds to datetime-local format", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T00:00:00")).toBe(
+        "2024-12-12T00:00",
+      );
+    });
+
+    test("converts ISO datetime with milliseconds to datetime-local format", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T00:00:00.000")).toBe(
+        "2024-12-12T00:00",
+      );
+    });
+
+    test("extracts time portion from full ISO datetime", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T14:30:45")).toBe(
+        "2024-12-12T14:30",
+      );
+    });
+
+    test("returns non-string values unchanged", () => {
+      expect(isoDateTimeToDatetimeLocal(null)).toBe(null);
+      expect(isoDateTimeToDatetimeLocal(undefined)).toBe(undefined);
+      expect(isoDateTimeToDatetimeLocal(0)).toBe(0);
+      expect(isoDateTimeToDatetimeLocal("")).toBe("");
+    });
+
+    test("returns values that do not match ISO datetime format unchanged", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12")).toBe("2024-12-12");
+      expect(isoDateTimeToDatetimeLocal("invalid")).toBe("invalid");
+    });
+
+    test("handles timezone-aware ISO formats correctly", () => {
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T00:00:00Z")).toBe(
+        "2024-12-12T00:00",
+      );
+      expect(isoDateTimeToDatetimeLocal("2024-12-12T14:30:00+00:00")).toBe(
+        "2024-12-12T14:30",
       );
     });
   });

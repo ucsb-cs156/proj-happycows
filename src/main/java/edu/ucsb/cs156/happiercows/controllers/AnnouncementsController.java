@@ -38,6 +38,7 @@ import java.util.Optional;
 public class AnnouncementsController extends ApiController{
 
     private static final int ANNOUNCEMENT_TEXT_MAX_LENGTH = 255;
+    private static final ZoneId ANNOUNCEMENTS_TIME_ZONE = ZoneId.of("America/Los_Angeles");
 
     @Autowired
     private AnnouncementRepository announcementRepository;
@@ -254,7 +255,7 @@ public class AnnouncementsController extends ApiController{
     }
 
     private Date toDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        return Date.from(localDateTime.atZone(ANNOUNCEMENTS_TIME_ZONE).toInstant());
     }
 
 

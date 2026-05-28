@@ -1,21 +1,48 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { ANNOUNCEMENT_TEXT_MAX_LENGTH } from "main/utils/announcementUtils";
+import { useEffect, useMemo } from "react";
+import {
+  ANNOUNCEMENT_TEXT_MAX_LENGTH,
+  isoDateTimeToDatetimeLocal,
+} from "main/utils/announcementUtils";
 
 function AnnouncementForm({
   initialContents,
   submitAction,
   buttonLabel = "Create",
 }) {
+  // Convert ISO dates to datetime-local format for form input
+  const convertedInitialContents = useMemo(
+    () =>
+      initialContents
+        ? {
+            ...initialContents,
+            startDate: isoDateTimeToDatetimeLocal(initialContents.startDate),
+            endDate: initialContents.endDate
+              ? isoDateTimeToDatetimeLocal(initialContents.endDate)
+              : undefined,
+          }
+        : {},
+    [initialContents],
+  );
+
   // Stryker disable all
   const {
     register,
     watch,
+    reset,
     formState: { errors },
     handleSubmit,
-  } = useForm({ defaultValues: initialContents || {} });
+  } = useForm({ defaultValues: convertedInitialContents });
   // Stryker restore all
+
+  // Update form values when initial data arrives
+  useEffect(() => {
+    if (initialContents) {
+      reset(convertedInitialContents);
+    }
+  }, [initialContents, reset, convertedInitialContents]);
 
   const navigate = useNavigate();
 
