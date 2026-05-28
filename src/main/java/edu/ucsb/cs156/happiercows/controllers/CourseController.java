@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -51,4 +52,54 @@ public class CourseController extends ApiController {
         Course savedCourse = courseRepository.save(courseDTO.toCourse());
         return savedCourse;
     }
+
+    /**
+     * Update a single course.
+     * 
+     * @param id id of the course to update
+     * @param incoming the new course information
+     * @return the updated course object
+     */
+    @Operation(summary = "Update a single course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Course updateCourse(
+            @Parameter(name = "id") @RequestParam Long id,
+            @RequestBody @Valid Course incoming) {
+        
+        Course currCourse = courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        currCourse.setCode(incoming.getCode());
+        currCourse.setName(incoming.getName());
+        currCourse.setTerm(incoming.getTerm());
+
+        courseRepository.save(currCourse);
+
+        return currCourse;  
+
+    }
+
+
+    /**
+     * Delete a course
+     *
+     * @param id the id of the course to delete
+     * @return a message indicating the course was deleted
+     */
+    @Operation(summary = "Delete a Course")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteCourse(@Parameter(name = "id") @RequestParam Long id) {
+        Course currCourse =
+            courseRepository
+                .findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, id));
+
+        courseRepository.delete(currCourse);
+        return genericMessage("Course with id %s deleted".formatted(id));
+  }
+    
+
 }

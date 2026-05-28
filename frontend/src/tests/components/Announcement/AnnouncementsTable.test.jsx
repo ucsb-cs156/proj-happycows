@@ -5,6 +5,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import { vi } from "vitest";
+import * as useBackendModule from "main/utils/useBackend";
+import {
+  cellToAxiosParamsDelete,
+  onDeleteSuccess,
+} from "main/utils/announcementUtils";
 
 const mockedNavigate = vi.fn();
 
@@ -63,6 +68,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -162,6 +168,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -185,13 +192,43 @@ describe("AnnouncementTable tests", () => {
 
     // assert - check that the navigate function was called with the expected path
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/announcements/edit/1"),
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        "/admin/announcements/1/edit/1",
+      ),
+    );
+  });
+
+  test("Edit button uses row commonsId when commonsId prop is omitted", async () => {
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AnnouncementTable
+            announcements={announcementFixtures.threeAnnouncements}
+            currentUser={currentUser}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    fireEvent.click(screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`));
+
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        "/admin/announcements/1/edit/1",
+      ),
     );
   });
 
   test("Delete button calls delete callback", async () => {
     // arrange
     const currentUser = currentUserFixtures.adminUser;
+    const useBackendMutationSpy = vi.spyOn(
+      useBackendModule,
+      "useBackendMutation",
+    );
+    useBackendMutationSpy.mockReturnValue({ mutate: vi.fn() });
 
     // act - render the component
     render(
@@ -200,6 +237,7 @@ describe("AnnouncementTable tests", () => {
           <AnnouncementTable
             announcements={announcementFixtures.threeAnnouncements}
             currentUser={currentUser}
+            commonsId={1}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -220,5 +258,13 @@ describe("AnnouncementTable tests", () => {
 
     // act - click the delete button
     fireEvent.click(deleteButton);
+
+    await waitFor(() =>
+      expect(useBackendMutationSpy).toHaveBeenCalledWith(
+        cellToAxiosParamsDelete,
+        { onSuccess: onDeleteSuccess },
+        ["/api/announcements/getbycommonsid?commonsId=1"],
+      ),
+    );
   });
 });

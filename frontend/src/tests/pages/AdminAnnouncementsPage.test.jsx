@@ -8,7 +8,9 @@ import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
+import { announcementFixtures } from "fixtures/announcementFixtures";
 import { vi } from "vitest";
+import * as useBackendModule from "main/utils/useBackend";
 
 const mockedNavigate = vi.fn();
 
@@ -33,6 +35,19 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", {
+        params: { commonsId: 1 },
+      })
+      .reply(200, { content: [] });
   });
 
   test("renders page without crashing", async () => {
@@ -57,6 +72,11 @@ describe("AdminAnnouncementsPage tests", () => {
       totalPlayers: 5,
       totalCows: 5,
     });
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", {
+        params: { commonsId: 1 },
+      })
+      .reply(200, { content: announcementFixtures.threeAnnouncements });
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -69,6 +89,111 @@ describe("AdminAnnouncementsPage tests", () => {
     expect(
       await screen.findByText("Announcements for Commons: Sample Commons"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).toHaveTextContent("1");
+    expect(
+      screen.getByTestId("AnnouncementTable-cell-row-0-col-announcementText"),
+    ).toHaveTextContent(/Lorem ipsum/);
+  });
+
+  test("renders empty announcements table", async () => {
+    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
+      commons: {
+        id: 1,
+        name: "Sample Commons",
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
+    axiosMock
+      .onGet("/api/announcements/getbycommonsid", {
+        params: { commonsId: 1 },
+      })
+      .reply(200, { content: [] });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("renders empty announcements table when backend data has no content", async () => {
+    const useBackendSpy = vi
+      .spyOn(useBackendModule, "useBackend")
+      .mockImplementation((queryKey) => {
+        if (queryKey[0] === "/api/commons/plus?id=1") {
+          return {
+            data: {
+              commons: {
+                id: 1,
+                name: "Sample Commons",
+              },
+            },
+          };
+        }
+        return { data: {} };
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
+    useBackendSpy.mockRestore();
+  });
+
+  test("renders empty announcements table when backend data is undefined", async () => {
+    const useBackendSpy = vi
+      .spyOn(useBackendModule, "useBackend")
+      .mockImplementation((queryKey) => {
+        if (queryKey[0] === "/api/commons/plus?id=1") {
+          return {
+            data: {
+              commons: {
+                id: 1,
+                name: "Sample Commons",
+              },
+            },
+          };
+        }
+        return { data: undefined };
+      });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminAnnouncementsPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByText("Announcements for Commons: Sample Commons"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AnnouncementTable-cell-row-0-col-id"),
+    ).not.toBeInTheDocument();
+    useBackendSpy.mockRestore();
   });
 
   test("correct href for announcements button as an admin", async () => {
