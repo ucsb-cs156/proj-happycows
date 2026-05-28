@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,8 +50,8 @@ public class AnnouncementsController extends ApiController{
     @PostMapping("/post")
     public ResponseEntity<Object> createAnnouncement(
         @Parameter(description = "The id of the common") @RequestParam Long commonsId,
-        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) Date startDate,
-        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) Date endDate,
+        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
+        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
 
         User user = getCurrentUser().getUser();
@@ -135,8 +136,8 @@ public class AnnouncementsController extends ApiController{
     public ResponseEntity<Object> editAnnouncement(
         @Parameter(description = "The id of the announcement") @RequestParam Long id,
         @Parameter(description = "The id of the common") @RequestParam Long commonsId,
-        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) Date startDate,
-        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) Date endDate,
+        @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
+        @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
 
         User user = getCurrentUser().getUser();

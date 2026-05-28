@@ -30,6 +30,7 @@ import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
+import AdminEditAnnouncementsPage from "main/pages/AdminEditAnnouncementsPage";
 import DeveloperPage from "main/pages/DeveloperPage";
 import ChatHistoryPage from "main/pages/ChatHistoryPage";
 
@@ -69,6 +70,10 @@ function App() {
       <Route
         path="/admin/announcements/:commonsId/create"
         element={<AdminCreateAnnouncementsPage />}
+      />
+      <Route
+        path="/admin/announcements/:commonsId/edit/:id"
+        element={<AdminEditAnnouncementsPage />}
       />
       <Route path="/admin/chat/:commonsId" element={<ChatHistoryPage />} />
       <Route path="/developer" element={<DeveloperPage />} />
