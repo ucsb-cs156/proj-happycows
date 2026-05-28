@@ -18,8 +18,8 @@ SingleFeature.args = {
   onSubmit: action("onSubmit"),
 };
 
-export const ThreeFeatures = Template.bind({});
-ThreeFeatures.args = {
-  features: commonsFeaturesFixtures.threeFeatures,
+export const FeatureChecked = Template.bind({});
+FeatureChecked.args = {
+  features: commonsFeaturesFixtures.singleFeatureTrue,
   onSubmit: action("onSubmit"),
 };

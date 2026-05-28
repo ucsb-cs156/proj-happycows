@@ -31,11 +31,11 @@ describe("CommonsFeaturesForm tests", () => {
     ).toHaveTextContent("Save");
   });
 
-  it("renders correctly with multiple features", () => {
+  it("renders correctly with a checked feature", () => {
     const onSubmit = vi.fn();
     render(
       <CommonsFeaturesForm
-        features={commonsFeaturesFixtures.threeFeatures}
+        features={commonsFeaturesFixtures.singleFeatureTrue}
         onSubmit={onSubmit}
       />,
     );
@@ -44,23 +44,11 @@ describe("CommonsFeaturesForm tests", () => {
       screen.getByTestId("CommonsFeaturesForm-FARMERS_CAN_SEE_LEADERBOARD"),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId(
-        "CommonsFeaturesForm-FARMERS_CAN_SEE_HERD_SIZE_HISTOGRAM",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("CommonsFeaturesForm-TAXES_ON_HERD_SIZE_ARE_ENABLED"),
-    ).toBeInTheDocument();
-
-    expect(
       screen.getByLabelText("Farmers Can See Leaderboard"),
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText("Farmers Can See Herd Size Histogram"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Taxes On Herd Size Are Enabled"),
-    ).toBeInTheDocument();
+      screen.getByTestId("CommonsFeaturesForm-FARMERS_CAN_SEE_LEADERBOARD"),
+    ).toBeChecked();
   });
 
   it("formats feature names correctly", () => {
