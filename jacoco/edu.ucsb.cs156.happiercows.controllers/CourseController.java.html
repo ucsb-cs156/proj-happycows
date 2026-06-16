@@ -51,5 +51,34 @@ import org.springframework.web.bind.annotation.*;
 <span class="fc" id="L51">        Course savedCourse = courseRepository.save(courseDTO.toCourse());</span>
 <span class="fc" id="L52">        return savedCourse;</span>
     }
+
+    @Operation(summary = &quot;Update a single course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    public Course updateCourse(
+    	@Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody CourseDTO courseDTO) {
+<span class="fc" id="L60">        Course course = courseRepository.findById(id)</span>
+<span class="fc" id="L61">                .orElseThrow(() -&gt; new EntityNotFoundException(Course.class, id));</span>
+    
+<span class="fc" id="L63">	course.setCode(courseDTO.getCode());</span>
+<span class="fc" id="L64">	course.setName(courseDTO.getName());</span>
+<span class="fc" id="L65">	course.setTerm(courseDTO.getTerm());</span>
+	
+<span class="fc" id="L67">	courseRepository.save(course);</span>
+
+<span class="fc" id="L69">	return course;</span>
+	}
+
+    @Operation(summary = &quot;Delete a single course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public Object deleteCourse(
+        @Parameter(name = &quot;id&quot;) @PathVariable Long id){
+<span class="fc" id="L77">	Course course = courseRepository.findById(id)</span>
+<span class="fc" id="L78">                .orElseThrow(() -&gt; new EntityNotFoundException(Course.class, id));</span>
+
+<span class="fc" id="L80">	courseRepository.delete(course);</span>
+<span class="fc" id="L81">	return genericMessage(&quot;Course with id %s deleted&quot;.formatted(id));</span>
+	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

@@ -42,27 +42,31 @@ import edu.ucsb.cs156.happiercows.models.SystemInfo;
   @Value(&quot;${git.commit.id.abbrev:unknown}&quot;)
   private String commitId;
 
+  @Value(&quot;${app.feature_flags:}&quot;)
+  private String featureFlags;
+
   public static String githubUrl(String repo, String commit) {
-<span class="fc bfc" id="L46" title="All 4 branches covered.">    return commit != null &amp;&amp; repo != null ? repo + &quot;/commit/&quot; + commit : null;</span>
+<span class="fc bfc" id="L49" title="All 4 branches covered.">    return commit != null &amp;&amp; repo != null ? repo + &quot;/commit/&quot; + commit : null;</span>
   }
 
   @Value(&quot;${app.oauth.login:/oauth2/authorization/google}&quot;)
   private String oauthLogin;
 
   public SystemInfo getSystemInfo() {
-<span class="fc" id="L53">    SystemInfo si = SystemInfo.builder()</span>
-<span class="fc" id="L54">    .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
-<span class="fc" id="L55">    .showSwaggerUILink(this.showSwaggerUILink)</span>
-<span class="fc" id="L56">    .startQtrYYYYQ(this.startQtrYYYYQ)</span>
-<span class="fc" id="L57">    .endQtrYYYYQ(this.endQtrYYYYQ)</span>
-<span class="fc" id="L58">    .sourceRepo(this.sourceRepo)</span>
-<span class="fc" id="L59">    .commitMessage(this.commitMessage)</span>
-<span class="fc" id="L60">    .commitId(this.commitId)</span>
-<span class="fc" id="L61">    .githubUrl(githubUrl(this.sourceRepo, this.commitId))</span>
-<span class="fc" id="L62">    .oauthLogin(this.oauthLogin)</span>
-<span class="fc" id="L63">    .build();</span>
-<span class="fc" id="L64">  log.info(&quot;getSystemInfo returns {}&quot;,si);</span>
-<span class="fc" id="L65">  return si;</span>
+<span class="fc" id="L56">    SystemInfo si = SystemInfo.builder()</span>
+<span class="fc" id="L57">    .springH2ConsoleEnabled(this.springH2ConsoleEnabled)</span>
+<span class="fc" id="L58">    .showSwaggerUILink(this.showSwaggerUILink)</span>
+<span class="fc" id="L59">    .startQtrYYYYQ(this.startQtrYYYYQ)</span>
+<span class="fc" id="L60">    .endQtrYYYYQ(this.endQtrYYYYQ)</span>
+<span class="fc" id="L61">    .sourceRepo(this.sourceRepo)</span>
+<span class="fc" id="L62">    .commitMessage(this.commitMessage)</span>
+<span class="fc" id="L63">    .commitId(this.commitId)</span>
+<span class="fc" id="L64">    .githubUrl(githubUrl(this.sourceRepo, this.commitId))</span>
+<span class="fc" id="L65">    .oauthLogin(this.oauthLogin)</span>
+<span class="fc" id="L66">    .featureFlags(featureFlags)</span>
+<span class="fc" id="L67">    .build();</span>
+<span class="fc" id="L68">  log.info(&quot;getSystemInfo returns {}&quot;,si);</span>
+<span class="fc" id="L69">  return si;</span>
   }
 
 }

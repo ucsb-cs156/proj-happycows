@@ -3,7 +3,7 @@ happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.services,CommonsPlusBuilderService,0,65,0,0,0,13,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,152,0,2,0,39,0,6,0,5
-happycows,edu.ucsb.cs156.happiercows.services,SystemInfoServiceImpl,0,61,0,4,0,17,0,6,0,4
+happycows,edu.ucsb.cs156.happiercows.services,SystemInfoServiceImpl,0,64,0,4,0,18,0,6,0,4
 happycows,edu.ucsb.cs156.happiercows.services,CommonStatsService,0,56,0,0,0,14,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.services,GrantedAuthoritiesService,0,21,0,0,0,7,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.services,AverageCowHealthService,0,102,0,4,0,15,0,7,0,5
@@ -21,7 +21,7 @@ happycows,edu.ucsb.cs156.happiercows.helpers,ReportCSVHelper,0,167,0,2,0,27,0,3,
 happycows,edu.ucsb.cs156.happiercows.interceptors,RoleUserInterceptor,0,94,0,10,0,25,0,9,0,4
 happycows,edu.ucsb.cs156.happiercows.interceptors,RoleUserInterceptorAppConfig,0,9,0,0,0,3,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.enums,Features,0,9,0,0,0,2,0,1,0,1
-happycows,edu.ucsb.cs156.happiercows.enums,CommonsFeatures,0,21,0,0,0,4,0,1,0,1
+happycows,edu.ucsb.cs156.happiercows.enums,CommonsFeatures,0,9,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services.jobs,JobContext,0,48,0,4,0,7,0,4,0,2
 happycows,edu.ucsb.cs156.happiercows.services.jobs,JobService,0,55,0,0,0,19,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
@@ -42,6 +42,7 @@ happycows,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobInd,0,83,0,4,0,16,0,4,0,
 happycows,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobFactory,0,31,0,0,0,5,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.jobs,InstructorReportJob,0,69,0,2,0,10,0,2,0,1
 happycows,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJobInd,0,47,0,2,0,10,0,2,0,1
+happycows,edu.ucsb.cs156.happiercows.errors,CommonsHiddenException,0,11,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,NotEnoughMoneyException,0,4,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
@@ -49,8 +50,8 @@ happycows,edu.ucsb.cs156.happiercows.entities,CommonsPlus,0,12,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,UserCommons,0,15,0,0,0,5,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.entities,Commons,0,16,0,4,0,4,0,3,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1
-happycows,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,259,0,4,0,46,0,14,0,12
-happycows,edu.ucsb.cs156.happiercows.controllers,CourseController,0,39,0,0,0,9,0,6,0,6
+happycows,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,275,0,8,0,50,0,16,0,12
+happycows,edu.ucsb.cs156.happiercows.controllers,CourseController,0,103,0,0,0,20,0,10,0,10
 happycows,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,605,0,38,0,139,0,37,0,18
 happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,0,282,0,22,0,59,0,22,0,11
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,146,0,8,0,30,0,16,0,12
@@ -59,7 +60,7 @@ happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,24,0,0,0,7
 happycows,edu.ucsb.cs156.happiercows.controllers,ApiController,0,29,0,0,0,9,0,5,0,5
 happycows,edu.ucsb.cs156.happiercows.controllers,CommonsFeaturesController,0,16,0,0,0,6,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
-happycows,edu.ucsb.cs156.happiercows.controllers,AnnouncementsController,0,294,0,34,0,72,0,27,0,10
+happycows,edu.ucsb.cs156.happiercows.controllers,AnnouncementsController,0,413,0,46,0,98,0,36,0,13
 happycows,edu.ucsb.cs156.happiercows.controllers,CommonStatsController,0,85,0,0,0,17,0,5,0,5
 happycows,edu.ucsb.cs156.happiercows.controllers,UsersController,0,90,0,0,0,12,0,6,0,6
 happycows,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
