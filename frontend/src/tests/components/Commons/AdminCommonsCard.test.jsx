@@ -11,6 +11,14 @@ import { onDeleteSuccess } from "main/utils/commonsUtils";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
 
+const { mockHasRole } = vi.hoisted(() => ({
+  mockHasRole: vi.fn(),
+}));
+
+vi.mock("main/utils/currentUser", () => ({
+  hasRole: (...args) => mockHasRole(...args),
+}));
+
 const mockToast = vi.fn();
 vi.mock("react-toastify", async () => {
   const originalModule = await vi.importActual("react-toastify");
@@ -36,6 +44,8 @@ describe("AdminCommonsCard tests", () => {
     axiosMock.resetHistory();
     mockedNavigate.mockClear();
     mockToast.mockClear();
+
+    mockHasRole.mockReturnValue(true);
   });
 
   test("renders without crashing for admin user", () => {
@@ -55,6 +65,8 @@ describe("AdminCommonsCard tests", () => {
   });
 
   test("returns null for non-admin user", () => {
+    mockHasRole.mockReturnValue(false);
+
     const queryClient = new QueryClient();
     const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
     const currentUser = currentUserFixtures.userOnly;
@@ -446,6 +458,9 @@ describe("AdminCommonsCard tests", () => {
     expect(screen.getByText("Leaderboard")).toBeInTheDocument();
     expect(screen.getByText("Stats CSV")).toBeInTheDocument();
     expect(screen.getByText("Announcements")).toBeInTheDocument();
+
+    expect(screen.getByText("Chat")).toBeInTheDocument();
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
   });
 
   test("displays all field labels correctly", () => {
@@ -822,5 +837,85 @@ describe("AdminCommonsCard tests", () => {
         screen.queryByTestId("AdminCommonsCard-Modal-1"),
       ).not.toBeInTheDocument();
     });
+  });
+
+  test("delete mutation builds correct axios params", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    let capturedMutationFn;
+
+    vi.spyOn(useBackend, "useBackendMutation").mockImplementation(
+      (mutationFn, _config, _deps) => {
+        capturedMutationFn = mutationFn;
+        return {
+          mutate: vi.fn(), // minimal stub so component doesn't crash
+        };
+      },
+    );
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const request = capturedMutationFn(commonItem);
+
+    expect(request).toEqual({
+      url: "/api/commons",
+      method: "DELETE",
+      params: { id: 1 },
+    });
+  });
+
+  test("chat button renders with correct href and testid", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatButton = screen.getByText("Chat");
+    expect(chatButton).toBeInTheDocument();
+
+    expect(chatButton).toHaveAttribute("href", "/admin/chat/1");
+
+    const testIdElement = screen.getByTestId("AdminCommonsCard-Chat-1");
+    expect(testIdElement).toBe(chatButton);
+    expect(chatButton).toHaveTextContent("Chat");
+  });
+
+  test("dashboard button renders with correct href and testid", () => {
+    const queryClient = new QueryClient();
+    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const dashboardButton = screen.getByText("Dashboard");
+
+    expect(dashboardButton).toBeInTheDocument();
+    expect(dashboardButton).toHaveAttribute("href", "/admin/dashboard/1");
+
+    const testIdElement = screen.getByTestId("AdminCommonsCard-Dashboard-1");
+    expect(testIdElement).toBe(dashboardButton);
+
+    expect(dashboardButton).toHaveTextContent("Dashboard");
   });
 });

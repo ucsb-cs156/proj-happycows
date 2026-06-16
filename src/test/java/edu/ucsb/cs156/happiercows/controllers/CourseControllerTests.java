@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -186,4 +187,130 @@ public class CourseControllerTests extends ControllerTestCase {
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
+    
+    @WithMockUser(roles = {"ADMIN", "USER"})
+    @Test
+    public void admin_can_delete_a_course() throws Exception {
+	//arrange 
+	
+    	Course course1 =
+        	Course.builder()
+            		.code("TC123")
+            		.name("Test Post Course")
+            		.term("s26")
+            		.build();
+
+    	when(courseRepository.findById(eq(15L))).thenReturn(Optional.of(course1));
+
+    	// act
+    	MvcResult response =
+        	mockMvc
+            		.perform(delete("/api/course/15").with(csrf()))
+            		.andExpect(status().isOk())
+            		.andReturn();
+
+    	// assert
+    	verify(courseRepository, times(1)).findById(15L);
+    	verify(courseRepository, times(1)).delete(any());
+
+    	Map<String, Object> json = responseToJson(response);
+    	assertEquals("Course with id 15 deleted", json.get("message"));
+   }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_tries_to_delete_non_existant_course_and_gets_right_error_message()
+      throws Exception {
+    	// arrange
+
+    	when(courseRepository.findById(eq(15L))).thenReturn(Optional.empty());
+
+    	// act
+    	MvcResult response =
+        	mockMvc
+            		.perform(delete("/api/course/15").with(csrf()))
+            		.andExpect(status().isNotFound())
+            		.andReturn();
+
+    	// assert
+    	verify(courseRepository, times(1)).findById(15L);
+    	Map<String, Object> json = responseToJson(response);
+    	assertEquals("Course with id 15 not found", json.get("message"));
+  }
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_can_edit_an_existing_course() throws Exception {
+    // arrange
+
+    Course courseOrig =
+	    Course.builder()
+	    .code("TC123")
+            .name("Test Post Course")
+            .term("s26")
+            .build();
+
+    Course courseEdited =
+            Course.builder()
+            .code("TC1234")
+            .name("Test Post Course Edit")
+            .term("s27")
+            .build();
+
+    String requestBody = mapper.writeValueAsString(courseEdited);
+
+    when(courseRepository.findById(eq(67L))).thenReturn(Optional.of(courseOrig));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/course/67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    verify(courseRepository, times(1)).findById(67L);
+    verify(courseRepository, times(1))
+        .save(courseEdited); // should be saved with correct user
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(requestBody, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_cannot_edit_course_that_does_not_exist() throws Exception {
+    // arrange
+
+    Course courseEdited =
+            Course.builder()
+            .code("TC1234")
+            .name("Test Post Course Edit")
+            .term("s27")
+            .build(); 
+
+    String requestBody = mapper.writeValueAsString(courseEdited);
+
+    when(courseRepository.findById(eq(67L))).thenReturn(Optional.empty());
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/course/67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isNotFound())
+            .andReturn();
+
+    // assert
+    verify(courseRepository, times(1)).findById(67L);
+    Map<String, Object> json = responseToJson(response);
+    assertEquals("Course with id 67 not found", json.get("message"));
+  }
 }

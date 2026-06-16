@@ -28,3 +28,5 @@ export const coursesFixtures = {
     },
   ],
 };
+
+export default coursesFixtures;

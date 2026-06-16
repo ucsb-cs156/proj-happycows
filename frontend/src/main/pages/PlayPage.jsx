@@ -56,6 +56,19 @@ export default function PlayPage() {
   );
   // Stryker restore all
 
+  // Stryker disable all
+  const { data: currentAnnouncements } = useBackend(
+    [`/api/announcements/current?commonsId=${commonsId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/current",
+      params: {
+        commonsId: commonsId,
+      },
+    },
+  );
+  // Stryker restore all
+
   const commonsPlusExists = !(typeof commonsPlus == "undefined");
   let commonsforuser;
   let matched;
@@ -80,10 +93,9 @@ export default function PlayPage() {
       },
     },
   );
-
   // Stryker restore all
 
-  // Stryker disable all (can't check if commonsId is null because it is mocked)
+  // Stryker disable all
   const objectToAxiosParamsBuy = (newUserCommons) => ({
     url: "/api/usercommons/buy",
     method: "PUT",
@@ -96,12 +108,9 @@ export default function PlayPage() {
   // Stryker restore all
 
   // Stryker disable all
-  const mutationbuy = useBackendMutation(
-    objectToAxiosParamsBuy,
-    null,
-    // Stryker disable next-line all : hard to set up test for caching
-    [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
-  );
+  const mutationbuy = useBackendMutation(objectToAxiosParamsBuy, null, [
+    `/api/usercommons/forcurrentuser?commonsId=${commonsId}`,
+  ]);
   // Stryker restore all
 
   const onBuy = (userCommons, numCows) => {
@@ -178,6 +187,7 @@ export default function PlayPage() {
           {hidden && (
             <h1>This commons has been hidden by the site administrator.</h1>
           )}
+
           {allowed && !!currentUser && (
             <CommonsPlay currentUser={currentUser} />
           )}
@@ -186,9 +196,12 @@ export default function PlayPage() {
             <CommonsOverview
               commonsPlus={commonsPlus}
               currentUser={currentUser}
+              currentAnnouncements={currentAnnouncements}
             />
           )}
+
           <br />
+
           {allowed && !!userCommons && !!commonsPlus && (
             <CardGroup>
               <ManageCows
@@ -213,6 +226,7 @@ export default function PlayPage() {
           )}
         </Container>
       </BasicLayout>
+
       {(hasRole(currentUser, "ROLE_ADMIN") ||
         (allowed && !!commonsPlus && commonsPlus.commons.showChat)) && (
         <div style={chatContainerStyle} data-testid="playpage-chat-div">
