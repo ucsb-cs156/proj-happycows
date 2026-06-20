@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
-import { daysSinceTimestamp } from "main/utils/dateUtils";
+import { daysSinceTimestamp, timestampToDate } from "main/utils/dateUtils";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
@@ -26,14 +26,31 @@ export default function AdminDashboardPage() {
   const daysActive = commonsPlus?.commons?.startingDate
     ? daysSinceTimestamp(commonsPlus.commons.startingDate)
     : "--";
+  const commonsId = commonsPlus?.commons?.id ?? id ?? "--";
+  const commonsStartDate = commonsPlus?.commons?.startingDate
+    ? timestampToDate(commonsPlus.commons.startingDate)
+    : "--";
+  const commonsName = commonsPlus?.commons?.name ?? "--";
+  const hiddenIconClass = commonsPlus?.commons?.hidden
+    ? "fa-solid fa-eye-slash"
+    : "fa-solid fa-eye";
 
   return (
     <BasicLayout>
       <h1 className="mb-4">Dashboard</h1>
 
-      <p>
-        <strong>Commons ID:</strong> {id}
-      </p>
+      <h3 className="mt-4">Commons Details</h3>
+      <Card className="mb-3">
+        <Card.Body>
+          <p>
+            <strong>ID:</strong> {commonsId} <strong>Start Date:</strong>{" "}
+            {commonsStartDate} <strong>Name:</strong> {commonsName}
+          </p>
+          <p>
+            <strong>Hidden:</strong> <i className={hiddenIconClass}></i>
+          </p>
+        </Card.Body>
+      </Card>
 
       <h3 className="mt-4">Overview</h3>
       <Row>
@@ -64,21 +81,6 @@ export default function AdminDashboardPage() {
           </Card>
         </Col>
       </Row>
-
-      <h3 className="mt-4">Commons Details</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>
-            <strong>Name:</strong> --
-          </p>
-          <p>
-            <strong>Status:</strong> --
-          </p>
-          <p>
-            <strong>Start Date:</strong> --
-          </p>
-        </Card.Body>
-      </Card>
 
       <h3 className="mt-4">Participation Metrics</h3>
       <Card className="mb-3">

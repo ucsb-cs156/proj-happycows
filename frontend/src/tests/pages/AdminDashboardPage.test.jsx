@@ -52,6 +52,9 @@ beforeEach(() => {
         200,
         {
           commons: {
+            id: 7,
+            name: "Test Commons 7",
+            hidden: false,
             startingDate: "2025-01-01T00:00:00",
           },
           totalUsers: 4,
@@ -64,6 +67,9 @@ beforeEach(() => {
         200,
         {
           commons: {
+            id: 123,
+            name: "Test Commons 123",
+            hidden: true,
             startingDate: "2024-06-01T00:00:00",
           },
           totalUsers: 2,
@@ -75,6 +81,11 @@ beforeEach(() => {
       return [
         200,
         {
+          commons: {
+            id: 55,
+            name: "Test Commons 55",
+            hidden: false,
+          },
           totalUsers: 6,
           totalCows: 8,
         },
@@ -94,14 +105,17 @@ describe("AdminDashboardPage", () => {
       screen.getByRole("heading", { name: /dashboard/i }),
     ).toBeInTheDocument();
 
-    const idLabel = screen.getByText(/^commons id:$/i, { selector: "strong" });
-    expect(idLabel.closest("p")).toHaveTextContent(/commons id:\s*7/i);
+    const commonsDetailsHeading = screen.getByRole("heading", {
+      name: /commons details/i,
+    });
+    const overviewHeading = screen.getByRole("heading", { name: /overview/i });
+    expect(
+      commonsDetailsHeading.compareDocumentPosition(overviewHeading) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
 
     expect(
       screen.getByRole("heading", { name: /overview/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /commons details/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /participation metrics/i }),
@@ -124,15 +138,18 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("11")).toBeInTheDocument();
     expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
 
-    expect(
-      screen.getByText(/^name:$/i, { selector: "strong" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/^status:$/i, { selector: "strong" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/^start date:$/i, { selector: "strong" }),
-    ).toBeInTheDocument();
+    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
+    const detailsLine = idLabel.closest("p");
+    expect(detailsLine).toHaveTextContent(/id:\s*7/i);
+    expect(detailsLine).toHaveTextContent(/start date:\s*2025-01-01/i);
+    expect(detailsLine).toHaveTextContent(/name:\s*Test Commons 7/i);
+    expect(screen.queryByText(/^status:$/i, { selector: "strong" })).toBeNull();
+
+    const hiddenLabel = screen.getByText(/^hidden:$/i, { selector: "strong" });
+    expect(hiddenLabel.closest("p").querySelector("i")).toHaveClass(
+      "fa-solid",
+      "fa-eye",
+    );
 
     expect(
       screen.getByText(/^active farmers:$/i, { selector: "strong" }),
@@ -167,9 +184,10 @@ describe("AdminDashboardPage", () => {
       screen.getByRole("heading", { name: /dashboard/i }),
     ).toBeInTheDocument();
 
-    const idLabel = screen.getByText(/^commons id:$/i, { selector: "strong" });
-    expect(idLabel.closest("p").textContent).not.toMatch(/\d+/);
-    expect(screen.getAllByText("--")).toHaveLength(9);
+    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
+    const detailsLine = idLabel.closest("p");
+    expect(detailsLine.textContent).not.toMatch(/\d+/);
+    expect(screen.getAllByText("--")).toHaveLength(6);
     expect(
       axiosMock.history.get.filter((call) => call.url === "/api/commons/plus"),
     ).toHaveLength(0);
@@ -179,12 +197,21 @@ describe("AdminDashboardPage", () => {
     renderWithRoute("/admin/dashboard/123");
     const expectedDays = daysSinceTimestamp("2024-06-01T00:00:00");
 
-    const idLabel = screen.getByText(/^commons id:$/i, { selector: "strong" });
-    expect(idLabel.closest("p")).toHaveTextContent(/commons id:\s*123/i);
-    expect(idLabel.closest("p")).not.toHaveTextContent(/commons id:\s*7/i);
-    expect(await screen.findByText("2")).toBeInTheDocument();
+    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
+    const detailsLine = idLabel.closest("p");
+    await screen.findByText("2");
+    expect(detailsLine).toHaveTextContent(/id:\s*123/i);
+    expect(detailsLine).toHaveTextContent(/start date:\s*2024-06-01/i);
+    expect(detailsLine).toHaveTextContent(/name:\s*Test Commons 123/i);
+    expect(detailsLine).not.toHaveTextContent(/id:\s*7/i);
+    expect(screen.getByText("2")).toBeInTheDocument();
     expect(screen.getByText("9")).toBeInTheDocument();
     expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
+    const hiddenLabel = screen.getByText(/^hidden:$/i, { selector: "strong" });
+    expect(hiddenLabel.closest("p").querySelector("i")).toHaveClass(
+      "fa-solid",
+      "fa-eye-slash",
+    );
   });
 
   test("updates stats when dashboard id changes", async () => {
@@ -224,6 +251,6 @@ describe("AdminDashboardPage", () => {
 
     expect(await screen.findByText("6")).toBeInTheDocument();
     expect(screen.getByText("8")).toBeInTheDocument();
-    expect(screen.getAllByText("--")).toHaveLength(7);
+    expect(screen.getAllByText("--")).toHaveLength(4);
   });
 });
