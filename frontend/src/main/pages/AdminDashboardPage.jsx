@@ -1,10 +1,31 @@
 import React from "react";
 import { useParams } from "react-router";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import { useBackend } from "main/utils/useBackend";
+import { daysSinceTimestamp } from "main/utils/dateUtils";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
+  const { data: commonsPlus } = useBackend(
+    [`/api/commons/plus?id=${id}`],
+    {
+      url: "/api/commons/plus",
+      params: {
+        id,
+      },
+    },
+    null,
+    {
+      enabled: !!id,
+    },
+  );
+
+  const totalFarmers = commonsPlus?.totalUsers ?? "--";
+  const totalCows = commonsPlus?.totalCows ?? "--";
+  const daysActive = commonsPlus?.commons?.startingDate
+    ? daysSinceTimestamp(commonsPlus.commons.startingDate)
+    : "--";
 
   return (
     <BasicLayout>
@@ -16,38 +37,29 @@ export default function AdminDashboardPage() {
 
       <h3 className="mt-4">Overview</h3>
       <Row>
-        <Col md={3}>
+        <Col md={4}>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Farmers</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{totalFarmers}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
+        <Col md={4}>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Cows</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{totalCows}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Title>Commons Balance</Card.Title>
-              <Card.Text>--</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={3}>
+        <Col md={4}>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Days Active</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{daysActive}</Card.Text>
             </Card.Body>
           </Card>
         </Col>

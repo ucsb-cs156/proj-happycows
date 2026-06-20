@@ -1,17 +1,18 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter, Routes, Route, useNavigate } from "react-router";
 import "@testing-library/jest-dom";
 import AdminDashboardPage from "main/pages/AdminDashboardPage";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import axios from "axios";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import AxiosMockAdapter from "axios-mock-adapter";
+import { beforeEach, describe, expect, test } from "vitest";
+import { daysSinceTimestamp } from "main/utils/dateUtils";
+import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
+import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 
-vi.mock("axios", () => ({
-  default: { get: vi.fn() },
-  get: vi.fn(),
-}));
+const axiosMock = new AxiosMockAdapter(axios);
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -37,16 +38,57 @@ function renderWithRoute(initialEntry, routePath = "/admin/dashboard/:id") {
 }
 
 beforeEach(() => {
-  vi.clearAllMocks();
-  // default response for BasicLayout -> useCurrentUser
-  axios.get.mockResolvedValue({
-    data: { loggedIn: false, root: false, rolesList: [] },
+  axiosMock.reset();
+  axiosMock
+    .onGet("/api/currentUser")
+    .reply(200, apiCurrentUserFixtures.userOnly);
+  axiosMock
+    .onGet("/api/systemInfo")
+    .reply(200, systemInfoFixtures.showingNeither);
+
+  axiosMock.onGet("/api/commons/plus").reply((config) => {
+    if (config.params?.id === "7") {
+      return [
+        200,
+        {
+          commons: {
+            startingDate: "2025-01-01T00:00:00",
+          },
+          totalUsers: 4,
+          totalCows: 11,
+        },
+      ];
+    }
+    if (config.params?.id === "123") {
+      return [
+        200,
+        {
+          commons: {
+            startingDate: "2024-06-01T00:00:00",
+          },
+          totalUsers: 2,
+          totalCows: 9,
+        },
+      ];
+    }
+    if (config.params?.id === "55") {
+      return [
+        200,
+        {
+          totalUsers: 6,
+          totalCows: 8,
+        },
+      ];
+    }
+    return [404, {}];
   });
 });
 
 describe("AdminDashboardPage", () => {
-  test("renders full dashboard content for a valid id", () => {
+  test("renders full dashboard content for a valid id", async () => {
     renderWithRoute("/admin/dashboard/7");
+
+    const expectedDays = daysSinceTimestamp("2025-01-01T00:00:00");
 
     expect(
       screen.getByRole("heading", { name: /dashboard/i }),
@@ -76,8 +118,11 @@ describe("AdminDashboardPage", () => {
 
     expect(screen.getByText(/total farmers/i)).toBeInTheDocument();
     expect(screen.getByText(/total cows/i)).toBeInTheDocument();
-    expect(screen.getByText(/commons balance/i)).toBeInTheDocument();
+    expect(screen.queryByText(/commons balance/i)).not.toBeInTheDocument();
     expect(screen.getByText(/days active/i)).toBeInTheDocument();
+    expect(await screen.findByText("4")).toBeInTheDocument();
+    expect(screen.getByText("11")).toBeInTheDocument();
+    expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
 
     expect(
       screen.getByText(/^name:$/i, { selector: "strong" }),
@@ -113,8 +158,6 @@ describe("AdminDashboardPage", () => {
     expect(
       screen.getByText(/future analytics and breakdowns will be added here\./i),
     ).toBeInTheDocument();
-
-    expect(screen.getAllByText("--")).toHaveLength(10);
   });
 
   test("renders safely when id is missing", () => {
@@ -126,13 +169,61 @@ describe("AdminDashboardPage", () => {
 
     const idLabel = screen.getByText(/^commons id:$/i, { selector: "strong" });
     expect(idLabel.closest("p").textContent).not.toMatch(/\d+/);
+    expect(screen.getAllByText("--")).toHaveLength(9);
+    expect(
+      axiosMock.history.get.filter((call) => call.url === "/api/commons/plus"),
+    ).toHaveLength(0);
   });
 
-  test("renders different ids correctly (prevents hardcoding)", () => {
+  test("renders different ids correctly (prevents hardcoding)", async () => {
     renderWithRoute("/admin/dashboard/123");
+    const expectedDays = daysSinceTimestamp("2024-06-01T00:00:00");
 
     const idLabel = screen.getByText(/^commons id:$/i, { selector: "strong" });
     expect(idLabel.closest("p")).toHaveTextContent(/commons id:\s*123/i);
     expect(idLabel.closest("p")).not.toHaveTextContent(/commons id:\s*7/i);
+    expect(await screen.findByText("2")).toBeInTheDocument();
+    expect(screen.getByText("9")).toBeInTheDocument();
+    expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
+  });
+
+  test("updates stats when dashboard id changes", async () => {
+    function DashboardHarness() {
+      const navigate = useNavigate();
+      return (
+        <>
+          <button onClick={() => navigate("/admin/dashboard/123")}>
+            Switch Dashboard
+          </button>
+          <Routes>
+            <Route
+              path="/admin/dashboard/:id"
+              element={<AdminDashboardPage />}
+            />
+          </Routes>
+        </>
+      );
+    }
+
+    const queryClient = createTestQueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter initialEntries={["/admin/dashboard/7"]}>
+          <DashboardHarness />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText("4")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /switch dashboard/i }));
+    expect(await screen.findByText("2")).toBeInTheDocument();
+  });
+
+  test("shows fallback days active when startingDate is missing", async () => {
+    renderWithRoute("/admin/dashboard/55");
+
+    expect(await screen.findByText("6")).toBeInTheDocument();
+    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getAllByText("--")).toHaveLength(7);
   });
 });
