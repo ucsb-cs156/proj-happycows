@@ -146,6 +146,7 @@ describe("AdminDashboardPage", () => {
     expect(screen.queryByText(/^status:$/i, { selector: "strong" })).toBeNull();
 
     const hiddenLabel = screen.getByText(/^hidden:$/i, { selector: "strong" });
+    expect(hiddenLabel).toBeInTheDocument();
     expect(hiddenLabel.closest("p").querySelector("i")).toHaveClass(
       "fa-solid",
       "fa-eye",
@@ -187,7 +188,7 @@ describe("AdminDashboardPage", () => {
     const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
     const detailsLine = idLabel.closest("p");
     expect(detailsLine.textContent).not.toMatch(/\d+/);
-    expect(screen.getAllByText("--")).toHaveLength(6);
+    expect(screen.getAllByText("--")).toHaveLength(7);
     expect(
       axiosMock.history.get.filter((call) => call.url === "/api/commons/plus"),
     ).toHaveLength(0);

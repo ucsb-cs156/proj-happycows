@@ -31,9 +31,14 @@ export default function AdminDashboardPage() {
     ? timestampToDate(commonsPlus.commons.startingDate)
     : "--";
   const commonsName = commonsPlus?.commons?.name ?? "--";
-  const hiddenIconClass = commonsPlus?.commons?.hidden
-    ? "fa-solid fa-eye-slash"
-    : "fa-solid fa-eye";
+  const hiddenDisplay =
+    commonsPlus?.commons?.hidden === true ? (
+      <i className="fa-solid fa-eye-slash"></i>
+    ) : commonsPlus?.commons?.hidden === false ? (
+      <i className="fa-solid fa-eye"></i>
+    ) : (
+      "--"
+    );
 
   return (
     <BasicLayout>
@@ -47,7 +52,7 @@ export default function AdminDashboardPage() {
             {commonsStartDate} <strong>Name:</strong> {commonsName}
           </p>
           <p>
-            <strong>Hidden:</strong> <i className={hiddenIconClass}></i>
+            <strong>Hidden:</strong> {hiddenDisplay}
           </p>
         </Card.Body>
       </Card>
