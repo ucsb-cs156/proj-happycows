@@ -101,6 +101,23 @@ beforeEach(() => {
         },
       ];
     }
+    if (config.params?.id === "77") {
+      return [
+        200,
+        {
+          commons: {
+            hidden: null,
+          },
+          totalUsers: null,
+          totalCows: null,
+          averageCowsPerFarmer: null,
+          medianCowsPerFarmer: null,
+          minimumCowsPerFarmer: null,
+          maximumCowsPerFarmer: null,
+          standardDeviationCowsPerFarmer: null,
+        },
+      ];
+    }
     return [404, {}];
   });
 });
@@ -118,7 +135,9 @@ describe("AdminDashboardPage", () => {
     expect(mainHeading.tagName).toBe("H1");
     expect(mainHeading.querySelector("i")).toBeNull();
 
-    expect(screen.getByRole("heading", { name: /^dashboard$/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /^dashboard$/i }),
+    ).toBeInTheDocument();
 
     expect(screen.queryByText(/commons details/i)).not.toBeInTheDocument();
     expect(
@@ -145,8 +164,30 @@ describe("AdminDashboardPage", () => {
         selector: "strong",
       }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/^median number of cows per farmer:$/i, {
+        selector: "strong",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/^minimum number of cows per farmer:$/i, {
+        selector: "strong",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/^maximum number of cows per farmer:$/i, {
+        selector: "strong",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/^standard deviation of number of cows per farmer:$/i, {
+        selector: "strong",
+      }),
+    ).toBeInTheDocument();
     expect(screen.getByText("2.75")).toBeInTheDocument();
     expect(screen.getByText("2.5")).toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("1.479")).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -208,7 +249,9 @@ describe("AdminDashboardPage", () => {
     expect(await screen.findByText("4")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /switch dashboard/i }));
     expect(await screen.findByText("2")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /test commons 123/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /test commons 123/i }),
+    ).toBeInTheDocument();
   });
 
   test("shows fallback values when startingDate and stats are missing", async () => {
@@ -230,5 +273,24 @@ describe("AdminDashboardPage", () => {
     expect(startDateCard).toHaveTextContent("--");
 
     expect(screen.getAllByText("--").length).toBeGreaterThanOrEqual(6);
+  });
+
+  test("falls back to route id and dashes when commons fields are missing", async () => {
+    renderWithRoute("/admin/dashboard/77");
+
+    expect((await screen.findAllByText(/^--$/)).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole("heading", { name: /^--$/i })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /^77$/i })).toBeNull();
+    expect(screen.getByText(/total farmers/i).closest(".card")).toHaveTextContent(
+      "--",
+    );
+    expect(screen.getByText(/total cows/i).closest(".card")).toHaveTextContent(
+      "--",
+    );
+    expect(screen.getByText(/^id$/i).closest(".card")).toHaveTextContent("77");
+    expect(screen.getByText(/start date/i).closest(".card")).toHaveTextContent(
+      "--",
+    );
+    expect(screen.queryByText(/hidden/i)).not.toBeInTheDocument();
   });
 });
