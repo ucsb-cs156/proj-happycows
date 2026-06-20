@@ -31,35 +31,29 @@ export default function AdminDashboardPage() {
     ? timestampToDate(commonsPlus.commons.startingDate)
     : "--";
   const commonsName = commonsPlus?.commons?.name ?? "--";
-  const hiddenDisplay =
-    commonsPlus?.commons?.hidden === true ? (
-      <i className="fa-solid fa-eye-slash"></i>
-    ) : commonsPlus?.commons?.hidden === false ? (
-      <i className="fa-solid fa-eye"></i>
-    ) : (
-      "--"
-    );
+  const isHidden = commonsPlus?.commons?.hidden === true;
+  const averageCowsPerFarmer = commonsPlus?.averageCowsPerFarmer ?? "--";
+  const medianCowsPerFarmer = commonsPlus?.medianCowsPerFarmer ?? "--";
+  const minimumCowsPerFarmer = commonsPlus?.minimumCowsPerFarmer ?? "--";
+  const maximumCowsPerFarmer = commonsPlus?.maximumCowsPerFarmer ?? "--";
+  const standardDeviationCowsPerFarmer =
+    commonsPlus?.standardDeviationCowsPerFarmer ?? "--";
 
   return (
     <BasicLayout>
-      <h1 className="mb-4">Dashboard</h1>
-
-      <h3 className="mt-4">Commons Details</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>
-            <strong>ID:</strong> {commonsId} <strong>Start Date:</strong>{" "}
-            {commonsStartDate} <strong>Name:</strong> {commonsName}
-          </p>
-          <p>
-            <strong>Hidden:</strong> {hiddenDisplay}
-          </p>
-        </Card.Body>
-      </Card>
+      <h1 className="mb-1">
+        {isHidden && (
+          <>
+            <i className="fa-solid fa-eye-slash"></i>{" "}
+          </>
+        )}
+        {commonsName}
+      </h1>
+      <h3 className="mb-4">Dashboard</h3>
 
       <h3 className="mt-4">Overview</h3>
       <Row>
-        <Col md={4}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Farmers</Card.Title>
@@ -68,7 +62,7 @@ export default function AdminDashboardPage() {
           </Card>
         </Col>
 
-        <Col md={4}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Cows</Card.Title>
@@ -77,7 +71,7 @@ export default function AdminDashboardPage() {
           </Card>
         </Col>
 
-        <Col md={4}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Days Active</Card.Title>
@@ -85,26 +79,49 @@ export default function AdminDashboardPage() {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
 
-      <h3 className="mt-4">Participation Metrics</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>
-            <strong>Active Farmers:</strong> --
-          </p>
-          <p>
-            <strong>Inactive Farmers:</strong> --
-          </p>
-          <p>
-            <strong>Avg Cows per Farmer:</strong> --
-          </p>
-        </Card.Body>
-      </Card>
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>ID</Card.Title>
+              <Card.Text>{commonsId}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Start Date</Card.Title>
+              <Card.Text>{commonsStartDate}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       <h3 className="mt-4">Farmer Cow Distribution</h3>
       <Card className="mb-3">
         <Card.Body>
+          <p>
+            <strong>Average Number of Cows per Farmer:</strong>{" "}
+            {averageCowsPerFarmer}
+          </p>
+          <p>
+            <strong>Median Number of Cows per Farmer:</strong>{" "}
+            {medianCowsPerFarmer}
+          </p>
+          <p>
+            <strong>Minimum Number of Cows per Farmer:</strong>{" "}
+            {minimumCowsPerFarmer}
+          </p>
+          <p>
+            <strong>Maximum Number of Cows per Farmer:</strong>{" "}
+            {maximumCowsPerFarmer}
+          </p>
+          <p>
+            <strong>Standard Deviation of Number of Cows per Farmer:</strong>{" "}
+            {standardDeviationCowsPerFarmer}
+          </p>
           <p>Histogram / distribution of cows per farmer will go here</p>
         </Card.Body>
       </Card>
@@ -129,13 +146,6 @@ export default function AdminDashboardPage() {
           </Card>
         </Col>
       </Row>
-
-      <h3 className="mt-4">Additional Insights</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>Future analytics and breakdowns will be added here.</p>
-        </Card.Body>
-      </Card>
     </BasicLayout>
   );
 }

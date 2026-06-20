@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -64,12 +65,24 @@ public class CommonsPlusBuilderServiceTests {
         .commons(commons)
         .totalCows(10)
         .totalUsers(5)
+        .averageCowsPerFarmer(2.0)
+        .medianCowsPerFarmer(2.0)
+        .minimumCowsPerFarmer(1)
+        .maximumCowsPerFarmer(3)
+        .standardDeviationCowsPerFarmer(0.6324555320336759)
         .build();
 
     @Test
     void test_toCommonsPlus() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(10));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
+        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
+                UserCommons.builder().numOfCows(1).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(3).build()
+        ));
         CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
         assertEquals(commonsPlus, this.commonsPlus);
     }
@@ -78,9 +91,33 @@ public class CommonsPlusBuilderServiceTests {
     void test_convertToCommonsPlus() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(10));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
+        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
+                UserCommons.builder().numOfCows(1).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(2).build(),
+                UserCommons.builder().numOfCows(3).build()
+        ));
         Iterable<CommonsPlus> commonsPlusIterable = commonsPlusBuilderService.convertToCommonsPlus(Arrays.asList(commons));
         CommonsPlus commonsPlus = commonsPlusIterable.iterator().next();
         assertEquals(commonsPlus, this.commonsPlus);
+    }
+
+    @Test
+    void test_toCommonsPlus_withNoFarmers() {
+        when(commonsRepository.getNumCows(17L)).thenReturn(Optional.empty());
+        when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.empty());
+        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of());
+
+        CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
+
+        assertEquals(0, commonsPlus.getTotalCows());
+        assertEquals(0, commonsPlus.getTotalUsers());
+        Assertions.assertNull(commonsPlus.getAverageCowsPerFarmer());
+        Assertions.assertNull(commonsPlus.getMedianCowsPerFarmer());
+        Assertions.assertNull(commonsPlus.getMinimumCowsPerFarmer());
+        Assertions.assertNull(commonsPlus.getMaximumCowsPerFarmer());
+        Assertions.assertNull(commonsPlus.getStandardDeviationCowsPerFarmer());
     }
 
 }

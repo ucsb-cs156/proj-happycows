@@ -59,6 +59,11 @@ beforeEach(() => {
           },
           totalUsers: 4,
           totalCows: 11,
+          averageCowsPerFarmer: 2.75,
+          medianCowsPerFarmer: 2.5,
+          minimumCowsPerFarmer: 1,
+          maximumCowsPerFarmer: 5,
+          standardDeviationCowsPerFarmer: 1.479,
         },
       ];
     }
@@ -74,6 +79,11 @@ beforeEach(() => {
           },
           totalUsers: 2,
           totalCows: 9,
+          averageCowsPerFarmer: 4.5,
+          medianCowsPerFarmer: 4.5,
+          minimumCowsPerFarmer: 3,
+          maximumCowsPerFarmer: 6,
+          standardDeviationCowsPerFarmer: 1.5,
         },
       ];
     }
@@ -96,126 +106,79 @@ beforeEach(() => {
 });
 
 describe("AdminDashboardPage", () => {
-  test("renders full dashboard content for a valid id", async () => {
+  test("renders dashboard with name heading, overview cards, and backend statistics", async () => {
     renderWithRoute("/admin/dashboard/7");
 
     const expectedDays = daysSinceTimestamp("2025-01-01T00:00:00");
 
-    expect(
-      screen.getByRole("heading", { name: /dashboard/i }),
-    ).toBeInTheDocument();
-
-    const commonsDetailsHeading = screen.getByRole("heading", {
-      name: /commons details/i,
+    const mainHeading = await screen.findByRole("heading", {
+      name: /test commons 7/i,
     });
-    const overviewHeading = screen.getByRole("heading", { name: /overview/i });
-    expect(
-      commonsDetailsHeading.compareDocumentPosition(overviewHeading) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    expect(mainHeading).toBeInTheDocument();
+    expect(mainHeading.tagName).toBe("H1");
+    expect(mainHeading.querySelector("i")).toBeNull();
 
+    expect(screen.getByRole("heading", { name: /^dashboard$/i })).toBeInTheDocument();
+
+    expect(screen.queryByText(/commons details/i)).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /overview/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: /participation metrics/i }),
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /participation metrics/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /farmer cow distribution/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /trends over time/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /additional insights/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: /additional insights/i }),
+    ).not.toBeInTheDocument();
 
     expect(screen.getByText(/total farmers/i)).toBeInTheDocument();
     expect(screen.getByText(/total cows/i)).toBeInTheDocument();
-    expect(screen.queryByText(/commons balance/i)).not.toBeInTheDocument();
     expect(screen.getByText(/days active/i)).toBeInTheDocument();
+    expect(screen.getByText(/^id$/i)).toBeInTheDocument();
+    expect(screen.getByText(/start date/i)).toBeInTheDocument();
+
     expect(await screen.findByText("4")).toBeInTheDocument();
     expect(screen.getByText("11")).toBeInTheDocument();
     expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
-
-    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
-    const detailsLine = idLabel.closest("p");
-    expect(detailsLine).toHaveTextContent(/id:\s*7/i);
-    expect(detailsLine).toHaveTextContent(/start date:\s*2025-01-01/i);
-    expect(detailsLine).toHaveTextContent(/name:\s*Test Commons 7/i);
-    expect(screen.queryByText(/^status:$/i, { selector: "strong" })).toBeNull();
-
-    const hiddenLabel = screen.getByText(/^hidden:$/i, { selector: "strong" });
-    expect(hiddenLabel).toBeInTheDocument();
-    expect(hiddenLabel.closest("p").querySelector("i")).toHaveClass(
-      "fa-solid",
-      "fa-eye",
-    );
+    expect(screen.getByText("7")).toBeInTheDocument();
+    expect(screen.getByText("2025-01-01")).toBeInTheDocument();
 
     expect(
-      screen.getByText(/^active farmers:$/i, { selector: "strong" }),
+      screen.getByText(/^average number of cows per farmer:$/i, {
+        selector: "strong",
+      }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/^inactive farmers:$/i, { selector: "strong" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/^avg cows per farmer:$/i, { selector: "strong" }),
-    ).toBeInTheDocument();
-
+    expect(screen.getByText("2.75")).toBeInTheDocument();
+    expect(screen.getByText("2.5")).toBeInTheDocument();
+    expect(screen.getByText("1.479")).toBeInTheDocument();
     expect(
       screen.getByText(
         /histogram\s*\/\s*distribution of cows per farmer will go here/i,
       ),
     ).toBeInTheDocument();
+  });
 
-    expect(screen.getByText(/cows over time/i)).toBeInTheDocument();
-    expect(screen.getByText(/farmers over time/i)).toBeInTheDocument();
+  test("renders hidden icon in title only when commons is hidden", async () => {
+    renderWithRoute("/admin/dashboard/123");
 
-    expect(screen.getAllByText(/chart placeholder/i)).toHaveLength(2);
-
-    expect(
-      screen.getByText(/future analytics and breakdowns will be added here\./i),
-    ).toBeInTheDocument();
+    const mainHeading = await screen.findByRole("heading", {
+      name: /test commons 123/i,
+    });
+    const icon = mainHeading.querySelector("i");
+    expect(icon).toHaveClass("fa-solid", "fa-eye-slash");
+    expect(screen.queryByText(/hidden/i)).not.toBeInTheDocument();
   });
 
   test("renders safely when id is missing", () => {
     renderWithRoute("/admin/dashboard", "/admin/dashboard");
 
+    expect(screen.getByRole("heading", { name: /^--$/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /dashboard/i }),
+      screen.getByRole("heading", { name: /^dashboard$/i }),
     ).toBeInTheDocument();
-
-    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
-    const detailsLine = idLabel.closest("p");
-    expect(detailsLine.textContent).not.toMatch(/\d+/);
-    expect(screen.getAllByText("--")).toHaveLength(7);
     expect(
       axiosMock.history.get.filter((call) => call.url === "/api/commons/plus"),
     ).toHaveLength(0);
   });
 
-  test("renders different ids correctly (prevents hardcoding)", async () => {
-    renderWithRoute("/admin/dashboard/123");
-    const expectedDays = daysSinceTimestamp("2024-06-01T00:00:00");
-
-    const idLabel = screen.getByText(/^id:$/i, { selector: "strong" });
-    const detailsLine = idLabel.closest("p");
-    await screen.findByText("2");
-    expect(detailsLine).toHaveTextContent(/id:\s*123/i);
-    expect(detailsLine).toHaveTextContent(/start date:\s*2024-06-01/i);
-    expect(detailsLine).toHaveTextContent(/name:\s*Test Commons 123/i);
-    expect(detailsLine).not.toHaveTextContent(/id:\s*7/i);
-    expect(screen.getByText("2")).toBeInTheDocument();
-    expect(screen.getByText("9")).toBeInTheDocument();
-    expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
-    const hiddenLabel = screen.getByText(/^hidden:$/i, { selector: "strong" });
-    expect(hiddenLabel.closest("p").querySelector("i")).toHaveClass(
-      "fa-solid",
-      "fa-eye-slash",
-    );
-  });
-
-  test("updates stats when dashboard id changes", async () => {
+  test("updates dashboard data when dashboard id changes", async () => {
     function DashboardHarness() {
       const navigate = useNavigate();
       return (
@@ -245,13 +208,27 @@ describe("AdminDashboardPage", () => {
     expect(await screen.findByText("4")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /switch dashboard/i }));
     expect(await screen.findByText("2")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /test commons 123/i })).toBeInTheDocument();
   });
 
-  test("shows fallback days active when startingDate is missing", async () => {
+  test("shows fallback values when startingDate and stats are missing", async () => {
     renderWithRoute("/admin/dashboard/55");
 
     expect(await screen.findByText("6")).toBeInTheDocument();
     expect(screen.getByText("8")).toBeInTheDocument();
-    expect(screen.getAllByText("--")).toHaveLength(4);
+
+    const daysActiveCard = screen
+      .getByText(/days active/i)
+      .closest(".card")
+      .querySelector(".card-text");
+    expect(daysActiveCard).toHaveTextContent("--");
+
+    const startDateCard = screen
+      .getByText(/start date/i)
+      .closest(".card")
+      .querySelector(".card-text");
+    expect(startDateCard).toHaveTextContent("--");
+
+    expect(screen.getAllByText("--").length).toBeGreaterThanOrEqual(6);
   });
 });
