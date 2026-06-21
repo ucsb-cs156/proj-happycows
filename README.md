@@ -159,3 +159,23 @@ To run full mutation test coverage, as usual, use:
 ```
 mvn pitest:mutationCoverage
 ```
+
+# Setting Node Version with NVM
+
+The `frontend/nvm-pj.sh` script reads the required Node version from `frontend/package.json` and uses NVM to switch to it.
+
+Since the script modifies your current shell environment, you **must** source it rather than execute it directly:
+
+```
+cd frontend
+source ./nvm-pj.sh
+```
+
+or equivalently:
+
+```
+cd frontend
+. ./nvm-pj.sh
+```
+
+Running it as `./nvm-pj.sh` (without `source`) will **not** work because the Node version change would only apply to the subshell, not your current terminal session.
