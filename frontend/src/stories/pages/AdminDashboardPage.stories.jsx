@@ -27,5 +27,10 @@ Default.parameters = {
         status: 200,
       });
     }),
+    http.get("/api/commons/numcows", () => {
+      return HttpResponse.json([1, 2, 3, 5, 10, 15, 20], {
+        status: 200,
+      });
+    }),
   ],
 };

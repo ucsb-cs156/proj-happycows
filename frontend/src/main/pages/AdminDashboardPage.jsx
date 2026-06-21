@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
+import CountHistogram from "main/components/Utils/CountHistogram";
 import {
   fieldOrBlank,
   getCommonsId,
@@ -58,6 +59,16 @@ export default function AdminDashboardPage() {
   const standardDeviationCowsPerFarmer = numericFieldOrBlank(
     commonsPlus,
     "standardDeviationCowsPerFarmer",
+  );
+
+  const { data: numCowsData } = useBackend(
+    [`/api/commons/numcows?commonsId=${id}`],
+    {
+      url: "/api/commons/numcows",
+      params: { commonsId: id },
+    },
+    [],
+    { enabled: !!id },
   );
 
   return (
@@ -170,7 +181,12 @@ export default function AdminDashboardPage() {
 
       <Card className="mb-3">
         <Card.Body>
-          <p>Histogram / distribution of cows per farmer will go here</p>
+          <CountHistogram
+            data={numCowsData}
+            s={10}
+            xLabel="Cows"
+            yLabel="Farmers"
+          />
         </Card.Body>
       </Card>
 
