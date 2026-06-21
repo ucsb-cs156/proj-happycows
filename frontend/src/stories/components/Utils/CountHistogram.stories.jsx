@@ -63,3 +63,27 @@ HighlySkewed.args = {
   data: [0, 1, 2, 3, 4, 5, 100],
   s: 10,
 };
+
+export const CustomXLabel = Template.bind({});
+CustomXLabel.args = {
+  data: [5, 15, 25, 35, 45],
+  s: 10,
+  xLabel: "Cow Health Score",
+};
+
+export const CustomYLabel = Template.bind({});
+CustomYLabel.args = {
+  data: [1, 5, 10, 15, 20, 25, 30],
+  s: 10,
+  yLabel: "Number of Farmers",
+};
+
+export const CustomBothLabels = Template.bind({});
+CustomBothLabels.args = {
+  data: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25, 28, 30, 35, 40, 45, 50],
+  s: 5,
+  width: 800,
+  height: 500,
+  xLabel: "Wealth (in coins)",
+  yLabel: "Frequency",
+};

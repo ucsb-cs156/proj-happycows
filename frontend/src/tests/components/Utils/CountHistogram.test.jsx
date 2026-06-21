@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import CountHistogram from "main/components/Utils/CountHistogram";
+import { calculateBarHeight } from "main/components/Utils/countHistogramUtils";
 
 describe("CountHistogram component", () => {
   test("renders empty state when data is empty", () => {
@@ -102,5 +103,84 @@ describe("CountHistogram component", () => {
     const data = [0, 0, 0];
     render(<CountHistogram data={data} s={10} />);
     expect(screen.getByTestId("histogram-bar-0")).toBeInTheDocument();
+  });
+
+  test("uses default x-axis label", () => {
+    const data = [1, 5, 10];
+    render(<CountHistogram data={data} s={5} />);
+    expect(screen.getByText("Value Range")).toBeInTheDocument();
+  });
+
+  test("uses default y-axis label", () => {
+    const data = [1, 5, 10];
+    render(<CountHistogram data={data} s={5} />);
+    expect(screen.getByText("Count")).toBeInTheDocument();
+  });
+
+  test("uses custom x-axis label", () => {
+    const data = [1, 5, 10];
+    render(<CountHistogram data={data} s={5} xLabel="Cow Health" />);
+    expect(screen.getByText("Cow Health")).toBeInTheDocument();
+    expect(screen.queryByText("Value Range")).not.toBeInTheDocument();
+  });
+
+  test("uses custom y-axis label", () => {
+    const data = [1, 5, 10];
+    render(<CountHistogram data={data} s={5} yLabel="Number of Farmers" />);
+    expect(screen.getByText("Number of Farmers")).toBeInTheDocument();
+    expect(screen.queryByText("Count")).not.toBeInTheDocument();
+  });
+
+  test("uses custom both x and y axis labels", () => {
+    const data = [1, 5, 10, 15, 20];
+    render(
+      <CountHistogram data={data} s={5} xLabel="Wealth" yLabel="Frequency" />,
+    );
+    expect(screen.getByText("Wealth")).toBeInTheDocument();
+    expect(screen.getByText("Frequency")).toBeInTheDocument();
+    expect(screen.queryByText("Value Range")).not.toBeInTheDocument();
+    expect(screen.queryByText("Count")).not.toBeInTheDocument();
+  });
+
+  test("handles all negative values (maxCount is zero)", () => {
+    const data = [-5, -3, -1];
+    const { container } = render(<CountHistogram data={data} s={10} />);
+    // SVG should still render without crashing
+    expect(screen.getByTestId("count-histogram")).toBeInTheDocument();
+    // Y-axis tick groups should not be rendered when maxCount is 0 or negative
+    const tickGroups = container.querySelectorAll("g[key^='tick-']");
+    expect(tickGroups.length).toBe(0);
+  });
+});
+
+describe("calculateBarHeight", () => {
+  test("returns 0 when maxCount is 0", () => {
+    const height = calculateBarHeight(5, 0, 100);
+    expect(height).toBe(0);
+  });
+
+  test("returns 0 when count is 0 and maxCount is positive", () => {
+    const height = calculateBarHeight(0, 10, 100);
+    expect(height).toBe(0);
+  });
+
+  test("returns full chartHeight when count equals maxCount", () => {
+    const height = calculateBarHeight(10, 10, 100);
+    expect(height).toBe(100);
+  });
+
+  test("returns half chartHeight when count is half of maxCount", () => {
+    const height = calculateBarHeight(5, 10, 100);
+    expect(height).toBe(50);
+  });
+
+  test("scales correctly with different chartHeights", () => {
+    const height = calculateBarHeight(5, 10, 200);
+    expect(height).toBe(100);
+  });
+
+  test("returns 0 when maxCount is negative", () => {
+    const height = calculateBarHeight(5, -1, 100);
+    expect(height).toBe(0);
   });
 });

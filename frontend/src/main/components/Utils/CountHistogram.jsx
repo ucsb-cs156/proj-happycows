@@ -1,3 +1,5 @@
+import { calculateBarHeight } from "./countHistogramUtils";
+
 export default function CountHistogram({
   data,
   s,
@@ -75,7 +77,7 @@ export default function CountHistogram({
 
       {/* Bars */}
       {bins.map((count, i) => {
-        const barHeight = maxCount > 0 ? (count / maxCount) * chartHeight : 0;
+        const barHeight = calculateBarHeight(count, maxCount, chartHeight);
         const x = margin.left + i * barWidth;
         const y = height - margin.bottom - barHeight;
 
