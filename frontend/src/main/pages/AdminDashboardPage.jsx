@@ -3,7 +3,15 @@ import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
-import { daysSinceTimestamp, timestampToDate } from "main/utils/dateUtils";
+import {
+  fieldOrBlank,
+  getCommonsId,
+  getCommonsName,
+  getIsHidden,
+  getStartingDate,
+  getDaysActive,
+  numericFieldOrBlank,
+} from "main/utils/dashboardUtils";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
@@ -21,36 +29,35 @@ export default function AdminDashboardPage() {
     },
   );
 
-  const totalFarmers = commonsPlus?.totalUsers ?? "--";
-  const totalCows = commonsPlus?.totalCows ?? "--";
-  const daysActive = commonsPlus?.commons?.startingDate
-    ? daysSinceTimestamp(commonsPlus.commons.startingDate)
-    : "--";
-  const commonsId = commonsPlus?.commons?.id ?? id ?? "--";
-  const commonsStartDate = commonsPlus?.commons?.startingDate
-    ? timestampToDate(commonsPlus.commons.startingDate)
-    : "--";
-  const commonsName = commonsPlus?.commons?.name ?? "--";
-  const isHidden = commonsPlus?.commons?.hidden === true;
-  const formatOneDecimal = (value) => {
-    if (value === null || value === undefined) return "--";
-    const numericValue = Number(value);
-    return Number.isNaN(numericValue) ? "--" : numericValue.toFixed(1);
-  };
-  const averageCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.averageCowsPerFarmer,
+  const totalFarmers = fieldOrBlank(commonsPlus, "totalUsers");
+  const totalCows = fieldOrBlank(commonsPlus, "totalCows");
+  const commonsId = getCommonsId(commonsPlus, id);
+
+  const commonsStartDate = getStartingDate(commonsPlus);
+  const daysActive = getDaysActive(commonsPlus);
+
+  const commonsName = getCommonsName(commonsPlus);
+  const isHidden = getIsHidden(commonsPlus);
+
+  const averageCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "averageCowsPerFarmer",
   );
-  const medianCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.medianCowsPerFarmer,
+  const medianCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "medianCowsPerFarmer",
   );
-  const minimumCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.minimumCowsPerFarmer,
+  const minimumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "minimumCowsPerFarmer",
   );
-  const maximumCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.maximumCowsPerFarmer,
+  const maximumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "maximumCowsPerFarmer",
   );
-  const standardDeviationCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.standardDeviationCowsPerFarmer,
+  const standardDeviationCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "standardDeviationCowsPerFarmer",
   );
 
   return (
@@ -58,7 +65,7 @@ export default function AdminDashboardPage() {
       <h1 className="mb-1">
         {isHidden && (
           <>
-            <i className="fa-solid fa-eye-slash"></i>{" "}
+            <i className="fa-solid fa-eye-slash pe-5"></i>
           </>
         )}
         {commonsName}
