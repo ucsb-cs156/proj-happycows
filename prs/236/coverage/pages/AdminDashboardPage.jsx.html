@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>124/124</span>
+                <span class='fraction'>120/120</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>28/28</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>124/124</span>
+                <span class='fraction'>120/120</span>
             </div>
         
             
@@ -255,13 +255,28 @@
 <a name='L190'></a><a href='#L190'>190</a>
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -281,21 +296,6 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">80x</span>
-<span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-yes">80x</span>
-<span class="cline-any cline-yes">80x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
@@ -305,7 +305,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -452,7 +466,15 @@ import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
-import { daysSinceTimestamp, timestampToDate } from "main/utils/dateUtils";
+import {
+  fieldOrBlank,
+  getCommonsId,
+  getCommonsName,
+  getIsHidden,
+  getStartingDate,
+  getDaysActive,
+  numericFieldOrBlank,
+} from "main/utils/dashboardUtils";
 &nbsp;
 export default function AdminDashboardPage() {
   const { id } = useParams();
@@ -470,36 +492,35 @@ export default function AdminDashboardPage() {
     },
   );
 &nbsp;
-  const totalFarmers = commonsPlus?.totalUsers ?? "--";
-  const totalCows = commonsPlus?.totalCows ?? "--";
-  const daysActive = commonsPlus?.commons?.startingDate
-    ? daysSinceTimestamp(commonsPlus.commons.startingDate)
-    : "--";
-  const commonsId = commonsPlus?.commons?.id ?? id ?? "--";
-  const commonsStartDate = commonsPlus?.commons?.startingDate
-    ? timestampToDate(commonsPlus.commons.startingDate)
-    : "--";
-  const commonsName = commonsPlus?.commons?.name ?? "--";
-  const isHidden = commonsPlus?.commons?.hidden === true;
-  const formatOneDecimal = (value) =&gt; {
-    if (value === null || value === undefined) return "--";
-    const numericValue = Number(value);
-    return Number.isNaN(numericValue) ? "--" : numericValue.toFixed(1);
-  };
-  const averageCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.averageCowsPerFarmer,
+  const totalFarmers = fieldOrBlank(commonsPlus, "totalUsers");
+  const totalCows = fieldOrBlank(commonsPlus, "totalCows");
+  const commonsId = getCommonsId(commonsPlus, id);
+&nbsp;
+  const commonsStartDate = getStartingDate(commonsPlus);
+  const daysActive = getDaysActive(commonsPlus);
+&nbsp;
+  const commonsName = getCommonsName(commonsPlus);
+  const isHidden = getIsHidden(commonsPlus);
+&nbsp;
+  const averageCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "averageCowsPerFarmer",
   );
-  const medianCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.medianCowsPerFarmer,
+  const medianCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "medianCowsPerFarmer",
   );
-  const minimumCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.minimumCowsPerFarmer,
+  const minimumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "minimumCowsPerFarmer",
   );
-  const maximumCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.maximumCowsPerFarmer,
+  const maximumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "maximumCowsPerFarmer",
   );
-  const standardDeviationCowsPerFarmer = formatOneDecimal(
-    commonsPlus?.standardDeviationCowsPerFarmer,
+  const standardDeviationCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "standardDeviationCowsPerFarmer",
   );
 &nbsp;
   return (
@@ -507,7 +528,7 @@ export default function AdminDashboardPage() {
       &lt;h1 className="mb-1"&gt;
         {isHidden &amp;&amp; (
           &lt;&gt;
-            &lt;i className="fa-solid fa-eye-slash"&gt;&lt;/i&gt;{" "}
+            &lt;i className="fa-solid fa-eye-slash pe-5"&gt;&lt;/i&gt;
           &lt;/&gt;
         )}
         {commonsName}
@@ -646,7 +667,7 @@ export default function AdminDashboardPage() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-21T05:57:10.851Z
+                at 2026-06-21T19:07:38.138Z
             </div>
         <script src="../prettify.js"></script>
         <script>
