@@ -113,12 +113,12 @@ export default function AdminDashboardPage() {
         </Col>
       </Row>
 
-      <h3 className="mt-4">Farmer Cow Distribution</h3>
+      <h3 className="mt-4">Cows Per Farmer</h3>
       <Row>
         <Col>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Average Number of Cows per Farmer</Card.Title>
+              <Card.Title>Average</Card.Title>
               <Card.Text>{averageCowsPerFarmer}</Card.Text>
             </Card.Body>
           </Card>
@@ -127,7 +127,7 @@ export default function AdminDashboardPage() {
         <Col>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Median Number of Cows per Farmer</Card.Title>
+              <Card.Title>Median</Card.Title>
               <Card.Text>{medianCowsPerFarmer}</Card.Text>
             </Card.Body>
           </Card>
@@ -136,7 +136,7 @@ export default function AdminDashboardPage() {
         <Col>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Minimum Number of Cows per Farmer</Card.Title>
+              <Card.Title>Min</Card.Title>
               <Card.Text>{minimumCowsPerFarmer}</Card.Text>
             </Card.Body>
           </Card>
@@ -145,7 +145,7 @@ export default function AdminDashboardPage() {
         <Col>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>Maximum Number of Cows per Farmer</Card.Title>
+              <Card.Title>Max</Card.Title>
               <Card.Text>{maximumCowsPerFarmer}</Card.Text>
             </Card.Body>
           </Card>
@@ -154,9 +154,7 @@ export default function AdminDashboardPage() {
         <Col>
           <Card className="mb-3">
             <Card.Body>
-              <Card.Title>
-                Standard Deviation of Number of Cows per Farmer
-              </Card.Title>
+              <Card.Title>StdDev</Card.Title>
               <Card.Text>{standardDeviationCowsPerFarmer}</Card.Text>
             </Card.Body>
           </Card>

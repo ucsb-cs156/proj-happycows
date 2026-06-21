@@ -180,20 +180,13 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("2025-01-01")).toBeInTheDocument();
 
     expect(
-      screen.getByText(/average number of cows per farmer/i),
+      screen.getByRole("heading", { name: /cows per farmer/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/median number of cows per farmer/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/minimum number of cows per farmer/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/maximum number of cows per farmer/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/standard deviation of number of cows per farmer/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^average$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^median$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^min$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^max$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^stddev$/i)).toBeInTheDocument();
     expect(screen.getByText("2.8")).toBeInTheDocument();
     expect(screen.getByText("2.5")).toBeInTheDocument();
     expect(screen.getByText("1.0")).toBeInTheDocument();
@@ -312,13 +305,11 @@ describe("AdminDashboardPage", () => {
     expect(
       await screen.findByRole("heading", { name: /test commons 88/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/average number of cows per farmer/i).closest(".card"),
-    ).toHaveTextContent("--");
-    expect(
-      screen
-        .getByText(/standard deviation of number of cows per farmer/i)
-        .closest(".card"),
-    ).toHaveTextContent("1.2");
+    expect(screen.getByText(/^average$/i).closest(".card")).toHaveTextContent(
+      "--",
+    );
+    expect(screen.getByText(/^stddev$/i).closest(".card")).toHaveTextContent(
+      "1.2",
+    );
   });
 });
