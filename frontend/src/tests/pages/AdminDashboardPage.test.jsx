@@ -206,6 +206,9 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("5.0")).toBeInTheDocument();
     expect(screen.getByText("1.5")).toBeInTheDocument();
     expect(screen.getByTestId("count-histogram")).toBeInTheDocument();
+    expect(screen.getByText("Bin Size")).toBeInTheDocument();
+    const binSizeInput = screen.getByTestId("bin-size-selector");
+    expect(binSizeInput).toHaveValue(10);
   });
 
   test("renders hidden icon in title only when commons is hidden", async () => {
@@ -326,5 +329,16 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText(/^stddev$/i).closest(".card")).toHaveTextContent(
       "1.2",
     );
+  });
+
+  test("BinSizeSelector allows user to change histogram bin size", async () => {
+    renderWithRoute("/admin/dashboard/7");
+
+    expect(await screen.findByTestId("count-histogram")).toBeInTheDocument();
+    const binSizeInput = screen.getByTestId("bin-size-selector");
+    expect(binSizeInput).toHaveValue(10);
+
+    fireEvent.change(binSizeInput, { target: { value: "5" } });
+    expect(binSizeInput).toHaveValue(5);
   });
 });

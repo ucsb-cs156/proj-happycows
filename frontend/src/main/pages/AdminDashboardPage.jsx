@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
 import CountHistogram from "main/components/Utils/CountHistogram";
+import BinSizeSelector from "main/components/Utils/BinSizeSelector";
 import {
   fieldOrBlank,
   getCommonsId,
@@ -16,6 +17,7 @@ import {
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
+  const [binSize, setBinSize] = useState(10);
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
@@ -183,10 +185,11 @@ export default function AdminDashboardPage() {
         <Card.Body>
           <CountHistogram
             data={numCowsData}
-            s={10}
+            s={binSize}
             xLabel="Cows"
             yLabel="Farmers"
           />
+          <BinSizeSelector value={binSize} onChange={setBinSize} />
         </Card.Body>
       </Card>
 
