@@ -18,6 +18,11 @@ public class CommonsPlus {
     private Commons commons;
     private Integer totalCows;
     private Integer totalUsers;
+    private Double averageCowsPerFarmer;
+    private Double medianCowsPerFarmer;
+    private Integer minimumCowsPerFarmer;
+    private Integer maximumCowsPerFarmer;
+    private Double standardDeviationCowsPerFarmer;
 
 
     @JsonGetter("effectiveCapacity")

@@ -1,89 +1,173 @@
 import React from "react";
 import { useParams } from "react-router";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
+import { useBackend } from "main/utils/useBackend";
+import {
+  fieldOrBlank,
+  getCommonsId,
+  getCommonsName,
+  getIsHidden,
+  getStartingDate,
+  getDaysActive,
+  numericFieldOrBlank,
+} from "main/utils/dashboardUtils";
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
+  const { data: commonsPlus } = useBackend(
+    [`/api/commons/plus?id=${id}`],
+    {
+      url: "/api/commons/plus",
+      params: {
+        id,
+      },
+    },
+    null,
+    {
+      enabled: !!id,
+    },
+  );
+
+  const totalFarmers = fieldOrBlank(commonsPlus, "totalUsers");
+  const totalCows = fieldOrBlank(commonsPlus, "totalCows");
+  const commonsId = getCommonsId(commonsPlus, id);
+
+  const commonsStartDate = getStartingDate(commonsPlus);
+  const daysActive = getDaysActive(commonsPlus);
+
+  const commonsName = getCommonsName(commonsPlus);
+  const isHidden = getIsHidden(commonsPlus);
+
+  const averageCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "averageCowsPerFarmer",
+  );
+  const medianCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "medianCowsPerFarmer",
+  );
+  const minimumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "minimumCowsPerFarmer",
+  );
+  const maximumCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "maximumCowsPerFarmer",
+  );
+  const standardDeviationCowsPerFarmer = numericFieldOrBlank(
+    commonsPlus,
+    "standardDeviationCowsPerFarmer",
+  );
 
   return (
     <BasicLayout>
-      <h1 className="mb-4">Dashboard</h1>
-
-      <p>
-        <strong>Commons ID:</strong> {id}
-      </p>
+      <h1 className="mb-1">
+        {isHidden && (
+          <>
+            <i className="fa-solid fa-eye-slash pe-5"></i>
+          </>
+        )}
+        {commonsName}
+      </h1>
+      <h3 className="mb-4">Dashboard</h3>
 
       <h3 className="mt-4">Overview</h3>
       <Row>
-        <Col md={3}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Farmers</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{totalFarmers}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Total Cows</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{totalCows}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
-        <Col md={3}>
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Title>Commons Balance</Card.Title>
-              <Card.Text>--</Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={3}>
+        <Col>
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Days Active</Card.Title>
-              <Card.Text>--</Card.Text>
+              <Card.Text>{daysActive}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>ID</Card.Title>
+              <Card.Text>{commonsId}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Start Date</Card.Title>
+              <Card.Text>{commonsStartDate}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
       </Row>
 
-      <h3 className="mt-4">Commons Details</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>
-            <strong>Name:</strong> --
-          </p>
-          <p>
-            <strong>Status:</strong> --
-          </p>
-          <p>
-            <strong>Start Date:</strong> --
-          </p>
-        </Card.Body>
-      </Card>
+      <h3 className="mt-4">Cows Per Farmer</h3>
+      <Row>
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Average</Card.Title>
+              <Card.Text>{averageCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
 
-      <h3 className="mt-4">Participation Metrics</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>
-            <strong>Active Farmers:</strong> --
-          </p>
-          <p>
-            <strong>Inactive Farmers:</strong> --
-          </p>
-          <p>
-            <strong>Avg Cows per Farmer:</strong> --
-          </p>
-        </Card.Body>
-      </Card>
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Median</Card.Title>
+              <Card.Text>{medianCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
 
-      <h3 className="mt-4">Farmer Cow Distribution</h3>
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Min</Card.Title>
+              <Card.Text>{minimumCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Max</Card.Title>
+              <Card.Text>{maximumCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>StdDev</Card.Title>
+              <Card.Text>{standardDeviationCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
       <Card className="mb-3">
         <Card.Body>
           <p>Histogram / distribution of cows per farmer will go here</p>
@@ -110,13 +194,6 @@ export default function AdminDashboardPage() {
           </Card>
         </Col>
       </Row>
-
-      <h3 className="mt-4">Additional Insights</h3>
-      <Card className="mb-3">
-        <Card.Body>
-          <p>Future analytics and breakdowns will be added here.</p>
-        </Card.Body>
-      </Card>
     </BasicLayout>
   );
 }
