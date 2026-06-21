@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
-happycows,edu.ucsb.cs156.happiercows.services,CommonsPlusBuilderService,0,65,0,0,0,13,0,4,0,4
+happycows,edu.ucsb.cs156.happiercows.services,CommonsPlusBuilderService,0,200,0,4,0,41,0,8,0,6
 happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,152,0,2,0,39,0,6,0,5
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoServiceImpl,0,64,0,4,0,18,0,6,0,4
 happycows,edu.ucsb.cs156.happiercows.services,CommonStatsService,0,56,0,0,0,14,0,4,0,4

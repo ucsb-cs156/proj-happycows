@@ -18,11 +18,16 @@ public class CommonsPlus {
     private Commons commons;
     private Integer totalCows;
     private Integer totalUsers;
+    private Double averageCowsPerFarmer;
+    private Double medianCowsPerFarmer;
+    private Integer minimumCowsPerFarmer;
+    private Integer maximumCowsPerFarmer;
+    private Double standardDeviationCowsPerFarmer;
 
 
     @JsonGetter(&quot;effectiveCapacity&quot;)
     public int getEffectiveCapacity() {
-<span class="fc" id="L25">        return Math.max(commons.getCapacityPerUser() * totalUsers, commons.getCarryingCapacity());</span>
+<span class="fc" id="L30">        return Math.max(commons.getCapacityPerUser() * totalUsers, commons.getCarryingCapacity());</span>
     }
 
 
