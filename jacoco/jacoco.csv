@@ -52,7 +52,7 @@ happycows,edu.ucsb.cs156.happiercows.entities,Commons,0,16,0,4,0,4,0,3,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,275,0,8,0,50,0,16,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,CourseController,0,103,0,0,0,20,0,10,0,10
-happycows,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,605,0,38,0,139,0,37,0,18
+happycows,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,624,0,38,0,144,0,38,0,19
 happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,0,282,0,22,0,59,0,22,0,11
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,146,0,8,0,30,0,16,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,136,0,0,0,22,0,7,0,7

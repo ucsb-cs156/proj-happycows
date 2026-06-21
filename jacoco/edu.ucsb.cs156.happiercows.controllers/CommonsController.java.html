@@ -25,14 +25,18 @@ import org.springframework.web.bind.annotation.*;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
-<span class="fc" id="L31">@Slf4j</span>
+<span class="fc" id="L35">@Slf4j</span>
 @Tag(name = &quot;Commons&quot;)
 @RequestMapping(&quot;/api/commons&quot;)
 @RestController
-<span class="fc" id="L35">public class CommonsController extends ApiController {</span>
+<span class="fc" id="L39">public class CommonsController extends ApiController {</span>
     @Autowired
     private CommonsRepository commonsRepository;
 
@@ -72,44 +76,44 @@ import java.util.Optional;
     @Operation(summary = &quot;Get default common values&quot;)
     @GetMapping(&quot;/defaults&quot;)
     public ResponseEntity&lt;Commons&gt; getDefaultCommons() throws JsonProcessingException {
-<span class="fc" id="L75">        log.info(&quot;getDefaultCommons()...&quot;);</span>
+<span class="fc" id="L79">        log.info(&quot;getDefaultCommons()...&quot;);</span>
 
-<span class="fc" id="L77">        Commons defaultCommons = Commons.builder()</span>
-<span class="fc" id="L78">                .startingBalance(defaultStartingBalance)</span>
-<span class="fc" id="L79">                .cowPrice(defaultCowPrice)</span>
-<span class="fc" id="L80">                .milkPrice(defaultMilkPrice)</span>
-<span class="fc" id="L81">                .degradationRate(defaultDegradationRate)</span>
-<span class="fc" id="L82">                .carryingCapacity(defaultCarryingCapacity)</span>
-<span class="fc" id="L83">                .capacityPerUser(defaultCapacityPerUser)</span>
-<span class="fc" id="L84">                .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultAboveCapacityHealthUpdateStrategy))</span>
-<span class="fc" id="L85">                .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultBelowCapacityHealthUpdateStrategy))</span>
-<span class="fc" id="L86">                .hidden(false)</span>
-<span class="fc" id="L87">                .build();</span>
+<span class="fc" id="L81">        Commons defaultCommons = Commons.builder()</span>
+<span class="fc" id="L82">                .startingBalance(defaultStartingBalance)</span>
+<span class="fc" id="L83">                .cowPrice(defaultCowPrice)</span>
+<span class="fc" id="L84">                .milkPrice(defaultMilkPrice)</span>
+<span class="fc" id="L85">                .degradationRate(defaultDegradationRate)</span>
+<span class="fc" id="L86">                .carryingCapacity(defaultCarryingCapacity)</span>
+<span class="fc" id="L87">                .capacityPerUser(defaultCapacityPerUser)</span>
+<span class="fc" id="L88">                .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultAboveCapacityHealthUpdateStrategy))</span>
+<span class="fc" id="L89">                .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(defaultBelowCapacityHealthUpdateStrategy))</span>
+<span class="fc" id="L90">                .hidden(false)</span>
+<span class="fc" id="L91">                .build();</span>
 
-<span class="fc" id="L89">        return ResponseEntity.ok().body(defaultCommons);</span>
+<span class="fc" id="L93">        return ResponseEntity.ok().body(defaultCommons);</span>
     }
 
     @Operation(summary = &quot;Get a list of all commons&quot;)
     @GetMapping(&quot;/all&quot;)
     public ResponseEntity&lt;String&gt; getCommons() throws JsonProcessingException {
-<span class="fc" id="L95">        log.info(&quot;getCommons()...&quot;);</span>
-<span class="fc" id="L96">        Iterable&lt;Commons&gt; commons = commonsRepository.findAll();</span>
-<span class="fc" id="L97">        String body = mapper.writeValueAsString(commons);</span>
-<span class="fc" id="L98">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L99">        log.info(&quot;getCommons()...&quot;);</span>
+<span class="fc" id="L100">        Iterable&lt;Commons&gt; commons = commonsRepository.findAll();</span>
+<span class="fc" id="L101">        String body = mapper.writeValueAsString(commons);</span>
+<span class="fc" id="L102">        return ResponseEntity.ok().body(body);</span>
     }
 
     @Operation(summary = &quot;Get a list of all commons and number of cows/users&quot;)
     @GetMapping(&quot;/allplus&quot;)
     public ResponseEntity&lt;String&gt; getCommonsPlus() throws JsonProcessingException {
-<span class="fc" id="L104">        log.info(&quot;getCommonsPlus()...&quot;);</span>
-<span class="fc" id="L105">        Iterable&lt;Commons&gt; commonsListIter = commonsRepository.findAll();</span>
+<span class="fc" id="L108">        log.info(&quot;getCommonsPlus()...&quot;);</span>
+<span class="fc" id="L109">        Iterable&lt;Commons&gt; commonsListIter = commonsRepository.findAll();</span>
 
         // convert Iterable to List for the purposes of using a Java Stream &amp; lambda
         // below
-<span class="fc" id="L109">        Iterable&lt;CommonsPlus&gt; commonsPlusList = commonsPlusBuilderService.convertToCommonsPlus(commonsListIter);</span>
+<span class="fc" id="L113">        Iterable&lt;CommonsPlus&gt; commonsPlusList = commonsPlusBuilderService.convertToCommonsPlus(commonsListIter);</span>
 
-<span class="fc" id="L111">        String body = mapper.writeValueAsString(commonsPlusList);</span>
-<span class="fc" id="L112">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L115">        String body = mapper.writeValueAsString(commonsPlusList);</span>
+<span class="fc" id="L116">        return ResponseEntity.ok().body(body);</span>
     }
 
     @Operation(summary = &quot;Get the number of cows/users in a commons&quot;)
@@ -117,10 +121,10 @@ import java.util.Optional;
     @GetMapping(&quot;/plus&quot;)
     public CommonsPlus getCommonsPlusById(
             @Parameter(name=&quot;id&quot;) @RequestParam long id) throws JsonProcessingException {
-<span class="fc" id="L120">                CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsRepository.findById(id)</span>
-<span class="fc" id="L121">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id)));</span>
+<span class="fc" id="L124">                CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsRepository.findById(id)</span>
+<span class="fc" id="L125">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id)));</span>
 
-<span class="fc" id="L123">        return commonsPlus;</span>
+<span class="fc" id="L127">        return commonsPlus;</span>
     }
 
     @Operation(summary = &quot;Update a commons&quot;)
@@ -130,66 +134,66 @@ import java.util.Optional;
             @Parameter(name=&quot;id&quot;) @RequestParam long id,
             @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
     ) {
-<span class="fc" id="L133">        Optional&lt;Commons&gt; existing = commonsRepository.findById(id);</span>
+<span class="fc" id="L137">        Optional&lt;Commons&gt; existing = commonsRepository.findById(id);</span>
 
         Commons updated;
         HttpStatus status;
 
-<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (existing.isPresent()) {</span>
-<span class="fc" id="L139">            updated = existing.get();</span>
-<span class="fc" id="L140">            status = HttpStatus.NO_CONTENT;</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (existing.isPresent()) {</span>
+<span class="fc" id="L143">            updated = existing.get();</span>
+<span class="fc" id="L144">            status = HttpStatus.NO_CONTENT;</span>
         } else {
-<span class="fc" id="L142">            updated = new Commons();</span>
-<span class="fc" id="L143">            status = HttpStatus.CREATED;</span>
+<span class="fc" id="L146">            updated = new Commons();</span>
+<span class="fc" id="L147">            status = HttpStatus.CREATED;</span>
         }
 
-<span class="fc" id="L146">        updated.setName(params.getName());</span>
-<span class="fc" id="L147">        updated.setCowPrice(params.getCowPrice());</span>
-<span class="fc" id="L148">        updated.setMilkPrice(params.getMilkPrice());</span>
-<span class="fc" id="L149">        updated.setStartingBalance(params.getStartingBalance());</span>
-<span class="fc" id="L150">        updated.setStartingDate(params.getStartingDate());</span>
-<span class="fc" id="L151">        updated.setLastDate(params.getLastDate());</span>
-<span class="fc" id="L152">        updated.setShowLeaderboard(params.getShowLeaderboard());</span>
-<span class="fc" id="L153">        updated.setShowChat(params.getShowChat());</span>
-<span class="fc" id="L154">        updated.setDegradationRate(params.getDegradationRate());</span>
-<span class="fc" id="L155">        updated.setCapacityPerUser(params.getCapacityPerUser());</span>
-<span class="fc" id="L156">        updated.setCarryingCapacity(params.getCarryingCapacity());</span>
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (params.getAboveCapacityHealthUpdateStrategy() != null) {</span>
-<span class="fc" id="L158">            updated.setAboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getAboveCapacityHealthUpdateStrategy()));</span>
+<span class="fc" id="L150">        updated.setName(params.getName());</span>
+<span class="fc" id="L151">        updated.setCowPrice(params.getCowPrice());</span>
+<span class="fc" id="L152">        updated.setMilkPrice(params.getMilkPrice());</span>
+<span class="fc" id="L153">        updated.setStartingBalance(params.getStartingBalance());</span>
+<span class="fc" id="L154">        updated.setStartingDate(params.getStartingDate());</span>
+<span class="fc" id="L155">        updated.setLastDate(params.getLastDate());</span>
+<span class="fc" id="L156">        updated.setShowLeaderboard(params.getShowLeaderboard());</span>
+<span class="fc" id="L157">        updated.setShowChat(params.getShowChat());</span>
+<span class="fc" id="L158">        updated.setDegradationRate(params.getDegradationRate());</span>
+<span class="fc" id="L159">        updated.setCapacityPerUser(params.getCapacityPerUser());</span>
+<span class="fc" id="L160">        updated.setCarryingCapacity(params.getCarryingCapacity());</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">        if (params.getAboveCapacityHealthUpdateStrategy() != null) {</span>
+<span class="fc" id="L162">            updated.setAboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getAboveCapacityHealthUpdateStrategy()));</span>
         }
-<span class="fc bfc" id="L160" title="All 2 branches covered.">        if (params.getBelowCapacityHealthUpdateStrategy() != null) {</span>
-<span class="fc" id="L161">            updated.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getBelowCapacityHealthUpdateStrategy()));</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        if (params.getBelowCapacityHealthUpdateStrategy() != null) {</span>
+<span class="fc" id="L165">            updated.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getBelowCapacityHealthUpdateStrategy()));</span>
         }
 
-<span class="fc bfc" id="L164" title="All 2 branches covered.">        if (params.getDegradationRate() &lt; 0) {</span>
-<span class="fc" id="L165">            throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (params.getDegradationRate() &lt; 0) {</span>
+<span class="fc" id="L169">            throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
         }
 
         // Reference: frontend/src/main/components/Commons/CommonsForm.js
-<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
-<span class="fc" id="L170">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
+<span class="fc" id="L174">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
         }
 
-<span class="fc bfc" id="L173" title="All 2 branches covered.">        if (params.getCowPrice() &lt; 0.01) {</span>
-<span class="fc" id="L174">            throw new IllegalArgumentException(&quot;Cow Price cannot be less than 0.01&quot;);</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (params.getCowPrice() &lt; 0.01) {</span>
+<span class="fc" id="L178">            throw new IllegalArgumentException(&quot;Cow Price cannot be less than 0.01&quot;);</span>
         }
 
-<span class="fc bfc" id="L177" title="All 2 branches covered.">        if (params.getMilkPrice() &lt; 0.01) {</span>
-<span class="fc" id="L178">            throw new IllegalArgumentException(&quot;Milk Price cannot be less than 0.01&quot;);</span>
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (params.getMilkPrice() &lt; 0.01) {</span>
+<span class="fc" id="L182">            throw new IllegalArgumentException(&quot;Milk Price cannot be less than 0.01&quot;);</span>
         }
 
-<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (params.getStartingBalance() &lt; 0) {</span>
-<span class="fc" id="L182">            throw new IllegalArgumentException(&quot;Starting Balance cannot be negative&quot;);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (params.getStartingBalance() &lt; 0) {</span>
+<span class="fc" id="L186">            throw new IllegalArgumentException(&quot;Starting Balance cannot be negative&quot;);</span>
         }
 
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (params.getCarryingCapacity() &lt; 1) {</span>
-<span class="fc" id="L186">            throw new IllegalArgumentException(&quot;Carrying Capacity cannot be less than 1&quot;);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        if (params.getCarryingCapacity() &lt; 1) {</span>
+<span class="fc" id="L190">            throw new IllegalArgumentException(&quot;Carrying Capacity cannot be less than 1&quot;);</span>
         }
 
-<span class="fc" id="L189">        updated.setHidden(params.isHidden());</span>
-<span class="fc" id="L190">        commonsRepository.save(updated);</span>
+<span class="fc" id="L193">        updated.setHidden(params.isHidden());</span>
+<span class="fc" id="L194">        commonsRepository.save(updated);</span>
 
-<span class="fc" id="L192">        return ResponseEntity.status(status).build();</span>
+<span class="fc" id="L196">        return ResponseEntity.status(status).build();</span>
     }
 
     @Operation(summary = &quot;Get a specific commons&quot;)
@@ -198,10 +202,10 @@ import java.util.Optional;
     public Commons getCommonsById(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
 
-<span class="fc" id="L201">        Commons commons = commonsRepository.findById(id)</span>
-<span class="fc" id="L202">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc" id="L205">        Commons commons = commonsRepository.findById(id)</span>
+<span class="fc" id="L206">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
 
-<span class="fc" id="L204">        return commons;</span>
+<span class="fc" id="L208">        return commons;</span>
     }
 
     @Operation(summary = &quot;Create a new commons&quot;)
@@ -211,60 +215,60 @@ import java.util.Optional;
             @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
     ) throws JsonProcessingException {
 
-<span class="fc" id="L214">        var builder = Commons.builder()</span>
-<span class="fc" id="L215">                .name(params.getName())</span>
-<span class="fc" id="L216">                .cowPrice(params.getCowPrice())</span>
-<span class="fc" id="L217">                .milkPrice(params.getMilkPrice())</span>
-<span class="fc" id="L218">                .startingBalance(params.getStartingBalance())</span>
-<span class="fc" id="L219">                .startingDate(params.getStartingDate())</span>
-<span class="fc" id="L220">                .lastDate(params.getLastDate())</span>
-<span class="fc" id="L221">                .degradationRate(params.getDegradationRate())</span>
-<span class="fc" id="L222">                .showLeaderboard(params.getShowLeaderboard())</span>
-<span class="fc" id="L223">                .showChat(params.getShowChat())</span>
-<span class="fc" id="L224">                .capacityPerUser(params.getCapacityPerUser())</span>
-<span class="fc" id="L225">                .carryingCapacity(params.getCarryingCapacity())</span>
-<span class="fc" id="L226">                .hidden(params.isHidden());</span>
+<span class="fc" id="L218">        var builder = Commons.builder()</span>
+<span class="fc" id="L219">                .name(params.getName())</span>
+<span class="fc" id="L220">                .cowPrice(params.getCowPrice())</span>
+<span class="fc" id="L221">                .milkPrice(params.getMilkPrice())</span>
+<span class="fc" id="L222">                .startingBalance(params.getStartingBalance())</span>
+<span class="fc" id="L223">                .startingDate(params.getStartingDate())</span>
+<span class="fc" id="L224">                .lastDate(params.getLastDate())</span>
+<span class="fc" id="L225">                .degradationRate(params.getDegradationRate())</span>
+<span class="fc" id="L226">                .showLeaderboard(params.getShowLeaderboard())</span>
+<span class="fc" id="L227">                .showChat(params.getShowChat())</span>
+<span class="fc" id="L228">                .capacityPerUser(params.getCapacityPerUser())</span>
+<span class="fc" id="L229">                .carryingCapacity(params.getCarryingCapacity())</span>
+<span class="fc" id="L230">                .hidden(params.isHidden());</span>
 
         // ok to set null values for these, so old backend still works
-<span class="fc bfc" id="L229" title="All 2 branches covered.">        if (params.getAboveCapacityHealthUpdateStrategy() != null) {</span>
-<span class="fc" id="L230">            builder.aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getAboveCapacityHealthUpdateStrategy()));</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (params.getAboveCapacityHealthUpdateStrategy() != null) {</span>
+<span class="fc" id="L234">            builder.aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getAboveCapacityHealthUpdateStrategy()));</span>
         }
-<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (params.getBelowCapacityHealthUpdateStrategy() != null) {</span>
-<span class="fc" id="L233">            builder.belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getBelowCapacityHealthUpdateStrategy()));</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (params.getBelowCapacityHealthUpdateStrategy() != null) {</span>
+<span class="fc" id="L237">            builder.belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getBelowCapacityHealthUpdateStrategy()));</span>
         }
 
-<span class="fc" id="L236">        Commons commons = builder.build();</span>
+<span class="fc" id="L240">        Commons commons = builder.build();</span>
 
         // Reference: frontend/src/main/components/Commons/CommonsForm.js
-<span class="fc bfc" id="L239" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
-<span class="fc" id="L240">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
+<span class="fc" id="L244">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
         }
 
-<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (params.getCowPrice() &lt; 0.01) {</span>
-<span class="fc" id="L244">            throw new IllegalArgumentException(&quot;Cow Price cannot be less than 0.01&quot;);</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">        if (params.getCowPrice() &lt; 0.01) {</span>
+<span class="fc" id="L248">            throw new IllegalArgumentException(&quot;Cow Price cannot be less than 0.01&quot;);</span>
         }
 
-<span class="fc bfc" id="L247" title="All 2 branches covered.">        if (params.getMilkPrice() &lt; 0.01) {</span>
-<span class="fc" id="L248">            throw new IllegalArgumentException(&quot;Milk Price cannot be less than 0.01&quot;);</span>
+<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (params.getMilkPrice() &lt; 0.01) {</span>
+<span class="fc" id="L252">            throw new IllegalArgumentException(&quot;Milk Price cannot be less than 0.01&quot;);</span>
         }
 
-<span class="fc bfc" id="L251" title="All 2 branches covered.">        if (params.getStartingBalance() &lt; 0) {</span>
-<span class="fc" id="L252">            throw new IllegalArgumentException(&quot;Starting Balance cannot be negative&quot;);</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">        if (params.getStartingBalance() &lt; 0) {</span>
+<span class="fc" id="L256">            throw new IllegalArgumentException(&quot;Starting Balance cannot be negative&quot;);</span>
         }
 
         // throw exception for degradation rate
-<span class="fc bfc" id="L256" title="All 2 branches covered.">        if (params.getDegradationRate() &lt; 0) {</span>
-<span class="fc" id="L257">            throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (params.getDegradationRate() &lt; 0) {</span>
+<span class="fc" id="L261">            throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
         }
 
-<span class="fc bfc" id="L260" title="All 2 branches covered.">        if (params.getCarryingCapacity() &lt; 1) {</span>
-<span class="fc" id="L261">            throw new IllegalArgumentException(&quot;Carrying Capacity cannot be less than 1&quot;);</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">        if (params.getCarryingCapacity() &lt; 1) {</span>
+<span class="fc" id="L265">            throw new IllegalArgumentException(&quot;Carrying Capacity cannot be less than 1&quot;);</span>
         }
 
-<span class="fc" id="L264">        Commons saved = commonsRepository.save(commons);</span>
-<span class="fc" id="L265">        String body = mapper.writeValueAsString(saved);</span>
+<span class="fc" id="L268">        Commons saved = commonsRepository.save(commons);</span>
+<span class="fc" id="L269">        String body = mapper.writeValueAsString(saved);</span>
 
-<span class="fc" id="L267">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L271">        return ResponseEntity.ok().body(body);</span>
     }
 
 
@@ -272,9 +276,9 @@ import java.util.Optional;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all-health-update-strategies&quot;)
     public ResponseEntity&lt;String&gt; listCowHealthUpdateStrategies() throws JsonProcessingException {
-<span class="fc" id="L275">        var result = HealthUpdateStrategyList.create();</span>
-<span class="fc" id="L276">        String body = mapper.writeValueAsString(result);</span>
-<span class="fc" id="L277">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L279">        var result = HealthUpdateStrategyList.create();</span>
+<span class="fc" id="L280">        String body = mapper.writeValueAsString(result);</span>
+<span class="fc" id="L281">        return ResponseEntity.ok().body(body);</span>
     }
 
     @Operation(summary = &quot;Join a commons&quot;)
@@ -283,36 +287,36 @@ import java.util.Optional;
     public ResponseEntity&lt;String&gt; joinCommon(
             @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws Exception {
 
-<span class="fc" id="L286">        User u = getCurrentUser().getUser();</span>
-<span class="fc" id="L287">        Long userId = u.getId();</span>
-<span class="fc" id="L288">        String username = u.getFullName();</span>
+<span class="fc" id="L290">        User u = getCurrentUser().getUser();</span>
+<span class="fc" id="L291">        Long userId = u.getId();</span>
+<span class="fc" id="L292">        String username = u.getFullName();</span>
 
-<span class="fc" id="L290">        Commons joinedCommons = commonsRepository.findById(commonsId)</span>
-<span class="fc" id="L291">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, commonsId));</span>
-<span class="fc" id="L292">        Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L294">        Commons joinedCommons = commonsRepository.findById(commonsId)</span>
+<span class="fc" id="L295">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, commonsId));</span>
+<span class="fc" id="L296">        Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
-<span class="fc bfc" id="L294" title="All 2 branches covered.">        if (userCommonsLookup.isPresent()) {</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        if (userCommonsLookup.isPresent()) {</span>
             // user is already a member of this commons
-<span class="fc" id="L296">            String body = mapper.writeValueAsString(joinedCommons);</span>
-<span class="fc" id="L297">            return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L300">            String body = mapper.writeValueAsString(joinedCommons);</span>
+<span class="fc" id="L301">            return ResponseEntity.ok().body(body);</span>
         }
 
-<span class="fc" id="L300">        UserCommons uc = UserCommons.builder()</span>
-<span class="fc" id="L301">                .user(u)</span>
-<span class="fc" id="L302">                .commons(joinedCommons)</span>
-<span class="fc" id="L303">                .username(username)</span>
-<span class="fc" id="L304">                .totalWealth(joinedCommons.getStartingBalance())</span>
-<span class="fc" id="L305">                .numOfCows(0)</span>
-<span class="fc" id="L306">                .cowHealth(100)</span>
-<span class="fc" id="L307">                .cowsBought(0)</span>
-<span class="fc" id="L308">                .cowsSold(0)</span>
-<span class="fc" id="L309">                .cowDeaths(0)</span>
-<span class="fc" id="L310">                .build();</span>
+<span class="fc" id="L304">        UserCommons uc = UserCommons.builder()</span>
+<span class="fc" id="L305">                .user(u)</span>
+<span class="fc" id="L306">                .commons(joinedCommons)</span>
+<span class="fc" id="L307">                .username(username)</span>
+<span class="fc" id="L308">                .totalWealth(joinedCommons.getStartingBalance())</span>
+<span class="fc" id="L309">                .numOfCows(0)</span>
+<span class="fc" id="L310">                .cowHealth(100)</span>
+<span class="fc" id="L311">                .cowsBought(0)</span>
+<span class="fc" id="L312">                .cowsSold(0)</span>
+<span class="fc" id="L313">                .cowDeaths(0)</span>
+<span class="fc" id="L314">                .build();</span>
 
-<span class="fc" id="L312">        userCommonsRepository.save(uc);</span>
+<span class="fc" id="L316">        userCommonsRepository.save(uc);</span>
 
-<span class="fc" id="L314">        String body = mapper.writeValueAsString(joinedCommons);</span>
-<span class="fc" id="L315">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L318">        String body = mapper.writeValueAsString(joinedCommons);</span>
+<span class="fc" id="L319">        return ResponseEntity.ok().body(body);</span>
     }
 
     @Operation(summary = &quot;Delete a Commons&quot;)
@@ -321,19 +325,19 @@ import java.util.Optional;
     public Object deleteCommons(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
         
-<span class="fc" id="L324">        Iterable&lt;UserCommons&gt; userCommons = userCommonsRepository.findByCommonsId(id);</span>
+<span class="fc" id="L328">        Iterable&lt;UserCommons&gt; userCommons = userCommonsRepository.findByCommonsId(id);</span>
 
-<span class="fc bfc" id="L326" title="All 2 branches covered.">        for (UserCommons commons : userCommons) {</span>
-<span class="fc" id="L327">            userCommonsRepository.delete(commons);</span>
-<span class="fc" id="L328">        }</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">        for (UserCommons commons : userCommons) {</span>
+<span class="fc" id="L331">            userCommonsRepository.delete(commons);</span>
+<span class="fc" id="L332">        }</span>
 
-<span class="fc" id="L330">        commonsRepository.findById(id)</span>
-<span class="fc" id="L331">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc" id="L334">        commonsRepository.findById(id)</span>
+<span class="fc" id="L335">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
 
-<span class="fc" id="L333">        commonsRepository.deleteById(id);</span>
+<span class="fc" id="L337">        commonsRepository.deleteById(id);</span>
 
-<span class="fc" id="L335">        String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
-<span class="fc" id="L336">        return genericMessage(responseString);</span>
+<span class="fc" id="L339">        String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
+<span class="fc" id="L340">        return genericMessage(responseString);</span>
 
     }
 
@@ -343,16 +347,28 @@ import java.util.Optional;
     public Object deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,
                                        @PathVariable(&quot;userId&quot;) Long userId) throws Exception {
 
-<span class="fc" id="L346">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L347">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
+<span class="fc" id="L350">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L351">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
                         UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId)
                 );
 
-<span class="fc" id="L351">        userCommonsRepository.delete(userCommons);</span>
+<span class="fc" id="L355">        userCommonsRepository.delete(userCommons);</span>
 
-<span class="fc" id="L353">        String responseString = String.format(&quot;user with id %d deleted from commons with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
+<span class="fc" id="L357">        String responseString = String.format(&quot;user with id %d deleted from commons with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
 
-<span class="fc" id="L355">        return genericMessage(responseString);</span>
+<span class="fc" id="L359">        return genericMessage(responseString);</span>
+    }
+
+    @Operation(summary = &quot;Get the number of cows for each farmer in a commons (admin only)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/numcows&quot;)
+    public ResponseEntity&lt;List&lt;Integer&gt;&gt; getNumCowsForCommonsId(
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) {
+<span class="fc" id="L367">        Iterable&lt;UserCommons&gt; userCommonsList = userCommonsRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L368">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(userCommonsList.spliterator(), false)</span>
+<span class="fc" id="L369">                .map(UserCommons::getNumOfCows)</span>
+<span class="fc" id="L370">                .collect(Collectors.toList());</span>
+<span class="fc" id="L371">        return ResponseEntity.ok().body(numCowsList);</span>
     }
 
     
