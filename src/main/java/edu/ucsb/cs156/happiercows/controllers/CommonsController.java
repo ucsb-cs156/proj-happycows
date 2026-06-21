@@ -25,7 +25,11 @@ import org.springframework.web.bind.annotation.*;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Slf4j
@@ -353,6 +357,18 @@ public class CommonsController extends ApiController {
         String responseString = String.format("user with id %d deleted from commons with id %d, %d users remain", userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));
 
         return genericMessage(responseString);
+    }
+
+    @Operation(summary = "Get the number of cows for each farmer in a commons (admin only)")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/numcows")
+    public ResponseEntity<List<Integer>> getNumCowsForCommonsId(
+            @Parameter(name="commonsId") @RequestParam Long commonsId) {
+        Iterable<UserCommons> userCommonsList = userCommonsRepository.findByCommonsId(commonsId);
+        List<Integer> numCowsList = StreamSupport.stream(userCommonsList.spliterator(), false)
+                .map(UserCommons::getNumOfCows)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(numCowsList);
     }
 
     

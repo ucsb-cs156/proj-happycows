@@ -1431,5 +1431,59 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(100, commonsPlus.getEffectiveCapacity());
     }
 
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void getNumCowsForCommonsId_admin_multiple_farmers() throws Exception {
+        Commons c = Commons.builder().id(1L).name("Test Commons").build();
+
+        UserCommons uc1 = UserCommons.builder()
+                .commons(c)
+                .numOfCows(3)
+                .build();
+
+        UserCommons uc2 = UserCommons.builder()
+                .commons(c)
+                .numOfCows(7)
+                .build();
+
+        List<UserCommons> userCommonsList = new ArrayList<>();
+        userCommonsList.add(uc1);
+        userCommonsList.add(uc2);
+
+        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(userCommonsList);
+
+        MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+
+        String responseString = response.getResponse().getContentAsString();
+        List<Integer> actual = objectMapper.readValue(responseString, new TypeReference<List<Integer>>() {});
+        List<Integer> expected = List.of(3, 7);
+        assertEquals(expected, actual);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void getNumCowsForCommonsId_admin_no_farmers() throws Exception {
+        when(userCommonsRepository.findByCommonsId(eq(2L))).thenReturn(new ArrayList<>());
+
+        MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=2"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(userCommonsRepository, times(1)).findByCommonsId(eq(2L));
+
+        String responseString = response.getResponse().getContentAsString();
+        List<Integer> actual = objectMapper.readValue(responseString, new TypeReference<List<Integer>>() {});
+        assertEquals(new ArrayList<>(), actual);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getNumCowsForCommonsId_non_admin_forbidden() throws Exception {
+        mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
+                .andExpect(status().is(403)).andReturn();
+    }
+
 }
 
