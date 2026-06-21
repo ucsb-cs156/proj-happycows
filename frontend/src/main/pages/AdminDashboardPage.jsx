@@ -32,12 +32,26 @@ export default function AdminDashboardPage() {
     : "--";
   const commonsName = commonsPlus?.commons?.name ?? "--";
   const isHidden = commonsPlus?.commons?.hidden === true;
-  const averageCowsPerFarmer = commonsPlus?.averageCowsPerFarmer ?? "--";
-  const medianCowsPerFarmer = commonsPlus?.medianCowsPerFarmer ?? "--";
-  const minimumCowsPerFarmer = commonsPlus?.minimumCowsPerFarmer ?? "--";
-  const maximumCowsPerFarmer = commonsPlus?.maximumCowsPerFarmer ?? "--";
-  const standardDeviationCowsPerFarmer =
-    commonsPlus?.standardDeviationCowsPerFarmer ?? "--";
+  const formatOneDecimal = (value) => {
+    if (value === null || value === undefined) return "--";
+    const numericValue = Number(value);
+    return Number.isNaN(numericValue) ? "--" : numericValue.toFixed(1);
+  };
+  const averageCowsPerFarmer = formatOneDecimal(
+    commonsPlus?.averageCowsPerFarmer,
+  );
+  const medianCowsPerFarmer = formatOneDecimal(
+    commonsPlus?.medianCowsPerFarmer,
+  );
+  const minimumCowsPerFarmer = formatOneDecimal(
+    commonsPlus?.minimumCowsPerFarmer,
+  );
+  const maximumCowsPerFarmer = formatOneDecimal(
+    commonsPlus?.maximumCowsPerFarmer,
+  );
+  const standardDeviationCowsPerFarmer = formatOneDecimal(
+    commonsPlus?.standardDeviationCowsPerFarmer,
+  );
 
   return (
     <BasicLayout>
@@ -100,28 +114,57 @@ export default function AdminDashboardPage() {
       </Row>
 
       <h3 className="mt-4">Farmer Cow Distribution</h3>
+      <Row>
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Average Number of Cows per Farmer</Card.Title>
+              <Card.Text>{averageCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Median Number of Cows per Farmer</Card.Title>
+              <Card.Text>{medianCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Minimum Number of Cows per Farmer</Card.Title>
+              <Card.Text>{minimumCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>Maximum Number of Cows per Farmer</Card.Title>
+              <Card.Text>{maximumCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+
+        <Col>
+          <Card className="mb-3">
+            <Card.Body>
+              <Card.Title>
+                Standard Deviation of Number of Cows per Farmer
+              </Card.Title>
+              <Card.Text>{standardDeviationCowsPerFarmer}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
       <Card className="mb-3">
         <Card.Body>
-          <p>
-            <strong>Average Number of Cows per Farmer:</strong>{" "}
-            {averageCowsPerFarmer}
-          </p>
-          <p>
-            <strong>Median Number of Cows per Farmer:</strong>{" "}
-            {medianCowsPerFarmer}
-          </p>
-          <p>
-            <strong>Minimum Number of Cows per Farmer:</strong>{" "}
-            {minimumCowsPerFarmer}
-          </p>
-          <p>
-            <strong>Maximum Number of Cows per Farmer:</strong>{" "}
-            {maximumCowsPerFarmer}
-          </p>
-          <p>
-            <strong>Standard Deviation of Number of Cows per Farmer:</strong>{" "}
-            {standardDeviationCowsPerFarmer}
-          </p>
           <p>Histogram / distribution of cows per farmer will go here</p>
         </Card.Body>
       </Card>
