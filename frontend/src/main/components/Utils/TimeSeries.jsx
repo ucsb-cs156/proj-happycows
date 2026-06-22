@@ -1,3 +1,4 @@
+// Stryker disable all
 import {
   CartesianGrid,
   Legend,

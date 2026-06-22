@@ -80,8 +80,12 @@ export function normalizeSeriesData(data) {
 }
 
 export function expandRangeWhenEqual(min, max) {
-  if (min === null || max === null || min !== max) {
+  if (min !== max) {
     return [min, max];
+  }
+
+  if (min === null) {
+    return [null, null];
   }
 
   return [min - 1, max + 1];
