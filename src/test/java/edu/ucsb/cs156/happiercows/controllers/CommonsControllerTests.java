@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
+import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -60,6 +63,9 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     @MockBean
     CommonsPlusBuilderService commonsPlusBuilderService;
+
+    @MockBean
+    CommonStatsRepository commonStatsRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -1485,5 +1491,56 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(403)).andReturn();
     }
 
-}
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void getCommonsTimeSeries_admin_ok() throws Exception {
+        CommonStats earlier = CommonStats.builder()
+                .commonsId(9L)
+                .numCows(10)
+                .avgHealth(80.5)
+                .createDate(Instant.parse("2024-01-01T00:00:00Z"))
+                .build();
 
+        CommonStats later = CommonStats.builder()
+                .commonsId(9L)
+                .numCows(12)
+                .avgHealth(75.0)
+                .createDate(Instant.parse("2024-01-02T00:00:00Z"))
+                .build();
+
+        when(commonStatsRepository.findAllByCommonsId(eq(9L))).thenReturn(List.of(later, earlier));
+
+        MvcResult response = mockMvc.perform(get("/api/commons/timeseries?commonId=9"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(commonStatsRepository, times(1)).findAllByCommonsId(eq(9L));
+
+        String responseString = response.getResponse().getContentAsString();
+        List<Map<String, Object>> actual = objectMapper.readValue(responseString, new TypeReference<List<Map<String, Object>>>() {});
+
+        List<Map<String, Object>> expected = List.of(
+                Map.of(
+                        "name", "Health",
+                        "color", "#0088FE",
+                        "percentage", true,
+                        "values", List.of(
+                                Map.of("date", "2024-01-01T00:00:00Z", "value", 80.5),
+                                Map.of("date", "2024-01-02T00:00:00Z", "value", 75.0))),
+                Map.of(
+                        "name", "Total Cows",
+                        "color", "#FF8042",
+                        "values", List.of(
+                                Map.of("date", "2024-01-01T00:00:00Z", "value", 10),
+                                Map.of("date", "2024-01-02T00:00:00Z", "value", 12))));
+
+        assertEquals(expected, actual);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getCommonsTimeSeries_non_admin_forbidden() throws Exception {
+        mockMvc.perform(get("/api/commons/timeseries?commonId=9"))
+                .andExpect(status().is(403)).andReturn();
+    }
+
+}

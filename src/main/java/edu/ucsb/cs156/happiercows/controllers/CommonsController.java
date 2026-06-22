@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
@@ -9,6 +10,7 @@ import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
+import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
@@ -26,7 +28,9 @@ import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -48,6 +52,9 @@ public class CommonsController extends ApiController {
 
     @Autowired
     CommonsPlusBuilderService commonsPlusBuilderService;
+
+    @Autowired
+    CommonStatsRepository commonStatsRepository;
 
     @Value("${app.commons.default.startingBalance}")
     private double defaultStartingBalance;
@@ -369,6 +376,42 @@ public class CommonsController extends ApiController {
                 .map(UserCommons::getNumOfCows)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(numCowsList);
+    }
+
+    @Operation(summary = "Get timeseries stats for a commons (admin only)")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/timeseries")
+    public ResponseEntity<List<Map<String, Object>>> getCommonsTimeSeries(
+            @Parameter(name="commonId") @RequestParam Long commonId) {
+        Iterable<CommonStats> commonStats = commonStatsRepository.findAllByCommonsId(commonId);
+        List<CommonStats> sortedStats = StreamSupport.stream(commonStats.spliterator(), false)
+                .sorted(Comparator.comparing(CommonStats::getCreateDate))
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> healthValues = sortedStats.stream()
+                .map(stat -> Map.<String, Object>of(
+                        "date", stat.getCreateDate().toString(),
+                        "value", stat.getAvgHealth()))
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> totalCowsValues = sortedStats.stream()
+                .map(stat -> Map.<String, Object>of(
+                        "date", stat.getCreateDate().toString(),
+                        "value", stat.getNumCows()))
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> timeSeries = List.of(
+                Map.of(
+                        "name", "Health",
+                        "color", "#0088FE",
+                        "percentage", true,
+                        "values", healthValues),
+                Map.of(
+                        "name", "Total Cows",
+                        "color", "#FF8042",
+                        "values", totalCowsValues));
+
+        return ResponseEntity.ok().body(timeSeries);
     }
 
     
