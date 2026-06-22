@@ -77,4 +77,50 @@ describe("TimeSeries component", () => {
     expect(screen.getByTestId("time-series")).toBeInTheDocument();
     expect(screen.getByText("OnlyPoint")).toBeInTheDocument();
   });
+
+  test("renders percentage axis labels when a percentage series is present", () => {
+    render(
+      <TimeSeries
+        data={[
+          ...sampleSeries,
+          {
+            name: "Health",
+            color: "#00aa00",
+            percentage: true,
+            values: [
+              { date: "2024-01-01T00:00:00.000Z", value: 25 },
+              { date: "2024-01-03T00:00:00.000Z", value: 75 },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByText("Health")).toBeInTheDocument();
+    expect(screen.getAllByText("0%").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+  });
+
+  test("renders percentage-only data using the percentage scale", () => {
+    render(
+      <TimeSeries
+        data={[
+          {
+            name: "Health",
+            color: "#00aa00",
+            percentage: true,
+            values: [
+              { date: "2024-01-01T00:00:00.000Z", value: 0 },
+              { date: "2024-01-02T00:00:00.000Z", value: 100 },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(screen.getByText("Health")).toBeInTheDocument();
+    expect(screen.getAllByText("0%").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+  });
 });

@@ -7,6 +7,18 @@ export function isFiniteNumber(value) {
   return Number.isFinite(value);
 }
 
+export function isPercentageSeries(series) {
+  return series?.percentage === true;
+}
+
+export function hasPercentageSeries(data) {
+  return Array.isArray(data) && data.some(isPercentageSeries);
+}
+
+export function isValidPercentageValue(value) {
+  return isFiniteNumber(value) && value >= 0 && value <= 100;
+}
+
 export function getSeriesValues(series) {
   return Array.isArray(series?.values) ? series.values : [];
 }
@@ -44,6 +56,7 @@ export function getGlobalDateRange(data) {
 
 export function getGlobalValueRange(data) {
   const values = (Array.isArray(data) ? data : [])
+    .filter((series) => !isPercentageSeries(series))
     .flatMap((series) => getSeriesValues(series))
     .map((point) => point?.value)
     .filter(isFiniteNumber);
@@ -61,18 +74,39 @@ export function normalizeSeriesData(data) {
 
   return data
     .map((series) => {
+      const percentage = isPercentageSeries(series);
       const values = getSeriesValues(series)
         .map((point) => ({
           dateMs: parseDateToMs(point?.date),
           value: point?.value,
         }))
-        .filter(
-          (point) => point.dateMs !== null && isFiniteNumber(point.value),
-        );
+        .filter((point) => {
+          if (point.dateMs === null) {
+            return false;
+          }
+
+          if (!percentage) {
+            return isFiniteNumber(point.value);
+          }
+
+          if (isValidPercentageValue(point.value)) {
+            return true;
+          }
+
+          if (isFiniteNumber(point.value)) {
+            console.log(
+              "Ignoring percentage value outside 0-100 range:",
+              point.value,
+            );
+          }
+
+          return false;
+        });
 
       return {
         name: series?.name,
         color: series?.color,
+        percentage,
         values,
       };
     })
@@ -97,4 +131,12 @@ export function formatTimestampForTick(timestamp) {
   }
 
   return new Date(timestamp).toLocaleDateString();
+}
+
+export function formatPercentageForTick(value) {
+  if (!isFiniteNumber(value)) {
+    return "";
+  }
+
+  return `${value}%`;
 }
