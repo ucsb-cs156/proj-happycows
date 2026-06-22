@@ -56,6 +56,34 @@ beforeEach(() => {
     return [200, []];
   });
 
+  axiosMock.onGet("/api/commons/timeseries").reply((config) => {
+    if (`${config.params?.commonId}` === "7") {
+      return [
+        200,
+        [
+          {
+            name: "Health",
+            color: "#0088FE",
+            percentage: true,
+            values: [
+              { date: "2025-01-01T00:00:00", value: 50 },
+              { date: "2025-01-02T00:00:00", value: 75 },
+            ],
+          },
+          {
+            name: "Total Cows",
+            color: "#FF8042",
+            values: [
+              { date: "2025-01-01T00:00:00", value: 10 },
+              { date: "2025-01-02T00:00:00", value: 12 },
+            ],
+          },
+        ],
+      ];
+    }
+    return [200, []];
+  });
+
   axiosMock.onGet("/api/commons/plus").reply((config) => {
     if (config.params?.id === "7") {
       return [
@@ -178,7 +206,9 @@ describe("AdminDashboardPage", () => {
     ).not.toBeInTheDocument();
 
     expect(screen.getByText(/total farmers/i)).toBeInTheDocument();
-    expect(screen.getByText(/total cows/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/total cows/i, { selector: ".card-title" }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/days active/i)).toBeInTheDocument();
     expect(screen.getByText(/^id$/i)).toBeInTheDocument();
     expect(screen.getByText(/start date/i)).toBeInTheDocument();
@@ -187,10 +217,18 @@ describe("AdminDashboardPage", () => {
       await screen.findByText(/total farmers/i)
     ).closest(".card");
     expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
-    expect(screen.getByText("11")).toBeInTheDocument();
-    expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
-    expect(screen.getByText("7")).toBeInTheDocument();
-    expect(screen.getByText("2025-01-01")).toBeInTheDocument();
+    const totalCowsCard = screen
+      .getByText(/total cows/i, { selector: ".card-title" })
+      .closest(".card");
+    expect(within(totalCowsCard).getByText("11")).toBeInTheDocument();
+    const daysActiveCard = screen.getByText(/days active/i).closest(".card");
+    expect(
+      within(daysActiveCard).getByText(String(expectedDays)),
+    ).toBeInTheDocument();
+    const idCard = screen.getByText(/^id$/i).closest(".card");
+    expect(within(idCard).getByText("7")).toBeInTheDocument();
+    const startDateCard = screen.getByText(/start date/i).closest(".card");
+    expect(within(startDateCard).getByText("2025-01-01")).toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", { name: /cows per farmer/i }),
@@ -209,6 +247,12 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("Bin Size")).toBeInTheDocument();
     const binSizeInput = screen.getByTestId("bin-size-selector");
     expect(binSizeInput).toHaveValue(10);
+
+    expect(
+      screen.getByRole("heading", { name: /trends over time/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(screen.queryByText(/chart placeholder/i)).not.toBeInTheDocument();
   });
 
   test("renders hidden icon in title only when commons is hidden", async () => {
@@ -231,6 +275,11 @@ describe("AdminDashboardPage", () => {
     ).toBeInTheDocument();
     expect(
       axiosMock.history.get.filter((call) => call.url === "/api/commons/plus"),
+    ).toHaveLength(0);
+    expect(
+      axiosMock.history.get.filter(
+        (call) => call.url === "/api/commons/timeseries",
+      ),
     ).toHaveLength(0);
   });
 

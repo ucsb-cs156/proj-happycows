@@ -3,6 +3,7 @@ import AdminDashboardPage from "main/pages/AdminDashboardPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import timeSeriesFixtures from "fixtures/timeSeriesFixtures";
 
 import { http, HttpResponse } from "msw";
 
@@ -68,6 +69,11 @@ WithData.parameters = {
     }),
     http.get("/api/commons/numcows", () => {
       return HttpResponse.json([1, 2, 3, 5, 10, 15, 20], {
+        status: 200,
+      });
+    }),
+    http.get("/api/commons/timesseries", () => {
+      return HttpResponse.json(timeSeriesFixtures.timeSeriesBigExample, {
         status: 200,
       });
     }),

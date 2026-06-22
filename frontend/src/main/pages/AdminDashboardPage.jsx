@@ -5,6 +5,7 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
 import CountHistogram from "main/components/Utils/CountHistogram";
 import BinSizeSelector from "main/components/Utils/BinSizeSelector";
+import TimeSeries from "main/components/Utils/TimeSeries";
 import {
   fieldOrBlank,
   getCommonsId,
@@ -18,6 +19,9 @@ import {
 export default function AdminDashboardPage() {
   const { id } = useParams();
   const [binSize, setBinSize] = useState(10);
+  const numCowsQueryParams = { commonsId: id };
+  // API endpoint uses `commonId` (without s) for this route.
+  const timeSeriesQueryParams = { commonId: id };
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
@@ -68,8 +72,22 @@ export default function AdminDashboardPage() {
     [`/api/commons/numcows?commonsId=${id}`],
     {
       url: "/api/commons/numcows",
-      params: { commonsId: id },
+      params: numCowsQueryParams,
     },
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
+    [],
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
+    { enabled: !!id },
+  );
+
+  const { data: timeSeriesData } = useBackend(
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
+    [`/api/commons/timeseries?commonId=${id}`],
+    {
+      url: "/api/commons/timeseries",
+      params: timeSeriesQueryParams,
+    },
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
     { enabled: !!id },
@@ -196,25 +214,11 @@ export default function AdminDashboardPage() {
       </Card>
 
       <h3 className="mt-4">Trends Over Time</h3>
-      <Row>
-        <Col md={6}>
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Title>Cows Over Time</Card.Title>
-              <p>Chart placeholder (x-axis: days since commons start)</p>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={6}>
-          <Card className="mb-3">
-            <Card.Body>
-              <Card.Title>Farmers Over Time</Card.Title>
-              <p>Chart placeholder (x-axis: days since commons start)</p>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <Card className="mb-3">
+        <Card.Body>
+          <TimeSeries data={timeSeriesData} />
+        </Card.Body>
+      </Card>
     </BasicLayout>
   );
 }
