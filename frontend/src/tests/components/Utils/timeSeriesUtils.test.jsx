@@ -1,14 +1,19 @@
 import {
   expandRangeWhenEqual,
+  formatPercentageForTick,
   formatTimestampForTick,
   getGlobalDateRange,
   getGlobalValueRange,
   getSeriesDateRange,
   getSeriesValues,
+  hasPercentageSeries,
   isFiniteNumber,
+  isPercentageSeries,
+  isValidPercentageValue,
   normalizeSeriesData,
   parseDateToMs,
 } from "main/components/Utils/timeSeriesUtils";
+import { vi } from "vitest";
 
 describe("timeSeriesUtils", () => {
   test("parseDateToMs returns timestamp for valid date and null for invalid date", () => {
@@ -21,6 +26,19 @@ describe("timeSeriesUtils", () => {
     expect(isFiniteNumber(3.14)).toBe(true);
     expect(isFiniteNumber(NaN)).toBe(false);
     expect(isFiniteNumber("2")).toBe(false);
+  });
+
+  test("percentage helpers detect flagged series and valid values", () => {
+    expect(isPercentageSeries({ percentage: true })).toBe(true);
+    expect(isPercentageSeries({ percentage: false })).toBe(false);
+    expect(
+      hasPercentageSeries([{ percentage: false }, { percentage: true }]),
+    ).toBe(true);
+    expect(hasPercentageSeries(undefined)).toBe(false);
+    expect(isValidPercentageValue(0)).toBe(true);
+    expect(isValidPercentageValue(100)).toBe(true);
+    expect(isValidPercentageValue(-1)).toBe(false);
+    expect(isValidPercentageValue(101)).toBe(false);
   });
 
   test("getSeriesValues returns values array or empty array", () => {
@@ -112,9 +130,10 @@ describe("timeSeriesUtils", () => {
     });
   });
 
-  test("getGlobalValueRange returns min and max values across all series", () => {
+  test("getGlobalValueRange returns min and max values across all non-percentage series", () => {
     const data = [
       { values: [{ value: 8 }, { value: -2 }] },
+      { percentage: true, values: [{ value: 0 }, { value: 100 }] },
       { values: [{ value: 4 }] },
     ];
 
@@ -150,6 +169,20 @@ describe("timeSeriesUtils", () => {
     });
   });
 
+  test("getGlobalValueRange returns nulls when only percentage series are present", () => {
+    expect(
+      getGlobalValueRange([
+        {
+          percentage: true,
+          values: [{ value: 20 }, { value: 80 }],
+        },
+      ]),
+    ).toEqual({
+      minValue: null,
+      maxValue: null,
+    });
+  });
+
   test("normalizeSeriesData keeps valid points and removes invalid entries", () => {
     const data = [
       {
@@ -172,6 +205,7 @@ describe("timeSeriesUtils", () => {
       {
         name: "A",
         color: "#ff0000",
+        percentage: false,
         values: [{ dateMs: 1704067200000, value: 1 }],
       },
     ]);
@@ -195,9 +229,49 @@ describe("timeSeriesUtils", () => {
       {
         name: "Safe",
         color: "#111111",
+        percentage: false,
         values: [{ dateMs: 1704067200000, value: 7 }],
       },
     ]);
+  });
+
+  test("normalizeSeriesData keeps valid percentage points, preserves the flag, and logs invalid ranges", () => {
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    expect(
+      normalizeSeriesData([
+        {
+          name: "Health",
+          color: "#00ff00",
+          percentage: true,
+          values: [
+            { date: "2024-01-01T00:00:00.000Z", value: 50 },
+            { date: "2024-01-02T00:00:00.000Z", value: -1 },
+            { date: "2024-01-03T00:00:00.000Z", value: 120 },
+            { date: "2024-01-04T00:00:00.000Z", value: "bad" },
+          ],
+        },
+      ]),
+    ).toEqual([
+      {
+        name: "Health",
+        color: "#00ff00",
+        percentage: true,
+        values: [{ dateMs: 1704067200000, value: 50 }],
+      },
+    ]);
+
+    expect(logSpy).toHaveBeenCalledTimes(2);
+    expect(logSpy).toHaveBeenCalledWith(
+      "Ignoring percentage value outside 0-100 range:",
+      -1,
+    );
+    expect(logSpy).toHaveBeenCalledWith(
+      "Ignoring percentage value outside 0-100 range:",
+      120,
+    );
+
+    logSpy.mockRestore();
   });
 
   test("expandRangeWhenEqual returns original range when nulls or not equal", () => {
@@ -240,5 +314,10 @@ describe("timeSeriesUtils", () => {
       new Date(1704067200000).toLocaleDateString(),
     );
     expect(formatTimestampForTick("x")).toBe("");
+  });
+
+  test("formatPercentageForTick formats valid percentages and returns empty string otherwise", () => {
+    expect(formatPercentageForTick(25)).toBe("25%");
+    expect(formatPercentageForTick("x")).toBe("");
   });
 });

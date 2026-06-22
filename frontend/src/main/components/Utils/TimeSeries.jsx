@@ -10,9 +10,11 @@ import {
 } from "recharts";
 import {
   expandRangeWhenEqual,
+  formatPercentageForTick,
   formatTimestampForTick,
   getGlobalDateRange,
   getGlobalValueRange,
+  hasPercentageSeries,
   normalizeSeriesData,
 } from "./timeSeriesUtils";
 
@@ -23,15 +25,16 @@ export default function TimeSeries({
   testid = "time-series",
 }) {
   const normalizedData = normalizeSeriesData(data);
+  const showPercentageAxis = hasPercentageSeries(data);
   const { minDate, maxDate } = getGlobalDateRange(data);
   const { minValue, maxValue } = getGlobalValueRange(data);
+  const hasStandardScale = minValue !== null && maxValue !== null;
 
   if (
     normalizedData.length === 0 ||
     minDate === null ||
     maxDate === null ||
-    minValue === null ||
-    maxValue === null
+    (!hasStandardScale && !showPercentageAxis)
   ) {
     return (
       <div data-testid={`${testid}-empty`}>
@@ -41,7 +44,9 @@ export default function TimeSeries({
   }
 
   const [xMin, xMax] = expandRangeWhenEqual(minDate, maxDate);
-  const [yMin, yMax] = expandRangeWhenEqual(minValue, maxValue);
+  const [yMin, yMax] = hasStandardScale
+    ? expandRangeWhenEqual(minValue, maxValue)
+    : [null, null];
 
   return (
     <LineChart
@@ -57,7 +62,20 @@ export default function TimeSeries({
         domain={[xMin, xMax]}
         tickFormatter={formatTimestampForTick}
       />
-      <YAxis type="number" domain={[yMin, yMax]} />
+      {hasStandardScale && (
+        <YAxis yAxisId="default" type="number" domain={[yMin, yMax]} />
+      )}
+      {showPercentageAxis && (
+        <YAxis
+          yAxisId="percentage"
+          type="number"
+          orientation="right"
+          domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
+          tickFormatter={formatPercentageForTick}
+          allowDecimals={false}
+        />
+      )}
       <Tooltip labelFormatter={formatTimestampForTick} />
       <Legend />
       {normalizedData.map((series) => (
@@ -65,6 +83,7 @@ export default function TimeSeries({
           key={series.name}
           name={series.name}
           data={series.values}
+          yAxisId={series.percentage ? "percentage" : "default"}
           dataKey="value"
           stroke={series.color}
           dot={false}
