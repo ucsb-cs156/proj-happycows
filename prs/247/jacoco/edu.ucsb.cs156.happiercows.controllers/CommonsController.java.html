@@ -404,13 +404,14 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L404">                Map.of(</span>
                         &quot;name&quot;, &quot;Health&quot;,
                         &quot;color&quot;, &quot;#0088FE&quot;,
+<span class="fc" id="L407">                        &quot;percentage&quot;, true,</span>
                         &quot;values&quot;, healthValues),
-<span class="fc" id="L408">                Map.of(</span>
+<span class="fc" id="L409">                Map.of(</span>
                         &quot;name&quot;, &quot;Total Cows&quot;,
                         &quot;color&quot;, &quot;#FF8042&quot;,
                         &quot;values&quot;, totalCowsValues));
 
-<span class="fc" id="L413">        return ResponseEntity.ok().body(timeSeries);</span>
+<span class="fc" id="L414">        return ResponseEntity.ok().body(timeSeries);</span>
     }
 
     
