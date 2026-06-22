@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/populate-time-series-graph","number":249,"title":"Replace Admin Dashboard trend placeholders with live TimeSeries graph","url":"https://github.com/ucsb-cs156/proj-happycows/pull/249"}]
+pull_requests: []
