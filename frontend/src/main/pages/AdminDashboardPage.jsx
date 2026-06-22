@@ -19,6 +19,9 @@ import {
 export default function AdminDashboardPage() {
   const { id } = useParams();
   const [binSize, setBinSize] = useState(10);
+  const numCowsParams = { commonsId: id };
+  // API endpoint uses `commonId` (without s) for this route.
+  const timeSeriesParams = { commonId: id };
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
@@ -69,7 +72,7 @@ export default function AdminDashboardPage() {
     [`/api/commons/numcows?commonsId=${id}`],
     {
       url: "/api/commons/numcows",
-      params: { commonsId: id },
+      params: numCowsParams,
     },
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
@@ -81,7 +84,7 @@ export default function AdminDashboardPage() {
     [`/api/commons/timeseries?commonId=${id}`],
     {
       url: "/api/commons/timeseries",
-      params: { commonId: id },
+      params: timeSeriesParams,
     },
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
