@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useBackend } from "main/utils/useBackend";
+import CountHistogram from "main/components/Utils/CountHistogram";
+import BinSizeSelector from "main/components/Utils/BinSizeSelector";
 import {
   fieldOrBlank,
   getCommonsId,
@@ -15,6 +17,7 @@ import {
 
 export default function AdminDashboardPage() {
   const { id } = useParams();
+  const [binSize, setBinSize] = useState(10);
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
@@ -58,6 +61,18 @@ export default function AdminDashboardPage() {
   const standardDeviationCowsPerFarmer = numericFieldOrBlank(
     commonsPlus,
     "standardDeviationCowsPerFarmer",
+  );
+
+  const { data: numCowsData } = useBackend(
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
+    [`/api/commons/numcows?commonsId=${id}`],
+    {
+      url: "/api/commons/numcows",
+      params: { commonsId: id },
+    },
+    [],
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
+    { enabled: !!id },
   );
 
   return (
@@ -170,7 +185,13 @@ export default function AdminDashboardPage() {
 
       <Card className="mb-3">
         <Card.Body>
-          <p>Histogram / distribution of cows per farmer will go here</p>
+          <CountHistogram
+            data={numCowsData}
+            s={binSize}
+            xLabel="Cows"
+            yLabel="Farmers"
+          />
+          <BinSizeSelector value={binSize} onChange={setBinSize} />
         </Card.Body>
       </Card>
 

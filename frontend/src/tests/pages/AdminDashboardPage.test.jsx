@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { MemoryRouter, Routes, Route, useNavigate } from "react-router";
 import "@testing-library/jest-dom";
 import AdminDashboardPage from "main/pages/AdminDashboardPage";
@@ -45,6 +45,16 @@ beforeEach(() => {
   axiosMock
     .onGet("/api/systemInfo")
     .reply(200, systemInfoFixtures.showingNeither);
+
+  axiosMock.onGet("/api/commons/numcows").reply((config) => {
+    if (config.params?.commonsId === "7") {
+      return [200, [1, 2, 3, 5, 10, 15]];
+    }
+    if (config.params?.commonsId === "123") {
+      return [200, [3, 6, 9]];
+    }
+    return [200, []];
+  });
 
   axiosMock.onGet("/api/commons/plus").reply((config) => {
     if (config.params?.id === "7") {
@@ -173,7 +183,10 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText(/^id$/i)).toBeInTheDocument();
     expect(screen.getByText(/start date/i)).toBeInTheDocument();
 
-    expect(await screen.findByText("4")).toBeInTheDocument();
+    const totalFarmersCard = (
+      await screen.findByText(/total farmers/i)
+    ).closest(".card");
+    expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
     expect(screen.getByText("11")).toBeInTheDocument();
     expect(screen.getByText(String(expectedDays))).toBeInTheDocument();
     expect(screen.getByText("7")).toBeInTheDocument();
@@ -192,11 +205,10 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText("1.0")).toBeInTheDocument();
     expect(screen.getByText("5.0")).toBeInTheDocument();
     expect(screen.getByText("1.5")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /histogram\s*\/\s*distribution of cows per farmer will go here/i,
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("count-histogram")).toBeInTheDocument();
+    expect(screen.getByText("Bin Size")).toBeInTheDocument();
+    const binSizeInput = screen.getByTestId("bin-size-selector");
+    expect(binSizeInput).toHaveValue(10);
   });
 
   test("renders hidden icon in title only when commons is hidden", async () => {
@@ -249,9 +261,15 @@ describe("AdminDashboardPage", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("4")).toBeInTheDocument();
+    const farmersCard = (await screen.findByText(/total farmers/i)).closest(
+      ".card",
+    );
+    expect(within(farmersCard).getByText("4")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /switch dashboard/i }));
-    expect(await screen.findByText("2")).toBeInTheDocument();
+    const farmersCard2 = (await screen.findByText(/total farmers/i)).closest(
+      ".card",
+    );
+    expect(within(farmersCard2).getByText("2")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: /test commons 123/i }),
     ).toBeInTheDocument();
@@ -311,5 +329,16 @@ describe("AdminDashboardPage", () => {
     expect(screen.getByText(/^stddev$/i).closest(".card")).toHaveTextContent(
       "1.2",
     );
+  });
+
+  test("BinSizeSelector allows user to change histogram bin size", async () => {
+    renderWithRoute("/admin/dashboard/7");
+
+    expect(await screen.findByTestId("count-histogram")).toBeInTheDocument();
+    const binSizeInput = screen.getByTestId("bin-size-selector");
+    expect(binSizeInput).toHaveValue(10);
+
+    fireEvent.change(binSizeInput, { target: { value: "5" } });
+    expect(binSizeInput).toHaveValue(5);
   });
 });
