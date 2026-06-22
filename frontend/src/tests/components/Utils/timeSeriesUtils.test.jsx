@@ -235,6 +235,31 @@ describe("timeSeriesUtils", () => {
     ]);
   });
 
+  test("normalizeSeriesData keeps non-percentage numeric values outside the percentage range", () => {
+    expect(
+      normalizeSeriesData([
+        {
+          name: "Wealth",
+          color: "#ff9900",
+          values: [
+            { date: "2024-01-01T00:00:00.000Z", value: -5 },
+            { date: "2024-01-02T00:00:00.000Z", value: 150 },
+          ],
+        },
+      ]),
+    ).toEqual([
+      {
+        name: "Wealth",
+        color: "#ff9900",
+        percentage: false,
+        values: [
+          { dateMs: 1704067200000, value: -5 },
+          { dateMs: 1704153600000, value: 150 },
+        ],
+      },
+    ]);
+  });
+
   test("normalizeSeriesData keeps valid percentage points, preserves the flag, and logs invalid ranges", () => {
     const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
