@@ -57,7 +57,7 @@ beforeEach(() => {
   });
 
   axiosMock.onGet("/api/commons/timeseries").reply((config) => {
-    if (config.params?.commonId === "7") {
+    if (`${config.params?.commonId}` === "7") {
       return [
         200,
         [
@@ -80,9 +80,6 @@ beforeEach(() => {
           },
         ],
       ];
-    }
-    if (config.params?.commonId === "123") {
-      return [200, []];
     }
     return [200, []];
   });
@@ -209,7 +206,9 @@ describe("AdminDashboardPage", () => {
     ).not.toBeInTheDocument();
 
     expect(screen.getByText(/total farmers/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/total cows/i).length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(/total cows/i, { selector: ".card-title" }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/days active/i)).toBeInTheDocument();
     expect(screen.getByText(/^id$/i)).toBeInTheDocument();
     expect(screen.getByText(/start date/i)).toBeInTheDocument();
@@ -219,7 +218,7 @@ describe("AdminDashboardPage", () => {
     ).closest(".card");
     expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
     const totalCowsCard = screen
-      .getAllByText(/total cows/i)[0]
+      .getByText(/total cows/i, { selector: ".card-title" })
       .closest(".card");
     expect(within(totalCowsCard).getByText("11")).toBeInTheDocument();
     const daysActiveCard = screen.getByText(/days active/i).closest(".card");

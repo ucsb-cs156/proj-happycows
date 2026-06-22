@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
@@ -19,9 +19,9 @@ import {
 export default function AdminDashboardPage() {
   const { id } = useParams();
   const [binSize, setBinSize] = useState(10);
-  const numCowsParams = { commonsId: id };
+  const numCowsQueryParams = useMemo(() => ({ commonsId: id }), [id]);
   // API endpoint uses `commonId` (without s) for this route.
-  const timeSeriesParams = { commonId: id };
+  const timeSeriesQueryParams = useMemo(() => ({ commonId: id }), [id]);
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
@@ -72,7 +72,7 @@ export default function AdminDashboardPage() {
     [`/api/commons/numcows?commonsId=${id}`],
     {
       url: "/api/commons/numcows",
-      params: numCowsParams,
+      params: numCowsQueryParams,
     },
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
     [`/api/commons/timeseries?commonId=${id}`],
     {
       url: "/api/commons/timeseries",
-      params: timeSeriesParams,
+      params: timeSeriesQueryParams,
     },
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
