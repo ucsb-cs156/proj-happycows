@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router";
 import { Row, Col, Card } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
@@ -19,9 +19,9 @@ import {
 export default function AdminDashboardPage() {
   const { id } = useParams();
   const [binSize, setBinSize] = useState(10);
-  const numCowsQueryParams = useMemo(() => ({ commonsId: id }), [id]);
+  const numCowsQueryParams = { commonsId: id };
   // API endpoint uses `commonId` (without s) for this route.
-  const timeSeriesQueryParams = useMemo(() => ({ commonId: id }), [id]);
+  const timeSeriesQueryParams = { commonId: id };
   const { data: commonsPlus } = useBackend(
     [`/api/commons/plus?id=${id}`],
     {
