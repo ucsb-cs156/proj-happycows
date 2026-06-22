@@ -87,6 +87,7 @@ export default function AdminDashboardPage() {
       url: "/api/commons/timeseries",
       params: timeSeriesQueryParams,
     },
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
     [],
     // Stryker disable next-line all : this is for React Query caching, which is hard to test
     { enabled: !!id },
