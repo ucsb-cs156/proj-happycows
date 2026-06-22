@@ -1522,6 +1522,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 Map.of(
                         "name", "Health",
                         "color", "#0088FE",
+                        "percentage", true,
                         "values", List.of(
                                 Map.of("date", "2024-01-01T00:00:00Z", "value", 80.5),
                                 Map.of("date", "2024-01-02T00:00:00Z", "value", 75.0))),

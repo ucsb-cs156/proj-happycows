@@ -404,6 +404,7 @@ public class CommonsController extends ApiController {
                 Map.of(
                         "name", "Health",
                         "color", "#0088FE",
+                        "percentage", true,
                         "values", healthValues),
                 Map.of(
                         "name", "Total Cows",
