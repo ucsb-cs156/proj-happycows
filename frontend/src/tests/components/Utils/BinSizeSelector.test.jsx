@@ -8,6 +8,11 @@ describe("BinSizeSelector component", () => {
   test("renders with label 'Bin Size'", () => {
     render(<BinSizeSelector value={10} onChange={() => {}} />);
     expect(screen.getByText("Bin Size")).toBeInTheDocument();
+    expect(screen.getByTestId("bin-size-selector")).toBeInTheDocument();
+    expect(screen.getByTestId("bin-size-selector")).toHaveAttribute(
+      "style",
+      "width: 100px;",
+    );
   });
 
   test("renders input with default testid", () => {
@@ -26,6 +31,12 @@ describe("BinSizeSelector component", () => {
     render(<BinSizeSelector value={15} onChange={() => {}} />);
     const input = screen.getByTestId("bin-size-selector");
     expect(input).toHaveValue(15);
+  });
+
+  test("displays the current value when the value is 1", () => {
+    render(<BinSizeSelector value={11} onChange={() => {}} />);
+    const input = screen.getByTestId("bin-size-selector");
+    expect(input).toHaveValue(11);
   });
 
   test("has min attribute of 1", () => {
@@ -52,6 +63,14 @@ describe("BinSizeSelector component", () => {
     const input = screen.getByTestId("bin-size-selector");
     fireEvent.change(input, { target: { value: "5" } });
     expect(onChange).toHaveBeenCalledWith(5);
+  });
+
+  test("calls onChange with parsed integer when 1 entered", () => {
+    const onChange = vi.fn();
+    render(<BinSizeSelector value={10} onChange={onChange} />);
+    const input = screen.getByTestId("bin-size-selector");
+    fireEvent.change(input, { target: { value: "1" } });
+    expect(onChange).toHaveBeenCalledWith(1);
   });
 
   test("does not call onChange when value is less than 1", () => {

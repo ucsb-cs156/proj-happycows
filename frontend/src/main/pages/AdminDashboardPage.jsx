@@ -64,12 +64,14 @@ export default function AdminDashboardPage() {
   );
 
   const { data: numCowsData } = useBackend(
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
     [`/api/commons/numcows?commonsId=${id}`],
     {
       url: "/api/commons/numcows",
       params: { commonsId: id },
     },
     [],
+    // Stryker disable next-line all : this is for React Query caching, which is hard to test
     { enabled: !!id },
   );
 

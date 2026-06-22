@@ -26,6 +26,7 @@ export default function BinSizeSelector({
         step="1"
         value={value}
         onChange={handleChange}
+        // Stryker disable next-line all : this is for styling, which is unnecessary to test
         style={{ width: "100px" }}
       />
     </Form.Group>
