@@ -90,9 +90,7 @@ export default function TimeSeries({
           key={series.name}
           name={series.name}
           data={series.values}
-          yAxisId={
-            series.percentage ? PERCENTAGE_Y_AXIS_ID : DEFAULT_Y_AXIS_ID
-          }
+          yAxisId={series.percentage ? PERCENTAGE_Y_AXIS_ID : DEFAULT_Y_AXIS_ID}
           dataKey="value"
           stroke={series.color}
           dot={false}
