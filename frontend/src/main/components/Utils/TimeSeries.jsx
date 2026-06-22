@@ -18,6 +18,9 @@ import {
   normalizeSeriesData,
 } from "./timeSeriesUtils";
 
+const DEFAULT_Y_AXIS_ID = "default";
+const PERCENTAGE_Y_AXIS_ID = "percentage";
+
 export default function TimeSeries({
   data,
   width = 600,
@@ -63,11 +66,15 @@ export default function TimeSeries({
         tickFormatter={formatTimestampForTick}
       />
       {hasStandardScale && (
-        <YAxis yAxisId="default" type="number" domain={[yMin, yMax]} />
+        <YAxis
+          yAxisId={DEFAULT_Y_AXIS_ID}
+          type="number"
+          domain={[yMin, yMax]}
+        />
       )}
       {showPercentageAxis && (
         <YAxis
-          yAxisId="percentage"
+          yAxisId={PERCENTAGE_Y_AXIS_ID}
           type="number"
           orientation="right"
           domain={[0, 100]}
@@ -83,7 +90,9 @@ export default function TimeSeries({
           key={series.name}
           name={series.name}
           data={series.values}
-          yAxisId={series.percentage ? "percentage" : "default"}
+          yAxisId={
+            series.percentage ? PERCENTAGE_Y_AXIS_ID : DEFAULT_Y_AXIS_ID
+          }
           dataKey="value"
           stroke={series.color}
           dot={false}
