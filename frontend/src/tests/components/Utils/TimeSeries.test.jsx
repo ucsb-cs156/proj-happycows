@@ -160,6 +160,28 @@ describe("TimeSeries component", () => {
     ).toBeInTheDocument();
   });
 
+  test("supports a single selector name string", () => {
+    const { container } = render(
+      <TimeSeries data={sampleSeries} selectors="Wealth" />,
+    );
+
+    expect(screen.getByTestId("time-series-selectors")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Wealth" })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Population" }),
+    ).not.toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      2,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Wealth" }));
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
+    expect(screen.queryByText("No data to display")).not.toBeInTheDocument();
+  });
+
   test("toggles selected series on and off with selector buttons", () => {
     const { container } = render(
       <TimeSeries data={sampleSeries} selectors={["Wealth", "Population"]} />,
