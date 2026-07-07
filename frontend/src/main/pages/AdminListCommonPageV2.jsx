@@ -39,7 +39,7 @@ export default function AdminListCommonsPageV2() {
     if (element) {
       element.scrollIntoView();
     }
-  }, [location.hash, filteredCommons]);
+  }, [location.hash, commons.length]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {
