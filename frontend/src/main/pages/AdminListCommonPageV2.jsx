@@ -3,6 +3,11 @@ import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
+import {
+  getHashTargetId,
+  HASH_SCROLL_INTO_VIEW_OPTIONS,
+  shouldScrollToHash,
+} from "main/utils/hashScrollUtils";
 import { Button, Row, Col, Container, Form } from "react-bootstrap";
 import { useLocation } from "react-router";
 
@@ -35,15 +40,17 @@ export default function AdminListCommonsPageV2() {
 
   useEffect(() => {
     if (
-      !location.hash ||
-      commons.length === 0 ||
-      location.hash === lastScrolledHashRef.current
+      !shouldScrollToHash({
+        hash: location.hash,
+        commonsLength: commons.length,
+        lastScrolledHash: lastScrolledHashRef.current,
+      })
     )
       return;
 
-    const element = document.getElementById(location.hash.replace("#", ""));
+    const element = document.getElementById(getHashTargetId(location.hash));
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      element.scrollIntoView(HASH_SCROLL_INTO_VIEW_OPTIONS);
       lastScrolledHashRef.current = location.hash;
     }
   }, [location.hash, commons]);
