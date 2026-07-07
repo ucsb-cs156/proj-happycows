@@ -37,9 +37,7 @@ export default function AdminListCommonsPageV2() {
 
     const element = document.getElementById(location.hash.replace("#", ""));
     if (element) {
-      setTimeout(() => {
-        element.scrollIntoView();
-      }, 0);
+      element.scrollIntoView();
     }
   }, [location.hash, filteredCommons]);
 

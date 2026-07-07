@@ -163,6 +163,9 @@ describe("AdminListCommonPageV2 tests", () => {
       await waitFor(() => {
         expect(scrollIntoViewMock).toHaveBeenCalled();
       });
+      expect(scrollIntoViewMock.mock.contexts[0]).toBe(
+        document.getElementById("2"),
+      );
     } finally {
       HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     }
