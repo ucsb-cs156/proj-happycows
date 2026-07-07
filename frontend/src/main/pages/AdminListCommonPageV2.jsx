@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
@@ -9,6 +9,7 @@ import { useLocation } from "react-router";
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
   const location = useLocation();
+  const lastScrolledHashRef = useRef(null);
 
   const [query, setQuery] = useState("");
 
@@ -33,13 +34,14 @@ export default function AdminListCommonsPageV2() {
   );
 
   useEffect(() => {
-    if (!location.hash) return;
+    if (!location.hash || location.hash === lastScrolledHashRef.current) return;
 
     const element = document.getElementById(location.hash.replace("#", ""));
     if (element) {
-      element.scrollIntoView();
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+      lastScrolledHashRef.current = location.hash;
     }
-  }, [location.hash, commons.length]);
+  }, [location.hash, commons]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {
