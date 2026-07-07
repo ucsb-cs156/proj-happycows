@@ -34,7 +34,12 @@ export default function AdminListCommonsPageV2() {
   );
 
   useEffect(() => {
-    if (!location.hash || location.hash === lastScrolledHashRef.current) return;
+    if (
+      !location.hash ||
+      commons.length === 0 ||
+      location.hash === lastScrolledHashRef.current
+    )
+      return;
 
     const element = document.getElementById(location.hash.replace("#", ""));
     if (element) {
