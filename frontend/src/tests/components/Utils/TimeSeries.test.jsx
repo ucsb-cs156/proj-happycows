@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TimeSeries from "main/components/Utils/TimeSeries";
 
 describe("TimeSeries component", () => {
@@ -122,5 +122,124 @@ describe("TimeSeries component", () => {
     expect(screen.getByText("Health")).toBeInTheDocument();
     expect(screen.getAllByText("0%").length).toBeGreaterThan(0);
     expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+  });
+
+  test("renders selector checkboxes only for matching series names", () => {
+    render(
+      <TimeSeries
+        data={sampleSeries}
+        selectors={["Wealth", "Missing Series", "Population"]}
+      />,
+    );
+
+    expect(screen.getByTestId("time-series-selectors")).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", {
+        name: "Wealth",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", {
+        name: "Population",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("checkbox", {
+        name: "Missing Series",
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("supports the all selector option", () => {
+    render(<TimeSeries data={sampleSeries} selectors="all" />);
+
+    const selectors = screen.getByTestId("time-series-selectors");
+    expect(selectors).toBeInTheDocument();
+    expect(selectors).toHaveClass(
+      "d-flex",
+      "justify-content-center",
+      "flex-wrap",
+      "gap-3",
+    );
+    expect(
+      screen.getByRole("checkbox", { name: "Wealth" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: "Population" }),
+    ).toBeInTheDocument();
+  });
+
+  test("supports a single selector name string", () => {
+    const { container } = render(
+      <TimeSeries data={sampleSeries} selectors="Wealth" />,
+    );
+
+    const selectors = screen.getByTestId("time-series-selectors");
+    expect(
+      screen.getByTestId("time-series").compareDocumentPosition(selectors),
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(selectors).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: "Wealth" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("checkbox", { name: "Population" }),
+    ).not.toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      2,
+    );
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Wealth" }));
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
+    expect(screen.queryByText("No data to display")).not.toBeInTheDocument();
+  });
+
+  test("matches checkbox label colors to the series colors", () => {
+    render(<TimeSeries data={sampleSeries} selectors="all" />);
+
+    const wealthLabel = screen
+      .getByTestId("time-series-selector-wealth-wrapper")
+      .querySelector("label span");
+    const populationLabel = screen
+      .getByTestId("time-series-selector-population-wrapper")
+      .querySelector("label span");
+
+    expect(wealthLabel).toHaveStyle({ color: "rgb(255, 0, 0)" });
+    expect(populationLabel).toHaveStyle({ color: "rgb(0, 0, 255)" });
+  });
+
+  test("toggles selected series on and off with selector checkboxes", () => {
+    const { container } = render(
+      <TimeSeries data={sampleSeries} selectors={["Wealth", "Population"]} />,
+    );
+
+    const populationToggle = screen.getByRole("checkbox", {
+      name: "Population",
+    });
+    const wealthToggle = screen.getByRole("checkbox", { name: "Wealth" });
+
+    expect(populationToggle).toBeChecked();
+    expect(wealthToggle).toBeChecked();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      2,
+    );
+
+    fireEvent.click(populationToggle);
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
+    expect(populationToggle).not.toBeChecked();
+
+    fireEvent.click(wealthToggle);
+    expect(screen.getByTestId("time-series-empty")).toBeInTheDocument();
+
+    fireEvent.click(populationToggle);
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
   });
 });

@@ -252,7 +252,34 @@ describe("AdminDashboardPage", () => {
       screen.getByRole("heading", { name: /trends over time/i }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: /health/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: /total cows/i }),
+    ).toBeInTheDocument();
     expect(screen.queryByText(/chart placeholder/i)).not.toBeInTheDocument();
+  });
+
+  test("toggles dashboard time series with selector checkboxes", async () => {
+    renderWithRoute("/admin/dashboard/7");
+
+    await screen.findByTestId("time-series");
+    const populationToggle = screen.getByRole("checkbox", {
+      name: /total cows/i,
+    });
+    const healthToggle = screen.getByRole("checkbox", {
+      name: /health/i,
+    });
+
+    fireEvent.click(populationToggle);
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+
+    fireEvent.click(healthToggle);
+    expect(screen.getByTestId("time-series-empty")).toBeInTheDocument();
+
+    fireEvent.click(healthToggle);
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
   });
 
   test("renders hidden icon in title only when commons is hidden", async () => {
