@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TimeSeries from "main/components/Utils/TimeSeries";
 
 describe("TimeSeries component", () => {
@@ -122,5 +122,58 @@ describe("TimeSeries component", () => {
     expect(screen.getByText("Health")).toBeInTheDocument();
     expect(screen.getAllByText("0%").length).toBeGreaterThan(0);
     expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+  });
+
+  test("renders selector buttons only for matching series names", () => {
+    render(
+      <TimeSeries
+        data={sampleSeries}
+        selectors={["Wealth", "Missing Series", "Population"]}
+      />,
+    );
+
+    expect(screen.getByTestId("time-series-selectors")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Wealth",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Population",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "Missing Series",
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  test("toggles selected series on and off with selector buttons", () => {
+    const { container } = render(
+      <TimeSeries data={sampleSeries} selectors={["Wealth", "Population"]} />,
+    );
+
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      2,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Population" }));
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
+    expect(screen.getByRole("button", { name: "Population" })).toHaveClass(
+      "btn-outline-primary",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Wealth" }));
+    expect(screen.getByTestId("time-series-empty")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Population" }));
+    expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
+      1,
+    );
   });
 });
