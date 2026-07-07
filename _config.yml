@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/remove-old-admin-list-commons","number":257,"title":"Remove legacy Admin List Commons and route edit redirects to anchored V2 list","url":"https://github.com/ucsb-cs156/proj-happycows/pull/257"},{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/add-selector-buttons-to-graph","number":255,"title":"Add toggle selectors for dashboard time series","url":"https://github.com/ucsb-cs156/proj-happycows/pull/255"}]
+pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/fix-usenavigate-issue","number":259,"title":"[WIP] Fix useNavigate issue with anchors for Admin List Commons","url":"https://github.com/ucsb-cs156/proj-happycows/pull/259"},{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/add-selector-buttons-to-graph","number":255,"title":"Add toggle selectors for dashboard time series","url":"https://github.com/ucsb-cs156/proj-happycows/pull/255"}]
