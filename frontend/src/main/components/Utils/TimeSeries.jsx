@@ -23,6 +23,9 @@ import {
 const DEFAULT_Y_AXIS_ID = "default";
 const PERCENTAGE_Y_AXIS_ID = "percentage";
 
+const getSelectorId = (testid, name) =>
+  `${testid}-selector-${name.toLowerCase().replace(/\s+/g, "-")}`;
+
 export default function TimeSeries({
   data,
   selectors = [],
@@ -49,14 +52,17 @@ export default function TimeSeries({
     setSelectedSeriesNames(selectorNames);
   }, [selectorNames]);
 
+  const seriesByName = useMemo(
+    () => new Map(data.map((series) => [series.name, series])),
+    [data],
+  );
+
   const selectorSeries = useMemo(
     () =>
       selectorNames
-        .map((selectorName) =>
-          data.find((series) => series.name === selectorName),
-        )
+        .map((selectorName) => seriesByName.get(selectorName))
         .filter(Boolean),
-    [data, selectorNames],
+    [selectorNames, seriesByName],
   );
 
   const visibleData = data.filter(
@@ -78,9 +84,7 @@ export default function TimeSeries({
         data-testid={`${testid}-selectors`}
       >
         {selectorSeries.map(({ name, color }) => {
-          const selectorId = `${testid}-selector-${name
-            .toLowerCase()
-            .replace(/\s+/g, "-")}`;
+          const selectorId = getSelectorId(testid, name);
           const isSelected = selectedSeriesNames.includes(name);
 
           return (
