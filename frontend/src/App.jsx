@@ -18,7 +18,6 @@ import AdminCoursesIndexPage from "main/pages/AdminCoursesIndexPage";
 import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
-import AdminListCommonsPage from "main/pages/AdminListCommonPage";
 import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
@@ -46,7 +45,6 @@ function App() {
       <Route path="/admin/reports" element={<AdminReportsPage />} />
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
-      <Route path="/admin/listcommons" element={<AdminListCommonsPage />} />
       <Route path="/admin/listcommonsv2" element={<AdminListCommonsPageV2 />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />

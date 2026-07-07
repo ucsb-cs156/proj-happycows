@@ -8,6 +8,7 @@ import {
 import OurTable, {
   ButtonColumn,
   DateColumn,
+  HrefButtonColumn,
   PlaintextColumn,
 } from "main/components/OurTable";
 describe("OurTable tests", () => {
@@ -87,6 +88,25 @@ describe("OurTable tests", () => {
     PlaintextColumn("Log", (cell) => cell.row.original.log),
   ];
 
+  const commonsRows = [
+    {
+      commons: { id: 7 },
+    },
+  ];
+
+  const hrefColumns = [
+    {
+      Header: "id",
+      accessor: "commons.id",
+    },
+    HrefButtonColumn(
+      "Stats CSV",
+      "success",
+      "/api/commonstats/download?commonsId=",
+      "testId",
+    ),
+  ];
+
   test("button appears in the table and triggers callback on click", async () => {
     render(<OurTable columns={columns} data={threeRows} />);
 
@@ -96,6 +116,20 @@ describe("OurTable tests", () => {
     const button = screen.getByTestId("testId-cell-row-0-col-Click-button");
     fireEvent.click(button);
     await waitFor(() => expect(clickMeCallback).toBeCalledTimes(1));
+  });
+
+  test("href button appears in table with expected href", async () => {
+    render(
+      <OurTable columns={hrefColumns} data={commonsRows} testid="testId" />,
+    );
+
+    const button = await screen.findByTestId(
+      "testId-cell-row-0-col-Stats CSV-button",
+    );
+    expect(button).toHaveAttribute(
+      "href",
+      "/api/commonstats/download?commonsId=7",
+    );
   });
 
   test("default testid is testId", async () => {
