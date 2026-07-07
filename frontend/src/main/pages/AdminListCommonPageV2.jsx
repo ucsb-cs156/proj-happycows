@@ -14,7 +14,10 @@ import { useLocation } from "react-router";
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
   const location = useLocation();
-  const lastScrolledHashRef = useRef(null);
+  const lastScrolledRef = useRef({
+    hash: null,
+    locationKey: null,
+  });
 
   const [query, setQuery] = useState("");
 
@@ -43,7 +46,9 @@ export default function AdminListCommonsPageV2() {
       !shouldScrollToHash({
         hash: location.hash,
         commonsLength: commons.length,
-        lastScrolledHash: lastScrolledHashRef.current,
+        locationKey: location.key,
+        lastScrolledHash: lastScrolledRef.current.hash,
+        lastScrolledLocationKey: lastScrolledRef.current.locationKey,
       })
     )
       return;
@@ -51,9 +56,12 @@ export default function AdminListCommonsPageV2() {
     const element = document.getElementById(getHashTargetId(location.hash));
     if (element) {
       element.scrollIntoView(HASH_SCROLL_INTO_VIEW_OPTIONS);
-      lastScrolledHashRef.current = location.hash;
+      lastScrolledRef.current = {
+        hash: location.hash,
+        locationKey: location.key,
+      };
     }
-  }, [location.hash, commons]);
+  }, [location.hash, location.key, commons]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {
