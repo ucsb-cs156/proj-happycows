@@ -1,6 +1,6 @@
 // Stryker disable all
 import { useEffect, useMemo, useState } from "react";
-import { Button, ButtonGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import {
   CartesianGrid,
   Legend,
@@ -49,6 +49,16 @@ export default function TimeSeries({
     setSelectedSeriesNames(selectorNames);
   }, [selectorNames]);
 
+  const selectorSeries = useMemo(
+    () =>
+      selectorNames
+        .map((selectorName) =>
+          data.find((series) => series.name === selectorName),
+        )
+        .filter(Boolean),
+    [data, selectorNames],
+  );
+
   const visibleData = data.filter(
     (series) =>
       !selectorNames.includes(series.name) ||
@@ -60,107 +70,118 @@ export default function TimeSeries({
   const { minDate, maxDate } = getGlobalDateRange(visibleData);
   const { minValue, maxValue } = getGlobalValueRange(visibleData);
   const hasStandardScale = minValue !== null && maxValue !== null;
-  const selectorButtons =
-    selectorNames.length > 0 ? (
-      <ButtonGroup
-        className="mb-3"
+  const selectorControls =
+    selectorSeries.length > 0 ? (
+      <div
+        className="d-flex justify-content-center flex-wrap gap-3 mt-3"
         aria-label="Time series selectors"
         data-testid={`${testid}-selectors`}
       >
-        {selectorNames.map((selectorName) => {
-          const isSelected = selectedSeriesNames.includes(selectorName);
+        {selectorSeries.map(({ name, color }) => {
+          const selectorId = `${testid}-selector-${name
+            .toLowerCase()
+            .replace(/\s+/g, "-")}`;
+          const isSelected = selectedSeriesNames.includes(name);
 
           return (
-            <Button
-              key={selectorName}
-              variant={isSelected ? "primary" : "outline-primary"}
-              onClick={() =>
-                setSelectedSeriesNames((currentSelection) =>
-                  currentSelection.includes(selectorName)
-                    ? currentSelection.filter((name) => name !== selectorName)
-                    : [...currentSelection, selectorName],
-                )
-              }
+            <div
+              key={name}
+              className="mb-0"
+              data-testid={`${selectorId}-wrapper`}
             >
-              {selectorName}
-            </Button>
+              <Form.Check
+                inline
+                id={selectorId}
+                type="checkbox"
+                label={<span style={{ color }}>{name}</span>}
+                checked={isSelected}
+                onChange={() =>
+                  setSelectedSeriesNames((currentSelection) =>
+                    currentSelection.includes(name)
+                      ? currentSelection.filter(
+                          (selectorName) => selectorName !== name,
+                        )
+                      : [...currentSelection, name],
+                  )
+                }
+                style={{ accentColor: color }}
+              />
+            </div>
           );
         })}
-      </ButtonGroup>
+      </div>
     ) : null;
 
-  if (
+  const isEmpty =
     normalizedData.length === 0 ||
     minDate === null ||
     maxDate === null ||
-    (!hasStandardScale && !showPercentageAxis)
-  ) {
-    return (
-      <>
-        {selectorButtons}
-        <div data-testid={`${testid}-empty`}>
-          <p>No data to display</p>
-        </div>
-      </>
-    );
-  }
+    (!hasStandardScale && !showPercentageAxis);
 
-  const [xMin, xMax] = expandRangeWhenEqual(minDate, maxDate);
+  const [xMin, xMax] = !isEmpty
+    ? expandRangeWhenEqual(minDate, maxDate)
+    : [null, null];
   const [yMin, yMax] = hasStandardScale
     ? expandRangeWhenEqual(minValue, maxValue)
     : [null, null];
 
+  const chartOrEmpty = isEmpty ? (
+    <div data-testid={`${testid}-empty`}>
+      <p>No data to display</p>
+    </div>
+  ) : (
+    <LineChart
+      width={width}
+      height={height}
+      margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+      data-testid={testid}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        type="number"
+        dataKey="dateMs"
+        domain={[xMin, xMax]}
+        tickFormatter={formatTimestampForTick}
+      />
+      {hasStandardScale && (
+        <YAxis
+          yAxisId={DEFAULT_Y_AXIS_ID}
+          type="number"
+          domain={[yMin, yMax]}
+        />
+      )}
+      {showPercentageAxis && (
+        <YAxis
+          yAxisId={PERCENTAGE_Y_AXIS_ID}
+          type="number"
+          orientation="right"
+          domain={[0, 100]}
+          ticks={[0, 25, 50, 75, 100]}
+          tickFormatter={formatPercentageForTick}
+          allowDecimals={false}
+        />
+      )}
+      <Tooltip labelFormatter={formatTimestampForTick} />
+      <Legend />
+      {normalizedData.map((series) => (
+        <Line
+          key={series.name}
+          name={series.name}
+          data={series.values}
+          yAxisId={series.percentage ? PERCENTAGE_Y_AXIS_ID : DEFAULT_Y_AXIS_ID}
+          dataKey="value"
+          stroke={series.color}
+          dot={false}
+          isAnimationActive={false}
+        />
+      ))}
+    </LineChart>
+  );
+
   return (
     <>
-      {selectorButtons}
-      <LineChart
-        width={width}
-        height={height}
-        margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-        data-testid={testid}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          type="number"
-          dataKey="dateMs"
-          domain={[xMin, xMax]}
-          tickFormatter={formatTimestampForTick}
-        />
-        {hasStandardScale && (
-          <YAxis
-            yAxisId={DEFAULT_Y_AXIS_ID}
-            type="number"
-            domain={[yMin, yMax]}
-          />
-        )}
-        {showPercentageAxis && (
-          <YAxis
-            yAxisId={PERCENTAGE_Y_AXIS_ID}
-            type="number"
-            orientation="right"
-            domain={[0, 100]}
-            ticks={[0, 25, 50, 75, 100]}
-            tickFormatter={formatPercentageForTick}
-            allowDecimals={false}
-          />
-        )}
-        <Tooltip labelFormatter={formatTimestampForTick} />
-        <Legend />
-        {normalizedData.map((series) => (
-          <Line
-            key={series.name}
-            name={series.name}
-            data={series.values}
-            yAxisId={
-              series.percentage ? PERCENTAGE_Y_AXIS_ID : DEFAULT_Y_AXIS_ID
-            }
-            dataKey="value"
-            stroke={series.color}
-            dot={false}
-            isAnimationActive={false}
-          />
-        ))}
-      </LineChart>
+      {chartOrEmpty}
+      {selectorControls}
     </>
   );
 }
