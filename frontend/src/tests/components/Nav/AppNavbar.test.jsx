@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import AppNavbar from "main/components/Nav/AppNavbar";
@@ -43,6 +43,9 @@ describe("AppNavbar tests", () => {
     ).toBeInTheDocument();
     const adminMenu = screen.getByTestId("appnavbar-admin-dropdown");
     expect(adminMenu).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Admin"));
+    expect(await screen.findByText("List Commons")).toBeInTheDocument();
+    expect(screen.queryByText("List Commons V2")).not.toBeInTheDocument();
   });
 
   test("renders H2Console and Swagger links correctly", async () => {

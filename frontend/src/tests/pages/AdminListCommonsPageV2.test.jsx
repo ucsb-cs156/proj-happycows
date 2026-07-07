@@ -118,6 +118,15 @@ describe("AdminListCommonPageV2 tests", () => {
     expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
     expect(screen.getByTestId("AdminCommonsCard-2")).toBeInTheDocument();
     expect(screen.getByTestId("AdminCommonsCard-3")).toBeInTheDocument();
+    expect(document.getElementById("1")).toContainElement(
+      screen.getByTestId("AdminCommonsCard-1"),
+    );
+    expect(document.getElementById("2")).toContainElement(
+      screen.getByTestId("AdminCommonsCard-2"),
+    );
+    expect(document.getElementById("3")).toContainElement(
+      screen.getByTestId("AdminCommonsCard-3"),
+    );
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
 
     // ✅ Stryker-killers for animation style={{ animation: "fadeInDown 1s ease-out" }}

@@ -74,11 +74,12 @@ export default function AdminListCommonsPageV2() {
         >
           {filteredCommons &&
             filteredCommons.map((common) => (
-              <AdminCommonsCard
-                key={common.commons.id}
-                commonItem={common}
-                currentUser={currentUser}
-              />
+              <div key={common.commons.id} id={String(common.commons.id)}>
+                <AdminCommonsCard
+                  commonItem={common}
+                  currentUser={currentUser}
+                />
+              </div>
             ))}
         </Container>
       </div>

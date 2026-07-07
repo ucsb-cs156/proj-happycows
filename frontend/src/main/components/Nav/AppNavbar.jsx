@@ -68,11 +68,8 @@ export default function AppNavbar({
                   <NavDropdown.Item href="/admin/createcommons">
                     Create Commons
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="/admin/listcommons">
-                    List Commons
-                  </NavDropdown.Item>
                   <NavDropdown.Item href="/admin/listcommonsv2">
-                    List Commons V2
+                    List Commons
                   </NavDropdown.Item>
                   <NavDropdown.Item href="/admin/liststudents">
                     Students
