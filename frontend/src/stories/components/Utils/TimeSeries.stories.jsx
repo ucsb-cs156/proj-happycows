@@ -77,6 +77,12 @@ DifferentColors.args = {
   ],
 };
 
+export const AllToggleable = Template.bind({});
+AllToggleable.args = {
+  ...DifferentColors.args,
+  selectors: "all",
+};
+
 export const PercentageSeries = Template.bind({});
 PercentageSeries.args = {
   data: [
@@ -116,4 +122,10 @@ MixedStandardAndPercentage.args = {
       ],
     },
   ],
+};
+
+export const JustOneToggleable = Template.bind({});
+JustOneToggleable.args = {
+  ...MixedStandardAndPercentage.args,
+  selectors: ["Wealth"],
 };

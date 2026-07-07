@@ -150,6 +150,16 @@ describe("TimeSeries component", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("supports the all selector option", () => {
+    render(<TimeSeries data={sampleSeries} selectors="all" />);
+
+    expect(screen.getByTestId("time-series-selectors")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Wealth" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Population" }),
+    ).toBeInTheDocument();
+  });
+
   test("toggles selected series on and off with selector buttons", () => {
     const { container } = render(
       <TimeSeries data={sampleSeries} selectors={["Wealth", "Population"]} />,

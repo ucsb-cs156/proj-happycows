@@ -30,13 +30,19 @@ export default function TimeSeries({
   height = 400,
   testid = "time-series",
 }) {
-  const selectorNames = useMemo(
-    () =>
-      selectors.filter((selector) =>
-        data.some((series) => series.name === selector),
-      ),
-    [data, selectors],
-  );
+  const selectorNames = useMemo(() => {
+    const selectorOptions = Array.isArray(selectors)
+      ? selectors
+      : selectors === "all"
+        ? ["all"]
+        : [selectors];
+
+    return selectorOptions.includes("all")
+      ? data.map((series) => series.name)
+      : selectorOptions.filter((selector) =>
+          data.some((series) => series.name === selector),
+        );
+  }, [data, selectors]);
   const [selectedSeriesNames, setSelectedSeriesNames] = useState(selectorNames);
 
   useEffect(() => {
