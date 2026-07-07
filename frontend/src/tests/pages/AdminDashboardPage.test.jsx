@@ -252,9 +252,7 @@ describe("AdminDashboardPage", () => {
       screen.getByRole("heading", { name: /trends over time/i }),
     ).toBeInTheDocument();
     expect(screen.getByTestId("time-series")).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /health/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /health/i })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /total cows/i }),
     ).toBeInTheDocument();
