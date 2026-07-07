@@ -136,6 +136,38 @@ describe("AdminListCommonPageV2 tests", () => {
     expect(animated).toHaveStyle("animation: fadeInDown 1s ease-out");
   });
 
+  test("scrolls to hash target after loading commons", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    const scrollIntoViewMock = vi.fn();
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalled();
+      });
+    } finally {
+      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+    }
+  });
+
   test("renders empty state when backend unavailable, user only", async () => {
     setupUserOnly();
     const queryClient = new QueryClient();

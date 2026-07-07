@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import { Button, Row, Col, Container, Form } from "react-bootstrap";
+import { useLocation } from "react-router";
 
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
+  const location = useLocation();
 
   const [query, setQuery] = useState("");
 
@@ -29,6 +31,17 @@ export default function AdminListCommonsPageV2() {
   const filteredCommons = commons.filter((c) =>
     c.commons.name.toLowerCase().includes(query.toLowerCase()),
   );
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const element = document.getElementById(location.hash.replace("#", ""));
+    if (element) {
+      setTimeout(() => {
+        element.scrollIntoView();
+      }, 0);
+    }
+  }, [location.hash, filteredCommons]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {
