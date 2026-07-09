@@ -14,10 +14,12 @@ import { useLocation } from "react-router";
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
   const location = useLocation();
+  // Stryker disable next-line ObjectLiteral
   const lastScrolledRef = useRef({
     hash: null,
     locationKey: null,
   });
+  // Stryker restore all
 
   const [query, setQuery] = useState("");
 

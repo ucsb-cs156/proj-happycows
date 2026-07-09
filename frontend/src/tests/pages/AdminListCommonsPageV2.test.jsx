@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -231,6 +237,58 @@ describe("AdminListCommonPageV2 tests", () => {
         await screen.findByTestId("AdminCommonsCard-2"),
       ).toBeInTheDocument();
       expect(scrollIntoViewMock).not.toHaveBeenCalled();
+    } finally {
+      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+    }
+  });
+
+  test("does not scroll again for same hash and same location key after commons data changes", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    const scrollIntoViewMock = vi.fn();
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+      });
+
+      const updatedCommons = [
+        ...commonsPlusFixtures.threeCommonsPlus,
+        {
+          commons: {
+            id: 4,
+            name: "Test Commons 4",
+          },
+          totalCows: 8,
+        },
+      ];
+
+      act(() => {
+        queryClient.setQueryData(["/api/commons/allplus"], updatedCommons);
+      });
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-4"),
+      ).toBeInTheDocument();
+      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
     } finally {
       HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     }
