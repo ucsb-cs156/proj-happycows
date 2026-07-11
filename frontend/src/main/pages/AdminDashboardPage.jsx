@@ -216,10 +216,7 @@ export default function AdminDashboardPage() {
       <h3 className="mt-4">Trends Over Time</h3>
       <Card className="mb-3">
         <Card.Body>
-          <TimeSeries
-            data={timeSeriesData}
-            selectors={["Health", "Total Cows"]}
-          />
+          <TimeSeries data={timeSeriesData} selectors="all" />
         </Card.Body>
       </Card>
     </BasicLayout>
