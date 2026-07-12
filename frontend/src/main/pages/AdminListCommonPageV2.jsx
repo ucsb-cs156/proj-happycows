@@ -32,6 +32,7 @@ export default function AdminListCommonsPageV2() {
     data: commons,
     error: _error,
     status: _status,
+    isFetching,
   } = useBackend(
     ["/api/commons/allplus"],
     { method: "GET", url: "/api/commons/allplus" },
@@ -39,7 +40,11 @@ export default function AdminListCommonsPageV2() {
   );
   // Stryker restore  all
 
-  const filteredCommons = commons.filter((c) =>
+  const sortedCommons = [...commons].sort(
+    (a, b) => b.commons.id - a.commons.id,
+  );
+
+  const filteredCommons = sortedCommons.filter((c) =>
     c.commons.name.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -47,6 +52,7 @@ export default function AdminListCommonsPageV2() {
     if (
       !shouldScrollToHash({
         hash: location.hash,
+        isFetching,
         commonsLength: commons.length,
         locationKey: location.key,
         lastScrolledHash: lastScrolledRef.current.hash,
@@ -63,7 +69,7 @@ export default function AdminListCommonsPageV2() {
         locationKey: location.key,
       };
     }
-  }, [location.hash, location.key, commons]);
+  }, [location.hash, location.key, commons, isFetching]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {

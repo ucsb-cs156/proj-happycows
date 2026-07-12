@@ -7,12 +7,14 @@ const getHashTargetId = (hash) => hash.replace("#", "");
 
 const shouldScrollToHash = ({
   hash,
+  isFetching,
   commonsLength,
   locationKey,
   lastScrolledHash,
   lastScrolledLocationKey,
 }) =>
   Boolean(hash) &&
+  !isFetching &&
   commonsLength > 0 &&
   (hash !== lastScrolledHash || locationKey !== lastScrolledLocationKey);
 

@@ -143,6 +143,90 @@ describe("AdminListCommonPageV2 tests", () => {
     expect(animated).toHaveStyle("animation: fadeInDown 1s ease-out");
   });
 
+  test("renders commons sorted newest to oldest by id", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, [
+        { commons: { id: 1, name: "Anacapa" } },
+        { commons: { id: 3, name: "Santa Rosa" } },
+        { commons: { id: 2, name: "Santa Cruz" } },
+      ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminListCommonsPageV2 />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    const cards = screen.getAllByTestId(/^AdminCommonsCard-\d+$/);
+    expect(cards.map((card) => card.getAttribute("data-testid"))).toEqual([
+      "AdminCommonsCard-3",
+      "AdminCommonsCard-2",
+      "AdminCommonsCard-1",
+    ]);
+  });
+
+  test("waits for fresh data before scrolling when cached commons are shown", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    // Simulate returning to the page with stale cached data from a prior visit
+    queryClient.setQueryData(
+      ["/api/commons/allplus"],
+      commonsPlusFixtures.threeCommonsPlus,
+    );
+
+    let resolveFetch;
+    const fetchGate = new Promise((resolve) => {
+      resolveFetch = resolve;
+    });
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(() =>
+        fetchGate.then(() => [200, commonsPlusFixtures.threeCommonsPlus]),
+      );
+
+    const scrollIntoViewMock = vi.fn();
+    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
+
+    try {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      // Cached commons render immediately, but the refetch is still in
+      // flight; scrolling now would target a layout that may reshuffle
+      // when fresh data arrives.
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+      expect(scrollIntoViewMock).not.toHaveBeenCalled();
+
+      resolveFetch();
+
+      await waitFor(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+      });
+      expect(scrollIntoViewMock).toHaveBeenCalledWith(
+        HASH_SCROLL_INTO_VIEW_OPTIONS,
+      );
+      expect(scrollIntoViewMock.mock.contexts[0]).toBe(
+        document.getElementById("2"),
+      );
+    } finally {
+      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+    }
+  });
+
   test("scrolls to hash target after loading commons", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();

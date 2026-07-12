@@ -21,7 +21,21 @@ describe("hashScrollUtils tests", () => {
     expect(
       shouldScrollToHash({
         hash: "#2",
+        isFetching: false,
         commonsLength: 0,
+        locationKey: "a",
+        lastScrolledHash: null,
+        lastScrolledLocationKey: null,
+      }),
+    ).toBe(false);
+  });
+
+  test("shouldScrollToHash is false while a fetch is in flight", () => {
+    expect(
+      shouldScrollToHash({
+        hash: "#2",
+        isFetching: true,
+        commonsLength: 3,
         locationKey: "a",
         lastScrolledHash: null,
         lastScrolledLocationKey: null,
@@ -33,6 +47,7 @@ describe("hashScrollUtils tests", () => {
     expect(
       shouldScrollToHash({
         hash: "#2",
+        isFetching: false,
         commonsLength: 3,
         locationKey: "a",
         lastScrolledHash: "#2",
@@ -45,6 +60,7 @@ describe("hashScrollUtils tests", () => {
     expect(
       shouldScrollToHash({
         hash: "#2",
+        isFetching: false,
         commonsLength: 3,
         locationKey: "a",
         lastScrolledHash: "#1",
@@ -57,6 +73,7 @@ describe("hashScrollUtils tests", () => {
     expect(
       shouldScrollToHash({
         hash: "#2",
+        isFetching: false,
         commonsLength: 3,
         locationKey: "b",
         lastScrolledHash: "#2",
