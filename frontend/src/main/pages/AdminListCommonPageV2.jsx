@@ -1,25 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import {
-  getHashTargetId,
-  HASH_SCROLL_INTO_VIEW_OPTIONS,
-  shouldScrollToHash,
-} from "main/utils/hashScrollUtils";
+  getFocusTargetId,
+  scrollToFocusTarget,
+} from "main/utils/focusScrollUtils";
 import { Button, Row, Col, Container, Form } from "react-bootstrap";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
   const location = useLocation();
-  // Stryker disable next-line ObjectLiteral
-  const lastScrolledRef = useRef({
-    hash: null,
-    locationKey: null,
-  });
-  // Stryker restore all
+  const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
 
@@ -48,28 +42,17 @@ export default function AdminListCommonsPageV2() {
     c.commons.name.toLowerCase().includes(query.toLowerCase()),
   );
 
-  useEffect(() => {
-    if (
-      !shouldScrollToHash({
-        hash: location.hash,
-        isFetching,
-        commonsLength: commons.length,
-        locationKey: location.key,
-        lastScrolledHash: lastScrolledRef.current.hash,
-        lastScrolledLocationKey: lastScrolledRef.current.locationKey,
-      })
-    )
-      return;
+  const focusId = getFocusTargetId(location.search);
 
-    const element = document.getElementById(getHashTargetId(location.hash));
-    if (element) {
-      element.scrollIntoView(HASH_SCROLL_INTO_VIEW_OPTIONS);
-      lastScrolledRef.current = {
-        hash: location.hash,
-        locationKey: location.key,
-      };
+  useEffect(() => {
+    // Wait until the (re)fetch settles so we scroll against the final layout,
+    // then remove ?focus= from the URL so later data updates don't re-scroll.
+    if (!focusId || isFetching || commons.length === 0) {
+      return;
     }
-  }, [location.hash, location.key, commons, isFetching]);
+    scrollToFocusTarget({ targetId: focusId });
+    navigate(location.pathname, { replace: true });
+  }, [focusId, isFetching, commons, navigate, location.pathname]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {

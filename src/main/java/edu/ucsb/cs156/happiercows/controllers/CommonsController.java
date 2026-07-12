@@ -109,15 +109,18 @@ public class CommonsController extends ApiController {
         return ResponseEntity.ok().body(body);
     }
 
-    @Operation(summary = "Get a list of all commons and number of cows/users")
+    @Operation(summary = "Get a list of all commons and number of cows/users, newest first")
     @GetMapping("/allplus")
     public ResponseEntity<String> getCommonsPlus() throws JsonProcessingException {
         log.info("getCommonsPlus()...");
         Iterable<Commons> commonsListIter = commonsRepository.findAll();
 
-        // convert Iterable to List for the purposes of using a Java Stream & lambda
-        // below
-        Iterable<CommonsPlus> commonsPlusList = commonsPlusBuilderService.convertToCommonsPlus(commonsListIter);
+        // findAll() has no defined order, so sort newest first for a deterministic response
+        List<Commons> commonsList = new ArrayList<>();
+        commonsListIter.forEach(commonsList::add);
+        commonsList.sort(Comparator.comparingLong(Commons::getId).reversed());
+
+        Iterable<CommonsPlus> commonsPlusList = commonsPlusBuilderService.convertToCommonsPlus(commonsList);
 
         String body = mapper.writeValueAsString(commonsPlusList);
         return ResponseEntity.ok().body(body);

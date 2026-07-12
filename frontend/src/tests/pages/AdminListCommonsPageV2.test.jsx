@@ -1,10 +1,4 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import mockConsole from "tests/testutils/mockConsole";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -12,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
-import { HASH_SCROLL_INTO_VIEW_OPTIONS } from "main/utils/hashScrollUtils";
+import { FOCUS_SCROLL_MARGIN } from "main/utils/focusScrollUtils";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -171,8 +165,56 @@ describe("AdminListCommonPageV2 tests", () => {
     ]);
   });
 
+  const withScrollToMock = async (fn) => {
+    const scrollToMock = vi.fn();
+    const originalScrollTo = window.scrollTo;
+    window.scrollTo = scrollToMock;
+    try {
+      await fn(scrollToMock);
+    } finally {
+      window.scrollTo = originalScrollTo;
+    }
+  };
+
+  test("scrolls to the focused commons and strips the focus param", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(scrollToMock).toHaveBeenCalledTimes(1);
+      });
+      // jsdom reports zero geometry, so the expected top is
+      // 0 (element top) + 0 (scrollY) - 0 (navbar height) - margin
+      expect(scrollToMock).toHaveBeenCalledWith({
+        top: -FOCUS_SCROLL_MARGIN,
+        behavior: "smooth",
+      });
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+        replace: true,
+      });
+    });
+  });
+
   test("waits for fresh data before scrolling when cached commons are shown", async () => {
     setupAdminUser();
+    mockedNavigate.mockClear();
     const queryClient = new QueryClient();
     // Simulate returning to the page with stale cached data from a prior visit
     queryClient.setQueryData(
@@ -190,14 +232,10 @@ describe("AdminListCommonPageV2 tests", () => {
         fetchGate.then(() => [200, commonsPlusFixtures.threeCommonsPlus]),
       );
 
-    const scrollIntoViewMock = vi.fn();
-    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-    try {
+    await withScrollToMock(async (scrollToMock) => {
       render(
         <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
             <AdminListCommonsPageV2 />
           </MemoryRouter>
         </QueryClientProvider>,
@@ -209,75 +247,29 @@ describe("AdminListCommonPageV2 tests", () => {
       expect(
         await screen.findByTestId("AdminCommonsCard-2"),
       ).toBeInTheDocument();
-      expect(scrollIntoViewMock).not.toHaveBeenCalled();
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
 
       resolveFetch();
 
       await waitFor(() => {
-        expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+        expect(scrollToMock).toHaveBeenCalledTimes(1);
       });
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(
-        HASH_SCROLL_INTO_VIEW_OPTIONS,
-      );
-      expect(scrollIntoViewMock.mock.contexts[0]).toBe(
-        document.getElementById("2"),
-      );
-    } finally {
-      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
-    }
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+        replace: true,
+      });
+    });
   });
 
-  test("scrolls to hash target after loading commons", async () => {
+  test("does not scroll or rewrite the URL when there is no focus param", async () => {
     setupAdminUser();
+    mockedNavigate.mockClear();
     const queryClient = new QueryClient();
     axiosMock
       .onGet("/api/commons/allplus")
       .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
-    const scrollIntoViewMock = vi.fn();
-    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-    try {
-      render(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
-            <AdminListCommonsPageV2 />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      );
-
-      expect(
-        await screen.findByTestId("AdminCommonsCard-2"),
-      ).toBeInTheDocument();
-
-      await waitFor(() => {
-        expect(scrollIntoViewMock).toHaveBeenCalled();
-      });
-      expect(scrollIntoViewMock).toHaveBeenCalledWith(
-        HASH_SCROLL_INTO_VIEW_OPTIONS,
-      );
-      expect(scrollIntoViewMock.mock.contexts[0]).toBe(
-        document.getElementById("2"),
-      );
-    } finally {
-      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
-    }
-  });
-
-  test("does not scroll when route has no hash", async () => {
-    setupAdminUser();
-    const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, commonsPlusFixtures.threeCommonsPlus);
-
-    const scrollIntoViewMock = vi.fn();
-    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-    const getElementByIdSpy = vi.spyOn(document, "getElementById");
-
-    try {
+    await withScrollToMock(async (scrollToMock) => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter initialEntries={["/admin/listcommonsv2"]}>
@@ -289,29 +281,23 @@ describe("AdminListCommonPageV2 tests", () => {
       expect(
         await screen.findByTestId("AdminCommonsCard-2"),
       ).toBeInTheDocument();
-      expect(getElementByIdSpy).not.toHaveBeenCalled();
-      expect(scrollIntoViewMock).not.toHaveBeenCalled();
-    } finally {
-      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
-      getElementByIdSpy.mockRestore();
-    }
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
+    });
   });
 
-  test("does not scroll when hash target element is missing", async () => {
+  test("strips the focus param without scrolling when the target is missing", async () => {
     setupAdminUser();
+    mockedNavigate.mockClear();
     const queryClient = new QueryClient();
     axiosMock
       .onGet("/api/commons/allplus")
       .reply(200, commonsPlusFixtures.threeCommonsPlus);
 
-    const scrollIntoViewMock = vi.fn();
-    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-    try {
+    await withScrollToMock(async (scrollToMock) => {
       render(
         <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={["/admin/listcommonsv2#99"]}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=99"]}>
             <AdminListCommonsPageV2 />
           </MemoryRouter>
         </QueryClientProvider>,
@@ -320,62 +306,36 @@ describe("AdminListCommonPageV2 tests", () => {
       expect(
         await screen.findByTestId("AdminCommonsCard-2"),
       ).toBeInTheDocument();
-      expect(scrollIntoViewMock).not.toHaveBeenCalled();
-    } finally {
-      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
-    }
+      await waitFor(() => {
+        expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+          replace: true,
+        });
+      });
+      expect(scrollToMock).not.toHaveBeenCalled();
+    });
   });
 
-  test("does not scroll again for same hash and same location key after commons data changes", async () => {
+  test("does not scroll or rewrite the URL when there are no commons", async () => {
     setupAdminUser();
+    mockedNavigate.mockClear();
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/commons/allplus")
-      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+    axiosMock.onGet("/api/commons/allplus").reply(200, []);
 
-    const scrollIntoViewMock = vi.fn();
-    const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
-    HTMLElement.prototype.scrollIntoView = scrollIntoViewMock;
-
-    try {
+    await withScrollToMock(async (scrollToMock) => {
       render(
         <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={["/admin/listcommonsv2#2"]}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
             <AdminListCommonsPageV2 />
           </MemoryRouter>
         </QueryClientProvider>,
       );
-
-      expect(
-        await screen.findByTestId("AdminCommonsCard-2"),
-      ).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
+        expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
       });
-
-      const updatedCommons = [
-        ...commonsPlusFixtures.threeCommonsPlus,
-        {
-          commons: {
-            id: 4,
-            name: "Test Commons 4",
-          },
-          totalCows: 8,
-        },
-      ];
-
-      act(() => {
-        queryClient.setQueryData(["/api/commons/allplus"], updatedCommons);
-      });
-
-      expect(
-        await screen.findByTestId("AdminCommonsCard-4"),
-      ).toBeInTheDocument();
-      expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
-    } finally {
-      HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
-    }
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
+    });
   });
 
   test("renders empty state when backend unavailable, user only", async () => {
