@@ -1468,9 +1468,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(100, commonsPlus.getEffectiveCapacity());
     }
 
-    @WithMockUser(roles = {"ADMIN", "USER"})
+    @WithMockUser(roles = {"USER"})
     @Test
-    public void getNumCowsForCommonsId_admin_multiple_farmers() throws Exception {
+    public void getNumCowsForCommonsId_user_multiple_farmers() throws Exception {
         Commons c = Commons.builder().id(1L).name("Test Commons").build();
 
         UserCommons uc1 = UserCommons.builder()
@@ -1500,9 +1500,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(expected, actual);
     }
 
-    @WithMockUser(roles = {"ADMIN", "USER"})
+    @WithMockUser(roles = {"USER"})
     @Test
-    public void getNumCowsForCommonsId_admin_no_farmers() throws Exception {
+    public void getNumCowsForCommonsId_user_no_farmers() throws Exception {
         when(userCommonsRepository.findByCommonsId(eq(2L))).thenReturn(new ArrayList<>());
 
         MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=2"))
@@ -1618,9 +1618,9 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().isOk()).andReturn();
     }
 
-    @WithMockUser(roles = {"ADMIN", "USER"})
+    @WithMockUser(roles = {"USER"})
     @Test
-    public void getCommonsTimeSeries_admin_ok() throws Exception {
+    public void getCommonsTimeSeries_user_ok_multiple_stats() throws Exception {
         CommonStats earlier = CommonStats.builder()
                 .commonsId(9L)
                 .numCows(10)

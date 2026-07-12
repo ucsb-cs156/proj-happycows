@@ -228,6 +228,9 @@ describe("AdminEditCommonsPage tests", () => {
           carryingCapacity: 200,
           aboveCapacityHealthUpdateStrategy: "strat2",
           belowCapacityHealthUpdateStrategy: "strat3",
+          // showLeaderboard is no longer editable via this form (it is now
+          // managed from the Dashboard page's "Show Dashboard to Students"
+          // control), so its original fetched value is preserved unchanged.
           showLeaderboard: false,
           showChat: true,
           hidden: true,
