@@ -9,6 +9,7 @@ import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
+import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
@@ -369,8 +370,30 @@ public class CommonsController extends ApiController {
         return genericMessage(responseString);
     }
 
-    @Operation(summary = "Get the number of cows for each farmer in a commons (admin only)")
+    @Operation(summary = "Update the dashboard visibility settings for a commons (admin only)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/dashboardSettings")
+    public ResponseEntity<Commons> updateDashboardSettings(
+            @Parameter(name="id") @RequestParam long id,
+            @Parameter(name="request body") @RequestBody DashboardSettingsParams params
+    ) {
+        Commons commons = commonsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Commons.class, id));
+
+        commons.setShowLeaderboard(params.isShowLeaderboard());
+        commons.setShowOverviewSection(params.isShowOverviewSection());
+        commons.setShowCowsPerFarmerSection(params.isShowCowsPerFarmerSection());
+        commons.setShowHistogramSection(params.isShowHistogramSection());
+        commons.setShowTrendsSection(params.isShowTrendsSection());
+        commons.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());
+
+        Commons saved = commonsRepository.save(commons);
+
+        return ResponseEntity.ok().body(saved);
+    }
+
+    @Operation(summary = "Get the number of cows for each farmer in a commons")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/numcows")
     public ResponseEntity<List<Integer>> getNumCowsForCommonsId(
             @Parameter(name="commonsId") @RequestParam Long commonsId) {
@@ -381,8 +404,8 @@ public class CommonsController extends ApiController {
         return ResponseEntity.ok().body(numCowsList);
     }
 
-    @Operation(summary = "Get timeseries stats for a commons (admin only)")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Get timeseries stats for a commons")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/timeseries")
     public ResponseEntity<List<Map<String, Object>>> getCommonsTimeSeries(
             @Parameter(name="commonId") @RequestParam Long commonId) {

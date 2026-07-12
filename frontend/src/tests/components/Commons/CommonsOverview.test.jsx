@@ -30,7 +30,7 @@ describe("CommonsOverview tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
   });
 
-  test("Redirects to the LeaderboardPage for an admin when you click visit", async () => {
+  test("Redirects to the DashboardPage for an admin when you click visit", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -47,10 +47,10 @@ describe("CommonsOverview tests", () => {
     ).toBeInTheDocument();
     const leaderboardButton = screen.getByTestId("user-leaderboard-button");
     fireEvent.click(leaderboardButton);
-    expect(mockNavigate).toHaveBeenCalledWith("/leaderboard/4");
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard/4");
   });
 
-  test("LeaderboardPage for an ordinary user when commons has showLeaderboard = true", async () => {
+  test("DashboardPage for an ordinary user when commons has showLeaderboard = true", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -68,7 +68,7 @@ describe("CommonsOverview tests", () => {
     );
   });
 
-  test("No LeaderboardPage for an ordinary user when commons has showLeaderboard = false", async () => {
+  test("No DashboardPage for an ordinary user when commons has showLeaderboard = false", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

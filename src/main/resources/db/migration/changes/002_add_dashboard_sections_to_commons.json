@@ -1,0 +1,69 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "002-Add-Dashboard-Sections-To-Commons",
+        "author": "copilot",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "COMMONS",
+                  "columnName": "SHOW_OVERVIEW_SECTION"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "COMMONS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "SHOW_OVERVIEW_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SHOW_COWS_PER_FARMER_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SHOW_HISTOGRAM_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SHOW_TRENDS_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SHOW_FARMER_LEADERBOARD_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -102,7 +102,7 @@ describe("AdminCommonsCard tests", () => {
     expect(screen.getByText("Starting Date:")).toBeInTheDocument();
     expect(screen.getByText("Last Date:")).toBeInTheDocument();
     expect(screen.getByText("Degrad Rate:")).toBeInTheDocument();
-    expect(screen.getByText("Show Leaderboard:")).toBeInTheDocument();
+    expect(screen.getByText("Show Dashboard:")).toBeInTheDocument();
     expect(screen.getByText("Show Chat:")).toBeInTheDocument();
     expect(screen.getByText("Total Cows:")).toBeInTheDocument();
     expect(screen.getByText("Cap / User:")).toBeInTheDocument();
@@ -130,7 +130,7 @@ describe("AdminCommonsCard tests", () => {
     const degradationRateValue =
       degradationRateLabel.parentElement.nextElementSibling;
     expect(degradationRateValue).toHaveTextContent("0.01");
-    const showLeaderboardLabel = screen.getByText("Show Leaderboard:");
+    const showLeaderboardLabel = screen.getByText("Show Dashboard:");
     const showLeaderboardValue =
       showLeaderboardLabel.parentElement.nextElementSibling;
     expect(showLeaderboardValue).toHaveTextContent("false");
@@ -455,7 +455,6 @@ describe("AdminCommonsCard tests", () => {
 
     expect(screen.getByText("Edit")).toBeInTheDocument();
     expect(screen.getByText("Delete")).toBeInTheDocument();
-    expect(screen.getByText("Leaderboard")).toBeInTheDocument();
     expect(screen.getByText("Stats CSV")).toBeInTheDocument();
     expect(screen.getByText("Announcements")).toBeInTheDocument();
 
@@ -482,7 +481,7 @@ describe("AdminCommonsCard tests", () => {
     expect(screen.getByText("Starting Date:")).toBeInTheDocument();
     expect(screen.getByText("Last Date:")).toBeInTheDocument();
     expect(screen.getByText("Degrad Rate:")).toBeInTheDocument();
-    expect(screen.getByText("Show Leaderboard:")).toBeInTheDocument();
+    expect(screen.getByText("Show Dashboard:")).toBeInTheDocument();
     expect(screen.getByText("Show Chat:")).toBeInTheDocument();
     expect(screen.getByText("Total Cows:")).toBeInTheDocument();
     expect(screen.getByText("Cap / User:")).toBeInTheDocument();
@@ -622,27 +621,6 @@ describe("AdminCommonsCard tests", () => {
     expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcommons/1");
   });
 
-  test("leaderboard button navigates to leaderboard page", () => {
-    const queryClient = new QueryClient();
-    const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
-    const currentUser = currentUserFixtures.adminUser;
-
-    render(
-      <QueryClientProvider client={queryClient}>
-        <MemoryRouter>
-          <AdminCommonsCard commonItem={commonItem} currentUser={currentUser} />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const leaderboardButton = screen.getByTestId(
-      "AdminCommonsCard-Leaderboard-1",
-    );
-    fireEvent.click(leaderboardButton);
-
-    expect(mockedNavigate).toHaveBeenCalledWith("/leaderboard/1");
-  });
-
   test("stats CSV button has correct href", () => {
     const queryClient = new QueryClient();
     const commonItem = commonsPlusFixtures.threeCommonsPlus[0];
@@ -732,7 +710,7 @@ describe("AdminCommonsCard tests", () => {
       </QueryClientProvider>,
     );
 
-    const showLeaderboardLabel = screen.getByText("Show Leaderboard:");
+    const showLeaderboardLabel = screen.getByText("Show Dashboard:");
     const showLeaderboardValue =
       showLeaderboardLabel.parentElement.nextElementSibling;
     expect(showLeaderboardValue).toHaveTextContent("true");

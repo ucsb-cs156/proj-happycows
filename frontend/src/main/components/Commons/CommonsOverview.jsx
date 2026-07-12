@@ -13,12 +13,12 @@ export default function CommonsOverview({
   let navigate = useNavigate();
 
   // Stryker disable all
-  const leaderboardButtonClick = () => {
-    navigate("/leaderboard/" + commonsPlus.commons.id);
+  const dashboardButtonClick = () => {
+    navigate("/dashboard/" + commonsPlus.commons.id);
   };
   // Stryker restore all
 
-  const showLeaderboard =
+  const showDashboard =
     hasRole(currentUser, "ROLE_ADMIN") || commonsPlus.commons.showLeaderboard;
 
   return (
@@ -43,13 +43,13 @@ export default function CommonsOverview({
             <Card.Text>Total Players: {commonsPlus.totalUsers}</Card.Text>
           </Col>
           <Col>
-            {showLeaderboard && (
+            {showDashboard && (
               <Button
                 variant="outline-success"
                 data-testid="user-leaderboard-button"
-                onClick={leaderboardButtonClick}
+                onClick={dashboardButtonClick}
               >
-                Leaderboard
+                Dashboard
               </Button>
             )}
           </Col>

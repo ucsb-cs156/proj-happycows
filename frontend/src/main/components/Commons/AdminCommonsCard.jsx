@@ -34,10 +34,6 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
     setShowModal(false);
   };
 
-  const handleLeaderboard = () => {
-    navigate(`/leaderboard/${commons.id}`);
-  };
-
   const formatDate = (dateString) => {
     return String(dateString).slice(0, 10);
   };
@@ -159,7 +155,7 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
             </Col>
             <Col xs={12} sm={6} md={3} className="mb-3">
               <div>
-                <strong>Show Leaderboard:</strong>
+                <strong>Show Dashboard:</strong>
               </div>
               <div>{String(commons.showLeaderboard)}</div>
             </Col>
@@ -211,14 +207,6 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               data-testid={`AdminCommonsCard-Delete-${commons.id}`}
             >
               Delete
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleLeaderboard}
-              data-testid={`AdminCommonsCard-Leaderboard-${commons.id}`}
-            >
-              Leaderboard
             </Button>
             <Button
               variant="success"

@@ -5,7 +5,7 @@ import HomePage from "main/pages/HomePage";
 import LoadingPage from "main/pages/LoadingPage";
 import LoginPage from "main/pages/LoginPage";
 import ProfilePage from "main/pages/ProfilePage";
-import LeaderboardPage from "main/pages/LeaderboardPage";
+import DashboardPage from "main/pages/DashboardPage";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,7 +24,6 @@ import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
 import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
-import AdminDashboardPage from "main/pages/AdminDashboardPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
@@ -49,7 +48,7 @@ function App() {
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
       <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
-      <Route path="/admin/dashboard/:id" element={<AdminDashboardPage />} />
+      <Route path="/admin/dashboard/:id" element={<DashboardPage />} />
       <Route
         path="/admin/createstudents"
         element={<AdminStudentsCreatePage />}
@@ -85,7 +84,7 @@ function App() {
   const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
     <>
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/leaderboard/:commonsId" element={<LeaderboardPage />} />
+      <Route path="/dashboard/:commonsId" element={<DashboardPage />} />
       <Route path="/play/:commonsId" element={<PlayPage />} />
       <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
     </>
