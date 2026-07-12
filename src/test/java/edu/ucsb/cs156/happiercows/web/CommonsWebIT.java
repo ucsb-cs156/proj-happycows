@@ -94,7 +94,6 @@ public class CommonsWebIT extends WebTestCase {
         page.getByTestId("CommonsForm-lastDate").fill("2025-12-01");
         page.getByTestId("aboveCapacityHealthUpdateStrategy-select").selectOption("Constant");
         page.getByTestId("belowCapacityHealthUpdateStrategy-select").selectOption("Do nothing");
-        page.getByTestId("CommonsForm-showLeaderboard").click();
         page.getByTestId("CommonsForm-showChat").click();
 
         page.getByTestId("CommonsForm-Submit-Button").click();
@@ -119,9 +118,9 @@ public class CommonsWebIT extends WebTestCase {
         assertThat(commonsCard).containsText("2024-11-24");
         assertThat(commonsCard).containsText("2025-12-01");
         // we currently don't have a way to see the values of above/belowCapacityHealthUpdateStrategy via the list commons table
-        assertThat(commonsCard).containsText("Show Leaderboard:");
+        assertThat(commonsCard).containsText("Show Dashboard:");
         assertThat(commonsCard).containsText("Show Chat:");
         assertThat(commonsCard).containsText("true");
-        // if we change the default value of showLeaderboard and showChat these might flip since we toggle not set.
+        // if we change the default value of showChat this might flip since we toggle not set.
     }
 }

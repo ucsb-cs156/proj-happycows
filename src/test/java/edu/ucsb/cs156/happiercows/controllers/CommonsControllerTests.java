@@ -1523,9 +1523,9 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .name("Test Commons")
                 .showLeaderboard(false)
                 .showOverviewSection(true)
-                .showCowsPerFarmerSection(true)
+                .showCowsPerFarmerSection(false)
                 .showHistogramSection(true)
-                .showTrendsSection(true)
+                .showTrendsSection(false)
                 .showFarmerLeaderboardSection(true)
                 .build();
 

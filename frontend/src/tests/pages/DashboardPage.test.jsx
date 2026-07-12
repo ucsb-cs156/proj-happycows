@@ -127,6 +127,69 @@ describe("DashboardPage as admin", () => {
       await screen.findByText(/total farmers/i)
     ).closest(".card");
     expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
+
+    const totalCowsCard = screen.getByText(/total cows/i).closest(".card");
+    expect(within(totalCowsCard).getByText("11")).toBeInTheDocument();
+
+    const averageCard = screen.getByText("Average").closest(".card");
+    expect(within(averageCard).getByText("2.8")).toBeInTheDocument();
+
+    const medianCard = screen.getByText("Median").closest(".card");
+    expect(within(medianCard).getByText("2.5")).toBeInTheDocument();
+
+    const minCard = screen.getByText("Min").closest(".card");
+    expect(within(minCard).getByText("1.0")).toBeInTheDocument();
+
+    const maxCard = screen.getByText("Max").closest(".card");
+    expect(within(maxCard).getByText("5.0")).toBeInTheDocument();
+
+    const stdDevCard = screen.getByText("StdDev").closest(".card");
+    expect(within(stdDevCard).getByText("1.5")).toBeInTheDocument();
+  });
+
+  test("shows a loading message before the commons data has loaded", async () => {
+    let resolvePlus;
+    const plusPromise = new Promise((resolve) => {
+      resolvePlus = resolve;
+    });
+    axiosMock
+      .onGet("/api/commons/plus")
+      .reply(() => plusPromise.then(() => [200, baseCommonsPlus]));
+
+    renderWithRoute("/dashboard/7");
+
+    expect(await screen.findByText(/loading/i)).toBeInTheDocument();
+
+    resolvePlus();
+
+    await screen.findByRole("heading", { name: /test commons 7/i });
+    expect(screen.queryByText(/loading\.\.\./i)).not.toBeInTheDocument();
+  });
+
+  test("shows the eye-slash icon when the commons is hidden", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        hidden: true,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    const mainHeading = await screen.findByRole("heading", {
+      name: /test commons 7/i,
+    });
+    expect(mainHeading.querySelector(".fa-eye-slash")).toBeInTheDocument();
+  });
+
+  test("does not show the eye-slash icon when the commons is not hidden", async () => {
+    renderWithRoute("/dashboard/7");
+
+    const mainHeading = await screen.findByRole("heading", {
+      name: /test commons 7/i,
+    });
+    expect(mainHeading.querySelector(".fa-eye-slash")).not.toBeInTheDocument();
   });
 
   test("clicking the Back button navigates back", async () => {
@@ -163,6 +226,15 @@ describe("DashboardPage as admin", () => {
     const overviewSwitch = await screen.findByTestId(
       "DashboardPage-OverviewSection-visible-switch",
     );
+    expect(overviewSwitch).toHaveAttribute(
+      "id",
+      "DashboardPage-OverviewSection-visible-switch",
+    );
+    const overviewCard = screen.getByTestId("DashboardPage-OverviewSection");
+    expect(
+      within(overviewCard).getByText("Shown to Students"),
+    ).toBeInTheDocument();
+
     fireEvent.click(overviewSwitch);
 
     await waitFor(() => {
@@ -174,6 +246,26 @@ describe("DashboardPage as admin", () => {
     });
     const body = JSON.parse(axiosMock.history.put[0].data);
     expect(body.showOverviewSection).toBe(false);
+  });
+
+  test("shows 'Hidden from Students' label for a section marked not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showOverviewSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    const overviewSwitch = await screen.findByTestId(
+      "DashboardPage-OverviewSection-visible-switch",
+    );
+    expect(overviewSwitch).not.toBeChecked();
+    expect(
+      screen.getByText("Hidden from Students", { selector: "label" }),
+    ).toBeInTheDocument();
   });
 
   test.each([
@@ -304,6 +396,57 @@ describe("DashboardPage as student", () => {
     await screen.findByTestId("DashboardPage-OverviewSection");
     expect(
       screen.queryByTestId("DashboardPage-TrendsSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the overview section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showOverviewSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-CowsPerFarmerSection");
+    expect(
+      screen.queryByTestId("DashboardPage-OverviewSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the cows-per-farmer section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showCowsPerFarmerSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-CowsPerFarmerSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the leaderboard section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showFarmerLeaderboardSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-LeaderboardSection"),
     ).not.toBeInTheDocument();
   });
 

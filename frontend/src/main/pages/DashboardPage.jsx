@@ -101,6 +101,7 @@ export default function DashboardPage() {
   );
   // Stryker restore all
 
+  // Stryker disable all : it is acceptable to exclude useBackendMutation calls from mutation testing
   const dashboardSettingsMutation = useBackendMutation(
     (settings) => ({
       url: "/api/commons/dashboardSettings",
@@ -111,6 +112,7 @@ export default function DashboardPage() {
     {},
     [[`/api/commons/plus?id=${id}`]],
   );
+  // Stryker restore all
 
   const updateDashboardSetting = (field, value) => {
     dashboardSettingsMutation.mutate({
