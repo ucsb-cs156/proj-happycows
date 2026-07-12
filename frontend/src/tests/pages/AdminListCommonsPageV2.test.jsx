@@ -6,6 +6,7 @@ import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
+import { FOCUS_SCROLL_MARGIN } from "main/utils/focusScrollUtils";
 import commonsPlusFixtures from "fixtures/commonsPlusFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -134,6 +135,207 @@ describe("AdminListCommonPageV2 tests", () => {
     const animated = container.querySelector('[style*="fadeInDown"]');
     expect(animated).toBeInTheDocument();
     expect(animated).toHaveStyle("animation: fadeInDown 1s ease-out");
+  });
+
+  test("renders commons sorted newest to oldest by id", async () => {
+    setupAdminUser();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, [
+        { commons: { id: 1, name: "Anacapa" } },
+        { commons: { id: 3, name: "Santa Rosa" } },
+        { commons: { id: 2, name: "Santa Cruz" } },
+      ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminListCommonsPageV2 />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("AdminCommonsCard-1")).toBeInTheDocument();
+    const cards = screen.getAllByTestId(/^AdminCommonsCard-\d+$/);
+    expect(cards.map((card) => card.getAttribute("data-testid"))).toEqual([
+      "AdminCommonsCard-3",
+      "AdminCommonsCard-2",
+      "AdminCommonsCard-1",
+    ]);
+  });
+
+  const withScrollToMock = async (fn) => {
+    const scrollToMock = vi.fn();
+    const originalScrollTo = window.scrollTo;
+    window.scrollTo = scrollToMock;
+    try {
+      await fn(scrollToMock);
+    } finally {
+      window.scrollTo = originalScrollTo;
+    }
+  };
+
+  test("scrolls to the focused commons and strips the focus param", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(scrollToMock).toHaveBeenCalledTimes(1);
+      });
+      // jsdom reports zero geometry, so the expected top is
+      // 0 (element top) + 0 (scrollY) - 0 (navbar height) - margin
+      expect(scrollToMock).toHaveBeenCalledWith({
+        top: -FOCUS_SCROLL_MARGIN,
+        behavior: "smooth",
+      });
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+        replace: true,
+      });
+    });
+  });
+
+  test("waits for fresh data before scrolling when cached commons are shown", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    // Simulate returning to the page with stale cached data from a prior visit
+    queryClient.setQueryData(
+      ["/api/commons/allplus"],
+      commonsPlusFixtures.threeCommonsPlus,
+    );
+
+    let resolveFetch;
+    const fetchGate = new Promise((resolve) => {
+      resolveFetch = resolve;
+    });
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(() =>
+        fetchGate.then(() => [200, commonsPlusFixtures.threeCommonsPlus]),
+      );
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      // Cached commons render immediately, but the refetch is still in
+      // flight; scrolling now would target a layout that may reshuffle
+      // when fresh data arrives.
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
+
+      resolveFetch();
+
+      await waitFor(() => {
+        expect(scrollToMock).toHaveBeenCalledTimes(1);
+      });
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+        replace: true,
+      });
+    });
+  });
+
+  test("does not scroll or rewrite the URL when there is no focus param", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
+    });
+  });
+
+  test("strips the focus param without scrolling when the target is missing", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    axiosMock
+      .onGet("/api/commons/allplus")
+      .reply(200, commonsPlusFixtures.threeCommonsPlus);
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=99"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      expect(
+        await screen.findByTestId("AdminCommonsCard-2"),
+      ).toBeInTheDocument();
+      await waitFor(() => {
+        expect(mockedNavigate).toHaveBeenCalledWith("/admin/listcommonsv2", {
+          replace: true,
+        });
+      });
+      expect(scrollToMock).not.toHaveBeenCalled();
+    });
+  });
+
+  test("does not scroll or rewrite the URL when there are no commons", async () => {
+    setupAdminUser();
+    mockedNavigate.mockClear();
+    const queryClient = new QueryClient();
+    axiosMock.onGet("/api/commons/allplus").reply(200, []);
+
+    await withScrollToMock(async (scrollToMock) => {
+      render(
+        <QueryClientProvider client={queryClient}>
+          <MemoryRouter initialEntries={["/admin/listcommonsv2?focus=2"]}>
+            <AdminListCommonsPageV2 />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      );
+
+      await waitFor(() => {
+        expect(axiosMock.history.get.length).toBeGreaterThanOrEqual(1);
+      });
+      expect(scrollToMock).not.toHaveBeenCalled();
+      expect(mockedNavigate).not.toHaveBeenCalled();
+    });
   });
 
   test("renders empty state when backend unavailable, user only", async () => {

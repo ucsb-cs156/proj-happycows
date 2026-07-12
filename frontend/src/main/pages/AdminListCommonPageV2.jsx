@@ -1,12 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import AdminCommonsCard from "main/components/Commons/AdminCommonsCard";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
+import {
+  getFocusTargetId,
+  scrollToFocusTarget,
+} from "main/utils/focusScrollUtils";
 import { Button, Row, Col, Container, Form } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router";
 
 export default function AdminListCommonsPageV2() {
   const { data: currentUser } = useCurrentUser();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
 
@@ -19,6 +26,7 @@ export default function AdminListCommonsPageV2() {
     data: commons,
     error: _error,
     status: _status,
+    isFetching,
   } = useBackend(
     ["/api/commons/allplus"],
     { method: "GET", url: "/api/commons/allplus" },
@@ -26,9 +34,25 @@ export default function AdminListCommonsPageV2() {
   );
   // Stryker restore  all
 
-  const filteredCommons = commons.filter((c) =>
+  const sortedCommons = [...commons].sort(
+    (a, b) => b.commons.id - a.commons.id,
+  );
+
+  const filteredCommons = sortedCommons.filter((c) =>
     c.commons.name.toLowerCase().includes(query.toLowerCase()),
   );
+
+  const focusId = getFocusTargetId(location.search);
+
+  useEffect(() => {
+    // Wait until the (re)fetch settles so we scroll against the final layout,
+    // then remove ?focus= from the URL so later data updates don't re-scroll.
+    if (!focusId || isFetching || commons.length === 0) {
+      return;
+    }
+    scrollToFocusTarget({ targetId: focusId });
+    navigate(location.pathname, { replace: true });
+  }, [focusId, isFetching, commons, navigate, location.pathname]);
 
   // Stryker disable all - styles that don't need to be mut tested
   const DownloadButtonStyle = {

@@ -1056,6 +1056,36 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(actualCommonsPlus, expectedCommonsPlus);
     }
 
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getCommonsPlusTest_returnsCommonsSortedNewestFirst() throws Exception {
+        Commons commons1 = Commons.builder().name("TestCommons1").id(1L).build();
+        Commons commons3 = Commons.builder().name("TestCommons3").id(3L).build();
+        Commons commons2 = Commons.builder().name("TestCommons2").id(2L).build();
+
+        List<Commons> unsortedCommons = new ArrayList<>(List.of(commons1, commons3, commons2));
+        List<Commons> sortedCommons = new ArrayList<>(List.of(commons3, commons2, commons1));
+
+        List<CommonsPlus> expectedCommonsPlus = new ArrayList<>(List.of(
+                CommonsPlus.builder().commons(commons3).totalCows(30).totalUsers(3).build(),
+                CommonsPlus.builder().commons(commons2).totalCows(20).totalUsers(2).build(),
+                CommonsPlus.builder().commons(commons1).totalCows(10).totalUsers(1).build()));
+
+        when(commonsRepository.findAll()).thenReturn(unsortedCommons);
+        when(commonsPlusBuilderService.convertToCommonsPlus(eq(sortedCommons))).thenReturn(expectedCommonsPlus);
+
+        MvcResult response = mockMvc.perform(get("/api/commons/allplus").contentType("application/json"))
+                .andExpect(status().isOk()).andReturn();
+
+        String responseString = response.getResponse().getContentAsString();
+        List<CommonsPlus> actualCommonsPlus = objectMapper.readValue(responseString,
+                new TypeReference<List<CommonsPlus>>() {
+                });
+        assertEquals(expectedCommonsPlus, actualCommonsPlus);
+        List<Long> actualIds = actualCommonsPlus.stream().map((cp) -> cp.getCommons().getId()).toList();
+        assertEquals(List.of(3L, 2L, 1L), actualIds);
+    }
+
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void createCommonsTest_withIllegalParameters() throws Exception {
