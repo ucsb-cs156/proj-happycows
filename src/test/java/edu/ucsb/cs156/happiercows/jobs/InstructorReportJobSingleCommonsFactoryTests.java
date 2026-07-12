@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.services.ReportService;
 import edu.ucsb.cs156.happiercows.services.wiremock.WiremockService;
 
@@ -19,7 +20,10 @@ public class InstructorReportJobSingleCommonsFactoryTests extends JobTestCase {
 
     @MockBean
     ReportService reportService;
- 
+
+    @MockBean
+    CommonsRepository commonsRepository;
+
     @Autowired
     InstructorReportJobSingleCommonsFactory InstructorReportJobSingleCommonsFactory;
 
@@ -32,6 +36,7 @@ public class InstructorReportJobSingleCommonsFactoryTests extends JobTestCase {
         // Assert
         assertEquals(17L,instructorReportJobSingleCommons.getCommonsId());
         assertEquals(reportService,instructorReportJobSingleCommons.getReportService());
+        assertEquals(commonsRepository,instructorReportJobSingleCommons.getCommonsRepository());
     }
 }
 

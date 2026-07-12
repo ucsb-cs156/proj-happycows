@@ -1,9 +1,12 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -40,7 +43,10 @@ public class RecordCommonStatsJobTests extends JobTestCase {
 
         // Arrange
 
-        Commons commons= Commons.builder().id(17L).name("CS156").build();
+        Commons commons= Commons.builder().id(17L).name("CS156")
+                .startingDate(LocalDateTime.now().minusDays(5))
+                .lastDate(LocalDateTime.now().plusDays(5))
+                .build();
         CommonStats commonStats = CommonStats.builder().id(17L).build();
         
         Job jobStarted = Job.builder().build();
@@ -63,6 +69,35 @@ public class RecordCommonStatsJobTests extends JobTestCase {
             Starting record common stats job...
             Starting Commons id=17 (CS156)...
             CommonStats 17 for commons id=17 (CS156) finished.
+            Record common stats job done!""";
+        assertEquals(expected, jobStarted.getLog());
+    }
+
+    @Test
+    void test_skips_commons_when_game_not_in_progress() throws Exception {
+
+        // Arrange
+        Commons commons = Commons.builder().id(17L).name("CS156")
+                .startingDate(LocalDateTime.now().plusDays(5))
+                .lastDate(LocalDateTime.now().plusDays(10))
+                .build();
+
+        Job jobStarted = Job.builder().build();
+        JobContext ctx = new JobContext(null, jobStarted);
+
+        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commons));
+
+        // Act
+        RecordCommonStatsJob recordCommonStatsJob =
+                new RecordCommonStatsJob(commonStatsService, commonsRepository);
+        recordCommonStatsJob.accept(ctx);
+
+        // Assert
+        verify(commonStatsService, never()).createAndSaveCommonStats(anyLong());
+
+        String expected = """
+            Starting record common stats job...
+            Skipping Commons id=17 (CS156) because the game is not in progress
             Record common stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }

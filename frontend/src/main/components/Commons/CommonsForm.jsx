@@ -18,12 +18,17 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
     modifiedCommons.startingDate = modifiedCommons.startingDate.split("T")[0];
   }
 
+  if (modifiedCommons.lastDate) {
+    modifiedCommons.lastDate = modifiedCommons.lastDate.split("T")[0];
+  }
+
   // Stryker disable all
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
+    getValues,
   } = useForm(
     // modifiedCommons is guaranteed to be defined (initialCommons or {})
     { defaultValues: modifiedCommons },
@@ -78,10 +83,12 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
   const testid = "CommonsForm";
   const curr = new Date();
   const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
-  const currMonth = curr.getMonth() % 12;
-  const nextMonth = new Date(curr.getFullYear(), currMonth + 1, curr.getDate())
-    .toISOString()
-    .substr(0, 10);
+  // Default end date is 4 months after the default start date (today); see issue #250
+  const fourMonthsLater = new Date(
+    curr.getFullYear(),
+    curr.getMonth() + 4,
+    curr.getDate(),
+  ).toLocaleDateString("en-CA");
   const DefaultVals = {
     name: "",
     startingBalance: defaultValuesData?.startingBalance || "10000",
@@ -90,7 +97,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
     degradationRate: defaultValuesData?.degradationRate || 0.001,
     carryingCapacity: defaultValuesData?.carryingCapacity || 100,
     startingDate: today,
-    lastDate: nextMonth,
+    lastDate: fourMonthsLater,
   };
 
   const belowStrategy = defaultValuesData?.belowCapacityStrategy;
@@ -399,7 +406,9 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
             isInvalid={!!errors.startingDate}
             {...register("startingDate", {
               valueAsDate: true,
-              validate: { isPresent: (v) => !isNaN(v) },
+              validate: {
+                isPresent: (v) => !isNaN(v) || "Starting date is required",
+              },
             })}
           />
           <Form.Control.Feedback type="invalid">
@@ -421,7 +430,12 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
             isInvalid={!!errors.lastDate}
             {...register("lastDate", {
               valueAsDate: true,
-              validate: { isPresent: (v) => !isNaN(v) },
+              validate: {
+                isPresent: (v) => !isNaN(v) || "Last date is required",
+                isAfterStartingDate: (v) =>
+                  v > getValues("startingDate") ||
+                  "Last date must be after starting date",
+              },
             })}
           />
           <Form.Control.Feedback type="invalid">

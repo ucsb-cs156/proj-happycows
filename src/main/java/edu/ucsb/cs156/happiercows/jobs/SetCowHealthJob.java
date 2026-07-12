@@ -35,6 +35,9 @@ public class SetCowHealthJob implements JobContextConsumer {
 
 
         if (commons.isPresent()) {
+            if (!CommonsGate.shouldProcess(commons.get(), commonsRepository, ctx)) {
+                return;
+            }
             ctx.log("Commons " + commons.get().getName());
 
             Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commons.get().getId());

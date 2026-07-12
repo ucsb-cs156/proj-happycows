@@ -49,7 +49,8 @@ public class SetCowHealthJobTests extends JobTestCase {
             .cowPrice(10)
             .milkPrice(2)
             .startingBalance(300)
-            .startingDate(LocalDateTime.now())
+            .startingDate(LocalDateTime.now().minusDays(5))
+            .lastDate(LocalDateTime.now().plusDays(5))
             .carryingCapacity(100)
             .degradationRate(0.01)
             .build();
@@ -79,6 +80,41 @@ public class SetCowHealthJobTests extends JobTestCase {
 
     }
 
+
+    @Test
+    void test_skips_commons_when_game_not_in_progress() throws Exception {
+
+        // Arrange
+        Job jobStarted = Job.builder().build();
+        JobContext ctx = new JobContext(null, jobStarted);
+
+        Commons futureCommons = Commons
+                .builder()
+                .id(117L)
+                .name("future commons")
+                .cowPrice(10)
+                .milkPrice(2)
+                .startingBalance(300)
+                .startingDate(LocalDateTime.now().plusDays(5))
+                .lastDate(LocalDateTime.now().plusDays(10))
+                .carryingCapacity(100)
+                .degradationRate(0.01)
+                .build();
+
+        when(commonsRepository.findById(117L)).thenReturn(Optional.of(futureCommons));
+
+        // Act
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, userCommonsRepository,
+                userRepository);
+        setCowHealthJob.accept(ctx);
+
+        // Assert
+        String expected = """
+                Setting cow health...
+                Skipping Commons id=117 (future commons) because the game is not in progress""";
+
+        assertEquals(expected, jobStarted.getLog());
+    }
 
     UserCommons getUserCommons() {
         return UserCommons

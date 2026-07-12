@@ -28,6 +28,9 @@ public class RecordCommonStatsJob implements JobContextConsumer {
         Iterable<Commons> allCommons = commonsRepository.findAll();
 
         for (Commons commons : allCommons) {
+            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {
+                continue;
+            }
             ctx.log(String.format("Starting Commons id=%d (%s)...", commons.getId(), commons.getName()));
             CommonStats commonStats = commonStatsService.createAndSaveCommonStats(commons.getId());
             ctx.log(String.format("CommonStats %d for commons id=%d (%s) finished.", commonStats.getId(), commons.getId(),
