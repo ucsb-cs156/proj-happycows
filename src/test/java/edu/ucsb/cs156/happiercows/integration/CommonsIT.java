@@ -28,11 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CurrentUserService;
 import edu.ucsb.cs156.happiercows.services.GrantedAuthoritiesService;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -82,5 +85,38 @@ public class CommonsIT {
         List<Commons> actualCommons = objectMapper.readValue(responseString, new TypeReference<List<Commons>>() {
         });
         assertEquals(actualCommons, expectedCommons);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void newCommonsDefaultsToHiddenSectionsAndChat() throws Exception {
+        CreateCommonsParams parameters = CreateCommonsParams.builder()
+                .name("Test Commons For Defaults")
+                .cowPrice(10.0)
+                .milkPrice(1.0)
+                .startingBalance(100.0)
+                .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-07-05T15:50:10"))
+                .degradationRate(1.0)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .build();
+
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc.perform(post("/api/commons/new").with(csrf())
+                        .contentType("application/json")
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isOk());
+
+        Commons saved = commonsRepository.findAll().iterator().next();
+
+        assertEquals(false, saved.isShowChat());
+        assertEquals(false, saved.isShowOverviewSection());
+        assertEquals(false, saved.isShowCowsPerFarmerSection());
+        assertEquals(false, saved.isShowHistogramSection());
+        assertEquals(false, saved.isShowTrendsSection());
+        assertEquals(false, saved.isShowFarmerLeaderboardSection());
     }
 }
