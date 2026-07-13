@@ -40,6 +40,8 @@ public class Commons {
     private boolean showCowsPerFarmerSection;
     private boolean showHistogramSection;
     private boolean showTrendsSection;
+    private boolean showHealthSection;
+    private boolean showTotalCowsSection;
     private boolean showFarmerLeaderboardSection;
     
     private int capacityPerUser;
@@ -71,13 +73,13 @@ public class Commons {
      * @return whether the game is in progress at &lt;code&gt;now&lt;/code&gt;
      */
     public boolean gameInProgress(LocalDateTime now) {
-<span class="fc" id="L74">        LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();</span>
-<span class="fc" id="L75">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
-<span class="fc bfc" id="L76" title="All 4 branches covered.">        return !now.isBefore(gameStart) &amp;&amp; now.isBefore(gameEnd);</span>
+<span class="fc" id="L76">        LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();</span>
+<span class="fc" id="L77">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">        return !now.isBefore(gameStart) &amp;&amp; now.isBefore(gameEnd);</span>
     }
 
     public boolean gameInProgress() {
-<span class="fc" id="L80">        return gameInProgress(LocalDateTime.now());</span>
+<span class="fc" id="L82">        return gameInProgress(LocalDateTime.now());</span>
     }
 
     /**
@@ -89,8 +91,8 @@ public class Commons {
      * @return whether the game has ended as of &lt;code&gt;now&lt;/code&gt;
      */
     public boolean endDateHasPassed(LocalDateTime now) {
-<span class="fc" id="L92">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        return !now.isBefore(gameEnd);</span>
+<span class="fc" id="L94">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        return !now.isBefore(gameEnd);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
