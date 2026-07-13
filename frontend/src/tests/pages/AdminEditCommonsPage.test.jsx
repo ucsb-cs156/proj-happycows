@@ -7,6 +7,7 @@ import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import healthUpdateStrategyListFixtures from "../../fixtures/healthUpdateStrategyListFixtures";
+import coursesFixtures from "fixtures/coursesFixtures";
 import { vi } from "vitest";
 
 const mockToast = vi.fn();
@@ -51,6 +52,9 @@ describe("AdminEditCommonsPage tests", () => {
       axiosMock
         .onGet("/api/commons/all-health-update-strategies")
         .reply(200, healthUpdateStrategyListFixtures.simple);
+      axiosMock
+        .onGet("/api/course/all")
+        .reply(200, coursesFixtures.threeCourses);
       axiosMock.onGet("/api/commons", { params: { id: 5 } }).reply(200, {
         id: 5,
         name: "Seths Common",
@@ -234,6 +238,7 @@ describe("AdminEditCommonsPage tests", () => {
           showLeaderboard: false,
           showChat: true,
           hidden: true,
+          courseId: null,
         }),
       ); // posted object
     });

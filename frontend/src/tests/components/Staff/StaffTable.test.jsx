@@ -2,13 +2,13 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 
-import { coursesFixtures } from "fixtures/coursesFixtures";
+import { staffFixtures } from "fixtures/staffFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
-import CoursesTable from "main/components/Courses/CoursesTable";
+import StaffTable from "main/components/Staff/StaffTable";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
-} from "main/utils/courseUtils";
+} from "main/utils/staffUtils";
 
 const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
   const mutate = vi.fn();
@@ -33,11 +33,23 @@ vi.mock("react-router", async () => {
   };
 });
 
-describe("CoursesTable tests", () => {
+describe("StaffTable tests", () => {
   const queryClient = new QueryClient();
-  const testId = "CoursesTable";
-  const expectedHeaders = ["id", "Code", "Name", "Term"];
-  const expectedFields = ["id", "code", "name", "term"];
+  const testId = "StaffTable";
+  const expectedHeaders = [
+    "id",
+    "Last Name",
+    "First/Middle Name",
+    "Email",
+    "Course Id",
+  ];
+  const expectedFields = [
+    "id",
+    "lastName",
+    "firstMiddleName",
+    "email",
+    "courseId",
+  ];
 
   beforeEach(() => {
     mockMutate.mockReset();
@@ -46,22 +58,18 @@ describe("CoursesTable tests", () => {
     mockedNavigate.mockClear();
   });
 
-  const renderTable = (courses, currentUser, props = {}) => {
+  const renderTable = (staff, currentUser, props = {}) => {
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <CoursesTable
-            courses={courses}
-            currentUser={currentUser}
-            {...props}
-          />
+          <StaffTable staff={staff} currentUser={currentUser} {...props} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
   };
 
   test("Has the expected column headers and content for ordinary user", () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.userOnly);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.userOnly);
 
     expectedHeaders.forEach((headerText) => {
       expect(screen.getByText(headerText)).toBeInTheDocument();
@@ -73,12 +81,6 @@ describe("CoursesTable tests", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-code`),
-    ).toHaveTextContent("CHEM 123");
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-Edit-button`),
     ).not.toBeInTheDocument();
@@ -88,24 +90,11 @@ describe("CoursesTable tests", () => {
   });
 
   test("Has the expected column headers and content for admin user", () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     expectedHeaders.forEach((headerText) => {
       expect(screen.getByText(headerText)).toBeInTheDocument();
     });
-
-    expectedFields.forEach((field) => {
-      expect(
-        screen.getByTestId(`${testId}-cell-row-0-col-${field}`),
-      ).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
-      "1",
-    );
-    expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-code`),
-    ).toHaveTextContent("CHEM 123");
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -121,7 +110,7 @@ describe("CoursesTable tests", () => {
   });
 
   test("Edit button navigates to the edit page for admin user", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     const editButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Edit-button`,
@@ -129,25 +118,12 @@ describe("CoursesTable tests", () => {
     fireEvent.click(editButton);
 
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcourses/1"),
-    );
-  });
-
-  test("Manage button navigates to the instructor admin show page for admin user", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
-
-    const manageButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Manage-button`,
-    );
-    fireEvent.click(manageButton);
-
-    await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/admin/courses/1"),
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editstaff/1"),
     );
   });
 
   test("Delete button calls delete callback", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
@@ -164,15 +140,14 @@ describe("CoursesTable tests", () => {
     await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
     const cellArg = mockMutate.mock.calls[0][0];
     expect(cellArg.row.values.id).toBe(1);
-    expect(cellArg.row.values.code).toBe("CMPSC 156");
 
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
     });
   });
 
-  test("Pressing Keep this Course in Modal cancels the deletion", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+  test("Pressing Keep this Staff Member in Modal cancels the deletion", async () => {
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
@@ -194,7 +169,7 @@ describe("CoursesTable tests", () => {
   });
 
   test("Exiting the modal pop up cancels the deletion", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     const deleteButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Delete-button`,
@@ -213,18 +188,7 @@ describe("CoursesTable tests", () => {
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  test("Supports overriding the testIdPrefix prop", () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser, {
-      testid: "CustomCourses",
-    });
-
-    expect(screen.getByTestId("CustomCourses-header-code")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("CustomCourses-cell-row-0-col-code"),
-    ).toHaveTextContent("CMPSC 156");
-  });
-
-  test("Renders headers even when no courses are provided", () => {
+  test("Renders headers even when no staff are provided", () => {
     renderTable([], currentUserFixtures.userOnly);
 
     expectedHeaders.forEach((headerText) => {
@@ -236,7 +200,7 @@ describe("CoursesTable tests", () => {
   });
 
   test("Hides action buttons when currentUser is null", () => {
-    renderTable(coursesFixtures.threeCourses, null);
+    renderTable(staffFixtures.threeStaff, null);
 
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-Edit-button`),
@@ -250,32 +214,12 @@ describe("CoursesTable tests", () => {
   });
 
   test("Configures delete mutation with expected args", () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     expect(mockUseBackendMutation).toHaveBeenCalledWith(
       cellToAxiosParamsDelete,
       expect.objectContaining({ onSuccess: onDeleteSuccess }),
-      ["/api/course/all"],
+      ["/api/staff/all"],
     );
-  });
-
-  test("Clicking Delete button opens the modal for adminUser", async () => {
-    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
-
-    // Verify that the modal is hidden by checking for the absence of the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).not.toHaveClass("modal-open");
-    });
-
-    const deleteButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Delete-button`,
-    );
-
-    fireEvent.click(deleteButton);
-
-    // Verify that the modal is shown by checking for the "modal-open" class
-    await waitFor(() => {
-      expect(document.body).toHaveClass("modal-open");
-    });
   });
 });

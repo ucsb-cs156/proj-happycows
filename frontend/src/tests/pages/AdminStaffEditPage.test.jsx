@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
+import AdminStaffEditPage from "main/pages/AdminStaffEditPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { coursesFixtures } from "fixtures/coursesFixtures";
@@ -35,7 +35,7 @@ vi.mock("react-router", async () => {
   };
 });
 
-describe("AdminStudentsEditPage tests", () => {
+describe("AdminStaffEditPage tests", () => {
   describe("tests where backend is working normally", () => {
     const axiosMock = new AxiosMockAdapter(axios);
 
@@ -51,20 +51,18 @@ describe("AdminStudentsEditPage tests", () => {
       axiosMock
         .onGet("/api/course/all")
         .reply(200, coursesFixtures.threeCourses);
-      axiosMock.onGet("/api/student/5").reply(200, {
+      axiosMock.onGet("/api/staff/5").reply(200, {
         id: 5,
-        lastName: "Ferber",
-        firstMiddleName: "Sally",
-        email: "sallyferber@ucsb.edu",
-        perm: "1234567",
+        lastName: "Smith",
+        firstMiddleName: "Jordan",
+        email: "jordansmith@ucsb.edu",
         courseId: 1,
       });
-      axiosMock.onPut("/api/student/5").reply(200, {
+      axiosMock.onPut("/api/staff/5").reply(200, {
         id: 5,
-        lastName: "Ferberson",
-        firstMiddleName: "Sallie",
-        email: "sallieferberson@ucsb.edu",
-        perm: "7654321",
+        lastName: "Smithson",
+        firstMiddleName: "Jordy",
+        email: "jordysmithson@ucsb.edu",
         courseId: 2,
       });
     });
@@ -74,7 +72,7 @@ describe("AdminStudentsEditPage tests", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <AdminStudentsEditPage />
+            <AdminStaffEditPage />
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -84,7 +82,7 @@ describe("AdminStudentsEditPage tests", () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <AdminStudentsEditPage />
+            <AdminStaffEditPage />
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -94,19 +92,17 @@ describe("AdminStudentsEditPage tests", () => {
       const lastNameField = screen.getByLabelText(/Last Name/);
       const firstMiddleNameField = screen.getByLabelText(/First\/Middle Name/);
       const emailField = screen.getByLabelText(/Email/);
-      const permField = screen.getByLabelText(/Perm Number/);
 
-      expect(lastNameField).toHaveValue("Ferber");
-      expect(firstMiddleNameField).toHaveValue("Sally");
-      expect(emailField).toHaveValue("sallyferber@ucsb.edu");
-      expect(permField).toHaveValue("1234567");
+      expect(lastNameField).toHaveValue("Smith");
+      expect(firstMiddleNameField).toHaveValue("Jordan");
+      expect(emailField).toHaveValue("jordansmith@ucsb.edu");
     });
 
     test("Changes when you click Update", async () => {
       render(
         <QueryClientProvider client={queryClient}>
           <MemoryRouter>
-            <AdminStudentsEditPage />
+            <AdminStaffEditPage />
           </MemoryRouter>
         </QueryClientProvider>,
       );
@@ -116,38 +112,33 @@ describe("AdminStudentsEditPage tests", () => {
       const lastNameField = screen.getByLabelText(/Last Name/);
       const firstMiddleNameField = screen.getByLabelText(/First\/Middle Name/);
       const emailField = screen.getByLabelText(/Email/);
-      const permField = screen.getByLabelText(/Perm Number/);
       const courseField = screen.getByLabelText(/Course/);
 
       const submitButton = screen.getByText("Update");
 
       expect(submitButton).toBeInTheDocument();
 
-      fireEvent.change(lastNameField, { target: { value: "Ferberson" } });
-      fireEvent.change(firstMiddleNameField, {
-        target: { value: "Sallie" },
-      });
+      fireEvent.change(lastNameField, { target: { value: "Smithson" } });
+      fireEvent.change(firstMiddleNameField, { target: { value: "Jordy" } });
       fireEvent.change(emailField, {
-        target: { value: "sallieferberson@ucsb.edu" },
+        target: { value: "jordysmithson@ucsb.edu" },
       });
-      fireEvent.change(permField, { target: { value: "7654321" } });
       fireEvent.change(courseField, { target: { value: "2" } });
 
       fireEvent.click(submitButton);
 
       await waitFor(() => expect(mockToast).toHaveBeenCalled());
       expect(mockToast).toBeCalledWith(
-        "Student Updated - id: 5 lastName: Ferberson email: sallieferberson@ucsb.edu",
+        "Staff Updated - id: 5 lastName: Smithson email: jordysmithson@ucsb.edu",
       );
-      expect(mockNavigate).toBeCalledWith({ to: "/admin/liststudents" });
+      expect(mockNavigate).toBeCalledWith({ to: "/admin/liststaff" });
 
       expect(axiosMock.history.put.length).toBe(1);
       expect(axiosMock.history.put[0].data).toBe(
         JSON.stringify({
-          lastName: "Ferberson",
-          firstMiddleName: "Sallie",
-          email: "sallieferberson@ucsb.edu",
-          perm: "7654321",
+          lastName: "Smithson",
+          firstMiddleName: "Jordy",
+          email: "jordysmithson@ucsb.edu",
           courseId: 2,
         }),
       );

@@ -39,6 +39,7 @@ import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
@@ -48,6 +49,7 @@ import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
 @WebMvcTest(controllers = CommonsController.class)
@@ -67,6 +69,9 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     @MockBean
     CommonStatsRepository commonStatsRepository;
+
+    @MockBean
+    CourseAccessService courseAccessService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -147,6 +152,68 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
                 .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
                 .hidden(false)
+                .build();
+
+        String requestBody = objectMapper.writeValueAsString(parameters);
+        String expectedResponse = objectMapper.writeValueAsString(commons);
+
+        when(commonsRepository.save(commons))
+                .thenReturn(commons);
+
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/new").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(commonsRepository, times(1)).save(commons);
+
+        String actualResponse = response.getResponse().getContentAsString();
+        assertEquals(expectedResponse, actualResponse);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void createCommonsTest_withCourseId() throws Exception {
+        LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
+
+        Commons commons = Commons.builder()
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .lastDate(someLaterTime)
+                .degradationRate(50.0)
+                .showLeaderboard(false)
+                .showChat(false)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
+                .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+                .hidden(false)
+                .courseId(5L)
+                .build();
+
+        CreateCommonsParams parameters = CreateCommonsParams.builder()
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .lastDate(someLaterTime)
+                .degradationRate(50.0)
+                .showLeaderboard(false)
+                .showChat(false)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant.name())
+                .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear.name())
+                .hidden(false)
+                .courseId(5L)
                 .build();
 
         String requestBody = objectMapper.writeValueAsString(parameters);
@@ -429,6 +496,9 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         parameters.setHidden(true);
         commons.setHidden(parameters.isHidden());
+
+        parameters.setCourseId(5L);
+        commons.setCourseId(parameters.getCourseId());
 
         requestBody = objectMapper.writeValueAsString(parameters);
 
@@ -919,6 +989,125 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         assertEquals(responseMap.get("message"), "Commons with id 2 not found");
         assertEquals(responseMap.get("type"), "EntityNotFoundException");
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void join_denied_when_user_not_eligible_for_course_linked_commons() throws Exception {
+
+        User currentUser = currentUserService.getUser();
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Course Linked Commons")
+                .courseId(5L)
+                .build();
+
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+        when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(c))).thenReturn(false);
+
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        verify(courseAccessService, times(1)).isEligibleForCommons(currentUser, c);
+        verify(userCommonsRepository, times(0)).save(any());
+
+        Map<String, Object> responseMap = responseToJson(response);
+        assertEquals("CourseAccessDeniedException", responseMap.get("type"));
+        assertEquals(
+                "You are not enrolled in the course required to join commons with id 2",
+                responseMap.get("message"));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void join_allowed_when_user_eligible_for_course_linked_commons() throws Exception {
+
+        User currentUser = currentUserService.getUser();
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Course Linked Commons")
+                .courseId(5L)
+                .build();
+
+        UserCommons uc = UserCommons.builder()
+                .user(currentUser)
+                .commons(c)
+                .username("Fake user")
+                .totalWealth(0)
+                .numOfCows(0)
+                .cowHealth(100)
+                .build();
+
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+        when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(c))).thenReturn(true);
+        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+
+        MvcResult response = mockMvc
+                .perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseAccessService, times(1)).isEligibleForCommons(currentUser, c);
+        verify(userCommonsRepository, times(1)).save(uc);
+
+        String responseString = response.getResponse().getContentAsString();
+        String cAsJson = mapper.writeValueAsString(c);
+        assertEquals(responseString, cAsJson);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void join_does_not_check_course_eligibility_when_commons_has_no_course() throws Exception {
+
+        Commons c = Commons.builder()
+                .id(2L)
+                .name("Example Commons")
+                .build();
+
+        UserCommons uc = UserCommons.builder()
+                .user(currentUserService.getUser())
+                .commons(c)
+                .username("Fake user")
+                .totalWealth(0)
+                .numOfCows(0)
+                .cowHealth(100)
+                .build();
+
+        when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
+        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+
+        mockMvc.perform(post("/api/commons/join?commonsId=2").with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(courseAccessService, times(0)).isEligibleForCommons(any(), any());
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getMyCourseIdsTest() throws Exception {
+
+        User currentUser = currentUserService.getUser();
+
+        List<Long> expectedCourseIds = List.of(5L, 6L);
+        when(courseAccessService.getCourseIdsForUser(currentUser)).thenReturn(expectedCourseIds);
+
+        MvcResult response = mockMvc.perform(get("/api/commons/mycourses"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseAccessService, times(1)).getCourseIdsForUser(currentUser);
+        String expectedJson = mapper.writeValueAsString(expectedCourseIds);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @Test
+    public void logged_out_users_cannot_get_my_course_ids() throws Exception {
+        mockMvc.perform(get("/api/commons/mycourses"))
+                .andExpect(status().is(403));
     }
 
     @WithMockUser(roles = {"ADMIN"})

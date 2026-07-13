@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import OurTable, {
-  ButtonColumn,
-  HrefButtonColumn,
-} from "main/components/OurTable";
+import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
-} from "main/utils/courseUtils";
+} from "main/utils/staffUtils";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 
-export default function CoursesTable({
-  courses,
+export default function StaffTable({
+  staff,
   currentUser,
-  testid = "CoursesTable",
+  testid = "StaffTable",
 }) {
   const [showModal, setShowModal] = useState(false);
   const [cellToDelete, setCellToDelete] = useState(null);
@@ -24,17 +21,13 @@ export default function CoursesTable({
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/admin/editcourses/${cell.row.values.id}`);
-  };
-
-  const manageCallback = (cell) => {
-    navigate(`/admin/courses/${cell.row.values.id}`);
+    navigate(`/admin/editstaff/${cell.row.values.id}`);
   };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/course/all"],
+    ["/api/staff/all"],
   );
 
   const deleteCallback = async (cell) => {
@@ -53,22 +46,25 @@ export default function CoursesTable({
       accessor: "id",
     },
     {
-      Header: "Code",
-      accessor: "code",
+      Header: "Last Name",
+      accessor: "lastName",
     },
     {
-      Header: "Name",
-      accessor: "name",
+      Header: "First/Middle Name",
+      accessor: "firstMiddleName",
     },
     {
-      Header: "Term",
-      accessor: "term",
+      Header: "Email",
+      accessor: "email",
+    },
+    {
+      Header: "Course Id",
+      accessor: "courseId",
     },
   ];
 
   const columnsIfAdmin = [
     ...columns,
-    ButtonColumn("Manage", "secondary", manageCallback, testid),
     ButtonColumn("Edit", "primary", editCallback, testid),
     ButtonColumn("Delete", "danger", deleteCallback, testid),
   ];
@@ -77,27 +73,29 @@ export default function CoursesTable({
     ? columnsIfAdmin
     : columns;
 
-  const coursesModal = (
+  const staffModal = (
     <Modal
-      data-testid="CoursesTable-Modal"
+      data-testid="StaffTable-Modal"
       show={showModal}
       onHide={() => setShowModal(false)}
     >
       <Modal.Header closeButton>
         <Modal.Title>Confirm Deletion</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Are you sure you want to delete this course?</Modal.Body>
+      <Modal.Body>
+        Are you sure you want to delete this staff member?
+      </Modal.Body>
       <Modal.Footer>
         <Button
           variant="secondary"
-          data-testid="CoursesTable-Modal-Cancel"
+          data-testid="StaffTable-Modal-Cancel"
           onClick={() => setShowModal(false)}
         >
-          Keep this Course
+          Keep this Staff Member
         </Button>
         <Button
           variant="danger"
-          data-testid="CoursesTable-Modal-Delete"
+          data-testid="StaffTable-Modal-Delete"
           onClick={() => confirmDelete(cellToDelete)}
         >
           Permanently Delete
@@ -108,8 +106,8 @@ export default function CoursesTable({
 
   return (
     <>
-      <OurTable data={courses} columns={columnsToDisplay} testid={testid} />
-      {hasRole(currentUser, "ROLE_ADMIN") && coursesModal}
+      <OurTable data={staff} columns={columnsToDisplay} testid={testid} />
+      {hasRole(currentUser, "ROLE_ADMIN") && staffModal}
     </>
   );
 }

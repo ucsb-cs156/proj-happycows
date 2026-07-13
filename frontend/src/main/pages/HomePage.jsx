@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import CommonsList from "main/components/Commons/CommonsList";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
-import { useCurrentUser } from "main/utils/currentUser";
+import { useCurrentUser, hasRole } from "main/utils/currentUser";
 import {
   filterCommonsJoinedAndNotHidden,
   filterCommonsNotJoinedAndNotHidden,
@@ -25,7 +25,15 @@ export default function HomePage({ hour = null }) {
     { url: "/api/commons/all" },
     [],
   );
+
+  const { data: myCourseIds } = useBackend(
+    ["/api/commons/mycourses"],
+    { url: "/api/commons/mycourses" },
+    [],
+  );
   // Stryker restore all
+
+  const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
   const objectToAxiosParams = (newCommonsId) => ({
     url: "/api/commons/join",
@@ -45,10 +53,15 @@ export default function HomePage({ hour = null }) {
   useEffect(() => {
     if (currentUser?.root?.user?.commons) {
       setCommonsJoined(
-        filterCommonsJoinedAndNotHidden(commons, currentUser.root.user.commons),
+        filterCommonsJoinedAndNotHidden(
+          commons,
+          currentUser.root.user.commons,
+          myCourseIds,
+          isAdmin,
+        ),
       );
     }
-  }, [commons, currentUser]);
+  }, [commons, currentUser, myCourseIds, isAdmin]);
 
   const firstName = currentUser?.root?.user?.givenName || "";
   const time = hour === null ? new Date().getHours() : hour;
@@ -65,6 +78,8 @@ export default function HomePage({ hour = null }) {
   const commonsNotJoinedList = filterCommonsNotJoinedAndNotHidden(
     commons,
     commonsJoined,
+    myCourseIds,
+    isAdmin,
   );
 
   return (

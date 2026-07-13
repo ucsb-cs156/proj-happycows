@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
+import AdminStaffCreatePage from "main/pages/AdminStaffCreatePage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { coursesFixtures } from "fixtures/coursesFixtures";
@@ -32,7 +32,7 @@ vi.mock("react-toastify", async () => {
   };
 });
 
-describe("AdminStudentsCreatePage tests", () => {
+describe("AdminStaffCreatePage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
 
@@ -52,72 +52,68 @@ describe("AdminStudentsCreatePage tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsCreatePage />
+          <AdminStaffCreatePage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Student")).toBeInTheDocument();
+    expect(await screen.findByText("Create Staff")).toBeInTheDocument();
   });
 
   test("When you fill in form and click submit, the right things happens", async () => {
-    axiosMock.onPost("/api/student").reply(200, {
+    axiosMock.onPost("/api/staff").reply(200, {
       id: 5,
-      lastName: "Ferber",
-      firstMiddleName: "Sally",
-      email: "sallyferber@ucsb.edu",
-      perm: "1234567",
+      lastName: "Smith",
+      firstMiddleName: "Jordan",
+      email: "jordansmith@ucsb.edu",
       courseId: 1,
     });
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsCreatePage />
+          <AdminStaffCreatePage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Student")).toBeInTheDocument();
+    expect(await screen.findByText("Create Staff")).toBeInTheDocument();
 
     const lastNameField = screen.getByLabelText("Last Name");
     const firstMiddleNameField = screen.getByLabelText("First/Middle Name");
     const emailField = screen.getByLabelText("Email");
-    const permField = screen.getByLabelText("Perm Number");
     const courseField = screen.getByLabelText("Course");
-    const button = screen.getByTestId("StudentsForm-submit");
+    const button = screen.getByTestId("StaffForm-submit");
 
-    fireEvent.change(lastNameField, { target: { value: "Ferber" } });
-    fireEvent.change(firstMiddleNameField, { target: { value: "Sally" } });
+    fireEvent.change(lastNameField, { target: { value: "Smith" } });
+    fireEvent.change(firstMiddleNameField, { target: { value: "Jordan" } });
     fireEvent.change(emailField, {
-      target: { value: "sallyferber@ucsb.edu" },
+      target: { value: "jordansmith@ucsb.edu" },
     });
-    fireEvent.change(permField, { target: { value: "1234567" } });
     fireEvent.change(courseField, { target: { value: "1" } });
     fireEvent.click(button);
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
-    const expectedStudent = {
-      lastName: "Ferber",
-      firstMiddleName: "Sally",
-      email: "sallyferber@ucsb.edu",
-      perm: "1234567",
+    const expectedStaff = {
+      lastName: "Smith",
+      firstMiddleName: "Jordan",
+      email: "jordansmith@ucsb.edu",
       courseId: 1,
     };
 
     expect(axiosMock.history.post[0].data).toEqual(
-      JSON.stringify(expectedStudent),
+      JSON.stringify(expectedStaff),
     );
 
-    expect(mockedNavigate).toBeCalledWith({ to: "/admin/liststudents" });
+    expect(mockedNavigate).toBeCalledWith({ to: "/admin/liststaff" });
   });
 
   test("pre-fills the course when a courseId query param is present", async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={["/admin/createstudents?courseId=2"]}>
-          <AdminStudentsCreatePage />
+        <MemoryRouter initialEntries={["/admin/createstaff?courseId=2"]}>
+          <AdminStaffCreatePage />
         </MemoryRouter>
       </QueryClientProvider>,
     );

@@ -2,21 +2,21 @@ import React from "react";
 import { useBackend } from "main/utils/useBackend";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import StudentsTable from "main/components/Students/StudentsTable";
+import StaffTable from "main/components/Staff/StaffTable";
 import { useCurrentUser } from "main/utils/currentUser";
 import { Button } from "react-bootstrap";
 
-export default function AdminStudentsIndexPage() {
+export default function AdminStaffIndexPage() {
   const { data: currentUser } = useCurrentUser();
 
   // Stryker disable  all
   const {
-    data: students,
+    data: staff,
     error: _error,
     status: _status,
   } = useBackend(
-    ["/api/student/all"],
-    { method: "GET", url: "/api/student/all" },
+    ["/api/staff/all"],
+    { method: "GET", url: "/api/staff/all" },
     [],
   );
   // Stryker restore  all
@@ -25,10 +25,10 @@ export default function AdminStudentsIndexPage() {
     return (
       <Button
         variant="primary"
-        href="/admin/createstudents"
+        href="/admin/createstaff"
         style={{ float: "right" }}
       >
-        Create New Student
+        Create New Staff
       </Button>
     );
   };
@@ -37,8 +37,8 @@ export default function AdminStudentsIndexPage() {
     <BasicLayout>
       <div className="pt-2">
         {createButton()}
-        <h1>Students</h1>
-        <StudentsTable students={students} currentUser={currentUser} />
+        <h1>Staff</h1>
+        <StaffTable staff={staff} currentUser={currentUser} />
       </div>
     </BasicLayout>
   );

@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
-import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
-import { studentsFixtures } from "fixtures/studentsFixtures";
+import AdminStaffIndexPage from "main/pages/AdminStaffIndexPage";
+import { staffFixtures } from "fixtures/staffFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
@@ -27,10 +27,10 @@ vi.mock("react-router", async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe("AdminStudentsIndexPage tests", () => {
+describe("AdminStaffIndexPage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  const testId = "StudentsTable";
+  const testId = "StaffTable";
 
   const setupUserOnly = () => {
     axiosMock.reset();
@@ -57,28 +57,26 @@ describe("AdminStudentsIndexPage tests", () => {
   test("renders without crashing for regular user", () => {
     setupUserOnly();
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/student/all").reply(200, []);
+    axiosMock.onGet("/api/staff/all").reply(200, []);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
   });
 
-  test("renders three students without crashing for admin user", async () => {
+  test("renders three staff without crashing for admin user", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/student/all")
-      .reply(200, studentsFixtures.threeStudents);
+    axiosMock.onGet("/api/staff/all").reply(200, staffFixtures.threeStaff);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -92,21 +90,21 @@ describe("AdminStudentsIndexPage tests", () => {
     expect(screen.getByTestId(`${testId}-cell-row-2-col-id`)).toHaveTextContent(
       "3",
     );
-    expect(screen.getByText(`Create New Student`)).toBeInTheDocument();
+    expect(screen.getByText(`Create New Staff`)).toBeInTheDocument();
   });
 
   test("renders empty table when backend unavailable, user only", async () => {
     setupUserOnly();
 
     const queryClient = new QueryClient();
-    axiosMock.onGet("/api/student/all").timeout();
+    axiosMock.onGet("/api/staff/all").timeout();
 
     const restoreConsole = mockConsole();
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -119,24 +117,22 @@ describe("AdminStudentsIndexPage tests", () => {
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-id`),
     ).not.toBeInTheDocument();
-    expect(screen.getByText(`Create New Student`)).toBeInTheDocument();
+    expect(screen.getByText(`Create New Staff`)).toBeInTheDocument();
   });
 
   test("what happens when you click delete, admin", async () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
+    axiosMock.onGet("/api/staff/all").reply(200, staffFixtures.threeStaff);
     axiosMock
-      .onGet("/api/student/all")
-      .reply(200, studentsFixtures.threeStudents);
-    axiosMock
-      .onDelete(`/api/student/${studentsFixtures.threeStudents[0].id}`)
-      .reply(200, "Student with id 1 was deleted");
+      .onDelete(`/api/staff/${staffFixtures.threeStaff[0].id}`)
+      .reply(200, "Staff with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -153,16 +149,14 @@ describe("AdminStudentsIndexPage tests", () => {
     fireEvent.click(deleteButton);
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId("StudentsTable-Modal-Delete"),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("StaffTable-Modal-Delete")).toBeInTheDocument();
     });
 
-    const modalDelete = screen.getByTestId("StudentsTable-Modal-Delete");
+    const modalDelete = screen.getByTestId("StaffTable-Modal-Delete");
     fireEvent.click(modalDelete);
 
     await waitFor(() => {
-      expect(mockToast).toBeCalledWith("Student with id 1 was deleted");
+      expect(mockToast).toBeCalledWith("Staff with id 1 was deleted");
     });
   });
 
@@ -170,14 +164,12 @@ describe("AdminStudentsIndexPage tests", () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/student/all")
-      .reply(200, studentsFixtures.threeStudents);
+    axiosMock.onGet("/api/staff/all").reply(200, staffFixtures.threeStaff);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -194,7 +186,7 @@ describe("AdminStudentsIndexPage tests", () => {
     fireEvent.click(editButton);
 
     await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editstudents/1"),
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editstaff/1"),
     );
   });
 
@@ -204,14 +196,12 @@ describe("AdminStudentsIndexPage tests", () => {
     setupAdminUser();
 
     const queryClient = new QueryClient();
-    axiosMock
-      .onGet("/api/student/all")
-      .reply(200, studentsFixtures.threeStudents);
+    axiosMock.onGet("/api/staff/all").reply(200, staffFixtures.threeStaff);
 
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <AdminStudentsIndexPage />
+          <AdminStaffIndexPage />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -220,10 +210,10 @@ describe("AdminStudentsIndexPage tests", () => {
       await screen.findByTestId(`${testId}-cell-row-0-col-id`),
     ).toHaveTextContent("1");
 
-    const createButton = screen.getByText("Create New Student");
+    const createButton = screen.getByText("Create New Staff");
 
     expect(createButton).toBeInTheDocument();
-    expect(createButton).toHaveAttribute("href", "/admin/createstudents");
+    expect(createButton).toHaveAttribute("href", "/admin/createstaff");
     expect(createButton).toHaveAttribute("style", "float: right;");
   });
 });

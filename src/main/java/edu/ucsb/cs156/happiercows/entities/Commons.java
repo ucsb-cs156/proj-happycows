@@ -50,6 +50,10 @@ public class Commons {
 
     private boolean hidden;
 
+    // Optional link to a Course (see issue #251). When set, only students and
+    // staff enrolled in this course (or admins) may see/join this commons.
+    private Long courseId;
+
     // these defaults match old behavior
     @Enumerated(EnumType.STRING)
     @Builder.Default

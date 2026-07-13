@@ -11,9 +11,11 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
+import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +58,9 @@ public class CommonsController extends ApiController {
 
     @Autowired
     CommonStatsRepository commonStatsRepository;
+
+    @Autowired
+    CourseAccessService courseAccessService;
 
     @Value("${app.commons.default.startingBalance}")
     private double defaultStartingBalance;
@@ -204,6 +209,7 @@ public class CommonsController extends ApiController {
         validateDates(params);
 
         updated.setHidden(params.isHidden());
+        updated.setCourseId(params.getCourseId());
         commonsRepository.save(updated);
 
         return ResponseEntity.status(status).build();
@@ -240,7 +246,8 @@ public class CommonsController extends ApiController {
                 .showChat(params.getShowChat())
                 .capacityPerUser(params.getCapacityPerUser())
                 .carryingCapacity(params.getCarryingCapacity())
-                .hidden(params.isHidden());
+                .hidden(params.isHidden())
+                .courseId(params.getCourseId());
 
         // ok to set null values for these, so old backend still works
         if (params.getAboveCapacityHealthUpdateStrategy() != null) {
@@ -315,6 +322,15 @@ public class CommonsController extends ApiController {
         return ResponseEntity.ok().body(body);
     }
 
+    @Operation(summary = "Get the ids of the courses the current user belongs to as a student or staff member")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/mycourses")
+    public ResponseEntity<List<Long>> getMyCourseIds() {
+        User u = getCurrentUser().getUser();
+        List<Long> courseIds = courseAccessService.getCourseIdsForUser(u);
+        return ResponseEntity.ok().body(courseIds);
+    }
+
     @Operation(summary = "Join a commons")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping(value = "/join", produces = "application/json")
@@ -327,6 +343,11 @@ public class CommonsController extends ApiController {
 
         Commons joinedCommons = commonsRepository.findById(commonsId)
                 .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+
+        if (joinedCommons.getCourseId() != null && !courseAccessService.isEligibleForCommons(u, joinedCommons)) {
+            throw new CourseAccessDeniedException(commonsId);
+        }
+
         Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
         if (userCommonsLookup.isPresent()) {

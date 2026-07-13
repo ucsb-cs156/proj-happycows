@@ -1,31 +1,31 @@
 import React from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import StudentsForm from "main/components/Students/StudentsForm";
+import StaffForm from "main/components/Staff/StaffForm";
 import { Navigate, useSearchParams } from "react-router";
 import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";
 
-const AdminStudentsCreatePage = () => {
+const AdminStaffCreatePage = () => {
   const [searchParams] = useSearchParams();
   const courseId = searchParams.get("courseId");
 
-  const objectToAxiosParams = (newStudent) => ({
-    url: `/api/student`,
+  const objectToAxiosParams = (newStaff) => ({
+    url: `/api/staff`,
     method: "POST",
-    data: newStudent,
+    data: newStaff,
   });
 
-  const onSuccess = (student) => {
+  const onSuccess = (staff) => {
     toast(
       <div>
-        Student successfully created!
+        Staff member successfully created!
         <br />
-        {`id: ${student.id}`}
+        {`id: ${staff.id}`}
         <br />
-        {`lastName: ${student.lastName}`}
+        {`lastName: ${staff.lastName}`}
         <br />
-        {`email: ${student.email}`}
+        {`email: ${staff.email}`}
       </div>,
     );
   };
@@ -35,7 +35,7 @@ const AdminStudentsCreatePage = () => {
     objectToAxiosParams,
     { onSuccess },
     // Stryker disable next-line all : hard to set up test for caching
-    ["/api/student/all"],
+    ["/api/staff/all"],
   );
   // Stryker restore all
 
@@ -44,13 +44,13 @@ const AdminStudentsCreatePage = () => {
   };
 
   if (mutation.isSuccess) {
-    return <Navigate to="/admin/liststudents" />;
+    return <Navigate to="/admin/liststaff" />;
   }
 
   return (
     <BasicLayout>
-      <h2>Create Student</h2>
-      <StudentsForm
+      <h2>Create Staff</h2>
+      <StaffForm
         submitAction={submitAction}
         initialContents={courseId ? { courseId: Number(courseId) } : null}
       />
@@ -58,4 +58,4 @@ const AdminStudentsCreatePage = () => {
   );
 };
 
-export default AdminStudentsCreatePage;
+export default AdminStaffCreatePage;

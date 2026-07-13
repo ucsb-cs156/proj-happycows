@@ -22,6 +22,10 @@ import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
 import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
 import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
 import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
+import AdminStaffIndexPage from "main/pages/AdminStaffIndexPage";
+import AdminStaffCreatePage from "main/pages/AdminStaffCreatePage";
+import AdminStaffEditPage from "main/pages/AdminStaffEditPage";
+import InstructorAdminShowPage from "main/pages/InstructorAdminShowPage";
 import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -60,6 +64,10 @@ function App() {
       <Route path="/admin/listcourses" element={<AdminCoursesIndexPage />} />
       <Route path="/admin/createcourses" element={<AdminCoursesCreatePage />} />
       <Route path="/admin/editcourses/:id" element={<AdminCoursesEditPage />} />
+      <Route path="/admin/courses/:id" element={<InstructorAdminShowPage />} />
+      <Route path="/admin/liststaff" element={<AdminStaffIndexPage />} />
+      <Route path="/admin/createstaff" element={<AdminStaffCreatePage />} />
+      <Route path="/admin/editstaff/:id" element={<AdminStaffEditPage />} />
       <Route
         path="/admin/play/:commonsId/user/:userId"
         element={<AdminViewPlayPage />}

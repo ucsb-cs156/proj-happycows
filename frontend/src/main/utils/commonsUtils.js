@@ -15,12 +15,49 @@ export function cellToAxiosParamsDelete(cell) {
   };
 }
 
-export function filterCommonsNotJoinedAndNotHidden(commons, commonsJoined) {
-  const joinedIdList = commonsJoined.map((c) => c.id);
-  return commons.filter((f) => !f.hidden && !joinedIdList.includes(f.id));
+// A commons with no course is visible to everyone. A course-linked commons
+// is only visible to users enrolled in that course (as a student or staff
+// member), or to admins. See issue #251.
+export function isEligibleForCourseLinkedCommons(
+  commons,
+  myCourseIds,
+  isAdmin,
+) {
+  if (commons.courseId == null) {
+    return true;
+  }
+  if (isAdmin) {
+    return true;
+  }
+  return myCourseIds.includes(commons.courseId);
 }
 
-export function filterCommonsJoinedAndNotHidden(commons, commonsJoined) {
+export function filterCommonsNotJoinedAndNotHidden(
+  commons,
+  commonsJoined,
+  myCourseIds = [],
+  isAdmin = false,
+) {
   const joinedIdList = commonsJoined.map((c) => c.id);
-  return commons.filter((f) => !f.hidden && joinedIdList.includes(f.id));
+  return commons.filter(
+    (f) =>
+      !f.hidden &&
+      !joinedIdList.includes(f.id) &&
+      isEligibleForCourseLinkedCommons(f, myCourseIds, isAdmin),
+  );
+}
+
+export function filterCommonsJoinedAndNotHidden(
+  commons,
+  commonsJoined,
+  myCourseIds = [],
+  isAdmin = false,
+) {
+  const joinedIdList = commonsJoined.map((c) => c.id);
+  return commons.filter(
+    (f) =>
+      !f.hidden &&
+      joinedIdList.includes(f.id) &&
+      isEligibleForCourseLinkedCommons(f, myCourseIds, isAdmin),
+  );
 }
