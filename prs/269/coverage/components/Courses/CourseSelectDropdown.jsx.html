@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -126,53 +126,53 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
-<span class="cline-any cline-yes">161x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">161x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">89x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Form } from "react-bootstrap";
@@ -191,32 +191,31 @@ function CourseSelectDropdown({
   testIdPrefix = "CourseSelectDropdown",
 }) {
   // Stryker disable all
-  const { data: courses } = useBackend(
-    ["/api/course/all"],
-    { method: "GET", url: "/api/course/all" },
-    [],
-  );
+  const { data: courses } = useBackend(["/api/course/all"], {
+    method: "GET",
+    url: "/api/course/all",
+  });
   // Stryker restore all
 &nbsp;
   return (
     &lt;Form.Group className="mb-3"&gt;
       &lt;Form.Label htmlFor={formName}&gt;{displayName}&lt;/Form.Label&gt;
-      &lt;Form.Select
-        data-testid={`${testIdPrefix}-${formName}`}
-        id={formName}
-        {...register(formName, {
-          required: includeNoCourseOption ? false : "Course is required.",
-          setValueAs: (value) =&gt; (value === "" ? null : Number(value)),
-        })}
-        defaultValue={initialValue ?? ""}
-      &gt;
-        {includeNoCourseOption &amp;&amp; (
-          &lt;option value="" data-testid={`${testIdPrefix}-${formName}-none`}&gt;
-            No Course
-          &lt;/option&gt;
-        )}
-        {Array.isArray(courses) &amp;&amp;
-          courses.map((course) =&gt; (
+      {Array.isArray(courses) &amp;&amp; (
+        &lt;Form.Select
+          data-testid={`${testIdPrefix}-${formName}`}
+          id={formName}
+          {...register(formName, {
+            required: includeNoCourseOption ? false : "Course is required.",
+            setValueAs: (value) =&gt; (value === "" ? null : Number(value)),
+          })}
+          defaultValue={initialValue ?? ""}
+        &gt;
+          {includeNoCourseOption &amp;&amp; (
+            &lt;option value="" data-testid={`${testIdPrefix}-${formName}-none`}&gt;
+              No Course
+            &lt;/option&gt;
+          )}
+          {courses.map((course) =&gt; (
             &lt;option
               key={course.id}
               value={course.id}
@@ -225,7 +224,8 @@ function CourseSelectDropdown({
               {course.code} - {course.name} ({course.term})
             &lt;/option&gt;
           ))}
-      &lt;/Form.Select&gt;
+        &lt;/Form.Select&gt;
+      )}
     &lt;/Form.Group&gt;
   );
 }
@@ -238,7 +238,7 @@ export default CourseSelectDropdown;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-13T21:42:46.815Z
+                at 2026-07-13T23:20:30.890Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
