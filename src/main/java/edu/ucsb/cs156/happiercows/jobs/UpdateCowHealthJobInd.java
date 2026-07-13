@@ -36,6 +36,9 @@ public class UpdateCowHealthJobInd implements JobContextConsumer {
 
         if(commonUpdatedOpt.isPresent()){
             Commons commonsUpdated = commonUpdatedOpt.get();
+            if (!CommonsGate.shouldProcess(commonsUpdated, commonsRepository, ctx)) {
+                return;
+            }
             CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);
             UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, userCommonsRepository, ctx); 
             ctx.log("Cow health has been updated!");

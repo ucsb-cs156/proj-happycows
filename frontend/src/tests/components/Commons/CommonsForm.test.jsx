@@ -180,14 +180,11 @@ describe("CommonsForm tests", () => {
   it("Check Default Values and correct styles", async () => {
     const curr = new Date();
     const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
-    const currMonth = curr.getMonth() % 12;
-    const nextMonth = new Date(
+    const fourMonthsLater = new Date(
       curr.getFullYear(),
-      currMonth + 1,
+      curr.getMonth() + 4,
       curr.getDate(),
-    )
-      .toISOString()
-      .substr(0, 10);
+    ).toLocaleDateString("en-CA");
     const DefaultVals = {
       name: "",
       startingBalance: 10000,
@@ -196,7 +193,7 @@ describe("CommonsForm tests", () => {
       degradationRate: 0.001,
       carryingCapacity: 100,
       startingDate: today,
-      lastDate: nextMonth,
+      lastDate: fourMonthsLater,
     };
 
     axiosMock
@@ -344,19 +341,141 @@ describe("CommonsForm tests", () => {
     expect(screen.getByTestId("CommonsForm-startingDate")).toHaveValue(
       commonsFixtures.threeCommons[0].startingDate.split("T")[0],
     );
+    expect(screen.getByTestId("CommonsForm-lastDate")).toHaveValue(
+      commonsFixtures.threeCommons[0].lastDate.split("T")[0],
+    );
+  });
+
+  it("shows explanatory tooltips over the starting and last date fields", async () => {
+    axiosMock
+      .onGet("/api/commons/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <CommonsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("CommonsForm-name")).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("CommonsForm-startingDate"));
+    expect(
+      await screen.findByText(
+        "The first day of play: the game begins at midnight (00:00) at the start of this date.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("CommonsForm-lastDate"));
+    expect(
+      await screen.findByText(
+        "The last day of play: the game ends at midnight at the end of this date.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("has validation errors when dates are missing", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/commons/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <CommonsForm submitAction={submitAction} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("CommonsForm-name")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("CommonsForm-startingDate"), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByTestId("CommonsForm-lastDate"), {
+      target: { value: "" },
+    });
+    fireEvent.click(screen.getByTestId("CommonsForm-Submit-Button"));
+
+    expect(
+      await screen.findByText("Starting date is required"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Last date is required")).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+  });
+
+  it("requires the last date to be after the starting date", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/commons/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <CommonsForm submitAction={submitAction} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("CommonsForm-name")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("CommonsForm-name"), {
+      target: { value: "My Commons" },
+    });
+    fireEvent.change(screen.getByTestId("CommonsForm-capacityPerUser"), {
+      target: { value: "5" },
+    });
+    fireEvent.change(screen.getByTestId("CommonsForm-startingDate"), {
+      target: { value: "2024-05-10" },
+    });
+
+    // equal dates are invalid: the last date must be strictly after
+    fireEvent.change(screen.getByTestId("CommonsForm-lastDate"), {
+      target: { value: "2024-05-10" },
+    });
+    fireEvent.click(screen.getByTestId("CommonsForm-Submit-Button"));
+    expect(
+      await screen.findByText("Last date must be after starting date"),
+    ).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+
+    // an earlier date is also invalid
+    fireEvent.change(screen.getByTestId("CommonsForm-lastDate"), {
+      target: { value: "2024-05-09" },
+    });
+    fireEvent.click(screen.getByTestId("CommonsForm-Submit-Button"));
+    expect(
+      await screen.findByText("Last date must be after starting date"),
+    ).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+
+    // a later date is valid
+    fireEvent.change(screen.getByTestId("CommonsForm-lastDate"), {
+      target: { value: "2024-05-11" },
+    });
+    fireEvent.click(screen.getByTestId("CommonsForm-Submit-Button"));
+    await waitFor(() => {
+      expect(submitAction).toBeCalled();
+    });
+    expect(
+      screen.queryByText("Last date must be after starting date"),
+    ).not.toBeInTheDocument();
   });
 
   it("renders correctly when an initialCommons is not passed in", async () => {
     const curr = new Date();
     const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
-    const currMonth = curr.getMonth() % 12;
-    const nextMonth = new Date(
+    const fourMonthsLater = new Date(
       curr.getFullYear(),
-      currMonth + 1,
+      curr.getMonth() + 4,
       curr.getDate(),
-    )
-      .toISOString()
-      .substr(0, 10);
+    ).toLocaleDateString("en-CA");
     const DefaultVals = {
       name: "",
       startingBalance: 10000,
@@ -365,7 +484,7 @@ describe("CommonsForm tests", () => {
       degradationRate: 0.001,
       carryingCapacity: 100,
       startingDate: today,
-      lastDate: nextMonth,
+      lastDate: fourMonthsLater,
       aboveCapacityStrategy: "Linear",
       belowCapacityStrategy: "Constant",
     };
@@ -442,14 +561,11 @@ describe("CommonsForm tests", () => {
   test("populates form fields with default values when initialCommons is not provided", async () => {
     const curr = new Date();
     const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
-    const currMonth = curr.getMonth() % 12;
-    const nextMonth = new Date(
+    const fourMonthsLater = new Date(
       curr.getFullYear(),
-      currMonth + 1,
+      curr.getMonth() + 4,
       curr.getDate(),
-    )
-      .toISOString()
-      .substr(0, 10);
+    ).toLocaleDateString("en-CA");
     const defaultValuesData = {
       name: "",
       startingBalance: 10000,
@@ -458,7 +574,7 @@ describe("CommonsForm tests", () => {
       degradationRate: 0.001,
       carryingCapacity: 100,
       startingDate: today,
-      lastDate: nextMonth,
+      lastDate: fourMonthsLater,
     };
 
     vi.spyOn(useBackendModule, "useBackend").mockReturnValue({

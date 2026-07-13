@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,11 @@ public class CommonsIT {
     @Test
     public void getCommonsTest() throws Exception {
         List<Commons> expectedCommons = new ArrayList<Commons>();
-        Commons Commons1 = Commons.builder().name("TestCommons1").build();
+        Commons Commons1 = Commons.builder()
+                .name("TestCommons1")
+                .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-07-05T15:50:10"))
+                .build();
         expectedCommons.add(Commons1);
 
         commonsRepository.save(Commons1);

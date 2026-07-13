@@ -200,6 +200,8 @@ public class CommonsController extends ApiController {
             throw new IllegalArgumentException("Carrying Capacity cannot be less than 1");
         }
 
+        validateDates(params);
+
         updated.setHidden(params.isHidden());
         commonsRepository.save(updated);
 
@@ -275,10 +277,31 @@ public class CommonsController extends ApiController {
             throw new IllegalArgumentException("Carrying Capacity cannot be less than 1");
         }
 
+        validateDates(params);
+
         Commons saved = commonsRepository.save(commons);
         String body = mapper.writeValueAsString(saved);
 
         return ResponseEntity.ok().body(body);
+    }
+
+    /**
+     * Enforce that both dates are present and that the last date is strictly
+     * after the starting date.  (See issue #250; the frontend form enforces
+     * the same rules, but the backend must not rely on that.)
+     *
+     * @param params the params to validate
+     */
+    public static void validateDates(CreateCommonsParams params) {
+        if (params.getStartingDate() == null) {
+            throw new IllegalArgumentException("Starting Date is required");
+        }
+        if (params.getLastDate() == null) {
+            throw new IllegalArgumentException("Last Date is required");
+        }
+        if (!params.getLastDate().isAfter(params.getStartingDate())) {
+            throw new IllegalArgumentException("Last Date must be after Starting Date");
+        }
     }
 
 

@@ -1,0 +1,33 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "002-Require-Last-Date-On-Commons",
+        "author": "pconrad",
+        "changes": [
+          {
+            "update": {
+              "tableName": "COMMONS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "LAST_DATE",
+                    "valueComputed": "COALESCE(STARTING_DATE, CURRENT_TIMESTAMP)"
+                  }
+                }
+              ],
+              "where": "LAST_DATE IS NULL"
+            }
+          },
+          {
+            "addNotNullConstraint": {
+              "tableName": "COMMONS",
+              "columnName": "LAST_DATE",
+              "columnDataType": "TIMESTAMP"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -38,6 +38,9 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
 
         if(commonMilkedOpt.isPresent()){
             Commons commonMilked = commonMilkedOpt.get();
+            if (!CommonsGate.shouldProcess(commonMilked, commonsRepository, ctx)) {
+                return;
+            }
             String name = commonMilked.getName();
             double milkPrice = commonMilked.getMilkPrice();
             ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));

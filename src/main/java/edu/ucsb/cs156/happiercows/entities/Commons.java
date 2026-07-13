@@ -28,7 +28,10 @@ public class Commons {
     private double milkPrice;
     private double startingBalance;
     private LocalDateTime startingDate;
+
+    @Column(nullable = false)
     private LocalDateTime lastDate;
+
     private boolean showLeaderboard;
 
     @Builder.Default
@@ -53,11 +56,35 @@ public class Commons {
     @JsonIgnore
     private List<UserCommons> joinedUsers;
 
+    /**
+     * The starting date is the first day of play, and the last date is the
+     * last day of play: a game is in progress from midnight (00:00 local
+     * time) at the beginning of the starting date, up to (but not including)
+     * midnight at the end of the last date.
+     *
+     * @param now the date/time to check against
+     * @return whether the game is in progress at <code>now</code>
+     */
+    public boolean gameInProgress(LocalDateTime now) {
+        LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();
+        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();
+        return !now.isBefore(gameStart) && now.isBefore(gameEnd);
+    }
+
     public boolean gameInProgress() {
-        LocalDateTime today = LocalDateTime.now();
-        if (startingDate.isBefore(today) && lastDate.isAfter(today)) {
-            return true;
-        }
-        return false;
+        return gameInProgress(LocalDateTime.now());
+    }
+
+    /**
+     * The end date has passed when <code>now</code> is at or after midnight
+     * at the end of the last date (i.e. the last date is the last day of
+     * play).
+     *
+     * @param now the date/time to check against
+     * @return whether the game has ended as of <code>now</code>
+     */
+    public boolean endDateHasPassed(LocalDateTime now) {
+        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();
+        return !now.isBefore(gameEnd);
     }
 }

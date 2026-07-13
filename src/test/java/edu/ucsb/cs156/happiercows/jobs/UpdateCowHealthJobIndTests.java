@@ -62,7 +62,8 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
                         .cowPrice(10)
                         .milkPrice(2)
                         .startingBalance(300)
-                        .startingDate(LocalDateTime.now())
+                        .startingDate(LocalDateTime.now().minusDays(5))
+                        .lastDate(LocalDateTime.now().plusDays(5))
                         .capacityPerUser(1)
                         .carryingCapacity(100)
                         .degradationRate(1)
@@ -134,6 +135,27 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
                         User: Chris Gaucho, numCows: 1, cowHealth: 10.0
                          old cow health: 10.0, new cow health: 100.0
                         Cow health has been updated!""";
+
+        assertEquals(expected, job.getLog());
+    }
+
+    @Test
+    void test_skips_commons_when_game_not_in_progress() throws Exception {
+
+        Commons futureCommons = Commons
+                .builder()
+                .name("future commons")
+                .startingDate(LocalDateTime.now().plusDays(5))
+                .lastDate(LocalDateTime.now().plusDays(10))
+                .build();
+
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(futureCommons));
+
+        runUpdateCowHealthJob();
+
+        String expected = """
+                        Updating cow health...
+                        Skipping Commons id=0 (future commons) because the game is not in progress""";
 
         assertEquals(expected, job.getLog());
     }

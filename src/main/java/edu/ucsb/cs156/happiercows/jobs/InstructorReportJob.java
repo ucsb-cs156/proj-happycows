@@ -24,6 +24,9 @@ public class InstructorReportJob implements JobContextConsumer {
         Iterable<Commons> allCommons = commonsRepository.findAll();
 
         for (Commons commons : allCommons) {
+            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {
+                continue;
+            }
             ctx.log(String.format("Starting Commons id=%d (%s)...", commons.getId(), commons.getName()));
             Report report = reportService.createReport(commons.getId());
             ctx.log(String.format("Report %d for commons id=%d (%s) finished.", report.getId(), commons.getId(),

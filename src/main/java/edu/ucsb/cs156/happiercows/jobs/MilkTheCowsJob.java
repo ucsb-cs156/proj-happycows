@@ -38,6 +38,9 @@ public class MilkTheCowsJob implements JobContextConsumer {
         Iterable<Commons> allCommons = commonsRepository.findAll();
 
         for (Commons commons : allCommons) {
+            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {
+                continue;
+            }
             String name = commons.getName();
             double milkPrice = commons.getMilkPrice();
             ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));

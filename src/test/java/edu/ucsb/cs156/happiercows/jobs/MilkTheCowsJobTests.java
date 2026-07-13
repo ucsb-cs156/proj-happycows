@@ -52,7 +52,8 @@ public class MilkTheCowsJobTests extends JobTestCase {
             .cowPrice(10)
             .milkPrice(2)
             .startingBalance(300)
-            .startingDate(LocalDateTime.now())
+            .startingDate(LocalDateTime.now().minusDays(5))
+            .lastDate(LocalDateTime.now().plusDays(5))
             .carryingCapacity(100)
             .degradationRate(0.01)
             .build();
@@ -115,6 +116,41 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 Milking cows for Commons: test commons, Milk Price: $2.00
                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0, totalWealth: $300.00
                 Profit for user: Chris Gaucho is: $0.20, newWealth: $300.20
+                Cows have been milked!""";
+
+        assertEquals(expected, jobStarted.getLog());
+    }
+
+    @Test
+    void test_skips_commons_when_game_not_in_progress() throws Exception {
+
+        // Arrange
+        Job jobStarted = Job.builder().build();
+        JobContext ctx = new JobContext(null, jobStarted);
+
+        Commons futureCommons = Commons
+                .builder()
+                .name("future commons")
+                .cowPrice(10)
+                .milkPrice(2)
+                .startingBalance(300)
+                .startingDate(LocalDateTime.now().plusDays(5))
+                .lastDate(LocalDateTime.now().plusDays(10))
+                .carryingCapacity(100)
+                .degradationRate(0.01)
+                .build();
+
+        when(commonsRepository.findAll()).thenReturn(Arrays.asList(futureCommons));
+
+        // Act
+        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, userCommonsRepository,
+                userRepository, profitRepository);
+        milkTheCowsJob.accept(ctx);
+
+        // Assert
+        String expected = """
+                Starting to milk the cows
+                Skipping Commons id=0 (future commons) because the game is not in progress
                 Cows have been milked!""";
 
         assertEquals(expected, jobStarted.getLog());

@@ -60,7 +60,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                         .cowPrice(10)
                         .milkPrice(2)
                         .startingBalance(300)
-                        .startingDate(LocalDateTime.now())
+                        .startingDate(LocalDateTime.now().minusDays(5))
+                        .lastDate(LocalDateTime.now().plusDays(5))
                         .capacityPerUser(0)
                         .carryingCapacity(100)
                         .degradationRate(1)
@@ -96,6 +97,32 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
                 String expected = """
                                 Updating cow health...
+                                Cow health has been updated!""";
+                assertEquals(expected, job.getLog());
+        }
+
+        @Test
+        void test_skips_commons_when_game_not_in_progress() throws Exception {
+                Commons futureCommons = Commons
+                                .builder()
+                                .name("future commons")
+                                .startingDate(LocalDateTime.now().plusDays(5))
+                                .lastDate(LocalDateTime.now().plusDays(10))
+                                .build();
+
+                List<Commons> listOfCommons = List.of(futureCommons);
+                CommonsPlus futureCommonsPlus = CommonsPlus.builder().commons(futureCommons).totalCows(1)
+                                .totalUsers(1).build();
+
+                when(commonsRepository.findAll()).thenReturn(listOfCommons);
+                when(commonsPlusBuilderService.convertToCommonsPlus(eq(listOfCommons)))
+                                .thenReturn(List.of(futureCommonsPlus));
+
+                runUpdateCowHealthJob();
+
+                String expected = """
+                                Updating cow health...
+                                Skipping Commons id=0 (future commons) because the game is not in progress
                                 Cow health has been updated!""";
                 assertEquals(expected, job.getLog());
         }

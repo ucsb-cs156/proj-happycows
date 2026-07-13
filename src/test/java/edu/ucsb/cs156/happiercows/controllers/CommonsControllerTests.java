@@ -112,6 +112,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void createCommonsTest() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         Commons commons = Commons.builder()
                 .name("Jackson's Commons")
@@ -119,6 +120,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -135,6 +137,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -169,6 +172,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void createCommonsTest_withNoCowHealthUpdateStrategies() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         Commons commons = Commons.builder()
                 .name("Jackson's Commons")
@@ -176,6 +180,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -190,6 +195,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -225,6 +231,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void createCommonsTest_zeroDegradation() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         Commons commons = Commons.builder()
                 .name("Jackson's Commons")
@@ -232,6 +239,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(0)
                 .showLeaderboard(false)
                 .showChat(true)
@@ -246,6 +254,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(0)
                 .showLeaderboard(false)
                 .showChat(true)
@@ -278,6 +287,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void createCommonsTest_withIllegalDegradationRate() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         Commons commons = Commons.builder()
                 .name("Jackson's Commons")
@@ -285,6 +295,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
@@ -297,6 +308,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(-8.49)
                 .capacityPerUser(10)
                 .carryingCapacity(100)
@@ -341,6 +353,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void updateCommonsTest() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
                 .name("Jackson's Commons")
@@ -348,7 +361,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
-                .lastDate(someTime)
+                .lastDate(someLaterTime)
                 .showChat(true)
                 .degradationRate(50.0)
                 .showLeaderboard(true)
@@ -365,7 +378,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
-                .lastDate(someTime)
+                .lastDate(someLaterTime)
                 .showChat(true)
                 .degradationRate(50.0)
                 .showLeaderboard(true)
@@ -436,6 +449,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void updateCommonsTest_withNoCowHealthUpdateStrategy() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
                 .name("Jackson's Commons")
@@ -443,6 +457,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(true)
                 .showChat(false)
@@ -457,6 +472,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(true)
                 .showChat(false)
@@ -494,6 +510,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void updateCommonsTest_withDegradationRate_Zero() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
                 .name("Jackson's Commons")
@@ -501,6 +518,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -515,6 +533,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -568,6 +587,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void updateCommonsTest_withIllegalDegradationRate() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
                 .name("Jackson's Commons")
@@ -575,6 +595,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -589,6 +610,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -636,6 +658,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void updateCommonsTest_hiddenCanBeToggled() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         CreateCommonsParams parameters = CreateCommonsParams.builder()
                 .name("Jackson's Commons")
@@ -643,6 +666,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -657,6 +681,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(8.49)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -899,6 +924,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test
     public void deleteCommons_test_admin_exists() throws Exception {
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
 
         Commons c = Commons.builder()
                 .name("Jackson's Commons")
@@ -906,6 +932,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .milkPrice(8.99)
                 .startingBalance(1020.10)
                 .startingDate(someTime)
+                .lastDate(someLaterTime)
                 .degradationRate(50.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -1214,6 +1241,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .cowPrice(0.01)
                 .milkPrice(0.01)
                 .startingBalance(0.0)
+                .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-07-05T15:50:10"))
                 .degradationRate(0.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -1237,12 +1266,14 @@ public class CommonsControllerTests extends ControllerTestCase {
     public void UpdateCommonsTest_withIllegalParameters() throws Exception {
         // we first create a commons to update
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
         Commons commons = Commons.builder()
         .name("Jackson's Commons")
         .cowPrice(500.99)
         .milkPrice(8.99)
         .startingBalance(1020.10)
         .startingDate(someTime)
+        .lastDate(someLaterTime)
         .degradationRate(50.0)
         .showLeaderboard(false)
         .showChat(false)
@@ -1376,12 +1407,14 @@ public class CommonsControllerTests extends ControllerTestCase {
     public void UpdateCommonsTest_withBoundaryParameters() throws Exception {
         // we first create a commons to update
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
         Commons commons = Commons.builder()
         .name("Jackson's Commons")
         .cowPrice(500.99)
         .milkPrice(8.99)
         .startingBalance(1020.10)
         .startingDate(someTime)
+        .lastDate(someLaterTime)
         .degradationRate(50.0)
         .showLeaderboard(false)
         .showChat(false)
@@ -1399,6 +1432,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .cowPrice(0.01)
                 .milkPrice(0.01)
                 .startingBalance(0.0)
+                .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-07-05T15:50:10"))
                 .degradationRate(0.0)
                 .showLeaderboard(false)
                 .showChat(false)
@@ -1423,12 +1458,14 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test void test_capacity_with_lower_per_user() throws Exception{
         
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
         Commons commons = Commons.builder()
         .name("Jackson's Commons")
         .cowPrice(500.99)
         .milkPrice(8.99)
         .startingBalance(1020.10)
         .startingDate(someTime)
+        .lastDate(someLaterTime)
         .degradationRate(50.0)
         .showLeaderboard(false)
         .showChat(false)
@@ -1447,12 +1484,14 @@ public class CommonsControllerTests extends ControllerTestCase {
     @Test void test_capacity_with_higher_per_user() throws Exception{
         
         LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
         Commons commons = Commons.builder()
         .name("Jackson's Commons")
         .cowPrice(500.99)
         .milkPrice(8.99)
         .startingBalance(1020.10)
         .startingDate(someTime)
+        .lastDate(someLaterTime)
         .degradationRate(50.0)
         .showLeaderboard(false)
         .showChat(false)
@@ -1573,4 +1612,136 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(403)).andReturn();
     }
 
+    private CreateCommonsParams.CreateCommonsParamsBuilder validParamsBuilder() {
+        return CreateCommonsParams.builder()
+                .name("Test Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-07-05T15:50:10"))
+                .degradationRate(50.0)
+                .showLeaderboard(false)
+                .showChat(false)
+                .capacityPerUser(10)
+                .carryingCapacity(100);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void createCommonsTest_startingDateMissing_badRequest() throws Exception {
+        CreateCommonsParams parameters = validParamsBuilder().startingDate(null).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc.perform(post("/api/commons/new").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void createCommonsTest_lastDateMissing_badRequest() throws Exception {
+        CreateCommonsParams parameters = validParamsBuilder().lastDate(null).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc.perform(post("/api/commons/new").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void createCommonsTest_lastDateEqualsStartingDate_badRequest() throws Exception {
+        LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        CreateCommonsParams parameters = validParamsBuilder()
+                .startingDate(someTime).lastDate(someTime).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc.perform(post("/api/commons/new").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void createCommonsTest_lastDateBeforeStartingDate_badRequest() throws Exception {
+        CreateCommonsParams parameters = validParamsBuilder()
+                .startingDate(LocalDateTime.parse("2022-07-05T15:50:10"))
+                .lastDate(LocalDateTime.parse("2022-03-05T15:50:10"))
+                .build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc.perform(post("/api/commons/new").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void updateCommonsTest_startingDateMissing_badRequest() throws Exception {
+        CreateCommonsParams parameters = validParamsBuilder().startingDate(null).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        when(commonsRepository.findById(eq(0L))).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void updateCommonsTest_lastDateMissing_badRequest() throws Exception {
+        CreateCommonsParams parameters = validParamsBuilder().lastDate(null).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        when(commonsRepository.findById(eq(0L))).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void updateCommonsTest_lastDateNotAfterStartingDate_badRequest() throws Exception {
+        LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        CreateCommonsParams parameters = validParamsBuilder()
+                .startingDate(someTime).lastDate(someTime).build();
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        when(commonsRepository.findById(eq(0L))).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isBadRequest());
+
+        verify(commonsRepository, times(0)).save(any());
+    }
 }
