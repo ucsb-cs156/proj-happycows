@@ -2,21 +2,34 @@
 
 import edu.ucsb.cs156.happiercows.entities.Staff;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StaffDTO;
 import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-<span class="fc" id="L15">@Slf4j</span>
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+<span class="fc" id="L28">@Slf4j</span>
 @Tag(name = &quot;Staff&quot;)
 @RequestMapping(&quot;/api/staff&quot;)
 @RestController
-<span class="fc" id="L19">public class StaffController extends ApiController {</span>
+<span class="fc" id="L32">public class StaffController extends ApiController {</span>
     @Autowired
     private StaffRepository staffRepository;
 
@@ -24,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Staff&gt; allStaff() {
-<span class="fc" id="L27">        return staffRepository.findAll();</span>
+<span class="fc" id="L40">        return staffRepository.findAll();</span>
     }
 
     @Operation(summary = &quot;List the staff for a single course&quot;)
@@ -32,7 +45,7 @@ import org.springframework.web.bind.annotation.*;
     @GetMapping(&quot;/course/{courseId}&quot;)
     public Iterable&lt;Staff&gt; staffForCourse(
             @Parameter(name = &quot;courseId&quot;) @PathVariable Long courseId) {
-<span class="fc" id="L35">        return staffRepository.findByCourseId(courseId);</span>
+<span class="fc" id="L48">        return staffRepository.findByCourseId(courseId);</span>
     }
 
     @Operation(summary = &quot;Get a staff member by id&quot;)
@@ -40,8 +53,8 @@ import org.springframework.web.bind.annotation.*;
     @GetMapping(&quot;/{id}&quot;)
     public Staff getStaffById(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L43">        return staffRepository.findById(id)</span>
-<span class="fc" id="L44">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+<span class="fc" id="L56">        return staffRepository.findById(id)</span>
+<span class="fc" id="L57">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
     }
 
     @Operation(summary = &quot;Add a staff member to a course&quot;)
@@ -49,7 +62,7 @@ import org.springframework.web.bind.annotation.*;
     @PostMapping(&quot;&quot;)
     public Staff postStaff(
             @Parameter(name = &quot;staff&quot;) @RequestBody StaffDTO staffDTO) {
-<span class="fc" id="L52">        return staffRepository.save(staffDTO.toStaff());</span>
+<span class="fc" id="L65">        return staffRepository.save(staffDTO.toStaff());</span>
     }
 
     @Operation(summary = &quot;Update a single staff member&quot;)
@@ -57,17 +70,17 @@ import org.springframework.web.bind.annotation.*;
     @PutMapping(&quot;/{id}&quot;)
     public Staff updateStaff(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody StaffDTO staffDTO) {
-<span class="fc" id="L60">        Staff staff = staffRepository.findById(id)</span>
-<span class="fc" id="L61">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+<span class="fc" id="L73">        Staff staff = staffRepository.findById(id)</span>
+<span class="fc" id="L74">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
 
-<span class="fc" id="L63">        staff.setLastName(staffDTO.getLastName());</span>
-<span class="fc" id="L64">        staff.setFirstMiddleName(staffDTO.getFirstMiddleName());</span>
-<span class="fc" id="L65">        staff.setEmail(staffDTO.getEmail());</span>
-<span class="fc" id="L66">        staff.setCourseId(staffDTO.getCourseId());</span>
+<span class="fc" id="L76">        staff.setLastName(staffDTO.getLastName());</span>
+<span class="fc" id="L77">        staff.setFirstMiddleName(staffDTO.getFirstMiddleName());</span>
+<span class="fc" id="L78">        staff.setEmail(staffDTO.getEmail());</span>
+<span class="fc" id="L79">        staff.setCourseId(staffDTO.getCourseId());</span>
 
-<span class="fc" id="L68">        staffRepository.save(staff);</span>
+<span class="fc" id="L81">        staffRepository.save(staff);</span>
 
-<span class="fc" id="L70">        return staff;</span>
+<span class="fc" id="L83">        return staff;</span>
     }
 
     @Operation(summary = &quot;Remove a staff member from a course&quot;)
@@ -75,11 +88,89 @@ import org.springframework.web.bind.annotation.*;
     @DeleteMapping(&quot;/{id}&quot;)
     public Object deleteStaff(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L78">        Staff staff = staffRepository.findById(id)</span>
-<span class="fc" id="L79">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+<span class="fc" id="L91">        Staff staff = staffRepository.findById(id)</span>
+<span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
 
-<span class="fc" id="L81">        staffRepository.delete(staff);</span>
-<span class="fc" id="L82">        return genericMessage(&quot;Staff with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L94">        staffRepository.delete(staff);</span>
+<span class="fc" id="L95">        return genericMessage(&quot;Staff with id %s deleted&quot;.formatted(id));</span>
+    }
+
+<span class="fc" id="L98">    private static final List&lt;String&gt; STAFF_CSV_HEADERS = List.of(&quot;lastName&quot;, &quot;firstMiddleName&quot;, &quot;email&quot;);</span>
+
+    /**
+     * Bulk-adds staff to a course from an uploaded CSV file, with a single
+     * fixed header format ({@code lastName,firstMiddleName,email}). Rows
+     * whose email is already on the course's staff list are skipped rather
+     * than duplicated.
+     *
+     * @param courseId the course to add the staff to
+     * @param file the uploaded CSV file
+     * @return a summary of how many staff were created, and which emails
+     *         were skipped as already-on-roster
+     */
+    @Operation(summary = &quot;Upload a CSV file of staff for a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(value = &quot;/upload/csv&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CsvUploadResult uploadStaffCsv(
+            @Parameter(name = &quot;courseId&quot;) @RequestParam Long courseId,
+            @Parameter(name = &quot;file&quot;) @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
+
+        List&lt;CSVRecord&gt; records;
+<span class="fc" id="L119">        try (CSVParser parser = CSVFormat.DEFAULT.parse(</span>
+<span class="fc" id="L120">                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {</span>
+<span class="fc" id="L121">            records = parser.getRecords();</span>
+        }
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (records.isEmpty()) {</span>
+<span class="fc" id="L125">            throw new IllegalArgumentException(&quot;CSV file is empty&quot;);</span>
+        }
+
+<span class="fc" id="L128">        Iterator&lt;CSVRecord&gt; rows = records.iterator();</span>
+
+<span class="fc" id="L130">        List&lt;String&gt; headerValues = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        for (String value : rows.next()) {</span>
+<span class="fc" id="L132">            headerValues.add(value.trim());</span>
+<span class="fc" id="L133">        }</span>
+
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        if (headerValues.size() != STAFF_CSV_HEADERS.size()) {</span>
+<span class="fc" id="L136">            throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
+        }
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        for (int i = 0; i &lt; STAFF_CSV_HEADERS.size(); i++) {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">            if (!STAFF_CSV_HEADERS.get(i).equalsIgnoreCase(headerValues.get(i))) {</span>
+<span class="fc" id="L140">                throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
+            }
+        }
+
+<span class="fc" id="L144">        int created = 0;</span>
+<span class="fc" id="L145">        List&lt;String&gt; skippedEmails = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        while (rows.hasNext()) {</span>
+<span class="fc" id="L148">            CSVRecord row = rows.next();</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">            if (row.size() != STAFF_CSV_HEADERS.size()) {</span>
+<span class="fc" id="L150">                throw new IllegalArgumentException(</span>
+<span class="fc" id="L151">                        &quot;Row %d does not have the expected number of columns&quot;.formatted(row.getRecordNumber()));</span>
+            }
+
+<span class="fc" id="L154">            Staff staff = Staff.builder()</span>
+<span class="fc" id="L155">                    .lastName(row.get(0).trim())</span>
+<span class="fc" id="L156">                    .firstMiddleName(row.get(1).trim())</span>
+<span class="fc" id="L157">                    .email(row.get(2).trim())</span>
+<span class="fc" id="L158">                    .courseId(courseId)</span>
+<span class="fc" id="L159">                    .build();</span>
+
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (staffRepository.findByCourseIdAndEmail(courseId, staff.getEmail()).iterator().hasNext()) {</span>
+<span class="fc" id="L162">                skippedEmails.add(staff.getEmail());</span>
+<span class="fc" id="L163">                continue;</span>
+            }
+
+<span class="fc" id="L166">            staffRepository.save(staff);</span>
+<span class="fc" id="L167">            created++;</span>
+<span class="fc" id="L168">        }</span>
+
+<span class="fc" id="L170">        return CsvUploadResult.builder()</span>
+<span class="fc" id="L171">                .created(created)</span>
+<span class="fc" id="L172">                .skippedEmails(skippedEmails)</span>
+<span class="fc" id="L173">                .build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

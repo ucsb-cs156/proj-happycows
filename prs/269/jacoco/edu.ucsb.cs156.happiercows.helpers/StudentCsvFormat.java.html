@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentCsvFormat.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.helpers</a> &gt; <span class="el_source">StudentCsvFormat.java</span></div><h1>StudentCsvFormat.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.helpers;
+
+import edu.ucsb.cs156.happiercows.entities.Student;
+import org.apache.commons.csv.CSVRecord;
+
+import java.util.List;
+import java.util.function.BiFunction;
+
+/**
+ * Different schools export their class rosters with different CSV column
+ * layouts. Each format below knows how to recognize its own header row and
+ * how to map a data row to a {@link Student}.
+ *
+ * &lt;p&gt;{@code UCSB_EGRADES} matches the header row exported by UCSB's
+ * registrar (eGrades). {@code CHICO_STATE_ROSTER} and {@code GENERIC} are
+ * included as worked examples of how to add support for another school's
+ * roster format later (see issue #251); {@code GENERIC} is also the format
+ * used for courses associated with the &quot;Other&quot; school.
+ */
+<span class="fc" id="L20">public enum StudentCsvFormat {</span>
+<span class="fc" id="L21">    UCSB_EGRADES(</span>
+<span class="fc" id="L22">            List.of(&quot;Perm #&quot;, &quot;Student Last&quot;, &quot;Student First Middle&quot;, &quot;Email&quot;),</span>
+<span class="fc" id="L23">            (row, courseId) -&gt; Student.builder()</span>
+<span class="fc" id="L24">                    .perm(row.get(0).trim())</span>
+<span class="fc" id="L25">                    .lastName(row.get(1).trim())</span>
+<span class="fc" id="L26">                    .firstMiddleName(row.get(2).trim())</span>
+<span class="fc" id="L27">                    .email(row.get(3).trim())</span>
+<span class="fc" id="L28">                    .courseId(courseId)</span>
+<span class="fc" id="L29">                    .build()),</span>
+
+<span class="fc" id="L31">    CHICO_STATE_ROSTER(</span>
+<span class="fc" id="L32">            List.of(&quot;Student ID&quot;, &quot;Last Name&quot;, &quot;First Name&quot;, &quot;Email Address&quot;),</span>
+<span class="fc" id="L33">            (row, courseId) -&gt; Student.builder()</span>
+<span class="fc" id="L34">                    .perm(row.get(0).trim())</span>
+<span class="fc" id="L35">                    .lastName(row.get(1).trim())</span>
+<span class="fc" id="L36">                    .firstMiddleName(row.get(2).trim())</span>
+<span class="fc" id="L37">                    .email(row.get(3).trim())</span>
+<span class="fc" id="L38">                    .courseId(courseId)</span>
+<span class="fc" id="L39">                    .build()),</span>
+
+<span class="fc" id="L41">    GENERIC(</span>
+<span class="fc" id="L42">            List.of(&quot;lastName&quot;, &quot;firstMiddleName&quot;, &quot;email&quot;, &quot;perm&quot;),</span>
+<span class="fc" id="L43">            (row, courseId) -&gt; Student.builder()</span>
+<span class="fc" id="L44">                    .lastName(row.get(0).trim())</span>
+<span class="fc" id="L45">                    .firstMiddleName(row.get(1).trim())</span>
+<span class="fc" id="L46">                    .email(row.get(2).trim())</span>
+<span class="fc" id="L47">                    .perm(row.get(3).trim())</span>
+<span class="fc" id="L48">                    .courseId(courseId)</span>
+<span class="fc" id="L49">                    .build());</span>
+
+    private final List&lt;String&gt; headers;
+    private final BiFunction&lt;CSVRecord, Long, Student&gt; rowMapper;
+
+<span class="fc" id="L54">    StudentCsvFormat(List&lt;String&gt; headers, BiFunction&lt;CSVRecord, Long, Student&gt; rowMapper) {</span>
+<span class="fc" id="L55">        this.headers = headers;</span>
+<span class="fc" id="L56">        this.rowMapper = rowMapper;</span>
+<span class="fc" id="L57">    }</span>
+
+    public List&lt;String&gt; getHeaders() {
+<span class="fc" id="L60">        return headers;</span>
+    }
+
+    public boolean matchesHeaders(List&lt;String&gt; candidateHeaders) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (candidateHeaders.size() != headers.size()) {</span>
+<span class="fc" id="L65">            return false;</span>
+        }
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        for (int i = 0; i &lt; headers.size(); i++) {</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">            if (!headers.get(i).equalsIgnoreCase(candidateHeaders.get(i).trim())) {</span>
+<span class="fc" id="L69">                return false;</span>
+            }
+        }
+<span class="fc" id="L72">        return true;</span>
+    }
+
+    public Student toStudent(CSVRecord row, Long courseId) {
+<span class="fc" id="L76">        return rowMapper.apply(row, courseId);</span>
+    }
+
+    /**
+     * @param candidateHeaders the header row read from an uploaded CSV file
+     * @return the matching format, or null if no known format matches
+     */
+    public static StudentCsvFormat detect(List&lt;String&gt; candidateHeaders) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (StudentCsvFormat format : values()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (format.matchesHeaders(candidateHeaders)) {</span>
+<span class="fc" id="L86">                return format;</span>
+            }
+        }
+<span class="fc" id="L89">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

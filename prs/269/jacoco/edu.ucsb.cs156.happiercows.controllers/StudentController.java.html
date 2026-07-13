@@ -2,21 +2,35 @@
 
 import edu.ucsb.cs156.happiercows.entities.Student;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat;
+import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StudentDTO;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-<span class="fc" id="L15">@Slf4j</span>
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+<span class="fc" id="L29">@Slf4j</span>
 @Tag(name = &quot;Student&quot;)
 @RequestMapping(&quot;/api/student&quot;)
 @RestController
-<span class="fc" id="L19">public class StudentController extends ApiController {</span>
+<span class="fc" id="L33">public class StudentController extends ApiController {</span>
     @Autowired
     private StudentRepository studentRepository;
 
@@ -24,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Student&gt; allStudents() {
-<span class="fc" id="L27">        return studentRepository.findAll();</span>
+<span class="fc" id="L41">        return studentRepository.findAll();</span>
     }
 
     @Operation(summary = &quot;List the roster students for a single course&quot;)
@@ -32,7 +46,7 @@ import org.springframework.web.bind.annotation.*;
     @GetMapping(&quot;/course/{courseId}&quot;)
     public Iterable&lt;Student&gt; studentsForCourse(
             @Parameter(name = &quot;courseId&quot;) @PathVariable Long courseId) {
-<span class="fc" id="L35">        return studentRepository.findByCourseId(courseId);</span>
+<span class="fc" id="L49">        return studentRepository.findByCourseId(courseId);</span>
     }
 
     @Operation(summary = &quot;Get a roster student by id&quot;)
@@ -40,8 +54,8 @@ import org.springframework.web.bind.annotation.*;
     @GetMapping(&quot;/{id}&quot;)
     public Student getStudentById(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L43">        return studentRepository.findById(id)</span>
-<span class="fc" id="L44">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L57">        return studentRepository.findById(id)</span>
+<span class="fc" id="L58">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
     }
 
     @Operation(summary = &quot;Add a roster student to a course&quot;)
@@ -49,7 +63,7 @@ import org.springframework.web.bind.annotation.*;
     @PostMapping(&quot;&quot;)
     public Student postStudent(
             @Parameter(name = &quot;student&quot;) @RequestBody StudentDTO studentDTO) {
-<span class="fc" id="L52">        return studentRepository.save(studentDTO.toStudent());</span>
+<span class="fc" id="L66">        return studentRepository.save(studentDTO.toStudent());</span>
     }
 
     @Operation(summary = &quot;Update a single roster student&quot;)
@@ -57,18 +71,18 @@ import org.springframework.web.bind.annotation.*;
     @PutMapping(&quot;/{id}&quot;)
     public Student updateStudent(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody StudentDTO studentDTO) {
-<span class="fc" id="L60">        Student student = studentRepository.findById(id)</span>
-<span class="fc" id="L61">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L74">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L75">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
 
-<span class="fc" id="L63">        student.setLastName(studentDTO.getLastName());</span>
-<span class="fc" id="L64">        student.setFirstMiddleName(studentDTO.getFirstMiddleName());</span>
-<span class="fc" id="L65">        student.setEmail(studentDTO.getEmail());</span>
-<span class="fc" id="L66">        student.setPerm(studentDTO.getPerm());</span>
-<span class="fc" id="L67">        student.setCourseId(studentDTO.getCourseId());</span>
+<span class="fc" id="L77">        student.setLastName(studentDTO.getLastName());</span>
+<span class="fc" id="L78">        student.setFirstMiddleName(studentDTO.getFirstMiddleName());</span>
+<span class="fc" id="L79">        student.setEmail(studentDTO.getEmail());</span>
+<span class="fc" id="L80">        student.setPerm(studentDTO.getPerm());</span>
+<span class="fc" id="L81">        student.setCourseId(studentDTO.getCourseId());</span>
 
-<span class="fc" id="L69">        studentRepository.save(student);</span>
+<span class="fc" id="L83">        studentRepository.save(student);</span>
 
-<span class="fc" id="L71">        return student;</span>
+<span class="fc" id="L85">        return student;</span>
     }
 
     @Operation(summary = &quot;Remove a roster student from a course&quot;)
@@ -76,11 +90,78 @@ import org.springframework.web.bind.annotation.*;
     @DeleteMapping(&quot;/{id}&quot;)
     public Object deleteStudent(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L79">        Student student = studentRepository.findById(id)</span>
-<span class="fc" id="L80">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L93">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L94">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
 
-<span class="fc" id="L82">        studentRepository.delete(student);</span>
-<span class="fc" id="L83">        return genericMessage(&quot;Student with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L96">        studentRepository.delete(student);</span>
+<span class="fc" id="L97">        return genericMessage(&quot;Student with id %s deleted&quot;.formatted(id));</span>
+    }
+
+    /**
+     * Bulk-adds roster students to a course from an uploaded CSV file. The
+     * CSV's header row is used to auto-detect which school's roster export
+     * format it is (see {@link StudentCsvFormat}); rows whose email is
+     * already on the course roster are skipped rather than duplicated.
+     *
+     * @param courseId the course to add the students to
+     * @param file the uploaded CSV file
+     * @return a summary of how many students were created, and which emails
+     *         were skipped as already-on-roster
+     */
+    @Operation(summary = &quot;Upload a CSV file of roster students for a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(value = &quot;/upload/csv&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CsvUploadResult uploadStudentsCsv(
+            @Parameter(name = &quot;courseId&quot;) @RequestParam Long courseId,
+            @Parameter(name = &quot;file&quot;) @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
+
+        List&lt;CSVRecord&gt; records;
+<span class="fc" id="L119">        try (CSVParser parser = CSVFormat.DEFAULT.parse(</span>
+<span class="fc" id="L120">                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {</span>
+<span class="fc" id="L121">            records = parser.getRecords();</span>
+        }
+
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (records.isEmpty()) {</span>
+<span class="fc" id="L125">            throw new IllegalArgumentException(&quot;CSV file is empty&quot;);</span>
+        }
+
+<span class="fc" id="L128">        Iterator&lt;CSVRecord&gt; rows = records.iterator();</span>
+
+<span class="fc" id="L130">        List&lt;String&gt; headerValues = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        for (String value : rows.next()) {</span>
+<span class="fc" id="L132">            headerValues.add(value);</span>
+<span class="fc" id="L133">        }</span>
+
+<span class="fc" id="L135">        StudentCsvFormat format = StudentCsvFormat.detect(headerValues);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (format == null) {</span>
+<span class="fc" id="L137">            throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
+        }
+
+<span class="fc" id="L140">        int created = 0;</span>
+<span class="fc" id="L141">        List&lt;String&gt; skippedEmails = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L143" title="All 2 branches covered.">        while (rows.hasNext()) {</span>
+<span class="fc" id="L144">            CSVRecord row = rows.next();</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (row.size() != format.getHeaders().size()) {</span>
+<span class="fc" id="L146">                throw new IllegalArgumentException(</span>
+<span class="fc" id="L147">                        &quot;Row %d does not have the expected number of columns&quot;.formatted(row.getRecordNumber()));</span>
+            }
+
+<span class="fc" id="L150">            Student student = format.toStudent(row, courseId);</span>
+
+<span class="fc bfc" id="L152" title="All 2 branches covered.">            if (studentRepository.findByCourseIdAndEmail(courseId, student.getEmail()).iterator().hasNext()) {</span>
+<span class="fc" id="L153">                skippedEmails.add(student.getEmail());</span>
+<span class="fc" id="L154">                continue;</span>
+            }
+
+<span class="fc" id="L157">            studentRepository.save(student);</span>
+<span class="fc" id="L158">            created++;</span>
+<span class="fc" id="L159">        }</span>
+
+<span class="fc" id="L161">        return CsvUploadResult.builder()</span>
+<span class="fc" id="L162">                .created(created)</span>
+<span class="fc" id="L163">                .skippedEmails(skippedEmails)</span>
+<span class="fc" id="L164">                .build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

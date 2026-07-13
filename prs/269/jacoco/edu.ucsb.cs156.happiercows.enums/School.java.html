@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>School.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.enums</a> &gt; <span class="el_source">School.java</span></div><h1>School.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.enums;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.JsonNode;
+import lombok.Getter;
+
+/**
+ * The schools that a Course can belong to. Only schools with
+ * {@code active = true} are offered in the Course create/edit dropdown (see
+ * {@code CourseController#getActiveSchools}); the others (e.g. CHICO_STATE)
+ * are kept here, together with a matching {@link edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat}
+ * entry, purely as a worked example of how to onboard a new school and its
+ * own roster CSV format later.
+ */
+<span class="fc" id="L16">@Getter</span>
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+public enum School {
+<span class="fc" id="L19">    UCSB(&quot;UCSB&quot;, true),</span>
+<span class="fc" id="L20">    CHICO_STATE(&quot;Chico State&quot;, false),</span>
+<span class="fc" id="L21">    OTHER(&quot;Other&quot;, true);</span>
+
+    private final String displayName;
+    private final boolean active;
+<span class="fc" id="L25">    private final String key = this.name();</span>
+
+<span class="fc" id="L27">    School(String displayName, boolean active) {</span>
+<span class="fc" id="L28">        this.displayName = displayName;</span>
+<span class="fc" id="L29">        this.active = active;</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Accepts either a plain string (the enum's key, e.g. what a frontend
+     * &amp;lt;select&amp;gt; submits) or the {@code {&quot;key&quot;: &quot;...&quot;}} object shape
+     * this enum itself serializes to.
+     */
+    @JsonCreator
+    public static School fromKey(JsonNode node) {
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (node == null) {</span>
+<span class="fc" id="L40">            return null;</span>
+        }
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (node.isTextual()) {</span>
+<span class="fc" id="L43">            return School.valueOf(node.asText().toUpperCase());</span>
+        }
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        if (node.has(&quot;key&quot;)) {</span>
+<span class="fc" id="L46">            return School.valueOf(node.get(&quot;key&quot;).asText().toUpperCase());</span>
+        }
+<span class="fc" id="L48">        throw new IllegalArgumentException(&quot;Invalid JSON node for School enum&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
