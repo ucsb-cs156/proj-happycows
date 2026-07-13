@@ -24,12 +24,15 @@ public class InstructorReportJob implements JobContextConsumer {
 <span class="fc" id="L24">        Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
 
 <span class="fc bfc" id="L26" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
-<span class="fc" id="L27">            ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
-<span class="fc" id="L28">            Report report = reportService.createReport(commons.getId());</span>
-<span class="fc" id="L29">            ctx.log(String.format(&quot;Report %d for commons id=%d (%s) finished.&quot;, report.getId(), commons.getId(),</span>
-<span class="fc" id="L30">                    commons.getName()));</span>
-<span class="fc" id="L31">        }</span>
-<span class="fc" id="L32">        ctx.log(&quot;Instructor report done!&quot;);</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {</span>
+<span class="fc" id="L28">                continue;</span>
+            }
+<span class="fc" id="L30">            ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
+<span class="fc" id="L31">            Report report = reportService.createReport(commons.getId());</span>
+<span class="fc" id="L32">            ctx.log(String.format(&quot;Report %d for commons id=%d (%s) finished.&quot;, report.getId(), commons.getId(),</span>
+<span class="fc" id="L33">                    commons.getName()));</span>
+<span class="fc" id="L34">        }</span>
+<span class="fc" id="L35">        ctx.log(&quot;Instructor report done!&quot;);</span>
+<span class="fc" id="L36">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
