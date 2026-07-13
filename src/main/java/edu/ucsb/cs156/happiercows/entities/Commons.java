@@ -46,6 +46,10 @@ public class Commons {
     @Builder.Default
     private boolean showTrendsSection = true;
     @Builder.Default
+    private boolean showHealthSection = true;
+    @Builder.Default
+    private boolean showTotalCowsSection = true;
+    @Builder.Default
     private boolean showFarmerLeaderboardSection = true;
     
     private int capacityPerUser;

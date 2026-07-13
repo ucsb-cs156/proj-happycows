@@ -63,6 +63,8 @@ const baseCommonsPlus = {
     showCowsPerFarmerSection: true,
     showHistogramSection: true,
     showTrendsSection: true,
+    showHealthSection: true,
+    showTotalCowsSection: true,
     showFarmerLeaderboardSection: true,
   },
   totalUsers: 4,
@@ -120,6 +122,12 @@ describe("DashboardPage as admin", () => {
       screen.getByTestId("DashboardPage-TrendsSection"),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId("DashboardPage-HealthSection"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("DashboardPage-TotalCowsSection"),
+    ).toBeInTheDocument();
+    expect(
       screen.getByTestId("DashboardPage-LeaderboardSection"),
     ).toBeInTheDocument();
 
@@ -128,7 +136,9 @@ describe("DashboardPage as admin", () => {
     ).closest(".card");
     expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
 
-    const totalCowsCard = screen.getByText(/total cows/i).closest(".card");
+    const totalCowsCard = screen
+      .getByText("Total Cows", { selector: ".card-title" })
+      .closest(".card");
     expect(within(totalCowsCard).getByText("11")).toBeInTheDocument();
 
     const averageCard = screen.getByText("Average").closest(".card");
@@ -314,6 +324,8 @@ describe("DashboardPage as admin", () => {
     ["CowsPerFarmerSection", "showCowsPerFarmerSection"],
     ["HistogramSection", "showHistogramSection"],
     ["TrendsSection", "showTrendsSection"],
+    ["HealthSection", "showHealthSection"],
+    ["TotalCowsSection", "showTotalCowsSection"],
     ["LeaderboardSection", "showFarmerLeaderboardSection"],
   ])(
     "toggling the %s visibility switch calls the dashboardSettings endpoint and updates the switch",
@@ -456,6 +468,40 @@ describe("DashboardPage as student", () => {
     await screen.findByTestId("DashboardPage-OverviewSection");
     expect(
       screen.queryByTestId("DashboardPage-TrendsSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the health section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showHealthSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-HealthSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the total cows section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showTotalCowsSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-TotalCowsSection"),
     ).not.toBeInTheDocument();
   });
 
