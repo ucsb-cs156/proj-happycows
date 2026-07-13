@@ -64,6 +64,11 @@ export default function CoursesTable({
       Header: "Term",
       accessor: "term",
     },
+    {
+      Header: "School",
+      id: "school",
+      accessor: (row) => row.school?.displayName ?? "",
+    },
   ];
 
   const columnsIfAdmin = [

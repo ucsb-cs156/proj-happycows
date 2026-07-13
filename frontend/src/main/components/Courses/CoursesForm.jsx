@@ -1,6 +1,7 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import SchoolSelectDropdown from "main/components/Courses/SchoolSelectDropdown";
 
 function CoursesForm({
   initialContents,
@@ -91,6 +92,13 @@ function CoursesForm({
           {errors.term && "Term is required."}
         </Form.Control.Feedback>
       </Form.Group>
+
+      <SchoolSelectDropdown
+        initialValue={initialContents?.school?.key}
+        register={register}
+        testIdPrefix={testIdPrefix}
+      />
+      {errors.school && <p className="text-danger">{errors.school.message}</p>}
 
       <Button
         type="submit"

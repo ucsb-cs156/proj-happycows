@@ -1,0 +1,40 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "005-Add-School-To-Courses",
+        "author": "pconrad",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "COURSES",
+                  "columnName": "SCHOOL"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "COURSES",
+              "columns": [
+                {
+                  "column": {
+                    "name": "SCHOOL",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

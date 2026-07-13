@@ -1,68 +1,34 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 
 import { staffFixtures } from "fixtures/staffFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import StaffTable from "main/components/Staff/StaffTable";
-import {
-  cellToAxiosParamsDelete,
-  onDeleteSuccess,
-} from "main/utils/staffUtils";
-
-const { mockMutate, mockUseBackendMutation } = vi.hoisted(() => {
-  const mutate = vi.fn();
-  const useBackendMutationMock = vi.fn(() => ({ mutate }));
-  return { mockMutate: mutate, mockUseBackendMutation: useBackendMutationMock };
-});
-
-vi.mock("main/utils/useBackend", async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    useBackendMutation: mockUseBackendMutation,
-  };
-});
-
-const mockedNavigate = vi.fn();
-vi.mock("react-router", async () => {
-  const originalModule = await vi.importActual("react-router");
-  return {
-    ...originalModule,
-    useNavigate: () => mockedNavigate,
-  };
-});
 
 describe("StaffTable tests", () => {
-  const queryClient = new QueryClient();
+  const axiosMock = new AxiosMockAdapter(axios);
   const testId = "StaffTable";
-  const expectedHeaders = [
-    "id",
-    "Last Name",
-    "First/Middle Name",
-    "Email",
-    "Course Id",
-  ];
-  const expectedFields = [
-    "id",
-    "lastName",
-    "firstMiddleName",
-    "email",
-    "courseId",
-  ];
+  const expectedHeaders = ["id", "Last Name", "First/Middle Name", "Email"];
+  const expectedFields = ["id", "lastName", "firstMiddleName", "email"];
 
   beforeEach(() => {
-    mockMutate.mockReset();
-    mockUseBackendMutation.mockReset();
-    mockUseBackendMutation.mockReturnValue({ mutate: mockMutate });
-    mockedNavigate.mockClear();
+    axiosMock.reset();
+    axiosMock.resetHistory();
   });
 
   const renderTable = (staff, currentUser, props = {}) => {
     return render(
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
-          <StaffTable staff={staff} currentUser={currentUser} {...props} />
+          <StaffTable
+            staff={staff}
+            currentUser={currentUser}
+            courseId={1}
+            {...props}
+          />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -109,19 +75,6 @@ describe("StaffTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
-  test("Edit button navigates to the edit page for admin user", async () => {
-    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
-
-    const editButton = screen.getByTestId(
-      `${testId}-cell-row-0-col-Edit-button`,
-    );
-    fireEvent.click(editButton);
-
-    await waitFor(() =>
-      expect(mockedNavigate).toHaveBeenCalledWith("/admin/editstaff/1"),
-    );
-  });
-
   test("Modal is not shown initially", async () => {
     renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
@@ -130,7 +83,65 @@ describe("StaffTable tests", () => {
     });
   });
 
+  test("Exiting the edit modal pop up cancels the edit", async () => {
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
+
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
+    fireEvent.click(editButton);
+
+    await screen.findByTestId("StaffForm-lastName");
+
+    const closeButton = screen.getByLabelText("Close");
+    fireEvent.click(closeButton);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(axiosMock.history.put.length).toBe(0);
+  });
+
+  test("Edit button opens a pre-filled modal, and submitting PUTs with courseId merged in", async () => {
+    axiosMock.onPut("/api/staff/1").reply(200, {
+      ...staffFixtures.threeStaff[0],
+      lastName: "Smithson",
+    });
+
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
+
+    const editButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Edit-button`,
+    );
+    fireEvent.click(editButton);
+
+    const lastNameField = await screen.findByTestId("StaffForm-lastName");
+    expect(lastNameField).toHaveValue("Smith");
+
+    fireEvent.change(lastNameField, { target: { value: "Smithson" } });
+    fireEvent.click(screen.getByTestId("StaffForm-submit"));
+
+    await waitFor(() => expect(axiosMock.history.put.length).toBe(1));
+    expect(axiosMock.history.put[0].url).toBe("/api/staff/1");
+    expect(JSON.parse(axiosMock.history.put[0].data)).toEqual({
+      id: 1,
+      lastName: "Smithson",
+      firstMiddleName: "Jordan",
+      email: "jordansmith@ucsb.edu",
+      courseId: 1,
+    });
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
   test("Delete button calls delete callback", async () => {
+    axiosMock.onDelete("/api/staff/1").reply(200, {
+      message: "Staff with id 1 deleted",
+    });
+
     renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
     const deleteButton = screen.getByTestId(
@@ -145,9 +156,8 @@ describe("StaffTable tests", () => {
 
     fireEvent.click(confirmDeleteButton);
 
-    await waitFor(() => expect(mockMutate).toHaveBeenCalledTimes(1));
-    const cellArg = mockMutate.mock.calls[0][0];
-    expect(cellArg.row.values.id).toBe(1);
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+    expect(axiosMock.history.delete[0].url).toBe("/api/staff/1");
 
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
@@ -173,7 +183,7 @@ describe("StaffTable tests", () => {
       expect(document.body).not.toHaveClass("modal-open");
     });
 
-    expect(mockMutate).not.toHaveBeenCalled();
+    expect(axiosMock.history.delete.length).toBe(0);
   });
 
   test("Exiting the modal pop up cancels the deletion", async () => {
@@ -193,7 +203,7 @@ describe("StaffTable tests", () => {
       expect(document.body).not.toHaveClass("modal-open");
     });
 
-    expect(mockMutate).not.toHaveBeenCalled();
+    expect(axiosMock.history.delete.length).toBe(0);
   });
 
   test("Renders headers even when no staff are provided", () => {
@@ -218,16 +228,6 @@ describe("StaffTable tests", () => {
     ).not.toBeInTheDocument();
     expect(screen.getAllByRole("columnheader")).toHaveLength(
       expectedHeaders.length,
-    );
-  });
-
-  test("Configures delete mutation with expected args", () => {
-    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
-
-    expect(mockUseBackendMutation).toHaveBeenCalledWith(
-      cellToAxiosParamsDelete,
-      expect.objectContaining({ onSuccess: onDeleteSuccess }),
-      ["/api/staff/all"],
     );
   });
 });

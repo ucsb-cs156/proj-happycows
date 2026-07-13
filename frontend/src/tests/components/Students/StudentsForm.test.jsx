@@ -2,10 +2,6 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router";
 import StudentsForm from "main/components/Students/StudentsForm";
 import { studentsFixtures } from "fixtures/studentsFixtures";
-import { coursesFixtures } from "fixtures/coursesFixtures";
-import { QueryClient, QueryClientProvider } from "react-query";
-import axios from "axios";
-import AxiosMockAdapter from "axios-mock-adapter";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
@@ -16,30 +12,19 @@ vi.mock("react-router", async () => ({
 }));
 
 describe("StudentsForm tests", () => {
-  const axiosMock = new AxiosMockAdapter(axios);
-  const queryClient = new QueryClient();
-
   const expectedHeaders = [
     "Last Name",
     "First/Middle Name",
     "Email",
     "Perm Number",
-    "Course",
   ];
   const testId = "StudentsForm";
 
-  beforeEach(() => {
-    axiosMock.reset();
-    axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);
-  });
-
   test("renders correctly with no initialContents", async () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <StudentsForm />
-        </Router>
-      </QueryClientProvider>,
+      <Router>
+        <StudentsForm />
+      </Router>,
     );
 
     expect(await screen.findByText(/Create/)).toBeInTheDocument();
@@ -52,11 +37,9 @@ describe("StudentsForm tests", () => {
 
   test("renders correctly when passing in initialContents", async () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <StudentsForm initialContents={studentsFixtures.oneStudent[0]} />
-        </Router>
-      </QueryClientProvider>,
+      <Router>
+        <StudentsForm initialContents={studentsFixtures.oneStudent[0]} />
+      </Router>,
     );
 
     expect(await screen.findByText(/Create/)).toBeInTheDocument();
@@ -67,11 +50,9 @@ describe("StudentsForm tests", () => {
 
   test("that navigate(-1) is called when Cancel is clicked", async () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <StudentsForm />
-        </Router>
-      </QueryClientProvider>,
+      <Router>
+        <StudentsForm />
+      </Router>,
     );
     expect(await screen.findByTestId(`${testId}-cancel`)).toBeInTheDocument();
     const cancelButton = screen.getByTestId(`${testId}-cancel`);
@@ -81,13 +62,22 @@ describe("StudentsForm tests", () => {
     await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
   });
 
+  test("the Cancel button is hidden when cancelDisabled is true", async () => {
+    render(
+      <Router>
+        <StudentsForm cancelDisabled={true} />
+      </Router>,
+    );
+
+    expect(await screen.findByTestId(`${testId}-submit`)).toBeInTheDocument();
+    expect(screen.queryByTestId(`${testId}-cancel`)).not.toBeInTheDocument();
+  });
+
   test("that the correct validations are performed", async () => {
     render(
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <StudentsForm />
-        </Router>
-      </QueryClientProvider>,
+      <Router>
+        <StudentsForm />
+      </Router>,
     );
 
     expect(await screen.findByText(/Create/)).toBeInTheDocument();
@@ -100,27 +90,5 @@ describe("StudentsForm tests", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/Email is required./)).toBeInTheDocument();
     expect(screen.getByText(/Perm number is required./)).toBeInTheDocument();
-  });
-
-  test("shows a course validation error when no course is selected", async () => {
-    // don't let the course list resolve, so the dropdown has no options
-    // selected and submitting immediately triggers the "required" validator.
-    // A fresh QueryClient is used so this test isn't served cached course
-    // data from an earlier test in this file.
-    axiosMock.reset();
-    axiosMock.onGet("/api/course/all").timeout();
-
-    render(
-      <QueryClientProvider client={new QueryClient()}>
-        <Router>
-          <StudentsForm />
-        </Router>
-      </QueryClientProvider>,
-    );
-
-    const submitButton = await screen.findByText(/Create/);
-    fireEvent.click(submitButton);
-
-    await screen.findByText("Course is required.");
   });
 });

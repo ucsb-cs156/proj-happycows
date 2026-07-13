@@ -13,4 +13,7 @@ public interface StaffRepository extends CrudRepository<Staff, Long> {
 
   @Query(value = "SELECT stf FROM staff stf WHERE stf.courseId = :courseId")
   Iterable<Staff> findByCourseId(Long courseId);
+
+  @Query(value = "SELECT stf FROM staff stf WHERE stf.courseId = :courseId AND stf.email = :email")
+  Iterable<Staff> findByCourseIdAndEmail(Long courseId, String email);
 }

@@ -2,42 +2,68 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
+import StudentsForm from "main/components/Students/StudentsForm";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/studentUtils";
-import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
+import { toast } from "react-toastify";
 
 export default function StudentsTable({
   students,
   currentUser,
+  courseId,
   testid = "StudentsTable",
 }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cellToDelete, setCellToDelete] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [studentToEdit, setStudentToEdit] = useState(null);
 
-  const navigate = useNavigate();
+  const queryKey = [`/api/student/course/${courseId}`];
 
   const editCallback = (cell) => {
-    navigate(`/admin/editstudents/${cell.row.values.id}`);
+    setStudentToEdit(cell.row.original);
+    setShowEditModal(true);
+  };
+
+  const cellToAxiosParamsEdit = (student) => ({
+    url: `/api/student/${studentToEdit.id}`,
+    method: "PUT",
+    data: { ...student, courseId },
+  });
+
+  const onEditSuccess = () => {
+    toast("Student updated successfully.");
+    setShowEditModal(false);
+  };
+
+  const editMutation = useBackendMutation(
+    cellToAxiosParamsEdit,
+    { onSuccess: onEditSuccess },
+    queryKey,
+  );
+
+  const submitEditForm = (data) => {
+    editMutation.mutate(data);
   };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/student/all"],
+    queryKey,
   );
 
   const deleteCallback = async (cell) => {
     setCellToDelete(cell);
-    setShowModal(true);
+    setShowDeleteModal(true);
   };
 
   const confirmDelete = async (cell) => {
     deleteMutation.mutate(cell);
-    setShowModal(false);
+    setShowDeleteModal(false);
   };
 
   const columns = [
@@ -61,10 +87,6 @@ export default function StudentsTable({
       Header: "Perm",
       accessor: "perm",
     },
-    {
-      Header: "Course Id",
-      accessor: "courseId",
-    },
   ];
 
   const columnsIfAdmin = [
@@ -77,11 +99,31 @@ export default function StudentsTable({
     ? columnsIfAdmin
     : columns;
 
+  const editModal = (
+    <Modal
+      data-testid={`${testid}-EditModal`}
+      show={showEditModal}
+      onHide={() => setShowEditModal(false)}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Student</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <StudentsForm
+          initialContents={studentToEdit}
+          submitAction={submitEditForm}
+          buttonLabel="Update"
+          cancelDisabled={true}
+        />
+      </Modal.Body>
+    </Modal>
+  );
+
   const studentsModal = (
     <Modal
       data-testid="StudentsTable-Modal"
-      show={showModal}
-      onHide={() => setShowModal(false)}
+      show={showDeleteModal}
+      onHide={() => setShowDeleteModal(false)}
     >
       <Modal.Header closeButton>
         <Modal.Title>Confirm Deletion</Modal.Title>
@@ -91,7 +133,7 @@ export default function StudentsTable({
         <Button
           variant="secondary"
           data-testid="StudentsTable-Modal-Cancel"
-          onClick={() => setShowModal(false)}
+          onClick={() => setShowDeleteModal(false)}
         >
           Keep this Student
         </Button>
@@ -109,6 +151,7 @@ export default function StudentsTable({
   return (
     <>
       <OurTable data={students} columns={columnsToDisplay} testid={testid} />
+      {hasRole(currentUser, "ROLE_ADMIN") && editModal}
       {hasRole(currentUser, "ROLE_ADMIN") && studentsModal}
     </>
   );

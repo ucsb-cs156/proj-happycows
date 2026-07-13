@@ -1,10 +1,10 @@
 import React from "react";
 import { useParams } from "react-router";
-import { Button, Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import StudentsTable from "main/components/Students/StudentsTable";
-import StaffTable from "main/components/Staff/StaffTable";
+import StudentsTabComponent from "main/components/Students/StudentsTabComponent";
+import StaffTabComponent from "main/components/Staff/StaffTabComponent";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 
@@ -18,18 +18,6 @@ export default function InstructorAdminShowPage() {
     { method: "GET", url: `/api/course/${id}` },
     null,
   );
-
-  const { data: students } = useBackend(
-    [`/api/student/course/${id}`],
-    { method: "GET", url: `/api/student/course/${id}` },
-    [],
-  );
-
-  const { data: staff } = useBackend(
-    [`/api/staff/course/${id}`],
-    { method: "GET", url: `/api/staff/course/${id}` },
-    [],
-  );
   // Stryker restore all
 
   return (
@@ -42,26 +30,10 @@ export default function InstructorAdminShowPage() {
         </h1>
         <Tabs defaultActiveKey="students" className="mb-3">
           <Tab eventKey="students" title="Students">
-            <Button
-              variant="primary"
-              href={`/admin/createstudents?courseId=${id}`}
-              className="mb-3"
-              data-testid="InstructorAdminShowPage-addStudent"
-            >
-              Add Student
-            </Button>
-            <StudentsTable students={students} currentUser={currentUser} />
+            <StudentsTabComponent courseId={id} currentUser={currentUser} />
           </Tab>
           <Tab eventKey="staff" title="Staff">
-            <Button
-              variant="primary"
-              href={`/admin/createstaff?courseId=${id}`}
-              className="mb-3"
-              data-testid="InstructorAdminShowPage-addStaff"
-            >
-              Add Staff
-            </Button>
-            <StaffTable staff={staff} currentUser={currentUser} />
+            <StaffTabComponent courseId={id} currentUser={currentUser} />
           </Tab>
         </Tabs>
       </div>

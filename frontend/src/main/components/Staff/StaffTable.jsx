@@ -2,42 +2,68 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
+import StaffForm from "main/components/Staff/StaffForm";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
 } from "main/utils/staffUtils";
-import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
+import { toast } from "react-toastify";
 
 export default function StaffTable({
   staff,
   currentUser,
+  courseId,
   testid = "StaffTable",
 }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [cellToDelete, setCellToDelete] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [staffToEdit, setStaffToEdit] = useState(null);
 
-  const navigate = useNavigate();
+  const queryKey = [`/api/staff/course/${courseId}`];
 
   const editCallback = (cell) => {
-    navigate(`/admin/editstaff/${cell.row.values.id}`);
+    setStaffToEdit(cell.row.original);
+    setShowEditModal(true);
+  };
+
+  const cellToAxiosParamsEdit = (staffMember) => ({
+    url: `/api/staff/${staffToEdit.id}`,
+    method: "PUT",
+    data: { ...staffMember, courseId },
+  });
+
+  const onEditSuccess = () => {
+    toast("Staff member updated successfully.");
+    setShowEditModal(false);
+  };
+
+  const editMutation = useBackendMutation(
+    cellToAxiosParamsEdit,
+    { onSuccess: onEditSuccess },
+    queryKey,
+  );
+
+  const submitEditForm = (data) => {
+    editMutation.mutate(data);
   };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    ["/api/staff/all"],
+    queryKey,
   );
 
   const deleteCallback = async (cell) => {
     setCellToDelete(cell);
-    setShowModal(true);
+    setShowDeleteModal(true);
   };
 
   const confirmDelete = async (cell) => {
     deleteMutation.mutate(cell);
-    setShowModal(false);
+    setShowDeleteModal(false);
   };
 
   const columns = [
@@ -57,10 +83,6 @@ export default function StaffTable({
       Header: "Email",
       accessor: "email",
     },
-    {
-      Header: "Course Id",
-      accessor: "courseId",
-    },
   ];
 
   const columnsIfAdmin = [
@@ -73,11 +95,31 @@ export default function StaffTable({
     ? columnsIfAdmin
     : columns;
 
+  const editModal = (
+    <Modal
+      data-testid={`${testid}-EditModal`}
+      show={showEditModal}
+      onHide={() => setShowEditModal(false)}
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Staff</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <StaffForm
+          initialContents={staffToEdit}
+          submitAction={submitEditForm}
+          buttonLabel="Update"
+          cancelDisabled={true}
+        />
+      </Modal.Body>
+    </Modal>
+  );
+
   const staffModal = (
     <Modal
       data-testid="StaffTable-Modal"
-      show={showModal}
-      onHide={() => setShowModal(false)}
+      show={showDeleteModal}
+      onHide={() => setShowDeleteModal(false)}
     >
       <Modal.Header closeButton>
         <Modal.Title>Confirm Deletion</Modal.Title>
@@ -89,7 +131,7 @@ export default function StaffTable({
         <Button
           variant="secondary"
           data-testid="StaffTable-Modal-Cancel"
-          onClick={() => setShowModal(false)}
+          onClick={() => setShowDeleteModal(false)}
         >
           Keep this Staff Member
         </Button>
@@ -107,6 +149,7 @@ export default function StaffTable({
   return (
     <>
       <OurTable data={staff} columns={columnsToDisplay} testid={testid} />
+      {hasRole(currentUser, "ROLE_ADMIN") && editModal}
       {hasRole(currentUser, "ROLE_ADMIN") && staffModal}
     </>
   );

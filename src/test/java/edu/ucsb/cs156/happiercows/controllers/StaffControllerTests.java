@@ -8,11 +8,14 @@ import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.http.MediaType;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -338,5 +341,125 @@ public class StaffControllerTests extends ControllerTestCase {
         verify(staffRepository, times(1)).findById(67L);
         Map<String, Object> json = responseToJson(response);
         assertEquals("Staff with id 67 not found", json.get("message"));
+    }
+
+    // CSV upload tests
+
+    @Test
+    public void logged_out_users_cannot_upload_csv() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", "lastName,firstMiddleName,email\n".getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "USER" })
+    @Test
+    public void regular_users_cannot_upload_csv() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", "lastName,firstMiddleName,email\n".getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_upload_staff_csv() throws Exception {
+        String csv = "lastName,firstMiddleName,email\n"
+                + "Smith,Jordan,jordansmith@ucsb.edu\n"
+                + "Lee,Alex,alexlee@ucsb.edu\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        when(staffRepository.findByCourseIdAndEmail(eq(1L), any())).thenReturn(new ArrayList<>());
+
+        MvcResult response = mockMvc
+                .perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(staffRepository, times(2)).save(any());
+        Map<String, Object> json = responseToJson(response);
+        assertEquals(2, json.get("created"));
+        assertEquals(List.of(), json.get("skippedEmails"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void duplicate_emails_are_skipped_not_saved() throws Exception {
+        String csv = "lastName,firstMiddleName,email\nSmith,Jordan,jordansmith@ucsb.edu\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        Staff existing = Staff.builder().email("jordansmith@ucsb.edu").courseId(1L).build();
+        List<Staff> existingList = new ArrayList<>();
+        existingList.add(existing);
+        when(staffRepository.findByCourseIdAndEmail(1L, "jordansmith@ucsb.edu")).thenReturn(existingList);
+
+        MvcResult response = mockMvc
+                .perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(staffRepository, times(0)).save(any());
+        Map<String, Object> json = responseToJson(response);
+        assertEquals(0, json.get("created"));
+        assertEquals(List.of("jordansmith@ucsb.edu"), json.get("skippedEmails"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void empty_csv_file_is_rejected() throws Exception {
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", "".getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void unrecognized_header_format_is_rejected() throws Exception {
+        String csv = "not,a,format\nfoo,bar,baz\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void wrong_header_count_is_rejected() throws Exception {
+        String csv = "lastName,firstMiddleName,email,extra\nfoo,bar,baz,qux\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void malformed_row_with_too_few_columns_is_rejected() throws Exception {
+        String csv = "lastName,firstMiddleName,email\nSmith,Jordan\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void malformed_row_with_too_many_columns_is_rejected() throws Exception {
+        String csv = "lastName,firstMiddleName,email\nSmith,Jordan,jordansmith@ucsb.edu,extra\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isBadRequest());
     }
 }

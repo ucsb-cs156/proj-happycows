@@ -1,12 +1,16 @@
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import CourseSelectDropdown from "main/components/Courses/CourseSelectDropdown";
 
+// A course-scoped form for adding/editing a single roster student. courseId
+// is not a field on this form: the caller (a course's own admin page)
+// already knows which course it's operating on, and merges courseId into
+// the submitted data itself (see StudentsTabComponent). See issue #251.
 function StudentsForm({
   initialContents,
   submitAction,
   buttonLabel = "Create",
+  cancelDisabled = false,
 }) {
   // Stryker disable all
   const {
@@ -105,17 +109,6 @@ function StudentsForm({
         </Form.Control.Feedback>
       </Form.Group>
 
-      <CourseSelectDropdown
-        formName="courseId"
-        displayName="Course"
-        initialValue={initialContents?.courseId}
-        register={register}
-        testIdPrefix={testIdPrefix}
-      />
-      {errors.courseId && (
-        <p className="text-danger">{errors.courseId.message}</p>
-      )}
-
       <Button
         type="submit"
         // Stryker disable next-line all
@@ -123,14 +116,16 @@ function StudentsForm({
       >
         {buttonLabel}
       </Button>
-      <Button
-        variant="Secondary"
-        onClick={() => navigate(-1)}
-        // Stryker disable next-line all
-        data-testid={testIdPrefix + "-cancel"}
-      >
-        Cancel
-      </Button>
+      {!cancelDisabled && (
+        <Button
+          variant="Secondary"
+          onClick={() => navigate(-1)}
+          // Stryker disable next-line all
+          data-testid={testIdPrefix + "-cancel"}
+        >
+          Cancel
+        </Button>
+      )}
     </Form>
   );
 }

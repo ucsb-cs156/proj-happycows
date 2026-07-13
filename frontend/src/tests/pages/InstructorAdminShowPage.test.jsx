@@ -60,9 +60,16 @@ describe("InstructorAdminShowPage tests", () => {
     expect(
       await screen.findByTestId("StudentsTable-cell-row-0-col-id"),
     ).toBeInTheDocument();
+
+    expect(
+      screen.getByTestId("StudentsTabComponent-add-button"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("StudentsTabComponent-csv-button"),
+    ).toBeInTheDocument();
   });
 
-  test("Add Student button links to the create student page with courseId", async () => {
+  test("Staff tab shows the add/upload buttons and staff table", async () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
@@ -71,31 +78,12 @@ describe("InstructorAdminShowPage tests", () => {
       </QueryClientProvider>,
     );
 
-    const addStudentButton = await screen.findByTestId(
-      "InstructorAdminShowPage-addStudent",
-    );
-    expect(addStudentButton).toHaveAttribute(
-      "href",
-      "/admin/createstudents?courseId=1",
-    );
-  });
-
-  test("Staff tab shows the Add Staff button and staff table", async () => {
-    render(
-      <QueryClientProvider client={new QueryClient()}>
-        <MemoryRouter>
-          <InstructorAdminShowPage />
-        </MemoryRouter>
-      </QueryClientProvider>,
-    );
-
-    const addStaffButton = await screen.findByTestId(
-      "InstructorAdminShowPage-addStaff",
-    );
-    expect(addStaffButton).toHaveAttribute(
-      "href",
-      "/admin/createstaff?courseId=1",
-    );
+    expect(
+      await screen.findByTestId("StaffTabComponent-add-button"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("StaffTabComponent-csv-button"),
+    ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(
