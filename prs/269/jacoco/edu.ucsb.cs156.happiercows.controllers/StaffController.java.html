@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StaffController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">StaffController.java</span></div><h1>StaffController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.entities.Staff;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.StaffDTO;
+import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+<span class="fc" id="L15">@Slf4j</span>
+@Tag(name = &quot;Staff&quot;)
+@RequestMapping(&quot;/api/staff&quot;)
+@RestController
+<span class="fc" id="L19">public class StaffController extends ApiController {</span>
+    @Autowired
+    private StaffRepository staffRepository;
+
+    @Operation(summary = &quot;List all course staff&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;Staff&gt; allStaff() {
+<span class="fc" id="L27">        return staffRepository.findAll();</span>
+    }
+
+    @Operation(summary = &quot;List the staff for a single course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/course/{courseId}&quot;)
+    public Iterable&lt;Staff&gt; staffForCourse(
+            @Parameter(name = &quot;courseId&quot;) @PathVariable Long courseId) {
+<span class="fc" id="L35">        return staffRepository.findByCourseId(courseId);</span>
+    }
+
+    @Operation(summary = &quot;Get a staff member by id&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public Staff getStaffById(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
+<span class="fc" id="L43">        return staffRepository.findById(id)</span>
+<span class="fc" id="L44">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+    }
+
+    @Operation(summary = &quot;Add a staff member to a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;&quot;)
+    public Staff postStaff(
+            @Parameter(name = &quot;staff&quot;) @RequestBody StaffDTO staffDTO) {
+<span class="fc" id="L52">        return staffRepository.save(staffDTO.toStaff());</span>
+    }
+
+    @Operation(summary = &quot;Update a single staff member&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    public Staff updateStaff(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody StaffDTO staffDTO) {
+<span class="fc" id="L60">        Staff staff = staffRepository.findById(id)</span>
+<span class="fc" id="L61">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+
+<span class="fc" id="L63">        staff.setLastName(staffDTO.getLastName());</span>
+<span class="fc" id="L64">        staff.setFirstMiddleName(staffDTO.getFirstMiddleName());</span>
+<span class="fc" id="L65">        staff.setEmail(staffDTO.getEmail());</span>
+<span class="fc" id="L66">        staff.setCourseId(staffDTO.getCourseId());</span>
+
+<span class="fc" id="L68">        staffRepository.save(staff);</span>
+
+<span class="fc" id="L70">        return staff;</span>
+    }
+
+    @Operation(summary = &quot;Remove a staff member from a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public Object deleteStaff(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
+<span class="fc" id="L78">        Staff staff = staffRepository.findById(id)</span>
+<span class="fc" id="L79">                .orElseThrow(() -&gt; new EntityNotFoundException(Staff.class, id));</span>
+
+<span class="fc" id="L81">        staffRepository.delete(staff);</span>
+<span class="fc" id="L82">        return genericMessage(&quot;Staff with id %s deleted&quot;.formatted(id));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
