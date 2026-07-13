@@ -79,7 +79,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
         UserCommons userCommons = UserCommons.builder()
-                .commons(Commons.builder().build())
+                .commons(Commons.builder().showChat(true).build())
                 .build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
@@ -274,7 +274,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
         UserCommons userCommons = UserCommons.builder()
-                .commons(Commons.builder().build())
+                .commons(Commons.builder().showChat(true).build())
                 .build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
@@ -402,7 +402,7 @@ when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenRetu
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         UserCommons userCommons = UserCommons.builder()
-                .commons(Commons.builder().build())
+                .commons(Commons.builder().showChat(true).build())
                 .build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 

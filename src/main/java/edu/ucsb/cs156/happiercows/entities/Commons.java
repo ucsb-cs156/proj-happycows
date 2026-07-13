@@ -34,19 +34,13 @@ public class Commons {
 
     private boolean showLeaderboard;
 
-    @Builder.Default
-    private boolean showChat = true;
+    private boolean showChat;
 
-    @Builder.Default
-    private boolean showOverviewSection = true;
-    @Builder.Default
-    private boolean showCowsPerFarmerSection = true;
-    @Builder.Default
-    private boolean showHistogramSection = true;
-    @Builder.Default
-    private boolean showTrendsSection = true;
-    @Builder.Default
-    private boolean showFarmerLeaderboardSection = true;
+    private boolean showOverviewSection;
+    private boolean showCowsPerFarmerSection;
+    private boolean showHistogramSection;
+    private boolean showTrendsSection;
+    private boolean showFarmerLeaderboardSection;
     
     private int capacityPerUser;
     private int carryingCapacity;
