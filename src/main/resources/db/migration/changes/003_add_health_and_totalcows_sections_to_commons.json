@@ -1,0 +1,48 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "003-Add-Health-And-TotalCows-Sections-To-Commons",
+        "author": "copilot",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "COMMONS",
+                  "columnName": "SHOW_HEALTH_SECTION"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "COMMONS",
+              "columns": [
+                {
+                  "column": {
+                    "name": "SHOW_HEALTH_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "false"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "SHOW_TOTAL_COWS_SECTION",
+                    "type": "BOOLEAN",
+                    "defaultValue": "false"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

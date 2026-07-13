@@ -408,6 +408,8 @@ public class CommonsController extends ApiController {
         commons.setShowCowsPerFarmerSection(params.isShowCowsPerFarmerSection());
         commons.setShowHistogramSection(params.isShowHistogramSection());
         commons.setShowTrendsSection(params.isShowTrendsSection());
+        commons.setShowHealthSection(params.isShowHealthSection());
+        commons.setShowTotalCowsSection(params.isShowTotalCowsSection());
         commons.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());
 
         Commons saved = commonsRepository.save(commons);
