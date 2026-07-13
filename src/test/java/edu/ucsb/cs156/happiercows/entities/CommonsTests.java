@@ -13,8 +13,10 @@ public class CommonsTests {
 
     // For the parameterized versions, use a game with a start date of
     // 2024-01-10 (with a time of day of 14:30) and a last date of
-    // 2024-01-20 (with a time of day of 09:15).  The game is in progress
-    // strictly after 2024-01-10T00:00 and strictly before 2024-01-20T00:00.
+    // 2024-01-20 (with a time of day of 09:15).  The starting date is the
+    // first day of play and the last date is the last day of play, so the
+    // game is in progress from 2024-01-10T00:00 (inclusive) up to
+    // 2024-01-21T00:00 (exclusive).
     Commons game = Commons.builder()
             .startingDate(LocalDateTime.parse("2024-01-10T14:30:00"))
             .lastDate(LocalDateTime.parse("2024-01-20T09:15:00"))
@@ -39,8 +41,9 @@ public class CommonsTests {
     }
 
     @Test
-    void test_gameInProgress_false_exactly_at_midnight_on_start_date() throws Exception {
-        assertEquals(false, game.gameInProgress(LocalDateTime.parse("2024-01-10T00:00:00")));
+    void test_gameInProgress_true_exactly_at_midnight_on_start_date() throws Exception {
+        // the starting date is the first day of play, beginning at midnight
+        assertEquals(true, game.gameInProgress(LocalDateTime.parse("2024-01-10T00:00:00")));
     }
 
     @Test
@@ -56,13 +59,19 @@ public class CommonsTests {
     }
 
     @Test
-    void test_gameInProgress_true_just_before_midnight_on_last_date() throws Exception {
-        assertEquals(true, game.gameInProgress(LocalDateTime.parse("2024-01-19T23:59:59")));
+    void test_gameInProgress_true_at_start_of_last_date() throws Exception {
+        // the last date is the last day of play, so it counts
+        assertEquals(true, game.gameInProgress(LocalDateTime.parse("2024-01-20T00:00:00")));
     }
 
     @Test
-    void test_gameInProgress_false_exactly_at_midnight_on_last_date() throws Exception {
-        assertEquals(false, game.gameInProgress(LocalDateTime.parse("2024-01-20T00:00:00")));
+    void test_gameInProgress_true_just_before_the_end_of_the_last_date() throws Exception {
+        assertEquals(true, game.gameInProgress(LocalDateTime.parse("2024-01-20T23:59:59")));
+    }
+
+    @Test
+    void test_gameInProgress_false_exactly_at_midnight_after_last_date() throws Exception {
+        assertEquals(false, game.gameInProgress(LocalDateTime.parse("2024-01-21T00:00:00")));
     }
 
     @Test
@@ -71,13 +80,13 @@ public class CommonsTests {
     }
 
     @Test
-    void test_endDateHasPassed_false_before_midnight_on_last_date() throws Exception {
-        assertEquals(false, game.endDateHasPassed(LocalDateTime.parse("2024-01-19T23:59:59")));
+    void test_endDateHasPassed_false_during_the_last_date() throws Exception {
+        assertEquals(false, game.endDateHasPassed(LocalDateTime.parse("2024-01-20T23:59:59")));
     }
 
     @Test
-    void test_endDateHasPassed_true_exactly_at_midnight_on_last_date() throws Exception {
-        assertEquals(true, game.endDateHasPassed(LocalDateTime.parse("2024-01-20T00:00:00")));
+    void test_endDateHasPassed_true_exactly_at_midnight_after_last_date() throws Exception {
+        assertEquals(true, game.endDateHasPassed(LocalDateTime.parse("2024-01-21T00:00:00")));
     }
 
     @Test

@@ -346,6 +346,36 @@ describe("CommonsForm tests", () => {
     );
   });
 
+  it("shows explanatory tooltips over the starting and last date fields", async () => {
+    axiosMock
+      .onGet("/api/commons/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <CommonsForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("CommonsForm-name")).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("CommonsForm-startingDate"));
+    expect(
+      await screen.findByText(
+        "The first day of play: the game begins at midnight (00:00) at the start of this date.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("CommonsForm-lastDate"));
+    expect(
+      await screen.findByText(
+        "The last day of play: the game ends at midnight at the end of this date.",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("has validation errors when dates are missing", async () => {
     const submitAction = vi.fn();
 

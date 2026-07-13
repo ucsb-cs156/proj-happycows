@@ -57,17 +57,18 @@ public class Commons {
     private List<UserCommons> joinedUsers;
 
     /**
-     * A game is in progress when <code>now</code> is later than midnight
-     * (00:00 local time) at the beginning of the starting date, and before
-     * midnight (00:00 local time) at the beginning of the last date.
+     * The starting date is the first day of play, and the last date is the
+     * last day of play: a game is in progress from midnight (00:00 local
+     * time) at the beginning of the starting date, up to (but not including)
+     * midnight at the end of the last date.
      *
      * @param now the date/time to check against
      * @return whether the game is in progress at <code>now</code>
      */
     public boolean gameInProgress(LocalDateTime now) {
         LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();
-        LocalDateTime gameEnd = lastDate.toLocalDate().atStartOfDay();
-        return now.isAfter(gameStart) && now.isBefore(gameEnd);
+        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();
+        return !now.isBefore(gameStart) && now.isBefore(gameEnd);
     }
 
     public boolean gameInProgress() {
@@ -76,13 +77,14 @@ public class Commons {
 
     /**
      * The end date has passed when <code>now</code> is at or after midnight
-     * (00:00 local time) at the beginning of the last date.
+     * at the end of the last date (i.e. the last date is the last day of
+     * play).
      *
      * @param now the date/time to check against
      * @return whether the game has ended as of <code>now</code>
      */
     public boolean endDateHasPassed(LocalDateTime now) {
-        LocalDateTime gameEnd = lastDate.toLocalDate().atStartOfDay();
+        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();
         return !now.isBefore(gameEnd);
     }
 }

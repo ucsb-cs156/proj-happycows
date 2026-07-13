@@ -398,19 +398,30 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
           data-testid={`${testid}-r3`}
         >
           <Form.Label htmlFor="startingDate">Starting Date</Form.Label>
-          <Form.Control
-            data-testid={`${testid}-startingDate`}
-            id="startingDate"
-            type="date"
-            defaultValue={DefaultVals.startingDate}
-            isInvalid={!!errors.startingDate}
-            {...register("startingDate", {
-              valueAsDate: true,
-              validate: {
-                isPresent: (v) => !isNaN(v) || "Starting date is required",
-              },
-            })}
-          />
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip>
+                The first day of play: the game begins at midnight (00:00) at
+                the start of this date.
+              </Tooltip>
+            }
+            delay="5"
+          >
+            <Form.Control
+              data-testid={`${testid}-startingDate`}
+              id="startingDate"
+              type="date"
+              defaultValue={DefaultVals.startingDate}
+              isInvalid={!!errors.startingDate}
+              {...register("startingDate", {
+                valueAsDate: true,
+                validate: {
+                  isPresent: (v) => !isNaN(v) || "Starting date is required",
+                },
+              })}
+            />
+          </OverlayTrigger>
           <Form.Control.Feedback type="invalid">
             {errors.startingDate?.message}
           </Form.Control.Feedback>
@@ -422,22 +433,33 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
           data-testid={`${testid}-r4`}
         >
           <Form.Label htmlFor="lastDate">Last Date</Form.Label>
-          <Form.Control
-            data-testid={`${testid}-lastDate`}
-            id="lastDate"
-            type="date"
-            defaultValue={DefaultVals.lastDate}
-            isInvalid={!!errors.lastDate}
-            {...register("lastDate", {
-              valueAsDate: true,
-              validate: {
-                isPresent: (v) => !isNaN(v) || "Last date is required",
-                isAfterStartingDate: (v) =>
-                  v > getValues("startingDate") ||
-                  "Last date must be after starting date",
-              },
-            })}
-          />
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip>
+                The last day of play: the game ends at midnight at the end of
+                this date.
+              </Tooltip>
+            }
+            delay="5"
+          >
+            <Form.Control
+              data-testid={`${testid}-lastDate`}
+              id="lastDate"
+              type="date"
+              defaultValue={DefaultVals.lastDate}
+              isInvalid={!!errors.lastDate}
+              {...register("lastDate", {
+                valueAsDate: true,
+                validate: {
+                  isPresent: (v) => !isNaN(v) || "Last date is required",
+                  isAfterStartingDate: (v) =>
+                    v > getValues("startingDate") ||
+                    "Last date must be after starting date",
+                },
+              })}
+            />
+          </OverlayTrigger>
           <Form.Control.Feedback type="invalid">
             {errors.lastDate?.message}
           </Form.Control.Feedback>
