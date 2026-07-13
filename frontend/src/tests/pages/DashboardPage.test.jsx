@@ -201,12 +201,27 @@ describe("DashboardPage as admin", () => {
     expect(mockNavigate).toHaveBeenCalledWith(-1);
   });
 
-  test("toggling 'Show Dashboard to Students' calls the dashboardSettings endpoint", async () => {
+  test("toggling 'Show Dashboard to Students' calls the dashboardSettings endpoint and updates the switch", async () => {
+    // Use a stateful mock so that, like the real backend, the GET response
+    // reflects the values most recently saved via PUT. This ensures the
+    // toggle isn't just sent to the backend, but also actually reflected
+    // back in the UI after the query cache is invalidated and refetched.
+    let commons = { ...baseCommonsPlus.commons };
+    axiosMock
+      .onGet("/api/commons/plus")
+      .reply(() => [200, { ...baseCommonsPlus, commons }]);
+    axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+      const body = JSON.parse(config.data);
+      commons = { ...commons, ...body };
+      return [200, commons];
+    });
+
     renderWithRoute("/dashboard/7");
 
     const masterSwitch = await screen.findByTestId(
       "DashboardPage-showDashboard",
     );
+    expect(masterSwitch).toBeChecked();
     fireEvent.click(masterSwitch);
 
     await waitFor(() => {
@@ -218,9 +233,26 @@ describe("DashboardPage as admin", () => {
     });
     const body = JSON.parse(axiosMock.history.put[0].data);
     expect(body.showLeaderboard).toBe(false);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("DashboardPage-showDashboard"),
+      ).not.toBeChecked();
+    });
   });
 
-  test("toggling a section's visibility switch calls the dashboardSettings endpoint", async () => {
+  test("toggling a section's visibility switch calls the dashboardSettings endpoint and updates the switch", async () => {
+    // Stateful mock, see comment in the test above for rationale.
+    let commons = { ...baseCommonsPlus.commons };
+    axiosMock
+      .onGet("/api/commons/plus")
+      .reply(() => [200, { ...baseCommonsPlus, commons }]);
+    axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+      const body = JSON.parse(config.data);
+      commons = { ...commons, ...body };
+      return [200, commons];
+    });
+
     renderWithRoute("/dashboard/7");
 
     const overviewSwitch = await screen.findByTestId(
@@ -230,6 +262,7 @@ describe("DashboardPage as admin", () => {
       "id",
       "DashboardPage-OverviewSection-visible-switch",
     );
+    expect(overviewSwitch).toBeChecked();
     const overviewCard = screen.getByTestId("DashboardPage-OverviewSection");
     expect(
       within(overviewCard).getByText("Shown to Students"),
@@ -246,6 +279,15 @@ describe("DashboardPage as admin", () => {
     });
     const body = JSON.parse(axiosMock.history.put[0].data);
     expect(body.showOverviewSection).toBe(false);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId("DashboardPage-OverviewSection-visible-switch"),
+      ).not.toBeChecked();
+    });
+    expect(
+      within(overviewCard).getByText("Hidden from Students"),
+    ).toBeInTheDocument();
   });
 
   test("shows 'Hidden from Students' label for a section marked not visible", async () => {
@@ -274,13 +316,25 @@ describe("DashboardPage as admin", () => {
     ["TrendsSection", "showTrendsSection"],
     ["LeaderboardSection", "showFarmerLeaderboardSection"],
   ])(
-    "toggling the %s visibility switch calls the dashboardSettings endpoint",
+    "toggling the %s visibility switch calls the dashboardSettings endpoint and updates the switch",
     async (sectionName, fieldName) => {
+      // Stateful mock, see comment in the "Overview" toggle test above.
+      let commons = { ...baseCommonsPlus.commons };
+      axiosMock
+        .onGet("/api/commons/plus")
+        .reply(() => [200, { ...baseCommonsPlus, commons }]);
+      axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+        const body = JSON.parse(config.data);
+        commons = { ...commons, ...body };
+        return [200, commons];
+      });
+
       renderWithRoute("/dashboard/7");
 
       const sectionSwitch = await screen.findByTestId(
         `DashboardPage-${sectionName}-visible-switch`,
       );
+      expect(sectionSwitch).toBeChecked();
       fireEvent.click(sectionSwitch);
 
       await waitFor(() => {
@@ -292,6 +346,12 @@ describe("DashboardPage as admin", () => {
       });
       const body = JSON.parse(axiosMock.history.put[0].data);
       expect(body[fieldName]).toBe(false);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`DashboardPage-${sectionName}-visible-switch`),
+        ).not.toBeChecked();
+      });
     },
   );
 
