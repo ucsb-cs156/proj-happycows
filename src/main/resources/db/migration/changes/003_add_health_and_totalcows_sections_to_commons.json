@@ -28,14 +28,14 @@
                   "column": {
                     "name": "SHOW_HEALTH_SECTION",
                     "type": "BOOLEAN",
-                    "defaultValue": "true"
+                    "defaultValue": "false"
                   }
                 },
                 {
                   "column": {
                     "name": "SHOW_TOTAL_COWS_SECTION",
                     "type": "BOOLEAN",
-                    "defaultValue": "true"
+                    "defaultValue": "false"
                   }
                 }
               ]

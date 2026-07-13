@@ -118,6 +118,8 @@ public class CommonsIT {
         assertFalse(saved.isShowCowsPerFarmerSection());
         assertFalse(saved.isShowHistogramSection());
         assertFalse(saved.isShowTrendsSection());
+        assertFalse(saved.isShowHealthSection());
+        assertFalse(saved.isShowTotalCowsSection());
         assertFalse(saved.isShowFarmerLeaderboardSection());
     }
 }
