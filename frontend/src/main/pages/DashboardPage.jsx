@@ -110,7 +110,7 @@ export default function DashboardPage() {
       data: settings,
     }),
     {},
-    [[`/api/commons/plus?id=${id}`]],
+    [`/api/commons/plus?id=${id}`],
   );
   // Stryker restore all
 
