@@ -41,6 +41,7 @@ import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
+import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
@@ -1506,9 +1507,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(100, commonsPlus.getEffectiveCapacity());
     }
 
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(roles = {"USER"})
     @Test
-    public void getNumCowsForCommonsId_admin_multiple_farmers() throws Exception {
+    public void getNumCowsForCommonsId_user_multiple_farmers() throws Exception {
         Commons c = Commons.builder().id(1L).name("Test Commons").build();
 
         UserCommons uc1 = UserCommons.builder()
@@ -1538,9 +1539,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(expected, actual);
     }
 
-    @WithMockUser(roles = {"ADMIN"})
+    @WithMockUser(roles = {"USER"})
     @Test
-    public void getNumCowsForCommonsId_admin_no_farmers() throws Exception {
+    public void getNumCowsForCommonsId_user_no_farmers() throws Exception {
         when(userCommonsRepository.findByCommonsId(eq(2L))).thenReturn(new ArrayList<>());
 
         MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=2"))
@@ -1553,16 +1554,112 @@ public class CommonsControllerTests extends ControllerTestCase {
         assertEquals(new ArrayList<>(), actual);
     }
 
-    @WithMockUser(roles = {"USER"})
+    @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void getNumCowsForCommonsId_non_admin_forbidden() throws Exception {
-        mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
-                .andExpect(status().is(403)).andReturn();
+    public void updateDashboardSettings_admin_ok() throws Exception {
+        Commons existing = Commons.builder()
+                .id(5L)
+                .name("Test Commons")
+                .showLeaderboard(false)
+                .showOverviewSection(true)
+                .showCowsPerFarmerSection(false)
+                .showHistogramSection(true)
+                .showTrendsSection(false)
+                .showFarmerLeaderboardSection(true)
+                .build();
+
+        Commons updated = Commons.builder()
+                .id(5L)
+                .name("Test Commons")
+                .showLeaderboard(true)
+                .showOverviewSection(false)
+                .showCowsPerFarmerSection(true)
+                .showHistogramSection(false)
+                .showTrendsSection(true)
+                .showFarmerLeaderboardSection(false)
+                .build();
+
+        DashboardSettingsParams params = DashboardSettingsParams.builder()
+                .showLeaderboard(true)
+                .showOverviewSection(false)
+                .showCowsPerFarmerSection(true)
+                .showHistogramSection(false)
+                .showTrendsSection(true)
+                .showFarmerLeaderboardSection(false)
+                .build();
+
+        when(commonsRepository.findById(eq(5L))).thenReturn(Optional.of(existing));
+        when(commonsRepository.save(eq(updated))).thenReturn(updated);
+
+        String requestBody = objectMapper.writeValueAsString(params);
+
+        MvcResult response = mockMvc
+                .perform(put("/api/commons/dashboardSettings?id=5").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(commonsRepository, times(1)).findById(eq(5L));
+        verify(commonsRepository, times(1)).save(eq(updated));
+
+        String responseString = response.getResponse().getContentAsString();
+        Commons actual = objectMapper.readValue(responseString, Commons.class);
+        assertEquals(updated, actual);
     }
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void getCommonsTimeSeries_admin_ok() throws Exception {
+    public void updateDashboardSettings_not_found() throws Exception {
+        DashboardSettingsParams params = DashboardSettingsParams.builder()
+                .showLeaderboard(true)
+                .showOverviewSection(true)
+                .showCowsPerFarmerSection(true)
+                .showHistogramSection(true)
+                .showTrendsSection(true)
+                .showFarmerLeaderboardSection(true)
+                .build();
+
+        when(commonsRepository.findById(eq(99L))).thenReturn(Optional.empty());
+
+        String requestBody = objectMapper.writeValueAsString(params);
+
+        mockMvc
+                .perform(put("/api/commons/dashboardSettings?id=99").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isNotFound());
+
+        verify(commonsRepository, times(1)).findById(eq(99L));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void updateDashboardSettings_non_admin_forbidden() throws Exception {
+        DashboardSettingsParams params = DashboardSettingsParams.builder().build();
+        String requestBody = objectMapper.writeValueAsString(params);
+
+        mockMvc
+                .perform(put("/api/commons/dashboardSettings?id=5").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().is(403));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getNumCowsForCommonsId_user_ok() throws Exception {
+        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
+                .andExpect(status().isOk()).andReturn();
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void getCommonsTimeSeries_user_ok_multiple_stats() throws Exception {
         CommonStats earlier = CommonStats.builder()
                 .commonsId(9L)
                 .numCows(10)
@@ -1607,9 +1704,11 @@ public class CommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void getCommonsTimeSeries_non_admin_forbidden() throws Exception {
+    public void getCommonsTimeSeries_user_ok() throws Exception {
+        when(commonStatsRepository.findAllByCommonsId(eq(9L))).thenReturn(new ArrayList<>());
+
         mockMvc.perform(get("/api/commons/timeseries?commonId=9"))
-                .andExpect(status().is(403)).andReturn();
+                .andExpect(status().isOk()).andReturn();
     }
 
     private CreateCommonsParams.CreateCommonsParamsBuilder validParamsBuilder() {

@@ -122,7 +122,6 @@ describe("AdminEditCommonsPage tests", () => {
         screen.getByLabelText(/When above capacity/);
       const belowCapacityHealthUpdateStrategyField =
         screen.getByLabelText(/When below capacity/);
-      const showLeaderboardField = screen.getByLabelText(/Show Leaderboard\?/);
       const showChatField = screen.getByLabelText(/Show Chat?\?/);
       const hiddenField = screen.getByLabelText(/Hidden/);
 
@@ -137,7 +136,6 @@ describe("AdminEditCommonsPage tests", () => {
       expect(carryingCapacityField).toHaveValue(100);
       expect(aboveCapacityHealthUpdateStrategyField).toHaveValue("strat1");
       expect(belowCapacityHealthUpdateStrategyField).toHaveValue("strat2");
-      expect(showLeaderboardField).not.toBeChecked();
       expect(showChatField).not.toBeChecked();
       expect(hiddenField).not.toBeChecked();
     });
@@ -166,7 +164,6 @@ describe("AdminEditCommonsPage tests", () => {
         screen.getByLabelText(/When above capacity/);
       const belowCapacityHealthUpdateStrategyField =
         screen.getByLabelText(/When below capacity/);
-      const showLeaderboardField = screen.getByLabelText(/Show Leaderboard\?/);
       const showChatField = screen.getByLabelText(/Show Chat?\?/);
       const hiddenField = screen.getByLabelText(/Hidden/);
 
@@ -181,7 +178,6 @@ describe("AdminEditCommonsPage tests", () => {
       expect(carryingCapacityField).toHaveValue(100);
       expect(aboveCapacityHealthUpdateStrategyField).toHaveValue("strat1");
       expect(belowCapacityHealthUpdateStrategyField).toHaveValue("strat2");
-      expect(showLeaderboardField).not.toBeChecked();
       expect(showChatField).not.toBeChecked();
       expect(hiddenField).not.toBeChecked();
 
@@ -204,7 +200,6 @@ describe("AdminEditCommonsPage tests", () => {
       fireEvent.change(belowCapacityHealthUpdateStrategyField, {
         target: { value: "strat3" },
       });
-      fireEvent.click(showLeaderboardField);
       fireEvent.click(showChatField);
       fireEvent.click(hiddenField);
 
@@ -233,7 +228,10 @@ describe("AdminEditCommonsPage tests", () => {
           carryingCapacity: 200,
           aboveCapacityHealthUpdateStrategy: "strat2",
           belowCapacityHealthUpdateStrategy: "strat3",
-          showLeaderboard: true,
+          // showLeaderboard is no longer editable via this form (it is now
+          // managed from the Dashboard page's "Show Dashboard to Students"
+          // control), so its original fetched value is preserved unchanged.
+          showLeaderboard: false,
           showChat: true,
           hidden: true,
         }),
