@@ -27,6 +27,10 @@ function SchoolSelectDropdown({
           {...register("school", {
             required: "School is required.",
           })}
+          // Stryker disable next-line StringLiteral : there is no option
+          // with an empty value here, so any non-matching fallback string
+          // is behaviorally equivalent to "" (the browser just selects the
+          // first option either way).
           defaultValue={initialValue ?? ""}
         >
           {schools.map((school) => (

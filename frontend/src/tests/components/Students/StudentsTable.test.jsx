@@ -8,6 +8,31 @@ import { studentsFixtures } from "fixtures/studentsFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import StudentsTable from "main/components/Students/StudentsTable";
 
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
+
+const { mockUseBackendMutation } = vi.hoisted(() => {
+  return { mockUseBackendMutation: vi.fn() };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  mockUseBackendMutation.mockImplementation((...args) =>
+    actual.useBackendMutation(...args),
+  );
+  return {
+    ...actual,
+    useBackendMutation: (...args) => mockUseBackendMutation(...args),
+  };
+});
+
 describe("StudentsTable tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const testId = "StudentsTable";
@@ -23,6 +48,8 @@ describe("StudentsTable tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    mockToast.mockClear();
+    mockUseBackendMutation.mockClear();
   });
 
   const renderTable = (students, currentUser, props = {}) => {
@@ -89,6 +116,18 @@ describe("StudentsTable tests", () => {
     });
   });
 
+  test("configures both mutations with the course-scoped query key", () => {
+    renderTable(studentsFixtures.threeStudents, currentUserFixtures.adminUser);
+
+    expect(mockUseBackendMutation).toHaveBeenCalledTimes(2);
+    expect(mockUseBackendMutation.mock.calls[0][2]).toEqual([
+      "/api/student/course/1",
+    ]);
+    expect(mockUseBackendMutation.mock.calls[1][2]).toEqual([
+      "/api/student/course/1",
+    ]);
+  });
+
   test("Exiting the edit modal pop up cancels the edit", async () => {
     renderTable(studentsFixtures.threeStudents, currentUserFixtures.adminUser);
 
@@ -97,7 +136,13 @@ describe("StudentsTable tests", () => {
     );
     fireEvent.click(editButton);
 
+    expect(
+      await screen.findByTestId(`${testId}-EditModal`),
+    ).toBeInTheDocument();
     await screen.findByTestId("StudentsForm-lastName");
+
+    // cancelDisabled=true on the edit form: no Cancel button of its own
+    expect(screen.queryByTestId("StudentsForm-cancel")).not.toBeInTheDocument();
 
     const closeButton = screen.getByLabelText("Close");
     fireEvent.click(closeButton);
@@ -139,6 +184,10 @@ describe("StudentsTable tests", () => {
       courseId: 1,
     });
 
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith("Student updated successfully."),
+    );
+
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
     });
@@ -165,6 +214,12 @@ describe("StudentsTable tests", () => {
 
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
     expect(axiosMock.history.delete[0].url).toBe("/api/student/1");
+
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith({
+        message: "Student with id 1 deleted",
+      }),
+    );
 
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");

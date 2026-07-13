@@ -8,6 +8,31 @@ import { staffFixtures } from "fixtures/staffFixtures";
 import { currentUserFixtures } from "fixtures/currentUserFixtures";
 import StaffTable from "main/components/Staff/StaffTable";
 
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
+
+const { mockUseBackendMutation } = vi.hoisted(() => {
+  return { mockUseBackendMutation: vi.fn() };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  mockUseBackendMutation.mockImplementation((...args) =>
+    actual.useBackendMutation(...args),
+  );
+  return {
+    ...actual,
+    useBackendMutation: (...args) => mockUseBackendMutation(...args),
+  };
+});
+
 describe("StaffTable tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const testId = "StaffTable";
@@ -17,6 +42,8 @@ describe("StaffTable tests", () => {
   beforeEach(() => {
     axiosMock.reset();
     axiosMock.resetHistory();
+    mockToast.mockClear();
+    mockUseBackendMutation.mockClear();
   });
 
   const renderTable = (staff, currentUser, props = {}) => {
@@ -83,6 +110,18 @@ describe("StaffTable tests", () => {
     });
   });
 
+  test("configures both mutations with the course-scoped query key", () => {
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
+
+    expect(mockUseBackendMutation).toHaveBeenCalledTimes(2);
+    expect(mockUseBackendMutation.mock.calls[0][2]).toEqual([
+      "/api/staff/course/1",
+    ]);
+    expect(mockUseBackendMutation.mock.calls[1][2]).toEqual([
+      "/api/staff/course/1",
+    ]);
+  });
+
   test("Exiting the edit modal pop up cancels the edit", async () => {
     renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 
@@ -91,7 +130,13 @@ describe("StaffTable tests", () => {
     );
     fireEvent.click(editButton);
 
+    expect(
+      await screen.findByTestId(`${testId}-EditModal`),
+    ).toBeInTheDocument();
     await screen.findByTestId("StaffForm-lastName");
+
+    // cancelDisabled=true on the edit form: no Cancel button of its own
+    expect(screen.queryByTestId("StaffForm-cancel")).not.toBeInTheDocument();
 
     const closeButton = screen.getByLabelText("Close");
     fireEvent.click(closeButton);
@@ -132,6 +177,12 @@ describe("StaffTable tests", () => {
       courseId: 1,
     });
 
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith(
+        "Staff member updated successfully.",
+      ),
+    );
+
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");
     });
@@ -158,6 +209,12 @@ describe("StaffTable tests", () => {
 
     await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
     expect(axiosMock.history.delete[0].url).toBe("/api/staff/1");
+
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith({
+        message: "Staff with id 1 deleted",
+      }),
+    );
 
     await waitFor(() => {
       expect(document.body).not.toHaveClass("modal-open");

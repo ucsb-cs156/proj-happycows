@@ -18,6 +18,21 @@ vi.mock("react-toastify", async () => {
   };
 });
 
+const { mockUseBackendMutation } = vi.hoisted(() => {
+  return { mockUseBackendMutation: vi.fn() };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  mockUseBackendMutation.mockImplementation((...args) =>
+    actual.useBackendMutation(...args),
+  );
+  return {
+    ...actual,
+    useBackendMutation: (...args) => mockUseBackendMutation(...args),
+  };
+});
+
 describe("StudentsTabComponent tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
@@ -25,6 +40,7 @@ describe("StudentsTabComponent tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     mockToast.mockClear();
+    mockUseBackendMutation.mockClear();
     axiosMock
       .onGet("/api/student/course/1")
       .reply(200, studentsFixtures.threeStudents);
@@ -50,6 +66,17 @@ describe("StudentsTabComponent tests", () => {
     ).toBeInTheDocument();
   });
 
+  test("configures its mutations with the course-scoped query key", async () => {
+    renderComponent();
+
+    await screen.findByTestId("StudentsTable-cell-row-0-col-id");
+
+    expect(mockUseBackendMutation.mock.calls.length).toBeGreaterThan(0);
+    mockUseBackendMutation.mock.calls.forEach((call) => {
+      expect(call[2]).toEqual(["/api/student/course/1"]);
+    });
+  });
+
   test("Exiting the add-student modal cancels the add", async () => {
     renderComponent();
 
@@ -57,6 +84,9 @@ describe("StudentsTabComponent tests", () => {
       await screen.findByTestId("StudentsTabComponent-add-button"),
     );
     await screen.findByTestId("StudentsForm-lastName");
+
+    // cancelDisabled=true on the add form: no Cancel button of its own
+    expect(screen.queryByTestId("StudentsForm-cancel")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText("Close"));
 
@@ -116,6 +146,10 @@ describe("StudentsTabComponent tests", () => {
     });
 
     expect(mockToast).toHaveBeenCalledWith("Student added successfully.");
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
   });
 
   test("uploading a CSV posts the file with courseId and shows a summary toast", async () => {
@@ -141,12 +175,17 @@ describe("StudentsTabComponent tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
     expect(axiosMock.history.post[0].url).toBe("/api/student/upload/csv");
     expect(axiosMock.history.post[0].params).toEqual({ courseId: 1 });
+    expect(axiosMock.history.post[0].data.get("file")).toBe(file);
 
     await waitFor(() =>
       expect(mockToast).toHaveBeenCalledWith(
         "Roster uploaded: 2 student(s) added, 1 skipped (already on roster).",
       ),
     );
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
   });
 
   test("uploading a CSV with no skipped rows shows a summary toast without a skipped clause", async () => {

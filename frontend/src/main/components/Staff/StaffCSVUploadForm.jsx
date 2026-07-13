@@ -21,11 +21,12 @@ export default function StaffCSVUploadForm({ submitAction }) {
           accept=".csv"
           isInvalid={Boolean(errors.upload)}
           {...register("upload", {
-            validate: (files) => (files && files.length > 0) || "required",
+            validate: (files) =>
+              (files && files.length > 0) || "A CSV file is required.",
           })}
         />
         <Form.Control.Feedback type="invalid">
-          {errors.upload && "A CSV file is required."}
+          {errors.upload?.message}
         </Form.Control.Feedback>
       </Form.Group>
       <Button

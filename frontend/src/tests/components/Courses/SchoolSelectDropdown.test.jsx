@@ -44,6 +44,38 @@ describe("SchoolSelectDropdown tests", () => {
     );
   });
 
+  test("pre-selects the given initialValue once options load", async () => {
+    const register = vi.fn();
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <SchoolSelectDropdown register={register} initialValue="OTHER" />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("SchoolSelectDropdown-school")).toHaveValue(
+        "OTHER",
+      );
+    });
+  });
+
+  test("defaults to no selection when initialValue is not given", async () => {
+    const register = vi.fn();
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <SchoolSelectDropdown register={register} />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("SchoolSelectDropdown-school")).toHaveValue(
+        "UCSB",
+      );
+    });
+  });
+
   test("supports overriding the testIdPrefix prop", async () => {
     const register = vi.fn();
 
