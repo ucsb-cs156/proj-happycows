@@ -3,17 +3,21 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.services.ReportService;
 import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
 
 @Service
-<span class="fc" id="L10">public class InstructorReportJobSingleCommonsFactory {</span>
+<span class="fc" id="L11">public class InstructorReportJobSingleCommonsFactory {</span>
 
     @Autowired
     private ReportService reportService;
 
+    @Autowired
+    private CommonsRepository commonsRepository;
+
     public JobContextConsumer create(long commonsId) {
-<span class="fc" id="L16">        return new InstructorReportJobSingleCommons(commonsId, reportService);</span>
+<span class="fc" id="L20">        return new InstructorReportJobSingleCommons(commonsId, reportService, commonsRepository);</span>
     }
   
 }

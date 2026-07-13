@@ -28,13 +28,16 @@ public class RecordCommonStatsJob implements JobContextConsumer {
 <span class="fc" id="L28">        Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
 
 <span class="fc bfc" id="L30" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
-<span class="fc" id="L31">            ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
-<span class="fc" id="L32">            CommonStats commonStats = commonStatsService.createAndSaveCommonStats(commons.getId());</span>
-<span class="fc" id="L33">            ctx.log(String.format(&quot;CommonStats %d for commons id=%d (%s) finished.&quot;, commonStats.getId(), commons.getId(),</span>
-<span class="fc" id="L34">                    commons.getName()));</span>
-<span class="fc" id="L35">        }</span>
-<span class="fc" id="L36">        ctx.log(&quot;Record common stats job done!&quot;);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {</span>
+<span class="fc" id="L32">                continue;</span>
+            }
+<span class="fc" id="L34">            ctx.log(String.format(&quot;Starting Commons id=%d (%s)...&quot;, commons.getId(), commons.getName()));</span>
+<span class="fc" id="L35">            CommonStats commonStats = commonStatsService.createAndSaveCommonStats(commons.getId());</span>
+<span class="fc" id="L36">            ctx.log(String.format(&quot;CommonStats %d for commons id=%d (%s) finished.&quot;, commonStats.getId(), commons.getId(),</span>
+<span class="fc" id="L37">                    commons.getName()));</span>
+<span class="fc" id="L38">        }</span>
+<span class="fc" id="L39">        ctx.log(&quot;Record common stats job done!&quot;);</span>
+<span class="fc" id="L40">    }</span>
 }
 
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

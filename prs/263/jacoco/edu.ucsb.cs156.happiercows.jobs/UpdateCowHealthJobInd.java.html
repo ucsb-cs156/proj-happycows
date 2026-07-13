@@ -36,13 +36,16 @@ public class UpdateCowHealthJobInd implements JobContextConsumer {
 
 <span class="fc bfc" id="L37" title="All 2 branches covered.">        if(commonUpdatedOpt.isPresent()){</span>
 <span class="fc" id="L38">            Commons commonsUpdated = commonUpdatedOpt.get();</span>
-<span class="fc" id="L39">            CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);</span>
-<span class="fc" id="L40">            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, userCommonsRepository, ctx); </span>
-<span class="fc" id="L41">            ctx.log(&quot;Cow health has been updated!&quot;);</span>
-<span class="fc" id="L42">        } else {</span>
-<span class="fc" id="L43">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commonsUpdated, commonsRepository, ctx)) {</span>
+<span class="fc" id="L40">                return;</span>
+            }
+<span class="fc" id="L42">            CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);</span>
+<span class="fc" id="L43">            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, userCommonsRepository, ctx); </span>
+<span class="fc" id="L44">            ctx.log(&quot;Cow health has been updated!&quot;);</span>
+<span class="fc" id="L45">        } else {</span>
+<span class="fc" id="L46">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
         }
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L48">    }</span>
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

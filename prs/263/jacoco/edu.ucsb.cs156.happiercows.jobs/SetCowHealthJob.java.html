@@ -35,23 +35,26 @@ public class SetCowHealthJob implements JobContextConsumer {
 
 
 <span class="fc bfc" id="L37" title="All 2 branches covered.">        if (commons.isPresent()) {</span>
-<span class="fc" id="L38">            ctx.log(&quot;Commons &quot; + commons.get().getName());</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commons.get(), commonsRepository, ctx)) {</span>
+<span class="fc" id="L39">                return;</span>
+            }
+<span class="fc" id="L41">            ctx.log(&quot;Commons &quot; + commons.get().getName());</span>
 
-<span class="fc" id="L40">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commons.get().getId());</span>
+<span class="fc" id="L43">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commons.get().getId());</span>
 
-<span class="fc bfc" id="L42" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
-<span class="fc" id="L43">                User user = userCommons.getUser();</span>
-<span class="fc" id="L44">                ctx.log(&quot;User: &quot; + user.getFullName() + &quot;, numCows: &quot; + userCommons.getNumOfCows() + &quot;, cowHealth: &quot; + userCommons.getCowHealth());</span>
-<span class="fc" id="L45">                ctx.log(&quot; old cow health: &quot; + userCommons.getCowHealth() + &quot;, new cow health: &quot; + newCowHealth);</span>
-<span class="fc" id="L46">                userCommons.setCowHealth(newCowHealth);</span>
-<span class="fc" id="L47">                userCommonsRepository.save(userCommons);</span>
-<span class="fc" id="L48">            }</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
+<span class="fc" id="L46">                User user = userCommons.getUser();</span>
+<span class="fc" id="L47">                ctx.log(&quot;User: &quot; + user.getFullName() + &quot;, numCows: &quot; + userCommons.getNumOfCows() + &quot;, cowHealth: &quot; + userCommons.getCowHealth());</span>
+<span class="fc" id="L48">                ctx.log(&quot; old cow health: &quot; + userCommons.getCowHealth() + &quot;, new cow health: &quot; + newCowHealth);</span>
+<span class="fc" id="L49">                userCommons.setCowHealth(newCowHealth);</span>
+<span class="fc" id="L50">                userCommonsRepository.save(userCommons);</span>
+<span class="fc" id="L51">            }</span>
 
-<span class="fc" id="L50">            ctx.log(&quot;Cow health has been set!&quot;);</span>
-<span class="fc" id="L51">        } else {</span>
-<span class="fc" id="L52">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
+<span class="fc" id="L53">            ctx.log(&quot;Cow health has been set!&quot;);</span>
+<span class="fc" id="L54">        } else {</span>
+<span class="fc" id="L55">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
         }
 
-<span class="fc" id="L55">    }</span>
+<span class="fc" id="L58">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

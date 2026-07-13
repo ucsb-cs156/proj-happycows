@@ -38,22 +38,25 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
 
 <span class="fc bfc" id="L39" title="All 2 branches covered.">        if(commonMilkedOpt.isPresent()){</span>
 <span class="fc" id="L40">            Commons commonMilked = commonMilkedOpt.get();</span>
-<span class="fc" id="L41">            String name = commonMilked.getName();</span>
-<span class="fc" id="L42">            double milkPrice = commonMilked.getMilkPrice();</span>
-<span class="fc" id="L43">            ctx.log(&quot;Milking cows for Commons: &quot; + name + &quot;, Milk Price: &quot; + formatDollars(milkPrice));</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commonMilked, commonsRepository, ctx)) {</span>
+<span class="fc" id="L42">                return;</span>
+            }
+<span class="fc" id="L44">            String name = commonMilked.getName();</span>
+<span class="fc" id="L45">            double milkPrice = commonMilked.getMilkPrice();</span>
+<span class="fc" id="L46">            ctx.log(&quot;Milking cows for Commons: &quot; + name + &quot;, Milk Price: &quot; + formatDollars(milkPrice));</span>
 
-<span class="fc" id="L45">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commonMilked.getId());</span>
+<span class="fc" id="L48">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commonMilked.getId());</span>
 
-<span class="fc bfc" id="L47" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
-<span class="fc" id="L48">                MilkTheCowsJob.milkCows(ctx, commonMilked, userCommons, profitRepository, userCommonsRepository);</span>
-<span class="fc" id="L49">            }</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
+<span class="fc" id="L51">                MilkTheCowsJob.milkCows(ctx, commonMilked, userCommons, profitRepository, userCommonsRepository);</span>
+<span class="fc" id="L52">            }</span>
             
 
-<span class="fc" id="L52">            ctx.log(&quot;Cows have been milked!&quot;);</span>
-<span class="fc" id="L53">        } else {</span>
-<span class="fc" id="L54">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
+<span class="fc" id="L55">            ctx.log(&quot;Cows have been milked!&quot;);</span>
+<span class="fc" id="L56">        } else {</span>
+<span class="fc" id="L57">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
         }
-<span class="fc" id="L56">    }</span>
+<span class="fc" id="L59">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
