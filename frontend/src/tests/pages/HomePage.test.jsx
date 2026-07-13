@@ -299,4 +299,29 @@ describe("HomePage tests", () => {
       ),
     ).toBeInTheDocument();
   });
+
+  test("shows a course-linked commons to an admin even when not on the roster", async () => {
+    apiCurrentUserFixtures.adminUser.user.commons = [];
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 99 }]);
+    axiosMock.onGet("/api/commons/mycourses").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <HomePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId(
+        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+      ),
+    ).toBeInTheDocument();
+  });
 });

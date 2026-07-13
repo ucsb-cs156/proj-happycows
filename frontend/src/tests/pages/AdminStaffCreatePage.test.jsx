@@ -106,6 +106,18 @@ describe("AdminStaffCreatePage tests", () => {
       JSON.stringify(expectedStaff),
     );
 
+    expect(mockToast).toBeCalledWith(
+      <div>
+        Staff member successfully created!
+        <br />
+        id: 5
+        <br />
+        lastName: Smith
+        <br />
+        email: jordansmith@ucsb.edu
+      </div>,
+    );
+
     expect(mockedNavigate).toBeCalledWith({ to: "/admin/liststaff" });
   });
 

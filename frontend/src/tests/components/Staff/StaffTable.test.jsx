@@ -122,6 +122,14 @@ describe("StaffTable tests", () => {
     );
   });
 
+  test("Modal is not shown initially", async () => {
+    renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
   test("Delete button calls delete callback", async () => {
     renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 

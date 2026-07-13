@@ -139,6 +139,7 @@ describe("CoursesTable tests", () => {
     const manageButton = screen.getByTestId(
       `${testId}-cell-row-0-col-Manage-button`,
     );
+    expect(manageButton).toHaveClass("btn-secondary");
     fireEvent.click(manageButton);
 
     await waitFor(() =>

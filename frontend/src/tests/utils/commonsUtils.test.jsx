@@ -106,6 +106,16 @@ describe("CommonsUtils", () => {
 
       expect(result).toEqual(allCommons);
     });
+
+    test("defaults to excluding course-linked commons when myCourseIds/isAdmin are omitted", () => {
+      const noCourse = { id: 1, hidden: false, courseId: null };
+      const otherCourse = { id: 3, hidden: false, courseId: 99 };
+      const allCommons = [noCourse, otherCourse];
+
+      const result = filterCommonsNotJoinedAndNotHidden(allCommons, []);
+
+      expect(result).toEqual([noCourse]);
+    });
   });
 
   describe("filterCommonsJoinedAndNotHidden", () => {
@@ -132,6 +142,17 @@ describe("CommonsUtils", () => {
       );
 
       expect(result).toEqual([myCourse]);
+    });
+
+    test("defaults to excluding a joined course-linked commons when myCourseIds/isAdmin are omitted", () => {
+      const noCourse = { id: 1, hidden: false, courseId: null };
+      const otherCourse = { id: 3, hidden: false, courseId: 99 };
+      const allCommons = [noCourse, otherCourse];
+      const commonsJoined = [noCourse, otherCourse];
+
+      const result = filterCommonsJoinedAndNotHidden(allCommons, commonsJoined);
+
+      expect(result).toEqual([noCourse]);
     });
   });
 

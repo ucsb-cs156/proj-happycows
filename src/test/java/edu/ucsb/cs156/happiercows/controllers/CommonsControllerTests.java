@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -415,6 +416,60 @@ public class CommonsControllerTests extends ControllerTestCase {
         List<Commons> actualCommons = objectMapper.readValue(responseString, new TypeReference<List<Commons>>() {
         });
         assertEquals(actualCommons, expectedCommons);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void updateCommonsTest_setsCourseId() throws Exception {
+        LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        LocalDateTime someLaterTime = LocalDateTime.parse("2022-07-05T15:50:10");
+
+        CreateCommonsParams parameters = CreateCommonsParams.builder()
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .lastDate(someLaterTime)
+                .degradationRate(50.0)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .hidden(false)
+                .courseId(5L)
+                .build();
+
+        // A distinct object instance from the one that will be saved, so
+        // that the courseId assertion below cannot trivially pass by
+        // comparing the mutable "existing" object to itself.
+        Commons existing = Commons.builder()
+                .id(0L)
+                .name("Jackson's Commons")
+                .cowPrice(500.99)
+                .milkPrice(8.99)
+                .startingBalance(1020.10)
+                .startingDate(someTime)
+                .lastDate(someLaterTime)
+                .degradationRate(50.0)
+                .capacityPerUser(10)
+                .carryingCapacity(100)
+                .hidden(false)
+                .courseId(null)
+                .build();
+
+        when(commonsRepository.findById(0L)).thenReturn(Optional.of(existing));
+
+        String requestBody = objectMapper.writeValueAsString(parameters);
+
+        mockMvc
+                .perform(put("/api/commons/update?id=0").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
+                        .content(requestBody))
+                .andExpect(status().isNoContent());
+
+        ArgumentCaptor<Commons> captor = ArgumentCaptor.forClass(Commons.class);
+        verify(commonsRepository, times(1)).save(captor.capture());
+        assertEquals(5L, captor.getValue().getCourseId());
     }
 
     @WithMockUser(roles = {"ADMIN"})

@@ -110,6 +110,18 @@ describe("AdminStudentsCreatePage tests", () => {
       JSON.stringify(expectedStudent),
     );
 
+    expect(mockToast).toBeCalledWith(
+      <div>
+        Student successfully created!
+        <br />
+        id: 5
+        <br />
+        lastName: Ferber
+        <br />
+        email: sallyferber@ucsb.edu
+      </div>,
+    );
+
     expect(mockedNavigate).toBeCalledWith({ to: "/admin/liststudents" });
   });
 

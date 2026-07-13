@@ -35,6 +35,9 @@ export function isEligibleForCourseLinkedCommons(
 export function filterCommonsNotJoinedAndNotHidden(
   commons,
   commonsJoined,
+  // Stryker disable next-line ArrayDeclaration : any placeholder array is
+  // behaviorally equivalent to [] here, since .includes() on a real numeric
+  // courseId will never match Stryker's string placeholder either way.
   myCourseIds = [],
   isAdmin = false,
 ) {
@@ -50,6 +53,9 @@ export function filterCommonsNotJoinedAndNotHidden(
 export function filterCommonsJoinedAndNotHidden(
   commons,
   commonsJoined,
+  // Stryker disable next-line ArrayDeclaration : any placeholder array is
+  // behaviorally equivalent to [] here, since .includes() on a real numeric
+  // courseId will never match Stryker's string placeholder either way.
   myCourseIds = [],
   isAdmin = false,
 ) {

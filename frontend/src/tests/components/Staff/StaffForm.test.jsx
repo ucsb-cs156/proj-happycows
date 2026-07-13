@@ -94,4 +94,26 @@ describe("StaffForm tests", () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/Email is required./)).toBeInTheDocument();
   });
+
+  test("shows a course validation error when no course is selected", async () => {
+    // don't let the course list resolve, so the dropdown has no options
+    // selected and submitting immediately triggers the "required" validator.
+    // A fresh QueryClient is used so this test isn't served cached course
+    // data from an earlier test in this file.
+    axiosMock.reset();
+    axiosMock.onGet("/api/course/all").timeout();
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <StaffForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    const submitButton = await screen.findByText(/Create/);
+    fireEvent.click(submitButton);
+
+    await screen.findByText("Course is required.");
+  });
 });

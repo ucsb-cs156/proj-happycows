@@ -42,6 +42,8 @@ describe("CourseSelectDropdown tests", () => {
       screen.queryByTestId("CourseSelectDropdown-courseId-none"),
     ).not.toBeInTheDocument();
 
+    expect(screen.getByText("Course")).toBeInTheDocument();
+
     expect(register).toHaveBeenCalledWith(
       "courseId",
       expect.objectContaining({ required: "Course is required." }),

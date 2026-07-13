@@ -128,6 +128,14 @@ describe("StudentsTable tests", () => {
     );
   });
 
+  test("Modal is not shown initially", async () => {
+    renderTable(studentsFixtures.threeStudents, currentUserFixtures.adminUser);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
   test("Delete button calls delete callback", async () => {
     renderTable(studentsFixtures.threeStudents, currentUserFixtures.adminUser);
 
