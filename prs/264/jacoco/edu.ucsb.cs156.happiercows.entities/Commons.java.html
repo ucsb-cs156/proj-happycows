@@ -57,33 +57,35 @@ public class Commons {
     private List&lt;UserCommons&gt; joinedUsers;
 
     /**
-     * A game is in progress when &lt;code&gt;now&lt;/code&gt; is later than midnight
-     * (00:00 local time) at the beginning of the starting date, and before
-     * midnight (00:00 local time) at the beginning of the last date.
+     * The starting date is the first day of play, and the last date is the
+     * last day of play: a game is in progress from midnight (00:00 local
+     * time) at the beginning of the starting date, up to (but not including)
+     * midnight at the end of the last date.
      *
      * @param now the date/time to check against
      * @return whether the game is in progress at &lt;code&gt;now&lt;/code&gt;
      */
     public boolean gameInProgress(LocalDateTime now) {
-<span class="fc" id="L68">        LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();</span>
-<span class="fc" id="L69">        LocalDateTime gameEnd = lastDate.toLocalDate().atStartOfDay();</span>
-<span class="fc bfc" id="L70" title="All 4 branches covered.">        return now.isAfter(gameStart) &amp;&amp; now.isBefore(gameEnd);</span>
+<span class="fc" id="L69">        LocalDateTime gameStart = startingDate.toLocalDate().atStartOfDay();</span>
+<span class="fc" id="L70">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
+<span class="fc bfc" id="L71" title="All 4 branches covered.">        return !now.isBefore(gameStart) &amp;&amp; now.isBefore(gameEnd);</span>
     }
 
     public boolean gameInProgress() {
-<span class="fc" id="L74">        return gameInProgress(LocalDateTime.now());</span>
+<span class="fc" id="L75">        return gameInProgress(LocalDateTime.now());</span>
     }
 
     /**
      * The end date has passed when &lt;code&gt;now&lt;/code&gt; is at or after midnight
-     * (00:00 local time) at the beginning of the last date.
+     * at the end of the last date (i.e. the last date is the last day of
+     * play).
      *
      * @param now the date/time to check against
      * @return whether the game has ended as of &lt;code&gt;now&lt;/code&gt;
      */
     public boolean endDateHasPassed(LocalDateTime now) {
-<span class="fc" id="L85">        LocalDateTime gameEnd = lastDate.toLocalDate().atStartOfDay();</span>
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        return !now.isBefore(gameEnd);</span>
+<span class="fc" id="L87">        LocalDateTime gameEnd = lastDate.toLocalDate().plusDays(1).atStartOfDay();</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        return !now.isBefore(gameEnd);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

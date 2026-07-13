@@ -49,7 +49,7 @@ happycows,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,EntityNotFoundException,0,47,0,0,0,8,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.entities,CommonsPlus,0,12,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,UserCommons,0,15,0,0,0,5,0,4,0,4
-happycows,edu.ucsb.cs156.happiercows.entities,Commons,0,39,0,6,0,6,0,6,0,3
+happycows,edu.ucsb.cs156.happiercows.entities,Commons,0,43,0,6,0,6,0,6,0,3
 happycows,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,275,0,8,0,50,0,16,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,CourseController,0,103,0,0,0,20,0,10,0,10
