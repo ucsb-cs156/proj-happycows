@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -112,11 +113,11 @@ public class CommonsIT {
 
         Commons saved = commonsRepository.findAll().iterator().next();
 
-        assertEquals(false, saved.isShowChat());
-        assertEquals(false, saved.isShowOverviewSection());
-        assertEquals(false, saved.isShowCowsPerFarmerSection());
-        assertEquals(false, saved.isShowHistogramSection());
-        assertEquals(false, saved.isShowTrendsSection());
-        assertEquals(false, saved.isShowFarmerLeaderboardSection());
+        assertFalse(saved.isShowChat());
+        assertFalse(saved.isShowOverviewSection());
+        assertFalse(saved.isShowCowsPerFarmerSection());
+        assertFalse(saved.isShowHistogramSection());
+        assertFalse(saved.isShowTrendsSection());
+        assertFalse(saved.isShowFarmerLeaderboardSection());
     }
 }
