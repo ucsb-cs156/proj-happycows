@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 
 @Service
 public class RecordCommonStatsJobFactory {

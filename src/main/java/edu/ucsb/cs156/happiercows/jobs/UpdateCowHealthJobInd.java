@@ -8,8 +8,8 @@ import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

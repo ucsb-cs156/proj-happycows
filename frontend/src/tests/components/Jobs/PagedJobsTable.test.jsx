@@ -23,7 +23,7 @@ describe("PagedJobsTable tests", () => {
     // arrange
 
     axiosMock
-      .onGet("/api/jobs/all/pageable")
+      .onGet("/api/jobs/paginated")
       .reply(200, pagedJobsFixtures.onePage);
 
     // act
@@ -51,8 +51,13 @@ describe("PagedJobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(axiosMock.history.get[0].url).toBe("/api/jobs/all/pageable");
-    expect(axiosMock.history.get[0].params).toEqual({ page: 0, size: 10 });
+    expect(axiosMock.history.get[0].url).toBe("/api/jobs/paginated");
+    expect(axiosMock.history.get[0].params).toEqual({
+      page: 0,
+      pageSize: 10,
+      sortField: "id",
+      sortDirection: "DESC",
+    });
 
     expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent(
       "1",
@@ -89,7 +94,7 @@ describe("PagedJobsTable tests", () => {
     // arrange
 
     axiosMock
-      .onGet("/api/jobs/all/pageable")
+      .onGet("/api/jobs/paginated")
       .reply(200, pagedJobsFixtures.emptyPage);
 
     // act
@@ -105,8 +110,13 @@ describe("PagedJobsTable tests", () => {
       expect(axiosMock.history.get.length).toBe(1);
     });
 
-    expect(axiosMock.history.get[0].url).toBe("/api/jobs/all/pageable");
-    expect(axiosMock.history.get[0].params).toEqual({ page: 0, size: 10 });
+    expect(axiosMock.history.get[0].url).toBe("/api/jobs/paginated");
+    expect(axiosMock.history.get[0].params).toEqual({
+      page: 0,
+      pageSize: 10,
+      sortField: "id",
+      sortDirection: "DESC",
+    });
 
     const nextButton = screen.getByTestId(`${testId}-next-button`);
     expect(nextButton).toBeInTheDocument();
@@ -121,16 +131,44 @@ describe("PagedJobsTable tests", () => {
     // arrange
 
     axiosMock
-      .onGet("/api/jobs/all/pageable", { params: { page: 0, size: 10 } })
+      .onGet("/api/jobs/paginated", {
+        params: {
+          page: 0,
+          pageSize: 10,
+          sortField: "id",
+          sortDirection: "DESC",
+        },
+      })
       .reply(200, pagedJobsFixtures.fourPages[0]);
     axiosMock
-      .onGet("/api/jobs/all/pageable", { params: { page: 1, size: 10 } })
+      .onGet("/api/jobs/paginated", {
+        params: {
+          page: 1,
+          pageSize: 10,
+          sortField: "id",
+          sortDirection: "DESC",
+        },
+      })
       .reply(200, pagedJobsFixtures.fourPages[1]);
     axiosMock
-      .onGet("/api/jobs/all/pageable", { params: { page: 2, size: 10 } })
+      .onGet("/api/jobs/paginated", {
+        params: {
+          page: 2,
+          pageSize: 10,
+          sortField: "id",
+          sortDirection: "DESC",
+        },
+      })
       .reply(200, pagedJobsFixtures.fourPages[2]);
     axiosMock
-      .onGet("/api/jobs/all/pageable", { params: { page: 3, size: 10 } })
+      .onGet("/api/jobs/paginated", {
+        params: {
+          page: 3,
+          pageSize: 10,
+          sortField: "id",
+          sortDirection: "DESC",
+        },
+      })
       .reply(200, pagedJobsFixtures.fourPages[3]);
 
     // act
@@ -160,8 +198,13 @@ describe("PagedJobsTable tests", () => {
       expect(header).toBeInTheDocument();
     });
 
-    expect(axiosMock.history.get[0].url).toBe("/api/jobs/all/pageable");
-    expect(axiosMock.history.get[0].params).toEqual({ page: 0, size: 10 });
+    expect(axiosMock.history.get[0].url).toBe("/api/jobs/paginated");
+    expect(axiosMock.history.get[0].params).toEqual({
+      page: 0,
+      pageSize: 10,
+      sortField: "id",
+      sortDirection: "DESC",
+    });
 
     const nextButton = screen.getByTestId(`${testId}-next-button`);
     expect(nextButton).toBeInTheDocument();

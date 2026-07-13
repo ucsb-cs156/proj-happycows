@@ -6,10 +6,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.jobs.Job;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
-import edu.ucsb.cs156.happiercows.services.jobs.JobService;
+import edu.ucsb.cs156.jobs.entities.Job;
+import edu.ucsb.cs156.jobs.services.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobService;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
