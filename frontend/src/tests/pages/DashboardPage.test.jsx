@@ -488,6 +488,30 @@ describe("DashboardPage as student", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("hides the trends and health sections but still shows the total cows section", async () => {
+    axiosMock.onGet("/api/commons/plus").reply(200, {
+      ...baseCommonsPlus,
+      commons: {
+        ...baseCommonsPlus.commons,
+        showTrendsSection: false,
+        showHealthSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-TrendsSection"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("DashboardPage-HealthSection"),
+    ).not.toBeInTheDocument();
+    expect(
+      await screen.findByTestId("DashboardPage-TotalCowsSection"),
+    ).toBeInTheDocument();
+  });
+
   test("hides the total cows section when the instructor has marked it not visible", async () => {
     axiosMock.onGet("/api/commons/plus").reply(200, {
       ...baseCommonsPlus,
