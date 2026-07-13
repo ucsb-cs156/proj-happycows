@@ -40,6 +40,8 @@ public class Commons {
     private boolean showCowsPerFarmerSection;
     private boolean showHistogramSection;
     private boolean showTrendsSection;
+    private boolean showHealthSection;
+    private boolean showTotalCowsSection;
     private boolean showFarmerLeaderboardSection;
     
     private int capacityPerUser;

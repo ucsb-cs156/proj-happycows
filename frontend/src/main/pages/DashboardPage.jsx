@@ -53,6 +53,8 @@ export default function DashboardPage() {
   const showCowsPerFarmerSection = commons?.showCowsPerFarmerSection !== false;
   const showHistogramSection = commons?.showHistogramSection !== false;
   const showTrendsSection = commons?.showTrendsSection !== false;
+  const showHealthSection = commons?.showHealthSection !== false;
+  const showTotalCowsSection = commons?.showTotalCowsSection !== false;
   const showFarmerLeaderboardSection =
     commons?.showFarmerLeaderboardSection !== false;
 
@@ -80,7 +82,15 @@ export default function DashboardPage() {
       params: { commonId: id },
     },
     [],
-    { enabled: !!id && canSeeDashboard && (isAdminView || showTrendsSection) },
+    {
+      enabled:
+        !!id &&
+        canSeeDashboard &&
+        (isAdminView ||
+          showTrendsSection ||
+          showHealthSection ||
+          showTotalCowsSection),
+    },
   );
   // Stryker restore all
 
@@ -121,6 +131,8 @@ export default function DashboardPage() {
       showCowsPerFarmerSection: showCowsPerFarmerSection,
       showHistogramSection: showHistogramSection,
       showTrendsSection: showTrendsSection,
+      showHealthSection: showHealthSection,
+      showTotalCowsSection: showTotalCowsSection,
       showFarmerLeaderboardSection: showFarmerLeaderboardSection,
       [field]: value,
     });
@@ -360,6 +372,38 @@ export default function DashboardPage() {
             testid="DashboardPage-TrendsSection"
           >
             <TimeSeries data={timeSeriesData} selectors="all" />
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Health Over Time"
+            visible={showHealthSection}
+            isAdminView={isAdminView}
+            onToggleVisible={(v) =>
+              updateDashboardSetting("showHealthSection", v)
+            }
+            testid="DashboardPage-HealthSection"
+          >
+            <TimeSeries
+              data={timeSeriesData}
+              selectors="Health"
+              testid="DashboardPage-HealthSection-time-series"
+            />
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Total Cows Over Time"
+            visible={showTotalCowsSection}
+            isAdminView={isAdminView}
+            onToggleVisible={(v) =>
+              updateDashboardSetting("showTotalCowsSection", v)
+            }
+            testid="DashboardPage-TotalCowsSection"
+          >
+            <TimeSeries
+              data={timeSeriesData}
+              selectors="Total Cows"
+              testid="DashboardPage-TotalCowsSection-time-series"
+            />
           </DashboardSectionCard>
 
           <DashboardSectionCard

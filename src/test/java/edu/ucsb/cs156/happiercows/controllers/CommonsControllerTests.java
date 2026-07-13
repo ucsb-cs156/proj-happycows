@@ -1565,6 +1565,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showCowsPerFarmerSection(false)
                 .showHistogramSection(true)
                 .showTrendsSection(false)
+                .showHealthSection(true)
+                .showTotalCowsSection(false)
                 .showFarmerLeaderboardSection(true)
                 .build();
 
@@ -1576,6 +1578,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showCowsPerFarmerSection(true)
                 .showHistogramSection(false)
                 .showTrendsSection(true)
+                .showHealthSection(false)
+                .showTotalCowsSection(true)
                 .showFarmerLeaderboardSection(false)
                 .build();
 
@@ -1585,6 +1589,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showCowsPerFarmerSection(true)
                 .showHistogramSection(false)
                 .showTrendsSection(true)
+                .showHealthSection(false)
+                .showTotalCowsSection(true)
                 .showFarmerLeaderboardSection(false)
                 .build();
 
@@ -1617,6 +1623,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .showCowsPerFarmerSection(true)
                 .showHistogramSection(true)
                 .showTrendsSection(true)
+                .showHealthSection(true)
+                .showTotalCowsSection(true)
                 .showFarmerLeaderboardSection(true)
                 .build();
 
