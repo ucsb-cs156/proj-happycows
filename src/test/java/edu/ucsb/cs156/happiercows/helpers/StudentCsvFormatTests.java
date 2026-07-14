@@ -15,6 +15,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class StudentCsvFormatTests {
 
+    private static final List<String> UCSB_EGRADES_HEADERS = List.of(
+            "Enrl Cd", "Perm #", "Grade", "Final Units", "Student Last",
+            "Student First Middle", "Quarter", "Course ID", "Section",
+            "Meeting Time(s) / Location(s)", "Email", "ClassLevel", "Major1",
+            "Major2", "Date/Time", "Pronoun");
+
     private CSVRecord parseOneRow(String csv) throws IOException {
         try (CSVParser parser = CSVFormat.DEFAULT.parse(new StringReader(csv))) {
             return parser.getRecords().get(0);
@@ -23,19 +29,21 @@ public class StudentCsvFormatTests {
 
     @Test
     public void detects_ucsb_egrades_format() {
-        List<String> headers = List.of("Perm #", "Student Last", "Student First Middle", "Email");
-        assertEquals(StudentCsvFormat.UCSB_EGRADES, StudentCsvFormat.detect(headers));
+        assertEquals(StudentCsvFormat.UCSB_EGRADES, StudentCsvFormat.detect(UCSB_EGRADES_HEADERS));
     }
 
     @Test
     public void detects_ucsb_egrades_format_case_insensitively() {
-        List<String> headers = List.of("perm #", "student last", "student first middle", "email");
+        List<String> headers = UCSB_EGRADES_HEADERS.stream()
+                .map(String::toLowerCase)
+                .toList();
         assertEquals(StudentCsvFormat.UCSB_EGRADES, StudentCsvFormat.detect(headers));
     }
 
     @Test
     public void detects_chico_state_roster_format() {
-        List<String> headers = List.of("Student ID", "Last Name", "First Name", "Email Address");
+        List<String> headers =
+                List.of("Student Name", "Student ID", "Student SIS ID", "Email", "Section Name");
         assertEquals(StudentCsvFormat.CHICO_STATE_ROSTER, StudentCsvFormat.detect(headers));
     }
 
@@ -66,28 +74,43 @@ public class StudentCsvFormatTests {
 
     @Test
     public void ucsb_egrades_maps_row_to_student() throws IOException {
-        CSVRecord row = parseOneRow("A123456,Gaucho,Chris Fake,cgaucho@umail.ucsb.edu\n");
+        // Real row shape taken from docs/examples/egrades.csv
+        CSVRecord row = parseOneRow(
+                "08235,A123456,,4.0,GAUCHO,CHRIS FAKE,F23,CMPSC156,0100,"
+                        + "T R 2:00-3:15 SH 1431,cgaucho@umail.ucsb.edu,SR,CMPSC,,9/27/2023 9:39:25 AM,\n");
 
         Student student = StudentCsvFormat.UCSB_EGRADES.toStudent(row, 5L);
 
         assertEquals("A123456", student.getPerm());
-        assertEquals("Gaucho", student.getLastName());
-        assertEquals("Chris Fake", student.getFirstMiddleName());
+        assertEquals("GAUCHO", student.getLastName());
+        assertEquals("CHRIS FAKE", student.getFirstMiddleName());
         assertEquals("cgaucho@umail.ucsb.edu", student.getEmail());
         assertEquals(5L, student.getCourseId());
     }
 
     @Test
     public void chico_state_roster_maps_row_to_student() throws IOException {
-        CSVRecord row = parseOneRow("12345678,Wildcat,Willie,wwildcat@csuchico.edu\n");
+        CSVRecord row = parseOneRow(
+                "Marge Simpson,88200,013228559,msimpson@csuchico.edu,CSED 500 - 362 Computational Thinking Summer 2025\n");
 
         Student student = StudentCsvFormat.CHICO_STATE_ROSTER.toStudent(row, 7L);
 
-        assertEquals("12345678", student.getPerm());
-        assertEquals("Wildcat", student.getLastName());
-        assertEquals("Willie", student.getFirstMiddleName());
-        assertEquals("wwildcat@csuchico.edu", student.getEmail());
+        assertEquals("013228559", student.getPerm());
+        assertEquals("Simpson", student.getLastName());
+        assertEquals("Marge", student.getFirstMiddleName());
+        assertEquals("msimpson@csuchico.edu", student.getEmail());
         assertEquals(7L, student.getCourseId());
+    }
+
+    @Test
+    public void chico_state_roster_handles_a_name_with_no_spaces() throws IOException {
+        CSVRecord row = parseOneRow(
+                "Cher,88201,013228560,cher@csuchico.edu,CSED 500 - 362 Computational Thinking Summer 2025\n");
+
+        Student student = StudentCsvFormat.CHICO_STATE_ROSTER.toStudent(row, 7L);
+
+        assertEquals("Cher", student.getLastName());
+        assertEquals("", student.getFirstMiddleName());
     }
 
     @Test

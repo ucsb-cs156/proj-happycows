@@ -102,6 +102,15 @@ describe("StaffTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
+  test("renders the table flush left, not centered", () => {
+    const { container } = renderTable(
+      staffFixtures.threeStaff,
+      currentUserFixtures.adminUser,
+    );
+
+    expect(container.querySelector("table")).toHaveStyle({ margin: "0" });
+  });
+
   test("Modal is not shown initially", async () => {
     renderTable(staffFixtures.threeStaff, currentUserFixtures.adminUser);
 

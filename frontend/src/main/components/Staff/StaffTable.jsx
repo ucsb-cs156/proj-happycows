@@ -148,7 +148,12 @@ export default function StaffTable({
 
   return (
     <>
-      <OurTable data={staff} columns={columnsToDisplay} testid={testid} />
+      <OurTable
+        data={staff}
+        columns={columnsToDisplay}
+        testid={testid}
+        centered={false}
+      />
       {hasRole(currentUser, "ROLE_ADMIN") && editModal}
       {hasRole(currentUser, "ROLE_ADMIN") && staffModal}
     </>

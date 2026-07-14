@@ -150,7 +150,12 @@ export default function StudentsTable({
 
   return (
     <>
-      <OurTable data={students} columns={columnsToDisplay} testid={testid} />
+      <OurTable
+        data={students}
+        columns={columnsToDisplay}
+        testid={testid}
+        centered={false}
+      />
       {hasRole(currentUser, "ROLE_ADMIN") && editModal}
       {hasRole(currentUser, "ROLE_ADMIN") && studentsModal}
     </>

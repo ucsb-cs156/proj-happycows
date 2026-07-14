@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.http.MediaType;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -400,11 +402,21 @@ public class StudentControllerTests extends ControllerTestCase {
         assertEquals(List.of(), json.get("skippedEmails"));
     }
 
+    // Header row + blank line, matching the real UCSB eGrades export format
+    // (see docs/examples/egrades.csv). commons-csv's CSVFormat.DEFAULT
+    // ignores blank lines automatically, so no special handling is needed
+    // beyond detecting the real 16-column header.
+    private static final String UCSB_EGRADES_HEADER =
+            "Enrl Cd,Perm #,Grade,Final Units,Student Last,Student First Middle,Quarter,"
+                    + "Course ID,Section,Meeting Time(s) / Location(s),Email,ClassLevel,Major1,"
+                    + "Major2,Date/Time,Pronoun\n\n";
+
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void admin_can_upload_ucsb_egrades_format_csv() throws Exception {
-        String csv = "Perm #,Student Last,Student First Middle,Email\n"
-                + "A123456,Gaucho,Chris Fake,cgaucho@umail.ucsb.edu\n";
+        String csv = UCSB_EGRADES_HEADER
+                + "08235,A123456,,4.0,GAUCHO,CHRIS FAKE,F23,CMPSC156,0100,"
+                + "T R 2:00-3:15 SH 1431,cgaucho@umail.ucsb.edu,SR,CMPSC,,9/27/2023 9:39:25 AM,\n";
         MockMultipartFile file = new MockMultipartFile(
                 "file", "roster.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
 
@@ -417,9 +429,57 @@ public class StudentControllerTests extends ControllerTestCase {
 
         Student expected = Student.builder()
                 .perm("A123456")
-                .lastName("Gaucho")
-                .firstMiddleName("Chris Fake")
+                .lastName("GAUCHO")
+                .firstMiddleName("CHRIS FAKE")
                 .email("cgaucho@umail.ucsb.edu")
+                .courseId(1L)
+                .build();
+        verify(studentRepository, times(1)).save(expected);
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals(1, json.get("created"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_upload_the_real_egrades_csv_example_file() throws Exception {
+        Path egradesPath = Path.of("docs", "examples", "egrades.csv");
+        byte[] csvBytes = Files.readAllBytes(egradesPath);
+        MockMultipartFile file = new MockMultipartFile("file", "egrades.csv", "text/csv", csvBytes);
+
+        when(studentRepository.findByCourseIdAndEmail(eq(1L), any())).thenReturn(new ArrayList<>());
+
+        MvcResult response = mockMvc
+                .perform(multipart("/api/student/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals(3, json.get("created"));
+        assertEquals(List.of(), json.get("skippedEmails"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_upload_chico_state_canvas_format_csv() throws Exception {
+        String csv = "Student Name,Student ID,Student SIS ID,Email,Section Name\n"
+                + "Marge Simpson,88200,013228559,msimpson@csuchico.edu,"
+                + "CSED 500 - 362 Computational Thinking Summer 2025\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "roster.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        when(studentRepository.findByCourseIdAndEmail(eq(1L), any())).thenReturn(new ArrayList<>());
+
+        MvcResult response = mockMvc
+                .perform(multipart("/api/student/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Student expected = Student.builder()
+                .perm("013228559")
+                .lastName("Simpson")
+                .firstMiddleName("Marge")
+                .email("msimpson@csuchico.edu")
                 .courseId(1L)
                 .build();
         verify(studentRepository, times(1)).save(expected);

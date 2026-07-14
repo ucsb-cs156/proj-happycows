@@ -108,6 +108,15 @@ describe("StudentsTable tests", () => {
     expect(deleteButton).toHaveClass("btn-danger");
   });
 
+  test("renders the table flush left, not centered", () => {
+    const { container } = renderTable(
+      studentsFixtures.threeStudents,
+      currentUserFixtures.adminUser,
+    );
+
+    expect(container.querySelector("table")).toHaveStyle({ margin: "0" });
+  });
+
   test("Modal is not shown initially", async () => {
     renderTable(studentsFixtures.threeStudents, currentUserFixtures.adminUser);
 
