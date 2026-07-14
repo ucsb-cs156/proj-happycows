@@ -6,6 +6,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { schoolsFixtures } from "fixtures/schoolsFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
@@ -44,6 +45,9 @@ describe("AdminCreateCommonsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock
+      .onGet("/api/course/schools")
+      .reply(200, schoolsFixtures.activeSchools);
   });
 
   test("renders without crashing", async () => {
@@ -81,6 +85,7 @@ describe("AdminCreateCommonsPage tests", () => {
     );
     const courseNameField = screen.getByLabelText("Name");
     const courseTermField = screen.getByLabelText("Term");
+    const courseSchoolField = await screen.findByLabelText("School");
     const button = screen.getByTestId("CoursesForm-submit");
 
     fireEvent.change(courseCodeField, { target: { value: "CS154" } });
@@ -88,6 +93,7 @@ describe("AdminCreateCommonsPage tests", () => {
       target: { value: "Computer Science 154" },
     });
     fireEvent.change(courseTermField, { target: { value: "f26" } });
+    fireEvent.change(courseSchoolField, { target: { value: "UCSB" } });
     fireEvent.click(button);
 
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
@@ -96,6 +102,7 @@ describe("AdminCreateCommonsPage tests", () => {
       code: "CS154",
       name: "Computer Science 154",
       term: "f26",
+      school: "UCSB",
     };
 
     expect(axiosMock.history.post[0].data).toEqual(

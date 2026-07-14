@@ -27,6 +27,10 @@ export default function CoursesTable({
     navigate(`/admin/editcourses/${cell.row.values.id}`);
   };
 
+  const manageCallback = (cell) => {
+    navigate(`/admin/courses/${cell.row.values.id}`);
+  };
+
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
@@ -60,10 +64,16 @@ export default function CoursesTable({
       Header: "Term",
       accessor: "term",
     },
+    {
+      Header: "School",
+      id: "school",
+      accessor: (row) => row.school?.displayName ?? "",
+    },
   ];
 
   const columnsIfAdmin = [
     ...columns,
+    ButtonColumn("Manage", "secondary", manageCallback, testid),
     ButtonColumn("Edit", "primary", editCallback, testid),
     ButtonColumn("Delete", "danger", deleteCallback, testid),
   ];

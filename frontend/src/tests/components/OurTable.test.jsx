@@ -132,6 +132,22 @@ describe("OurTable tests", () => {
     );
   });
 
+  test("table is centered by default", async () => {
+    const { container } = render(
+      <OurTable columns={columns} data={threeRows} />,
+    );
+    const table = await waitFor(() => container.querySelector("table"));
+    expect(table).toHaveStyle({ margin: "0 auto" });
+  });
+
+  test("table is flush left when centered is false", async () => {
+    const { container } = render(
+      <OurTable columns={columns} data={threeRows} centered={false} />,
+    );
+    const table = await waitFor(() => container.querySelector("table"));
+    expect(table).toHaveStyle({ margin: "0" });
+  });
+
   test("default testid is testId", async () => {
     render(<OurTable columns={columns} data={threeRows} />);
     expect(await screen.findByTestId("testid-header-col1")).toBeInTheDocument();

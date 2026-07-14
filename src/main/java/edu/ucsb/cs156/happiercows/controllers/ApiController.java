@@ -4,6 +4,7 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
 import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
+import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.ucsb.cs156.happiercows.models.CurrentUser;
@@ -35,7 +36,7 @@ public abstract class ApiController {
     );
   }
 
-  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, CommonsHiddenException.class})
+  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, CommonsHiddenException.class, CourseAccessDeniedException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Object handleBadRequest(Throwable e) {
     return Map.of(

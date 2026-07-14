@@ -48,6 +48,7 @@ export default function CommonsEditPage() {
       showLeaderboard: commons.showLeaderboard,
       showChat: commons.showChat,
       hidden: commons.hidden,
+      courseId: commons.courseId,
     },
   });
 

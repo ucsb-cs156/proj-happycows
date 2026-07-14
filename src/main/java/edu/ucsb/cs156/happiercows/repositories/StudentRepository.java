@@ -20,4 +20,7 @@ public interface StudentRepository extends CrudRepository<Student, Long> {
   @Query(value = "SELECT stu FROM student stu WHERE stu.courseId = :courseId AND stu.perm = :perm")
   Iterable<Student> findByCourseIdAndPerm(Long courseId, String perm);
 
+  @Query(value = "SELECT stu FROM student stu WHERE stu.courseId = :courseId AND stu.email = :email")
+  Iterable<Student> findByCourseIdAndEmail(Long courseId, String email);
+
 }

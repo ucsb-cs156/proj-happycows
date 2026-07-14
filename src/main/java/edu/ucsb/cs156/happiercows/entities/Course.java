@@ -1,5 +1,6 @@
 package edu.ucsb.cs156.happiercows.entities;
 
+import edu.ucsb.cs156.happiercows.enums.School;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +21,7 @@ public class Course {
     private String code;
     private String name;
     private String term;
+
+    @Enumerated(EnumType.STRING)
+    private School school;
 }

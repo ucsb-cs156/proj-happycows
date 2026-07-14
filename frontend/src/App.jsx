@@ -19,9 +19,7 @@ import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
 import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
-import AdminStudentsIndexPage from "main/pages/AdminStudentsIndexPage";
-import AdminStudentsCreatePage from "main/pages/AdminStudentsCreatePage";
-import AdminStudentsEditPage from "main/pages/AdminStudentsEditPage";
+import InstructorAdminShowPage from "main/pages/InstructorAdminShowPage";
 import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
 import { hasRole, useCurrentUser } from "main/utils/currentUser";
@@ -47,19 +45,11 @@ function App() {
       <Route path="/admin/listcommonsv2" element={<AdminListCommonsPageV2 />} />
       <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
       <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
-      <Route path="/admin/liststudents" element={<AdminStudentsIndexPage />} />
       <Route path="/admin/dashboard/:id" element={<DashboardPage />} />
-      <Route
-        path="/admin/createstudents"
-        element={<AdminStudentsCreatePage />}
-      />
-      <Route
-        path="/admin/editstudents/:id"
-        element={<AdminStudentsEditPage />}
-      />
       <Route path="/admin/listcourses" element={<AdminCoursesIndexPage />} />
       <Route path="/admin/createcourses" element={<AdminCoursesCreatePage />} />
       <Route path="/admin/editcourses/:id" element={<AdminCoursesEditPage />} />
+      <Route path="/admin/courses/:id" element={<InstructorAdminShowPage />} />
       <Route
         path="/admin/play/:commonsId/user/:userId"
         element={<AdminViewPlayPage />}

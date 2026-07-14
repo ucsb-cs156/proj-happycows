@@ -36,8 +36,8 @@ vi.mock("react-router", async () => {
 describe("CoursesTable tests", () => {
   const queryClient = new QueryClient();
   const testId = "CoursesTable";
-  const expectedHeaders = ["id", "Code", "Name", "Term"];
-  const expectedFields = ["id", "code", "name", "term"];
+  const expectedHeaders = ["id", "Code", "Name", "Term", "School"];
+  const expectedFields = ["id", "code", "name", "term", "school"];
 
   beforeEach(() => {
     mockMutate.mockReset();
@@ -87,6 +87,27 @@ describe("CoursesTable tests", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("Renders the school display name when present, and blank when absent", () => {
+    const coursesWithSchool = [
+      {
+        id: 1,
+        code: "CMPSC 156",
+        name: "App Programming",
+        term: "F25",
+        school: { key: "UCSB", displayName: "UCSB", active: true },
+      },
+      { id: 2, code: "CHEM 123", name: "Environmental Chemistry", term: "W26" },
+    ];
+    renderTable(coursesWithSchool, currentUserFixtures.userOnly);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-school`),
+    ).toHaveTextContent("UCSB");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-school`),
+    ).toHaveTextContent("");
+  });
+
   test("Has the expected column headers and content for admin user", () => {
     renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
 
@@ -130,6 +151,20 @@ describe("CoursesTable tests", () => {
 
     await waitFor(() =>
       expect(mockedNavigate).toHaveBeenCalledWith("/admin/editcourses/1"),
+    );
+  });
+
+  test("Manage button navigates to the instructor admin show page for admin user", async () => {
+    renderTable(coursesFixtures.threeCourses, currentUserFixtures.adminUser);
+
+    const manageButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Manage-button`,
+    );
+    expect(manageButton).toHaveClass("btn-secondary");
+    fireEvent.click(manageButton);
+
+    await waitFor(() =>
+      expect(mockedNavigate).toHaveBeenCalledWith("/admin/courses/1"),
     );
   });
 

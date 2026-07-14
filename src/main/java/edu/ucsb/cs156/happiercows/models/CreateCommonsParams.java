@@ -37,4 +37,7 @@ public class CreateCommonsParams {
     private String belowCapacityHealthUpdateStrategy;
 
     private boolean hidden;
+
+    // Optional id of the Course this commons is associated with; null means no course.
+    private Long courseId;
 }

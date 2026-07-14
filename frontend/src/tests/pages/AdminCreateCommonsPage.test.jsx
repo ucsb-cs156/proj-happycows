@@ -7,6 +7,7 @@ import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import healthUpdateStrategyListFixtures from "../../fixtures/healthUpdateStrategyListFixtures";
+import coursesFixtures from "fixtures/coursesFixtures";
 import { vi } from "vitest";
 
 const mockedNavigate = vi.fn();
@@ -49,6 +50,8 @@ describe("AdminCreateCommonsPage tests", () => {
     axiosMock
       .onGet("/api/commons/all-health-update-strategies")
       .reply(200, healthUpdateStrategyListFixtures.simple);
+
+    axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);
   });
 
   test("renders without crashing", async () => {
@@ -145,6 +148,7 @@ describe("AdminCreateCommonsPage tests", () => {
       showChat: false,
       aboveCapacityHealthUpdateStrategy: "strat2",
       belowCapacityHealthUpdateStrategy: "strat3",
+      courseId: null,
     };
 
     expect(axiosMock.history.post[0].data).toEqual(

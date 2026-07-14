@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
 import { useEffect } from "react";
 import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrategiesUpdateDropdown";
+import CourseSelectDropdown from "main/components/Courses/CourseSelectDropdown";
 
 function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
   let modifiedCommons = initialCommons ? { ...initialCommons } : {}; // make a shallow copy of initialCommons
@@ -512,6 +513,19 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               />
             </OverlayTrigger>
           </Form.Group>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={6}>
+          <CourseSelectDropdown
+            formName="courseId"
+            displayName="Course"
+            initialValue={modifiedCommons.courseId}
+            register={register}
+            includeNoCourseOption
+            testIdPrefix={testid}
+          />
         </Col>
       </Row>
 
