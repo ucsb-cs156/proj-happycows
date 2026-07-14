@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
-import edu.ucsb.cs156.happiercows.services.jobs.JobService;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobService;
 import lombok.extern.slf4j.Slf4j;
 
 /**

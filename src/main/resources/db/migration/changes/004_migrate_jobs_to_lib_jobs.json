@@ -1,0 +1,30 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "004-migrate-jobs-to-lib-jobs",
+        "author": "pc",
+        "comment": "Migrate the jobs table to the lib-jobs library schema: creator denormalized to created_by_email (no backfill; UI tolerates null), and generic scope_type/scope_id columns added (unused by this app today; see lib-jobs DESIGN.md 3.4/3.7)",
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "jobs",
+              "constraintName": "FK_JOBS_USERS"
+            }
+          },
+          {
+            "addColumn": {
+              "tableName": "jobs",
+              "columns": [
+                { "column": { "name": "created_by_email", "type": "VARCHAR(255)" } },
+                { "column": { "name": "job_name", "type": "VARCHAR(255)" } },
+                { "column": { "name": "scope_type", "type": "VARCHAR(255)" } },
+                { "column": { "name": "scope_id", "type": "BIGINT" } }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
