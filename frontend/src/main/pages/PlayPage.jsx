@@ -78,7 +78,10 @@ export default function PlayPage() {
     matched = commonsforuser.some((com) => com.id === commonsPlus.commons.id);
   }
 
-  const deniedAccess = userCommonsError?.response?.status === 403;
+  const deniedAccess =
+    userCommonsError?.response?.status === 403 &&
+    userCommonsError?.response?.data?.type ===
+      "NotEnrolledInCourseAssociatedWithCommonsException";
   const allowed =
     commonsPlusExists &&
     matched &&

@@ -729,6 +729,7 @@ describe("PlayPage tests", () => {
         status: 403,
         body: {
           message: "Not enrolled in course associated with commons",
+          type: "NotEnrolledInCourseAssociatedWithCommonsException",
         },
       },
     });
