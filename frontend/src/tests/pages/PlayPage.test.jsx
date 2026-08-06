@@ -56,7 +56,7 @@ describe("PlayPage tests", () => {
   const setupDefaultMocks = ({
     currentUser = apiCurrentUserFixtures.userOnly,
     systemInfo = systemInfoFixtures.showingNeither,
-    userCommons = defaultUserCommons,
+    userCommonsResponse = { status: 200, body: defaultUserCommons },
     commonsPlus = defaultCommonsPlus,
     commonsAll = [
       {
@@ -77,7 +77,7 @@ describe("PlayPage tests", () => {
       .onGet("/api/usercommons/forcurrentuser", {
         params: { commonsId: 1 },
       })
-      .reply(200, userCommons);
+      .reply(userCommonsResponse.status, userCommonsResponse.body);
 
     axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
       id: 1,
@@ -98,8 +98,12 @@ describe("PlayPage tests", () => {
 
     axiosMock.onGet("/api/profits/all/commonsid").reply(200, []);
 
-    axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
-    axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
+    axiosMock
+      .onPut("/api/usercommons/sell")
+      .reply(200, userCommonsResponse.body);
+    axiosMock
+      .onPut("/api/usercommons/buy")
+      .reply(200, userCommonsResponse.body);
   };
 
   const renderPage = () => {
@@ -360,12 +364,6 @@ describe("PlayPage tests", () => {
 
   test("Doesn't show chat button for non-admins if showChat is false", async () => {
     setupDefaultMocks({
-      userCommons: {
-        commonsId: 1,
-        id: 1,
-        totalWealth: 0,
-        userId: 1,
-      },
       commonsPlus: {
         commons: {
           id: 1,
@@ -375,6 +373,15 @@ describe("PlayPage tests", () => {
         },
         totalPlayers: 5,
         totalCows: 5,
+      },
+      userCommonsResponse: {
+        status: 200,
+        body: {
+          commonsId: 1,
+          id: 1,
+          totalWealth: 0,
+          userId: 1,
+        },
       },
       commonsAll: [
         {
@@ -397,12 +404,6 @@ describe("PlayPage tests", () => {
   test("Shows chat button for admins if showChat is false", async () => {
     setupDefaultMocks({
       currentUser: apiCurrentUserFixtures.adminUser,
-      userCommons: {
-        commonsId: 1,
-        id: 1,
-        totalWealth: 0,
-        userId: 1,
-      },
       commonsPlus: {
         commons: {
           id: 1,
@@ -412,6 +413,15 @@ describe("PlayPage tests", () => {
         },
         totalPlayers: 5,
         totalCows: 5,
+      },
+      userCommonsResponse: {
+        status: 200,
+        body: {
+          commonsId: 1,
+          id: 1,
+          totalWealth: 0,
+          userId: 1,
+        },
       },
       commonsAll: [
         {
@@ -684,5 +694,57 @@ describe("PlayPage tests", () => {
     expect(
       screen.queryByText("This announcement should not show."),
     ).not.toBeInTheDocument();
+  });
+
+  test("shows access denied message when a joined user is no longer enrolled in the linked course", async () => {
+    setupDefaultMocks({
+      currentUser: {
+        user: {
+          id: 1,
+          email: "pconrad.cis@gmail.com",
+          googleSub: "102656447703889917227",
+          pictureUrl:
+            "https://lh3.googleusercontent.com/a-/AOh14GhpDBUt8eCEqiRT45hrFbcimsX_h1ONn0dc3HV8Bp8=s96-c",
+          fullName: "Phil Conrad",
+          givenName: "Phil",
+          familyName: "Conrad",
+          emailVerified: true,
+          locale: "en",
+          hostedDomain: null,
+          admin: false,
+          commons: [
+            {
+              id: 1,
+              name: "Commons1",
+            },
+          ],
+        },
+        roles: [
+          {
+            authority: "ROLE_USER",
+          },
+        ],
+      },
+      userCommonsResponse: {
+        status: 403,
+        body: {
+          message: "Not enrolled in course associated with commons",
+        },
+      },
+    });
+
+    renderPage();
+
+    expect(
+      await screen.findByText(
+        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+      ),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.queryByText("You have yet to join this commons!"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("commonsPlay-title")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("ManageCows")).not.toBeInTheDocument();
   });
 });
