@@ -193,6 +193,46 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
+    public void test_getUserCommonsById_course_linked_commons_allows_current_enrollment() throws Exception {
+        testCommons.setCourseId(17L);
+        User currentUser = currentUserService.getUser();
+        UserCommons expectedUserCommons = getTestUserCommons();
+
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+        when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
+
+        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(commonsRepository, times(1)).findById(eq(1L));
+        verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
+        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+
+        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_getUserCommonsById_when_commons_does_not_exist() throws Exception {
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+                .andExpect(status().isNotFound()).andReturn();
+
+        verify(commonsRepository, times(1)).findById(eq(1L));
+        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
+
+        String expectedString = "{\"message\":\"Commons with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
     public void test_BuyCow_commons_exists_user_has_exact_amount_needed() throws Exception {
         // arrange
 
@@ -301,6 +341,36 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
+    public void test_BuyCow_course_linked_commons_allows_current_enrollment() throws Exception {
+        testCommons.setCourseId(17L);
+        User currentUser = currentUserService.getUser();
+
+        UserCommons origUserCommons = getTestUserCommons();
+        origUserCommons.setCowsBought(1);
+
+        UserCommons updatedUserCommons = getTestUserCommons();
+        updatedUserCommons.setNumOfCows(3);
+        updatedUserCommons.setTotalWealth(300 - (testCommons.getCowPrice() * 2));
+        updatedUserCommons.setCowsBought(3);
+
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+        when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+
+        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=2")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
+        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+
+        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedReturn, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
     public void test_sellCow_for_user_not_in_commons() throws Exception {
         when(commonsRepository.findById(234L)).thenReturn(Optional.of(testCommons));
         when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
@@ -337,6 +407,39 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_SellCow_course_linked_commons_allows_current_enrollment() throws Exception {
+        testCommons.setCourseId(17L);
+        User currentUser = currentUserService.getUser();
+
+        UserCommons origUserCommons = getTestUserCommons();
+        origUserCommons.setCowsSold(1);
+        origUserCommons.setCowHealth(50);
+        origUserCommons.setNumOfCows(2);
+
+        UserCommons updatedUserCommons = getTestUserCommons();
+        updatedUserCommons.setCowHealth(50);
+        updatedUserCommons.setTotalWealth(300 + (testCommons.getCowPrice() * 0.5 * 2));
+        updatedUserCommons.setNumOfCows(0);
+        updatedUserCommons.setCowsSold(3);
+
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+        when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+
+        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=2")
+                        .with(csrf()))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
+        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+
+        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedReturn, responseString);
     }
 
     @WithMockUser(roles = {"USER"})

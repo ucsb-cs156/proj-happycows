@@ -748,4 +748,85 @@ describe("PlayPage tests", () => {
     expect(screen.queryByTestId("commonsPlay-title")).not.toBeInTheDocument();
     expect(screen.queryByTestId("ManageCows")).not.toBeInTheDocument();
   });
+
+  test("does not show access denied message for unrelated 403 errors", async () => {
+    setupDefaultMocks({
+      currentUser: {
+        ...apiCurrentUserFixtures.userOnly,
+        user: {
+          ...apiCurrentUserFixtures.userOnly.user,
+          commons: [{ id: 1, name: "Commons1" }],
+        },
+      },
+      userCommonsResponse: {
+        status: 403,
+        body: {
+          message: "Forbidden",
+          type: "SomeOtherException",
+        },
+      },
+    });
+
+    renderPage();
+
+    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("does not show access denied message when the 403 error payload has no type", async () => {
+    setupDefaultMocks({
+      currentUser: {
+        ...apiCurrentUserFixtures.userOnly,
+        user: {
+          ...apiCurrentUserFixtures.userOnly.user,
+          commons: [{ id: 1, name: "Commons1" }],
+        },
+      },
+      userCommonsResponse: {
+        status: 403,
+        body: {},
+      },
+    });
+
+    renderPage();
+
+    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("does not show access denied message when the error type matches but the status is not 403", async () => {
+    setupDefaultMocks({
+      currentUser: {
+        ...apiCurrentUserFixtures.userOnly,
+        user: {
+          ...apiCurrentUserFixtures.userOnly.user,
+          commons: [{ id: 1, name: "Commons1" }],
+        },
+      },
+      userCommonsResponse: {
+        status: 404,
+        body: {
+          message: "Not enrolled in course associated with commons",
+          type: "NotEnrolledInCourseAssociatedWithCommonsException",
+        },
+      },
+    });
+
+    renderPage();
+
+    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+      ),
+    ).not.toBeInTheDocument();
+  });
 });
