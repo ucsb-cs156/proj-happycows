@@ -4,8 +4,8 @@ package edu.ucsb.cs156.happiercows.jobs;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.Builder;
 
 @Builder

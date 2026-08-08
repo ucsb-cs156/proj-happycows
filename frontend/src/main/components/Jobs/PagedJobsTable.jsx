@@ -19,10 +19,12 @@ const PagedJobsTable = () => {
     ["/api/jobs/all"],
     {
       method: "GET",
-      url: "/api/jobs/all/pageable",
+      url: "/api/jobs/paginated",
       params: {
         page: selectedPage,
-        size: pageSize,
+        pageSize: pageSize,
+        sortField: "id",
+        sortDirection: "DESC",
       },
     },
     { content: [], totalPages: 0 },

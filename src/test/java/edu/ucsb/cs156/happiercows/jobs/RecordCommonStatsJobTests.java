@@ -19,11 +19,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.entities.jobs.Job;
+import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContext;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
