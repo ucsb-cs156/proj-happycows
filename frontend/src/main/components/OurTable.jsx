@@ -21,10 +21,14 @@ export default function OurTable({
   columns,
   data,
   testid = "testid",
+  centered = true,
   ...rest
 }) {
   const [pageIndex, setPageIndex] = React.useState(0);
   const pageSize = rest.pageSize || 10;
+  const appliedTableStyle = centered
+    ? tableStyle
+    : { ...tableStyle, margin: "0" };
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable(
@@ -40,7 +44,13 @@ export default function OurTable({
 
   return (
     <div {...getTableProps()}>
-      <Table style={tableStyle} {...getTableProps()} striped bordered hover>
+      <Table
+        style={appliedTableStyle}
+        {...getTableProps()}
+        striped
+        bordered
+        hover
+      >
         <thead>
           {headerGroups.map((headerGroup) => {
             const { key: hgKey, ...hgProps } =

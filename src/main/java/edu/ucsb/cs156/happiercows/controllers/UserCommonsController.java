@@ -20,6 +20,8 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
 import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
+import edu.ucsb.cs156.happiercows.errors.NotEnrolledInCourseAssociatedWithCommonsException;
+import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +44,9 @@ public class UserCommonsController extends ApiController {
   @Autowired
   ObjectMapper mapper;
 
+  @Autowired
+  private CourseAccessService courseAccessService;
+
   @Operation(summary = "Get a specific user commons (admin only)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("")
@@ -63,6 +68,9 @@ public class UserCommonsController extends ApiController {
 
     User u = getCurrentUser().getUser();
     Long userId = u.getId();
+    Commons commons = commonsRepository.findById(commonsId)
+        .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+    ensureUserCanAccessCourseLinkedCommons(u, commons);
     UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
@@ -81,6 +89,8 @@ public class UserCommonsController extends ApiController {
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
           ()->new EntityNotFoundException(Commons.class, commonsId));
+
+        ensureUserCanAccessCourseLinkedCommons(u, commons);
 
         if (commons.isHidden()) {
           throw new CommonsHiddenException(commonsId);
@@ -115,6 +125,8 @@ public class UserCommonsController extends ApiController {
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
           ()->new EntityNotFoundException(Commons.class, commonsId));
+
+        ensureUserCanAccessCourseLinkedCommons(u, commons);
 
         if (commons.isHidden()) {
           throw new CommonsHiddenException(commonsId);
@@ -152,6 +164,12 @@ public class UserCommonsController extends ApiController {
    
     String body = mapper.writeValueAsString(uc);
     return ResponseEntity.ok().body(body);
+  }
+
+  private void ensureUserCanAccessCourseLinkedCommons(User user, Commons commons) {
+    if (commons.getCourseId() != null && !courseAccessService.isEligibleForCommons(user, commons)) {
+      throw new NotEnrolledInCourseAssociatedWithCommonsException();
+    }
   }
 
 }

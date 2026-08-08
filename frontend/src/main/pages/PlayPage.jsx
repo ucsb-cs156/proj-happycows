@@ -31,7 +31,7 @@ export default function PlayPage() {
   };
 
   // Stryker disable all
-  const { data: userCommons } = useBackend(
+  const { data: userCommons, error: userCommonsError } = useBackend(
     [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
     {
       method: "GET",
@@ -78,8 +78,18 @@ export default function PlayPage() {
     matched = commonsforuser.some((com) => com.id === commonsPlus.commons.id);
   }
 
-  const allowed = commonsPlusExists && matched && !commonsPlus.commons.hidden;
-  const notallowed = commonsPlusExists && !matched;
+  const userCommonsErrorResponse = userCommonsError?.response ?? {};
+  const userCommonsErrorData = userCommonsErrorResponse.data ?? {};
+  const deniedAccess =
+    userCommonsErrorResponse.status === 403 &&
+    userCommonsErrorData.type ===
+      "NotEnrolledInCourseAssociatedWithCommonsException";
+  const allowed =
+    commonsPlusExists &&
+    matched &&
+    !commonsPlus.commons.hidden &&
+    !deniedAccess;
+  const notallowed = commonsPlusExists && !matched && !deniedAccess;
   const hidden = commonsPlusExists && commonsPlus.commons.hidden;
 
   // Stryker disable all
@@ -183,6 +193,12 @@ export default function PlayPage() {
       <BasicLayout>
         <Container>
           {!commonsPlus && <h1>This commons does not exist!</h1>}
+          {deniedAccess && (
+            <h1>
+              You do not currently have access to this Commons. Please contact
+              your instructor if you think this is an error
+            </h1>
+          )}
           {notallowed && <h1>You have yet to join this commons!</h1>}
           {hidden && (
             <h1>This commons has been hidden by the site administrator.</h1>

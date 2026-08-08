@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Course;
+import edu.ucsb.cs156.happiercows.enums.School;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
@@ -11,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Tag(name = "Course")
@@ -31,6 +36,22 @@ public class CourseController extends ApiController {
     public Iterable<Course> allOrganisations() {
         Iterable<Course> courses = courseRepository.findAll();
         return courses;
+    }
+
+    /**
+     * The schools offered in the Course create/edit dropdown. Only "active"
+     * schools are returned; see {@link School} for schools kept in the
+     * codebase as examples but not yet offered to users.
+     *
+     * @return the list of active schools
+     */
+    @Operation(summary = "List the schools available for a course")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/schools")
+    public List<School> getActiveSchools() {
+        return Arrays.stream(School.values())
+                .filter(School::isActive)
+                .collect(Collectors.toList());
     }
 
     @Operation(summary = "Get a course by id")
@@ -63,7 +84,8 @@ public class CourseController extends ApiController {
 	course.setCode(courseDTO.getCode());
 	course.setName(courseDTO.getName());
 	course.setTerm(courseDTO.getTerm());
-	
+	course.setSchool(courseDTO.getSchool());
+
 	courseRepository.save(course);
 
 	return course;

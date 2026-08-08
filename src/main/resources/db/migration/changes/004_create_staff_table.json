@@ -1,0 +1,69 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "004-STAFF",
+        "author": "pconrad",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "tableExists": {
+                  "tableName": "STAFF"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "STAFF_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COURSE_ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "EMAIL",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "FIRST_MIDDLE_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "LAST_NAME",
+                    "type": "VARCHAR(255)"
+                  }
+                }
+              ],
+              "tableName": "STAFF"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

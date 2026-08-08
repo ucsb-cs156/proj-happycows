@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Course;
+import edu.ucsb.cs156.happiercows.enums.School;
 import edu.ucsb.cs156.happiercows.models.CourseDTO;
 import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -13,9 +14,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -312,5 +316,111 @@ public class CourseControllerTests extends ControllerTestCase {
     verify(courseRepository, times(1)).findById(67L);
     Map<String, Object> json = responseToJson(response);
     assertEquals("Course with id 67 not found", json.get("message"));
+  }
+
+  @Test
+  public void logged_out_users_cannot_get_schools() throws Exception {
+    mockMvc.perform(get("/api/course/schools"))
+        .andExpect(status().is(403));
+  }
+
+  @WithMockUser(roles = { "USER" })
+  @Test
+  public void logged_in_user_can_get_active_schools() throws Exception {
+    MvcResult response = mockMvc.perform(get("/api/course/schools"))
+        .andExpect(status().isOk()).andReturn();
+
+    List<School> expected = List.of(School.UCSB, School.OTHER);
+    String expectedJson = mapper.writeValueAsString(expected);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+
+    assertTrue(School.UCSB.isActive());
+    assertTrue(School.OTHER.isActive());
+    assertFalse(School.CHICO_STATE.isActive());
+  }
+
+  @WithMockUser(roles = { "ADMIN" })
+  @Test
+  public void admin_can_post_new_course_with_school() throws Exception {
+
+    CourseDTO courseDTO = CourseDTO.builder()
+            .code("CMPSC 156")
+            .name("Advanced App Programming")
+            .term("F24")
+            .school(School.UCSB)
+            .build();
+
+    Course course = Course.builder()
+            .code("CMPSC 156")
+            .name("Advanced App Programming")
+            .term("F24")
+            .school(School.UCSB)
+            .build();
+
+    Course savedCourse = Course.builder()
+            .id(123L)
+            .code("CMPSC 156")
+            .name("Advanced App Programming")
+            .term("F24")
+            .school(School.UCSB)
+            .build();
+
+    when(courseRepository.save(course)).thenReturn(savedCourse);
+
+    MvcResult response = mockMvc.perform(post("/api/course")
+            .with(csrf())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(mapper.writeValueAsString(courseDTO)))
+            .andExpect(status().isOk()).andReturn();
+
+    verify(courseRepository, times(1)).save(course);
+    String expectedJson = mapper.writeValueAsString(savedCourse);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(expectedJson, responseString);
+  }
+
+  @WithMockUser(roles = {"ADMIN", "USER"})
+  @Test
+  public void admin_can_edit_an_existing_course_school() throws Exception {
+    // arrange
+
+    Course courseOrig =
+        Course.builder()
+        .code("TC123")
+            .name("Test Post Course")
+            .term("s26")
+            .school(School.OTHER)
+            .build();
+
+    Course courseEdited =
+            Course.builder()
+            .code("TC1234")
+            .name("Test Post Course Edit")
+            .term("s27")
+            .school(School.UCSB)
+            .build();
+
+    String requestBody = mapper.writeValueAsString(courseEdited);
+
+    when(courseRepository.findById(eq(67L))).thenReturn(Optional.of(courseOrig));
+
+    // act
+    MvcResult response =
+        mockMvc
+            .perform(
+                put("/api/course/67")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    // assert
+    verify(courseRepository, times(1)).findById(67L);
+    verify(courseRepository, times(1)).save(courseEdited);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(requestBody, responseString);
   }
 }

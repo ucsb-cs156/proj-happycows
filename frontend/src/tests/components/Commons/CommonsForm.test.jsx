@@ -3,6 +3,7 @@ import { MemoryRouter as Router } from "react-router";
 import CommonsForm from "main/components/Commons/CommonsForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 import commonsFixtures from "fixtures/commonsFixtures";
+import coursesFixtures from "fixtures/coursesFixtures";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import healthUpdateStrategyListFixtures from "fixtures/healthUpdateStrategyListFixtures";
@@ -23,6 +24,7 @@ describe("CommonsForm tests", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);
   });
 
   it("renders correctly", async () => {

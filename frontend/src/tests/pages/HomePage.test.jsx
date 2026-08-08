@@ -32,6 +32,7 @@ describe("HomePage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
+    axiosMock.onGet("/api/commons/mycourses").reply(200, []);
   });
 
   test("renders without crashing when lists return empty list", async () => {
@@ -244,6 +245,83 @@ describe("HomePage tests", () => {
 
     expect(
       await screen.findByTestId("HomePage-intro-card"),
+    ).toBeInTheDocument();
+  });
+
+  test("hides a course-linked commons the user is not eligible for", async () => {
+    apiCurrentUserFixtures.userOnly.user.commons = [];
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 99 }]);
+    axiosMock.onGet("/api/commons/mycourses").reply(200, [5]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <HomePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByTestId("HomePage-intro-card");
+
+    expect(
+      screen.queryByTestId(
+        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("shows a course-linked commons the user is eligible for", async () => {
+    apiCurrentUserFixtures.userOnly.user.commons = [];
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.userOnly);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 5 }]);
+    axiosMock.onGet("/api/commons/mycourses").reply(200, [5]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <HomePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId(
+        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  test("shows a course-linked commons to an admin even when not on the roster", async () => {
+    apiCurrentUserFixtures.adminUser.user.commons = [];
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock
+      .onGet("/api/commons/all")
+      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 99 }]);
+    axiosMock.onGet("/api/commons/mycourses").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <HomePage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId(
+        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+      ),
     ).toBeInTheDocument();
   });
 });

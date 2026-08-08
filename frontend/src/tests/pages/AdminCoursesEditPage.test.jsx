@@ -6,6 +6,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
+import { schoolsFixtures } from "fixtures/schoolsFixtures";
 import { vi } from "vitest";
 
 const mockToast = vi.fn();
@@ -52,13 +53,18 @@ describe("AdminCoursesEditPage tests", () => {
         code: "CS156",
         name: "Computer Science 156",
         term: "s26",
+        school: { key: "OTHER", displayName: "Other", active: true },
       });
       axiosMock.onPut("/api/course/5").reply(200, {
         id: 5,
         code: "CS154",
         name: "Computer Science 154",
         term: "f26",
+        school: { key: "UCSB", displayName: "UCSB", active: true },
       });
+      axiosMock
+        .onGet("/api/course/schools")
+        .reply(200, schoolsFixtures.activeSchools);
     });
 
     const queryClient = new QueryClient();
@@ -90,6 +96,13 @@ describe("AdminCoursesEditPage tests", () => {
       expect(codeField).toHaveValue("CS156");
       expect(nameField).toHaveValue("Computer Science 156");
       expect(termField).toHaveValue("s26");
+
+      expect(
+        await screen.findByTestId("CoursesForm-school-UCSB"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("CoursesForm-school-OTHER"),
+      ).toBeInTheDocument();
     });
 
     test("Changes when you click Update", async () => {
@@ -121,6 +134,9 @@ describe("AdminCoursesEditPage tests", () => {
       });
       fireEvent.change(termField, { target: { value: "f26" } });
 
+      const schoolField = await screen.findByLabelText("School");
+      fireEvent.change(schoolField, { target: { value: "UCSB" } });
+
       fireEvent.click(submitButton);
 
       await waitFor(() => expect(mockToast).toHaveBeenCalled());
@@ -136,6 +152,7 @@ describe("AdminCoursesEditPage tests", () => {
           code: "CS154",
           name: "Computer Science 154",
           term: "f26",
+          school: "UCSB",
         }),
       ); // posted object
     });

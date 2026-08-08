@@ -32,6 +32,7 @@ export default function AdminCoursesEditPage() {
       code: course.code,
       name: course.name,
       term: course.term,
+      school: course.school,
     },
   });
 
