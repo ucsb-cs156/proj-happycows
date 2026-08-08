@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseAccessService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">CourseAccessService.java</span></div><h1>CourseAccessService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Staff;
+import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
+import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Determines whether a user has access to a course-linked Commons, based on
+ * whether their email appears on the roster (as a Student or Staff member)
+ * of the course the Commons is linked to. See issue #251.
+ */
+@Service
+<span class="fc" id="L21">public class CourseAccessService {</span>
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+    /**
+     * A user is eligible for a course-linked commons if they are an admin, or
+     * if their email appears on the course's roster of students or staff.
+     * A commons with no course (courseId == null) is open to everyone.
+     */
+    public boolean isEligibleForCommons(User user, Commons commons) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        if (commons.getCourseId() == null) {</span>
+<span class="fc" id="L36">            return true;</span>
+        }
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (user.isAdmin()) {</span>
+<span class="fc" id="L39">            return true;</span>
+        }
+<span class="fc" id="L41">        return getCourseIdsForUser(user).contains(commons.getCourseId());</span>
+    }
+
+    /**
+     * Returns the distinct list of course ids for which this user's email
+     * appears on the roster as a student or as staff.
+     */
+    public List&lt;Long&gt; getCourseIdsForUser(User user) {
+<span class="fc" id="L49">        List&lt;Long&gt; courseIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L50">        String email = user.getEmail();</span>
+
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        for (Student student : studentRepository.findByEmail(email)) {</span>
+<span class="fc bfc" id="L53" title="All 4 branches covered.">            if (student.getCourseId() != null &amp;&amp; !courseIds.contains(student.getCourseId())) {</span>
+<span class="fc" id="L54">                courseIds.add(student.getCourseId());</span>
+            }
+<span class="fc" id="L56">        }</span>
+
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        for (Staff staff : staffRepository.findByEmail(email)) {</span>
+<span class="fc bfc" id="L59" title="All 4 branches covered.">            if (staff.getCourseId() != null &amp;&amp; !courseIds.contains(staff.getCourseId())) {</span>
+<span class="fc" id="L60">                courseIds.add(staff.getCourseId());</span>
+            }
+<span class="fc" id="L62">        }</span>
+
+<span class="fc" id="L64">        return courseIds;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
