@@ -2,16 +2,47 @@
   "databaseChangeLog": [
     {
       "changeSet": {
-        "id": "004-migrate-jobs-to-lib-jobs",
+        "id": "004-migrate-jobs-to-lib-jobs-drop-fk",
         "author": "pc",
-        "comment": "Migrate the jobs table to the lib-jobs library schema: creator denormalized to created_by_email (no backfill; UI tolerates null), and generic scope_type/scope_id columns added (unused by this app today; see lib-jobs DESIGN.md 3.4/3.7)",
+        "comment": "Migrate the jobs table to the lib-jobs library schema: drop the FK from jobs.created_by_id to users, since lib-jobs denormalizes the creator to created_by_email instead. Guarded by a precondition since some environments' jobs table was never created with this constraint under this name.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "jobs",
+              "foreignKeyName": "FK_JOBS_USERS"
+            }
+          }
+        ],
         "changes": [
           {
             "dropForeignKeyConstraint": {
               "baseTableName": "jobs",
               "constraintName": "FK_JOBS_USERS"
             }
-          },
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "004-migrate-jobs-to-lib-jobs-add-columns",
+        "author": "pc",
+        "comment": "Migrate the jobs table to the lib-jobs library schema: creator denormalized to created_by_email (no backfill; UI tolerates null), and generic scope_type/scope_id columns added (unused by this app today; see lib-jobs DESIGN.md 3.4/3.7)",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "jobs",
+                  "columnName": "created_by_email"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
           {
             "addColumn": {
               "tableName": "jobs",
