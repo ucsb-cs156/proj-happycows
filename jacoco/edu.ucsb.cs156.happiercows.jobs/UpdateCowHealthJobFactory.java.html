@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContextConsumer;
+import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import lombok.extern.slf4j.Slf4j;
 

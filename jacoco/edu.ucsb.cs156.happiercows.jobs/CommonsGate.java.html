@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.services.jobs.JobContext;
+import edu.ucsb.cs156.jobs.services.JobContext;
 
 /**
  * A shared gate used by every job (scheduled or on demand) that operates on a
