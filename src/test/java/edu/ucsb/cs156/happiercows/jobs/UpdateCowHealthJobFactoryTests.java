@@ -11,7 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
@@ -23,7 +23,7 @@ public class UpdateCowHealthJobFactoryTests extends JobTestCase {
     CommonsRepository commonsRepository;
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -42,7 +42,7 @@ public class UpdateCowHealthJobFactoryTests extends JobTestCase {
 
         // Assert
         assertEquals(commonsRepository,updateCowHealthJob.getCommonsRepository());
-        assertEquals(userCommonsRepository,updateCowHealthJob.getUserCommonsRepository());
+        assertEquals(farmerRepository,updateCowHealthJob.getFarmerRepository());
         assertEquals(userRepository,updateCowHealthJob.getUserRepository());
 
     }

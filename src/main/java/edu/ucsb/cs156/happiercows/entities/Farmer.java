@@ -13,12 +13,12 @@ import jakarta.persistence.MapsId;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Entity(name = "user_commons")
-public class UserCommons {
+@Entity(name = "farmer")
+public class Farmer {
     @EmbeddedId
     @JsonIgnore
     @Builder.Default
-    private UserCommonsKey id = new UserCommonsKey();
+    private FarmerKey id = new FarmerKey();
 
     @MapsId("userId")
     @ManyToOne
@@ -55,11 +55,11 @@ public class UserCommons {
         return commons.getId();
     }
 
-    public void setId(UserCommonsKey id) {
+    public void setId(FarmerKey id) {
         this.id = id;
     }
     
-    public UserCommonsKey getId() {
+    public FarmerKey getId() {
         return this.id;
     }
 }

@@ -26,11 +26,11 @@ const ChatDisplay = ({ commonsId }) => {
     { refetchInterval: refreshRate },
   );
 
-  const { data: userCommonsList } = useBackend(
-    [`/api/usercommons/commons/all`],
+  const { data: farmerList } = useBackend(
+    [`/api/farmer/commons/all`],
     {
       method: "GET",
-      url: "/api/usercommons/commons/all",
+      url: "/api/farmer/commons/all",
       params: {
         commonsId: commonsId,
       },
@@ -46,8 +46,8 @@ const ChatDisplay = ({ commonsId }) => {
     ? [...messageContent].sort((a, b) => b.id - a.id)
     : null;
 
-  const userIdToUsername = Array.isArray(userCommonsList)
-    ? userCommonsList.reduce((acc, user) => {
+  const userIdToUsername = Array.isArray(farmerList)
+    ? farmerList.reduce((acc, user) => {
         acc[user.userId] = user.username || "";
         return acc;
       }, {})

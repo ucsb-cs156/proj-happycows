@@ -2,10 +2,10 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -19,7 +19,7 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
@@ -45,10 +45,10 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
             double milkPrice = commonMilked.getMilkPrice();
             ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));
 
-            Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonMilked.getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonMilked.getId());
 
-            for (UserCommons userCommons : allUserCommons) {
-                MilkTheCowsJob.milkCows(ctx, commonMilked, userCommons, profitRepository, userCommonsRepository);
+            for (Farmer farmer : allFarmer) {
+                MilkTheCowsJob.milkCows(ctx, commonMilked, farmer, profitRepository, farmerRepository);
             }
             
 

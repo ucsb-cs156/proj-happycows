@@ -1,7 +1,7 @@
 package edu.ucsb.cs156.happiercows.strategies;
 
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     Linear("Linear",
             "Cow health increases/decreases proportionally to the number of cows over/under the carrying capacity.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
             return uC.getCowHealth()
                     - (totalCows - commonsPlus.getEffectiveCapacity()) * commonsPlus.getCommons().getDegradationRate();
         }
@@ -32,7 +32,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     Constant("Constant",
             "Cow health changes increases/decreases by the degradation rate, depending on if the number of cows exceeds the carrying capacity.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
             if (totalCows <= commonsPlus.getEffectiveCapacity()) {
                 return uC.getCowHealth() + commonsPlus.getCommons().getDegradationRate();
             } else {
@@ -42,14 +42,14 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     },
     Noop("Do nothing", "Cow health does not change.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
             return uC.getCowHealth();
         }
     },
     Milan("Milan",
             "Cow health increases/decreases proportionally to the square of ratio of cows/total capacity according to a formula from Milan de Vries.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
             double excess = totalCows - commonsPlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;
             double x = (excess / commonsPlus.getEffectiveCapacity());
@@ -64,7 +64,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     Mattanjah("Mattanjah",
             "Cow health increases/decreases proportionally to the square of ratio of excess/total capacity * degradation rate according to a formula from Mattanjah de Vries.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 
             double excess = totalCows - commonsPlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;

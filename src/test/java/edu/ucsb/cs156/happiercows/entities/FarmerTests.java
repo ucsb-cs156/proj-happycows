@@ -7,12 +7,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UserCommonsTests {
+public class FarmerTests {
 
     @Test
-    void userCommons_serialized_to_json_includes_user_and_commons_id() {
+    void farmer_serialized_to_json_includes_user_and_commons_id() {
         var objectMapper = new ObjectMapper();
-        var userCommons = UserCommons.builder()
+        var farmer = Farmer.builder()
                 .commons(Commons.builder().id(5).build())
                 .user(User.builder().id(10).build())
                 .cowHealth(50)
@@ -20,16 +20,16 @@ public class UserCommonsTests {
                 .build();
 
         // equivalent to serializing to json, then deserializing back to a map
-        Map<String, Object> asMap = objectMapper.convertValue(userCommons, Map.class);
+        Map<String, Object> asMap = objectMapper.convertValue(farmer, Map.class);
 
         assertEquals(5L, asMap.get("commonsId"));
         assertEquals(10L, asMap.get("userId"));
     }
 
     @Test
-    void userCommons_setId() {
+    void farmer_setId() {
         // arrange
-        var userCommons = UserCommons.builder()
+        var farmer = Farmer.builder()
                 .commons(Commons.builder().id(5L).build())
                 .user(User.builder().id(10L).build())
                 .cowHealth(50)
@@ -38,11 +38,11 @@ public class UserCommonsTests {
         
         // act 
 
-        var newUserCommonsKey = new UserCommonsKey(20L, 30L);
-        userCommons.setId(newUserCommonsKey);
+        var newFarmerKey = new FarmerKey(20L, 30L);
+        farmer.setId(newFarmerKey);
         
         // assert again
-        assertEquals(newUserCommonsKey, userCommons.getId());
+        assertEquals(newFarmerKey, farmer.getId());
 
     }
 }

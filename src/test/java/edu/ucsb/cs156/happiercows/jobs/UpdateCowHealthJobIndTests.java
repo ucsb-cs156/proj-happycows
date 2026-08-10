@@ -4,10 +4,10 @@ import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -38,7 +38,7 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
         CommonsRepository commonsRepository;
 
         @Mock
-        UserCommonsRepository userCommonsRepository;
+        FarmerRepository farmerRepository;
 
         @Mock
         UserRepository userRepository;
@@ -78,7 +78,7 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
                         .totalUsers(1)
                         .build();
 
-        private final UserCommons userCommons = UserCommons
+        private final Farmer farmer = Farmer
                         .builder()
                         .user(user)
                         .commons(commons)
@@ -91,7 +91,7 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
         private final JobContext ctx = new JobContext(null, job);
 
         private void runUpdateCowHealthJob() throws Exception {
-                var updateCowHealthJobInd = new UpdateCowHealthJobInd(commonsRepository, userCommonsRepository,
+                var updateCowHealthJobInd = new UpdateCowHealthJobInd(commonsRepository, farmerRepository,
                                 userRepository, commonsPlusBuilderService, 1L);
                 updateCowHealthJobInd.accept(ctx);
         }
@@ -117,7 +117,7 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
         commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
 
         when(commonsRepository.findAll()).thenReturn(listOfCommons);
-        when(userCommonsRepository.findByCommonsId(commons.getId())).thenReturn(List.of(userCommons));
+        when(farmerRepository.findByCommonsId(commons.getId())).thenReturn(List.of(farmer));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(1));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
@@ -162,7 +162,7 @@ public class UpdateCowHealthJobIndTests extends JobTestCase {
 
     @Test
     void commons_id_getter_returns_value_from_constructor() {
-        UpdateCowHealthJobInd jobInd = new UpdateCowHealthJobInd(commonsRepository, userCommonsRepository,
+        UpdateCowHealthJobInd jobInd = new UpdateCowHealthJobInd(commonsRepository, farmerRepository,
                 userRepository, commonsPlusBuilderService, 17L);
 
         assertEquals(17L, jobInd.getCommonsID());

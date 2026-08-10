@@ -34,7 +34,7 @@ describe("PlayPage tests", () => {
   let queryClient;
   let currentAnnouncements;
 
-  const defaultUserCommons = {
+  const defaultFarmer = {
     commonsId: 1,
     id: 1,
     totalWealth: 0,
@@ -56,7 +56,7 @@ describe("PlayPage tests", () => {
   const setupDefaultMocks = ({
     currentUser = apiCurrentUserFixtures.userOnly,
     systemInfo = systemInfoFixtures.showingNeither,
-    userCommonsResponse = { status: 200, body: defaultUserCommons },
+    farmerResponse = { status: 200, body: defaultFarmer },
     commonsPlus = defaultCommonsPlus,
     commonsAll = [
       {
@@ -74,10 +74,10 @@ describe("PlayPage tests", () => {
     axiosMock.onGet("/api/systemInfo").reply(200, systemInfo);
 
     axiosMock
-      .onGet("/api/usercommons/forcurrentuser", {
+      .onGet("/api/farmer/forcurrentuser", {
         params: { commonsId: 1 },
       })
-      .reply(userCommonsResponse.status, userCommonsResponse.body);
+      .reply(farmerResponse.status, farmerResponse.body);
 
     axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
       id: 1,
@@ -98,12 +98,8 @@ describe("PlayPage tests", () => {
 
     axiosMock.onGet("/api/profits/all/commonsid").reply(200, []);
 
-    axiosMock
-      .onPut("/api/usercommons/sell")
-      .reply(200, userCommonsResponse.body);
-    axiosMock
-      .onPut("/api/usercommons/buy")
-      .reply(200, userCommonsResponse.body);
+    axiosMock.onPut("/api/farmer/sell").reply(200, farmerResponse.body);
+    axiosMock.onPut("/api/farmer/buy").reply(200, farmerResponse.body);
   };
 
   const renderPage = () => {
@@ -374,7 +370,7 @@ describe("PlayPage tests", () => {
         totalPlayers: 5,
         totalCows: 5,
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 200,
         body: {
           commonsId: 1,
@@ -414,7 +410,7 @@ describe("PlayPage tests", () => {
         totalPlayers: 5,
         totalCows: 5,
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 200,
         body: {
           commonsId: 1,
@@ -723,7 +719,7 @@ describe("PlayPage tests", () => {
           },
         ],
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 403,
         body: {
           message: "Not enrolled in course associated with commons",
@@ -756,7 +752,7 @@ describe("PlayPage tests", () => {
           commons: [{ id: 1, name: "Commons1" }],
         },
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 403,
         body: {
           message: "Forbidden",
@@ -784,7 +780,7 @@ describe("PlayPage tests", () => {
           commons: [{ id: 1, name: "Commons1" }],
         },
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 403,
         body: {},
       },
@@ -809,7 +805,7 @@ describe("PlayPage tests", () => {
           commons: [{ id: 1, name: "Commons1" }],
         },
       },
-      userCommonsResponse: {
+      farmerResponse: {
         status: 404,
         body: {
           message: "Not enrolled in course associated with commons",

@@ -19,9 +19,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
@@ -36,7 +36,7 @@ public class CommonsPlusBuilderServiceTests {
     CommonsRepository commonsRepository;
 
     @MockitoBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Autowired
     CommonsPlusBuilderService commonsPlusBuilderService;
@@ -72,12 +72,12 @@ public class CommonsPlusBuilderServiceTests {
     void test_toCommonsPlus() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(200));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
-        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
-                UserCommons.builder().numOfCows(10).build(),
-                UserCommons.builder().numOfCows(20).build(),
-                UserCommons.builder().numOfCows(30).build(),
-                UserCommons.builder().numOfCows(40).build(),
-                UserCommons.builder().numOfCows(100).build()));
+        when(farmerRepository.findByCommonsId(17L)).thenReturn(List.of(
+                Farmer.builder().numOfCows(10).build(),
+                Farmer.builder().numOfCows(20).build(),
+                Farmer.builder().numOfCows(30).build(),
+                Farmer.builder().numOfCows(40).build(),
+                Farmer.builder().numOfCows(100).build()));
         CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
         assertEquals(commonsPlus, this.commonsPlus);
     }
@@ -86,13 +86,13 @@ public class CommonsPlusBuilderServiceTests {
     void test_toCommonsPlus_median_when_numUsers_is_even_and_users_are_unsorted() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(21));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(6));
-        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
-                UserCommons.builder().numOfCows(1).build(),
-                UserCommons.builder().numOfCows(4).build(),
-                UserCommons.builder().numOfCows(2).build(),
-                UserCommons.builder().numOfCows(3).build(),
-                UserCommons.builder().numOfCows(5).build(),
-                UserCommons.builder().numOfCows(6).build()));
+        when(farmerRepository.findByCommonsId(17L)).thenReturn(List.of(
+                Farmer.builder().numOfCows(1).build(),
+                Farmer.builder().numOfCows(4).build(),
+                Farmer.builder().numOfCows(2).build(),
+                Farmer.builder().numOfCows(3).build(),
+                Farmer.builder().numOfCows(5).build(),
+                Farmer.builder().numOfCows(6).build()));
 
         CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
         assertEquals(3.5, commonsPlus.getMedianCowsPerFarmer());
@@ -102,13 +102,13 @@ public class CommonsPlusBuilderServiceTests {
     void test_toCommonsPlus_median_when_users_are_unsorted() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(21));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(6));
-        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
-                UserCommons.builder().numOfCows(3).build(),
-                UserCommons.builder().numOfCows(1).build(),
-                UserCommons.builder().numOfCows(5).build(),
-                UserCommons.builder().numOfCows(2).build(),
-                UserCommons.builder().numOfCows(4).build(),
-                UserCommons.builder().numOfCows(6).build()));
+        when(farmerRepository.findByCommonsId(17L)).thenReturn(List.of(
+                Farmer.builder().numOfCows(3).build(),
+                Farmer.builder().numOfCows(1).build(),
+                Farmer.builder().numOfCows(5).build(),
+                Farmer.builder().numOfCows(2).build(),
+                Farmer.builder().numOfCows(4).build(),
+                Farmer.builder().numOfCows(6).build()));
 
         CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
         assertEquals(3.5, commonsPlus.getMedianCowsPerFarmer());
@@ -118,12 +118,12 @@ public class CommonsPlusBuilderServiceTests {
     void test_convertToCommonsPlus() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.of(200));
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
-        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of(
-                UserCommons.builder().numOfCows(10).build(),
-                UserCommons.builder().numOfCows(20).build(),
-                UserCommons.builder().numOfCows(30).build(),
-                UserCommons.builder().numOfCows(40).build(),
-                UserCommons.builder().numOfCows(100).build()));
+        when(farmerRepository.findByCommonsId(17L)).thenReturn(List.of(
+                Farmer.builder().numOfCows(10).build(),
+                Farmer.builder().numOfCows(20).build(),
+                Farmer.builder().numOfCows(30).build(),
+                Farmer.builder().numOfCows(40).build(),
+                Farmer.builder().numOfCows(100).build()));
         Iterable<CommonsPlus> commonsPlusIterable = commonsPlusBuilderService
                 .convertToCommonsPlus(Arrays.asList(commons));
         CommonsPlus commonsPlus = commonsPlusIterable.iterator().next();
@@ -134,7 +134,7 @@ public class CommonsPlusBuilderServiceTests {
     void test_toCommonsPlus_withNoFarmers() {
         when(commonsRepository.getNumCows(17L)).thenReturn(Optional.empty());
         when(commonsRepository.getNumUsers(17L)).thenReturn(Optional.empty());
-        when(userCommonsRepository.findByCommonsId(17L)).thenReturn(List.of());
+        when(farmerRepository.findByCommonsId(17L)).thenReturn(List.of());
 
         CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commons);
 

@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service("ReportService")
 public class ReportService {
@@ -25,16 +25,16 @@ public class ReportService {
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     public Report createReport(Long commonsId) {
         Report report = createAndSaveReportHeader(commonsId);
         
-        Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commonsId);
+        Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonsId);
 
 
-        for (UserCommons userCommons : allUserCommons) {
-               createAndSaveReportLine(report, userCommons);
+        for (Farmer farmer : allFarmer) {
+               createAndSaveReportLine(report, farmer);
         }
 
         return report;
@@ -66,17 +66,17 @@ public class ReportService {
         return report;
     }
 
-    public ReportLine createAndSaveReportLine(Report report, UserCommons userCommons) {
+    public ReportLine createAndSaveReportLine(Report report, Farmer farmer) {
         ReportLine reportLine = ReportLine.builder()
                 .reportId(report.getId())
-                .userId(userCommons.getUser().getId())
-                .username(userCommons.getUsername())
-                .totalWealth(userCommons.getTotalWealth())
-                .numOfCows(userCommons.getNumOfCows())
-                .avgCowHealth(userCommons.getCowHealth())
-                .cowsBought(userCommons.getCowsBought())
-                .cowsSold(userCommons.getCowsSold())
-                .cowDeaths(userCommons.getCowDeaths())
+                .userId(farmer.getUser().getId())
+                .username(farmer.getUsername())
+                .totalWealth(farmer.getTotalWealth())
+                .numOfCows(farmer.getNumOfCows())
+                .avgCowHealth(farmer.getCowHealth())
+                .cowsBought(farmer.getCowsBought())
+                .cowsSold(farmer.getCowsSold())
+                .cowDeaths(farmer.getCowDeaths())
                 .build();
 
         reportLineRepository.save(reportLine);

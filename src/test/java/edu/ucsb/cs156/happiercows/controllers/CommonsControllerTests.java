@@ -41,13 +41,13 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
@@ -57,7 +57,7 @@ import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 public class CommonsControllerTests extends ControllerTestCase {
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -958,7 +958,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .name("Example Commons")
                 .build();
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(c)
                 .username("Fake user")
@@ -970,16 +970,16 @@ public class CommonsControllerTests extends ControllerTestCase {
         
 
         
-        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
-        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+        when(farmerRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(farmerRepository.save(eq(uc))).thenReturn(uc);
         when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
 
         MvcResult response = mockMvc
                 .perform(post("/api/commons/join?commonsId=2").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
-        verify(userCommonsRepository, times(1)).save(uc);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).save(uc);
 
         
         String responseString = response.getResponse().getContentAsString();
@@ -997,7 +997,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .name("Example Commons")
                 .build();
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(c)
                 .username("1L")
@@ -1009,8 +1009,8 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         // Instead of returning empty, we instead say that it already exists. We
         // shouldn't create a new entry.
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(uc));
-        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(uc));
+        when(farmerRepository.save(eq(uc))).thenReturn(uc);
 
         when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
 
@@ -1019,7 +1019,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                         .characterEncoding("utf-8").content(requestBody))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
 
         String responseString = response.getResponse().getContentAsString();
         String cAsJson = mapper.writeValueAsString(c);
@@ -1066,7 +1066,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().isBadRequest()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(currentUser, c);
-        verify(userCommonsRepository, times(0)).save(any());
+        verify(farmerRepository, times(0)).save(any());
 
         Map<String, Object> responseMap = responseToJson(response);
         assertEquals("CourseAccessDeniedException", responseMap.get("type"));
@@ -1087,7 +1087,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .courseId(5L)
                 .build();
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(currentUser)
                 .commons(c)
                 .username("Fake user")
@@ -1098,15 +1098,15 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(c))).thenReturn(true);
-        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
-        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+        when(farmerRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(farmerRepository.save(eq(uc))).thenReturn(uc);
 
         MvcResult response = mockMvc
                 .perform(post("/api/commons/join?commonsId=2").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(currentUser, c);
-        verify(userCommonsRepository, times(1)).save(uc);
+        verify(farmerRepository, times(1)).save(uc);
 
         String responseString = response.getResponse().getContentAsString();
         String cAsJson = mapper.writeValueAsString(c);
@@ -1122,7 +1122,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .name("Example Commons")
                 .build();
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(c)
                 .username("Fake user")
@@ -1132,8 +1132,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .build();
 
         when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
-        when(userCommonsRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
-        when(userCommonsRepository.save(eq(uc))).thenReturn(uc);
+        when(farmerRepository.findByCommonsIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+        when(farmerRepository.save(eq(uc))).thenReturn(uc);
 
         mockMvc.perform(post("/api/commons/join?commonsId=2").with(csrf()))
                 .andExpect(status().isOk());
@@ -1184,7 +1184,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .carryingCapacity(100)
                 .build();
 
-        UserCommons uc1 = UserCommons.builder()
+        Farmer uc1 = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(c)
                 .username("1L")
@@ -1192,7 +1192,7 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .numOfCows(1)
                 .build();
 
-        UserCommons uc2 = UserCommons.builder()
+        Farmer uc2 = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(c)
                 .username("3L")
@@ -1200,12 +1200,12 @@ public class CommonsControllerTests extends ControllerTestCase {
                 .numOfCows(1)
                 .build();
 
-        List<UserCommons> userCommons = new ArrayList<>();
-        userCommons.add(uc1);
-        userCommons.add(uc2);
+        List<Farmer> farmer = new ArrayList<>();
+        farmer.add(uc1);
+        farmer.add(uc2);
 
         when(commonsRepository.findById(eq(2L))).thenReturn(Optional.of(c));
-        when(userCommonsRepository.findByCommonsId(2L)).thenReturn(userCommons);
+        when(farmerRepository.findByCommonsId(2L)).thenReturn(farmer);
         doNothing().when(commonsRepository).deleteById(2L);
 
         MvcResult response = mockMvc.perform(
@@ -1216,9 +1216,9 @@ public class CommonsControllerTests extends ControllerTestCase {
         verify(commonsRepository, times(1)).findById(2L);
         verify(commonsRepository, times(1)).deleteById(2L);
 
-        verify(userCommonsRepository, times(1)).findByCommonsId(2L);
-        verify(userCommonsRepository, times(1)).delete(uc1);
-        verify(userCommonsRepository, times(1)).delete(uc2);
+        verify(farmerRepository, times(1)).findByCommonsId(2L);
+        verify(farmerRepository, times(1)).delete(uc1);
+        verify(farmerRepository, times(1)).delete(uc2);
 
         String responseString = response.getResponse().getContentAsString();
 
@@ -1256,7 +1256,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         .name("Example Commons")
         .build();
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(Commons.builder().id(1).build())
                 .username("1L")
@@ -1267,7 +1267,7 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         String requestBody = mapper.writeValueAsString(uc);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(uc));
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(uc));
         when(commonsRepository.findById(2L)).thenReturn(Optional.of(c));
         when(commonsRepository.getNumUsers(2L)).thenReturn(Optional.of(0));
 
@@ -1276,8 +1276,8 @@ public class CommonsControllerTests extends ControllerTestCase {
                         .characterEncoding("utf-8").content(requestBody))
                 .andExpect(status().is(200)).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
-        verify(userCommonsRepository, times(1)).delete(uc);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).delete(uc);
 
         String responseString = response.getResponse().getContentAsString();
         String expectedString = "{\"message\":\"user with id 1 deleted from game with id 2, 0 users remain\"}";
@@ -1290,7 +1290,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     public void deleteUserFromCommons_when_not_joined() throws Exception {
 
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.empty());
 
         mockMvc
                 .perform(delete("/api/commons/2/users/1").with(csrf()))
@@ -1756,26 +1756,26 @@ public class CommonsControllerTests extends ControllerTestCase {
     public void getNumCowsForCommonsId_user_multiple_farmers() throws Exception {
         Commons c = Commons.builder().id(1L).name("Test Commons").build();
 
-        UserCommons uc1 = UserCommons.builder()
+        Farmer uc1 = Farmer.builder()
                 .commons(c)
                 .numOfCows(3)
                 .build();
 
-        UserCommons uc2 = UserCommons.builder()
+        Farmer uc2 = Farmer.builder()
                 .commons(c)
                 .numOfCows(7)
                 .build();
 
-        List<UserCommons> userCommonsList = new ArrayList<>();
-        userCommonsList.add(uc1);
-        userCommonsList.add(uc2);
+        List<Farmer> farmerList = new ArrayList<>();
+        farmerList.add(uc1);
+        farmerList.add(uc2);
 
-        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(userCommonsList);
+        when(farmerRepository.findByCommonsId(eq(1L))).thenReturn(farmerList);
 
         MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsId(eq(1L));
 
         String responseString = response.getResponse().getContentAsString();
         List<Integer> actual = objectMapper.readValue(responseString, new TypeReference<List<Integer>>() {});
@@ -1786,12 +1786,12 @@ public class CommonsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void getNumCowsForCommonsId_user_no_farmers() throws Exception {
-        when(userCommonsRepository.findByCommonsId(eq(2L))).thenReturn(new ArrayList<>());
+        when(farmerRepository.findByCommonsId(eq(2L))).thenReturn(new ArrayList<>());
 
         MvcResult response = mockMvc.perform(get("/api/commons/numcows?commonsId=2"))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsId(eq(2L));
+        verify(farmerRepository, times(1)).findByCommonsId(eq(2L));
 
         String responseString = response.getResponse().getContentAsString();
         List<Integer> actual = objectMapper.readValue(responseString, new TypeReference<List<Integer>>() {});
@@ -1903,7 +1903,7 @@ public class CommonsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void getNumCowsForCommonsId_user_ok() throws Exception {
-        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(new ArrayList<>());
+        when(farmerRepository.findByCommonsId(eq(1L))).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/api/commons/numcows?commonsId=1"))
                 .andExpect(status().isOk()).andReturn();

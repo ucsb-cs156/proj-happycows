@@ -1,5 +1,5 @@
 const leaderboardFixtures = {
-  oneUserCommonsLB: [
+  oneFarmerLB: [
     {
       id: 1,
       userId: 1,
@@ -12,7 +12,7 @@ const leaderboardFixtures = {
       cowDeaths: 5,
     },
   ],
-  threeUserCommonsLB: [
+  threeFarmerLB: [
     {
       id: 1,
       userId: 1,
@@ -47,7 +47,7 @@ const leaderboardFixtures = {
       cowDeaths: 1000,
     },
   ],
-  fiveUserCommonsLB: [
+  fiveFarmerLB: [
     {
       id: 1,
       userId: 1,
@@ -108,7 +108,7 @@ const leaderboardFixtures = {
       cowDeaths: 60,
     },
   ],
-  tenUserCommonsLB: [
+  tenFarmerLB: [
     {
       id: 1,
       userId: 1,

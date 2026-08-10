@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service("CommonsPlusBuilderService")
 public class CommonsPlusBuilderService {
@@ -21,13 +21,13 @@ public class CommonsPlusBuilderService {
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     public CommonsPlus toCommonsPlus(Commons c) {
         Optional<Integer> numCows = commonsRepository.getNumCows(c.getId());
         Optional<Integer> numUsers = commonsRepository.getNumUsers(c.getId());
         List<Integer> cowsPerFarmer = new ArrayList<>();
-        userCommonsRepository.findByCommonsId(c.getId())
+        farmerRepository.findByCommonsId(c.getId())
                 .forEach((uc) -> cowsPerFarmer.add(uc.getNumOfCows()));
 
         cowsPerFarmer.sort(Comparator.naturalOrder());

@@ -3,7 +3,7 @@ import { http, HttpResponse } from "msw";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
 import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 
 export default {
   title: "components/Chat/ChatDisplay",
@@ -26,7 +26,7 @@ Empty.parameters = {
       return HttpResponse.json({ content: [] }, { status: 200 });
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
+    http.get("/api/farmer/all?commonsId=1", () => {
       return HttpResponse.json([], { status: 200 });
     }),
   ],
@@ -50,8 +50,8 @@ OneMessage.parameters = {
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
-      return HttpResponse.json(userCommonsFixtures.oneUserCommons, {
+    http.get("/api/farmer/all?commonsId=1", () => {
+      return HttpResponse.json(farmerFixtures.oneFarmer, {
         status: 200,
       });
     }),
@@ -76,8 +76,8 @@ ThreeMessages.parameters = {
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
-      return HttpResponse.json(userCommonsFixtures.threeUserCommons, {
+    http.get("/api/farmer/all?commonsId=1", () => {
+      return HttpResponse.json(farmerFixtures.threeFarmer, {
         status: 200,
       });
     }),
@@ -102,8 +102,8 @@ TwelveMessages.parameters = {
       );
     }),
 
-    http.get("/api/usercommons/all?commonsId=1", () => {
-      return HttpResponse.json(userCommonsFixtures.tenUserCommons, {
+    http.get("/api/farmer/all?commonsId=1", () => {
+      return HttpResponse.json(farmerFixtures.tenFarmer, {
         status: 200,
       });
     }),

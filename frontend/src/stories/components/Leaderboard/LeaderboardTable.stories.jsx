@@ -19,40 +19,40 @@ Empty.args = {
   leaderboardUsers: [],
 };
 
-export const OneUserCommons = Template.bind({});
+export const OneFarmer = Template.bind({});
 
-OneUserCommons.args = {
-  leaderboardUsers: leaderboardFixtures.oneUserCommonsLB,
+OneFarmer.args = {
+  leaderboardUsers: leaderboardFixtures.oneFarmerLB,
 };
 
-export const ThreeUserCommons = Template.bind({});
+export const ThreeFarmer = Template.bind({});
 
-ThreeUserCommons.args = {
-  leaderboardUsers: leaderboardFixtures.threeUserCommonsLB,
+ThreeFarmer.args = {
+  leaderboardUsers: leaderboardFixtures.threeFarmerLB,
 };
 
-export const ThreeUserCommonsAdmin = Template.bind({});
+export const ThreeFarmerAdmin = Template.bind({});
 
-ThreeUserCommonsAdmin.args = {
-  leaderboardUsers: leaderboardFixtures.threeUserCommonsLB,
+ThreeFarmerAdmin.args = {
+  leaderboardUsers: leaderboardFixtures.threeFarmerLB,
   currentUser: currentUserFixtures.adminUser,
 };
 
-export const FiveUserCommons = Template.bind({});
+export const FiveFarmer = Template.bind({});
 
-FiveUserCommons.args = {
-  leaderboardUsers: leaderboardFixtures.fiveUserCommonsLB,
+FiveFarmer.args = {
+  leaderboardUsers: leaderboardFixtures.fiveFarmerLB,
 };
 
-export const FiveUserCommonsAdmin = Template.bind({});
+export const FiveFarmerAdmin = Template.bind({});
 
-FiveUserCommonsAdmin.args = {
-  leaderboardUsers: leaderboardFixtures.fiveUserCommonsLB,
+FiveFarmerAdmin.args = {
+  leaderboardUsers: leaderboardFixtures.fiveFarmerLB,
   currentUser: currentUserFixtures.adminUser,
 };
 
-export const TenUserCommons = Template.bind({});
+export const TenFarmer = Template.bind({});
 
-TenUserCommons.args = {
-  leaderboardUsers: leaderboardFixtures.tenUserCommonsLB,
+TenFarmer.args = {
+  leaderboardUsers: leaderboardFixtures.tenFarmerLB,
 };

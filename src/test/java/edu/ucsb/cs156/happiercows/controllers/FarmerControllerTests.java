@@ -3,9 +3,9 @@ package edu.ucsb.cs156.happiercows.controllers;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import org.junit.jupiter.api.Test;
@@ -28,11 +28,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = UserCommonsController.class)
-public class UserCommonsControllerTests extends ControllerTestCase {
+@WebMvcTest(controllers = FarmerController.class)
+public class FarmerControllerTests extends ControllerTestCase {
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -52,8 +52,8 @@ public class UserCommonsControllerTests extends ControllerTestCase {
             .startingDate(LocalDateTime.now())
             .build();
 
-    public UserCommons getTestUserCommons() {
-        return UserCommons.builder()
+    public Farmer getTestFarmer() {
+        return Farmer.builder()
                 .user(currentUserService.getUser())
                 .commons(testCommons)
                 .totalWealth(300)
@@ -64,17 +64,17 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void test_getUserCommonsById_exists_admin() throws Exception {
+    public void test_getFarmerById_exists_admin() throws Exception {
 
-        UserCommons expectedUserCommons = getTestUserCommons();
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
+        Farmer expectedFarmer = getTestFarmer();
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedFarmer));
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer?userId=1&commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String expectedJson = mapper.writeValueAsString(expectedFarmer);
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
@@ -82,16 +82,16 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void test_getUserCommonsById_nonexists_admin() throws Exception {
+    public void test_getFarmerById_nonexists_admin() throws Exception {
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons?userId=1&commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer?userId=1&commonsId=1"))
                 .andExpect(status().is(404)).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
 
-        String expectedString = "{\"message\":\"UserCommons with commonsId 1 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Farmer with commonsId 1 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
 
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
@@ -100,19 +100,19 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getUserCommonsById_exists() throws Exception {
+    public void test_getFarmerById_exists() throws Exception {
 
-        UserCommons expectedUserCommons = getTestUserCommons();
+        Farmer expectedFarmer = getTestFarmer();
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedFarmer));
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/forcurrentuser?commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(commonsRepository, times(1)).findById(eq(1L));
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String expectedJson = mapper.writeValueAsString(expectedFarmer);
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
@@ -120,19 +120,19 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getUserCommonsById_nonexists() throws Exception {
+    public void test_getFarmerById_nonexists() throws Exception {
 
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/forcurrentuser?commonsId=1"))
                 .andExpect(status().is(404)).andReturn();
 
         verify(commonsRepository, times(1)).findById(eq(1L));
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
 
         String responseString = response.getResponse().getContentAsString();
-        String expectedString = "{\"message\":\"UserCommons with commonsId 1 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Farmer with commonsId 1 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -144,46 +144,46 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
         // arrange
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setCowsBought(1);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setCowsBought(1);
 
-        UserCommons updateUserCommons = getTestUserCommons();
-        updateUserCommons.setNumOfCows(3);
-        updateUserCommons.setTotalWealth(300 - (testCommons.getCowPrice() * 2));
-        updateUserCommons.setCowsBought(3);
+        Farmer updateFarmer = getTestFarmer();
+        updateFarmer.setNumOfCows(3);
+        updateFarmer.setTotalWealth(300 - (testCommons.getCowPrice() * 2));
+        updateFarmer.setCowsBought(3);
 
-        String expectedReturn = mapper.writeValueAsString(updateUserCommons);
+        String expectedReturn = mapper.writeValueAsString(updateFarmer);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
-        verify(userCommonsRepository, times(1)).save(updateUserCommons);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).save(updateFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getUserCommonsById_course_linked_commons_requires_current_enrollment() throws Exception {
+    public void test_getFarmerById_course_linked_commons_requires_current_enrollment() throws Exception {
         testCommons.setCourseId(17L);
         User currentUser = currentUserService.getUser();
 
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(false);
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/forcurrentuser?commonsId=1"))
                 .andExpect(status().isForbidden()).andReturn();
 
         verify(commonsRepository, times(1)).findById(eq(1L));
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
+        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
         String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
@@ -193,37 +193,37 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getUserCommonsById_course_linked_commons_allows_current_enrollment() throws Exception {
+    public void test_getFarmerById_course_linked_commons_allows_current_enrollment() throws Exception {
         testCommons.setCourseId(17L);
         User currentUser = currentUserService.getUser();
-        UserCommons expectedUserCommons = getTestUserCommons();
+        Farmer expectedFarmer = getTestFarmer();
 
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(expectedFarmer));
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/forcurrentuser?commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(commonsRepository, times(1)).findById(eq(1L));
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String expectedJson = mapper.writeValueAsString(expectedFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
     }
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getUserCommonsById_when_commons_does_not_exist() throws Exception {
+    public void test_getFarmerById_when_commons_does_not_exist() throws Exception {
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/forcurrentuser?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/forcurrentuser?commonsId=1"))
                 .andExpect(status().isNotFound()).andReturn();
 
         verify(commonsRepository, times(1)).findById(eq(1L));
-        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
+        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
         String expectedString = "{\"message\":\"Game with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
@@ -238,29 +238,29 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
         testCommons.setCowPrice(300);
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setTotalWealth(300);
-        origUserCommons.setNumOfCows(1);
-        origUserCommons.setCowsBought(1);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setTotalWealth(300);
+        origFarmer.setNumOfCows(1);
+        origFarmer.setCowsBought(1);
 
-        UserCommons updatedUserCommons = getTestUserCommons();
-        updatedUserCommons.setTotalWealth(0);
-        updatedUserCommons.setNumOfCows(2);
-        updatedUserCommons.setCowsBought(2);
+        Farmer updatedFarmer = getTestFarmer();
+        updatedFarmer.setTotalWealth(0);
+        updatedFarmer.setNumOfCows(2);
+        updatedFarmer.setCowsBought(2);
 
-        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String expectedReturn = mapper.writeValueAsString(updatedFarmer);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=1")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
-        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).save(updatedFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
@@ -271,30 +271,30 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
         // arrange
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setCowsSold(1);
-        origUserCommons.setCowHealth(50);
-        origUserCommons.setNumOfCows(2);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setCowsSold(1);
+        origFarmer.setCowHealth(50);
+        origFarmer.setNumOfCows(2);
 
-        UserCommons updatedUserCommons = getTestUserCommons();
-        updatedUserCommons.setCowHealth(50);
-        updatedUserCommons.setTotalWealth(300 + (testCommons.getCowPrice() * 0.5 * 2));
-        updatedUserCommons.setNumOfCows(0);
-        updatedUserCommons.setCowsSold(3);
+        Farmer updatedFarmer = getTestFarmer();
+        updatedFarmer.setCowHealth(50);
+        updatedFarmer.setTotalWealth(300 + (testCommons.getCowPrice() * 0.5 * 2));
+        updatedFarmer.setNumOfCows(0);
+        updatedFarmer.setCowsSold(3);
 
-        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String expectedReturn = mapper.writeValueAsString(updatedFarmer);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
-        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(eq(1L), eq(1L));
+        verify(farmerRepository, times(1)).save(updatedFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
@@ -303,15 +303,15 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     @Test
     public void test_buyCow_for_user_not_in_commons() throws Exception {
         when(commonsRepository.findById(234L)).thenReturn(Optional.of(testCommons));
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=234&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=234&numCows=2")
                         .with(csrf()))
                 .andExpect(status().is(404)).andReturn();
 
         // assert
 
-        String expectedString = "{\"message\":\"UserCommons with commonsId 234 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Farmer with commonsId 234 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -326,12 +326,12 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(false);
 
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isForbidden()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
+        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
         String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
@@ -345,26 +345,26 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         testCommons.setCourseId(17L);
         User currentUser = currentUserService.getUser();
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setCowsBought(1);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setCowsBought(1);
 
-        UserCommons updatedUserCommons = getTestUserCommons();
-        updatedUserCommons.setNumOfCows(3);
-        updatedUserCommons.setTotalWealth(300 - (testCommons.getCowPrice() * 2));
-        updatedUserCommons.setCowsBought(3);
+        Farmer updatedFarmer = getTestFarmer();
+        updatedFarmer.setNumOfCows(3);
+        updatedFarmer.setTotalWealth(300 - (testCommons.getCowPrice() * 2));
+        updatedFarmer.setCowsBought(3);
 
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
 
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+        verify(farmerRepository, times(1)).save(updatedFarmer);
 
-        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String expectedReturn = mapper.writeValueAsString(updatedFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
@@ -373,15 +373,15 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     @Test
     public void test_sellCow_for_user_not_in_commons() throws Exception {
         when(commonsRepository.findById(234L)).thenReturn(Optional.of(testCommons));
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.empty());
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=234&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=234&numCows=2")
                         .with(csrf()))
                 .andExpect(status().is(404)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"UserCommons with commonsId 234 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Farmer with commonsId 234 and userId 1 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -396,12 +396,12 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(false);
 
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isForbidden()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
+        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
         String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
@@ -415,29 +415,29 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         testCommons.setCourseId(17L);
         User currentUser = currentUserService.getUser();
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setCowsSold(1);
-        origUserCommons.setCowHealth(50);
-        origUserCommons.setNumOfCows(2);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setCowsSold(1);
+        origFarmer.setCowHealth(50);
+        origFarmer.setNumOfCows(2);
 
-        UserCommons updatedUserCommons = getTestUserCommons();
-        updatedUserCommons.setCowHealth(50);
-        updatedUserCommons.setTotalWealth(300 + (testCommons.getCowPrice() * 0.5 * 2));
-        updatedUserCommons.setNumOfCows(0);
-        updatedUserCommons.setCowsSold(3);
+        Farmer updatedFarmer = getTestFarmer();
+        updatedFarmer.setCowHealth(50);
+        updatedFarmer.setTotalWealth(300 + (testCommons.getCowPrice() * 0.5 * 2));
+        updatedFarmer.setNumOfCows(0);
+        updatedFarmer.setCowsSold(3);
 
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
         when(courseAccessService.isEligibleForCommons(eq(currentUser), eq(testCommons))).thenReturn(true);
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
 
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=2")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=1&numCows=2")
                         .with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
-        verify(userCommonsRepository, times(1)).save(updatedUserCommons);
+        verify(farmerRepository, times(1)).save(updatedFarmer);
 
-        String expectedReturn = mapper.writeValueAsString(updatedUserCommons);
+        String expectedReturn = mapper.writeValueAsString(updatedFarmer);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
@@ -446,10 +446,10 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     @Test
     public void test_buyCow_commons_does_not_exist() throws Exception {
         when(commonsRepository.findById(234L)).thenReturn(Optional.empty());
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(getTestUserCommons()));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(getTestFarmer()));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=234&numCows=3")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=234&numCows=3")
                         .with(csrf()))
                 .andExpect(status().is(404)).andReturn();
 
@@ -464,10 +464,10 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     @Test
     public void test_sellCow_commons_does_not_exist() throws Exception {
         when(commonsRepository.findById(234L)).thenReturn(Optional.empty());
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(getTestUserCommons()));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(getTestFarmer()));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=234&numCows=3")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=234&numCows=3")
                         .with(csrf()))
                 .andExpect(status().is(404)).andReturn();
 
@@ -484,14 +484,14 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     public void test_BuyCow_commons_exists_not_enough_money() throws Exception {
 
         // arrange
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setTotalWealth(5);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setTotalWealth(5);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=1")
                         .with(csrf()))
                 .andExpect(status().is(400)).andReturn();
 
@@ -507,14 +507,14 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     public void test_SellCow_commons_exists_no_cow_to_sell() throws Exception {
 
         // arrange
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setNumOfCows(0);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setNumOfCows(0);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=1&numCows=1")
                 .with(csrf())).andExpect(status().is(400)).andReturn();
 
         // assert
@@ -532,15 +532,15 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         // arrange
         testCommons.setCowPrice(100);
 
-        UserCommons origUserCommons = getTestUserCommons();
-        origUserCommons.setCowsBought(1);
-        origUserCommons.setTotalWealth(100);
+        Farmer origFarmer = getTestFarmer();
+        origFarmer.setCowsBought(1);
+        origFarmer.setTotalWealth(100);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=3")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=3")
                         .with(csrf()))
                 .andExpect(status().is(400)).andReturn();
 
@@ -554,18 +554,18 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void test_getAllUserCommonsById_exists() throws Exception {
-        List<UserCommons> expectedUserCommons = new ArrayList<>();
-        UserCommons testexpectedUserCommons = getTestUserCommons();
-        expectedUserCommons.add(testexpectedUserCommons);
-        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(expectedUserCommons);
+    public void test_getAllFarmerById_exists() throws Exception {
+        List<Farmer> expectedFarmer = new ArrayList<>();
+        Farmer testexpectedFarmer = getTestFarmer();
+        expectedFarmer.add(testexpectedFarmer);
+        when(farmerRepository.findByCommonsId(eq(1L))).thenReturn(expectedFarmer);
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/commons/all?commonsId=1"))
+        MvcResult response = mockMvc.perform(get("/api/farmer/commons/all?commonsId=1"))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsId(eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String expectedJson = mapper.writeValueAsString(expectedFarmer);
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
@@ -573,18 +573,18 @@ public class UserCommonsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
-    public void test_Admin_getAllUserCommonsById_exists() throws Exception {
-        List<UserCommons> expectedUserCommons = new ArrayList<>();
-        UserCommons testexpectedUserCommons = getTestUserCommons();
-        expectedUserCommons.add(testexpectedUserCommons);
-        when(userCommonsRepository.findByCommonsId(eq(1L))).thenReturn(expectedUserCommons);
+    public void test_Admin_getAllFarmerById_exists() throws Exception {
+        List<Farmer> expectedFarmer = new ArrayList<>();
+        Farmer testexpectedFarmer = getTestFarmer();
+        expectedFarmer.add(testexpectedFarmer);
+        when(farmerRepository.findByCommonsId(eq(1L))).thenReturn(expectedFarmer);
 
-        MvcResult response = mockMvc.perform(get("/api/usercommons/commons/all?commonsId=1").with(csrf()))
+        MvcResult response = mockMvc.perform(get("/api/farmer/commons/all?commonsId=1").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsId(eq(1L));
+        verify(farmerRepository, times(1)).findByCommonsId(eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedUserCommons);
+        String expectedJson = mapper.writeValueAsString(expectedFarmer);
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
@@ -595,13 +595,13 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     public void test_BuyCow_hidden_commons() throws Exception {
         // arrange
         testCommons.setHidden(true);
-        UserCommons origUserCommons = getTestUserCommons();
+        Farmer origFarmer = getTestFarmer();
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/farmer/buy?commonsId=1&numCows=1")
                         .with(csrf()))
                 .andExpect(status().is(400)).andReturn();
 
@@ -617,13 +617,13 @@ public class UserCommonsControllerTests extends ControllerTestCase {
     public void test_SellCow_hidden_commons() throws Exception {
         // arrange
         testCommons.setHidden(true);
-        UserCommons origUserCommons = getTestUserCommons();
+        Farmer origFarmer = getTestFarmer();
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origFarmer));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/farmer/sell?commonsId=1&numCows=1")
                         .with(csrf()))
                 .andExpect(status().is(400)).andReturn();
 

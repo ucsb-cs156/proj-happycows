@@ -1,11 +1,11 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Profit;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +32,7 @@ public class ProfitsController extends ApiController {
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Autowired
     ProfitRepository profitRepository;
@@ -46,10 +46,10 @@ public class ProfitsController extends ApiController {
 
     ) {
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
-            .orElseThrow(() -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
+            .orElseThrow(() -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
 
-        Iterable<Profit> profits = profitRepository.findAllByUserCommons(userCommons);
+        Iterable<Profit> profits = profitRepository.findAllByFarmer(farmer);
 
         return profits;
     }
@@ -61,10 +61,10 @@ public class ProfitsController extends ApiController {
     ) {
         Long userId = getCurrentUser().getUser().getId();
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
-            .orElseThrow(() -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
+            .orElseThrow(() -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
 
-        Iterable<Profit> profits = profitRepository.findAllByUserCommons(userCommons);
+        Iterable<Profit> profits = profitRepository.findAllByFarmer(farmer);
 
         return profits;
     }
@@ -80,10 +80,10 @@ public class ProfitsController extends ApiController {
     ) {
         Long userId = getCurrentUser().getUser().getId();
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
-                .orElseThrow(() -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
 
-        Iterable<Profit> iterableProfits = profitRepository.findAllByUserCommons(userCommons);
+        Iterable<Profit> iterableProfits = profitRepository.findAllByFarmer(farmer);
 
         List<Profit> allProfits = new ArrayList<>();
         iterableProfits.forEach(allProfits::add);

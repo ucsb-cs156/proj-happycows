@@ -1,13 +1,13 @@
 package edu.ucsb.cs156.happiercows.strategies;
 
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 
 public interface CowHealthUpdateStrategy {
 
     public double calculateNewCowHealth(
             CommonsPlus commonsPlus,
-            UserCommons uC,
+            Farmer uC,
             int totalCows
     );
 

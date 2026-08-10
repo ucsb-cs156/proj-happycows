@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import ManageCowsModal from "main/components/Commons/ManageCowsModal";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 import { vi } from "vitest";
 import "@testing-library/jest-dom";
 
@@ -118,7 +118,7 @@ describe("ManageCowsModal", () => {
         isOpen={true}
         onClose={mockOnClose}
         message="buy"
-        userCommons={userCommonsFixtures.oneUserCommons[0]}
+        farmer={farmerFixtures.oneFarmer[0]}
         number={number}
         onBuy={mockOnBuy}
         setNumber={mockSetNumber}
@@ -129,7 +129,7 @@ describe("ManageCowsModal", () => {
 
     await waitFor(() =>
       expect(mockOnBuy).toHaveBeenCalledWith(
-        userCommonsFixtures.oneUserCommons[0],
+        farmerFixtures.oneFarmer[0],
         number,
       ),
     );
@@ -142,7 +142,7 @@ describe("ManageCowsModal", () => {
         isOpen={true}
         onClose={mockOnClose}
         message="sell"
-        userCommons={userCommonsFixtures.oneUserCommons[0]}
+        farmer={farmerFixtures.oneFarmer[0]}
         number={number2}
         onSell={mockOnSell}
         setNumber={mockSetNumber}
@@ -153,7 +153,7 @@ describe("ManageCowsModal", () => {
 
     await waitFor(() =>
       expect(mockOnSell).toHaveBeenCalledWith(
-        userCommonsFixtures.oneUserCommons[0],
+        farmerFixtures.oneFarmer[0],
         number2,
       ),
     );
@@ -166,7 +166,7 @@ describe("ManageCowsModal", () => {
         isOpen={true}
         onClose={mockOnClose}
         message="sell"
-        userCommons={userCommonsFixtures.oneUserCommons[0]}
+        farmer={farmerFixtures.oneFarmer[0]}
         number={number2}
         onSell={mockOnSell}
         setNumber={mockSetNumber}
@@ -177,7 +177,7 @@ describe("ManageCowsModal", () => {
 
     await waitFor(() =>
       expect(mockOnSell).toHaveBeenCalledWith(
-        userCommonsFixtures.oneUserCommons[0],
+        farmerFixtures.oneFarmer[0],
         number2,
       ),
     );
@@ -191,7 +191,7 @@ describe("ManageCowsModal", () => {
         isOpen={true}
         onClose={mockOnClose}
         message="buy"
-        userCommons={userCommonsFixtures.oneUserCommons[0]}
+        farmer={farmerFixtures.oneFarmer[0]}
         number={number2}
         onBuy={mockOnBuy}
         setNumber={mockSetNumber}
@@ -213,7 +213,7 @@ describe("ManageCowsModal", () => {
         isOpen={true}
         onClose={mockOnClose}
         message="sell"
-        userCommons={userCommonsFixtures.oneUserCommons[0]}
+        farmer={farmerFixtures.oneFarmer[0]}
         number={number2}
         onSell={mockOnSell}
         setNumber={mockSetNumber}

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import ManageCows from "main/components/Commons/ManageCows";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useParams } from "react-router";
 import * as currentUserModule from "main/utils/currentUser";
@@ -33,12 +33,12 @@ describe("ManageCows tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ManageCows
-          userCommons={userCommonsFixtures.oneUserCommons[0]}
-          onBuy={(userCommons) => {
-            console.log("onBuy called:", userCommons);
+          farmer={farmerFixtures.oneFarmer[0]}
+          onBuy={(farmer) => {
+            console.log("onBuy called:", farmer);
           }}
-          onSell={(userCommons) => {
-            console.log("onSell called:", userCommons);
+          onSell={(farmer) => {
+            console.log("onSell called:", farmer);
           }}
         />
       </QueryClientProvider>,
@@ -64,7 +64,7 @@ describe("ManageCows tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ManageCows
-          userCommons={userCommonsFixtures.oneUserCommons[0]}
+          farmer={farmerFixtures.oneFarmer[0]}
           onBuy={mockBuy}
           onSell={mockSell}
           userId={1}
@@ -101,7 +101,7 @@ describe("ManageCows tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ManageCows
-          userCommons={userCommonsFixtures.oneUserCommons[0]}
+          farmer={farmerFixtures.oneFarmer[0]}
           setMessage={mockSetMessage}
           openModal={mockOpenModal}
         />
@@ -129,7 +129,7 @@ describe("ManageCows tests", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <ManageCows
-          userCommons={userCommonsFixtures.oneUserCommons[0]}
+          farmer={farmerFixtures.oneFarmer[0]}
           setMessage={mockSetMessage}
           openModal={mockOpenModal}
         />

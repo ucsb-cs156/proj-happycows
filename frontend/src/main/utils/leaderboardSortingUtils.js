@@ -1,8 +1,8 @@
 export function sortByWealth(
-  userCommonsArray,
-  returnArraySize = userCommonsArray.length,
+  farmerArray,
+  returnArraySize = farmerArray.length,
 ) {
-  return userCommonsArray
+  return farmerArray
     .sort((a, b) => {
       return b.totalWealth - a.totalWealth;
     })
@@ -10,10 +10,10 @@ export function sortByWealth(
 }
 
 export function sortByNumCows(
-  userCommonsArray,
-  returnArraySize = userCommonsArray.length,
+  farmerArray,
+  returnArraySize = farmerArray.length,
 ) {
-  return userCommonsArray
+  return farmerArray
     .sort((a, b) => {
       return b.numOfCows - a.numOfCows;
     })
@@ -21,11 +21,11 @@ export function sortByNumCows(
 }
 
 export function sortByCowHealth(
-  userCommonsArray,
-  returnArraySize = userCommonsArray.length,
+  farmerArray,
+  returnArraySize = farmerArray.length,
 ) {
   //sorts in decreasing order, so the comparison function returns a negative when the first parameter is larger
-  return userCommonsArray
+  return farmerArray
     .sort((a, b) => {
       return b.cowHealth - a.cowHealth;
     })

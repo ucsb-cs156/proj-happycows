@@ -3,10 +3,10 @@ package edu.ucsb.cs156.happiercows.jobs;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class SetCowHealthJobTests extends JobTestCase {
     CommonsRepository commonsRepository;
 
     @Mock
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Mock
     UserRepository userRepository;
@@ -67,7 +67,7 @@ public class SetCowHealthJobTests extends JobTestCase {
         when(commonsRepository.findById(any())).thenReturn(Optional.empty());
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, userCommonsRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
@@ -104,7 +104,7 @@ public class SetCowHealthJobTests extends JobTestCase {
         when(commonsRepository.findById(117L)).thenReturn(Optional.of(futureCommons));
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, userCommonsRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
@@ -116,8 +116,8 @@ public class SetCowHealthJobTests extends JobTestCase {
         assertEquals(expected, jobStarted.getLog());
     }
 
-    UserCommons getUserCommons() {
-        return UserCommons
+    Farmer getFarmer() {
+        return Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -134,13 +134,13 @@ public class SetCowHealthJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        var userCommonsList = Arrays.asList(
-                getUserCommons(),
-                getUserCommons(),
-                getUserCommons()
+        var farmerList = Arrays.asList(
+                getFarmer(),
+                getFarmer(),
+                getFarmer()
         );
 
-        UserCommons newUserCommons = UserCommons
+        Farmer newFarmer = Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -150,12 +150,12 @@ public class SetCowHealthJobTests extends JobTestCase {
                 .build();
 
         when(commonsRepository.findById(117L)).thenReturn(Optional.of(testCommons));
-        when(userCommonsRepository.findByCommonsId(testCommons.getId()))
-                .thenReturn(userCommonsList);
+        when(farmerRepository.findByCommonsId(testCommons.getId()))
+                .thenReturn(farmerList);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117, 2, commonsRepository, userCommonsRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117, 2, commonsRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
@@ -173,6 +173,6 @@ public class SetCowHealthJobTests extends JobTestCase {
                 Cow health has been set!""";
 
         assertEquals(expected, jobStarted.getLog());
-        userCommonsList.forEach(userCommons -> assertEquals(newUserCommons.getCowHealth(), userCommons.getCowHealth()));
+        farmerList.forEach(farmer -> assertEquals(newFarmer.getCowHealth(), farmer.getCowHealth()));
     }
 }

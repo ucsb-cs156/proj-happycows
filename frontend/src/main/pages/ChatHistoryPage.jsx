@@ -18,11 +18,11 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
   const navigate = useNavigate();
   const loadMoreRef = useRef(null);
 
-  const { data: userCommonsList } = useBackend(
-    [`/api/usercommons/commons/all?commonsId=${commonsId}`],
+  const { data: farmerList } = useBackend(
+    [`/api/farmer/commons/all?commonsId=${commonsId}`],
     {
       method: "GET",
-      url: "/api/usercommons/commons/all",
+      url: "/api/farmer/commons/all",
       params: {
         commonsId: commonsId,
       },
@@ -31,9 +31,9 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
     { refetchInterval: REFRESH_RATE, enabled: !!commonsId },
   );
 
-  const hasValidUserCommons = Array.isArray(userCommonsList);
-  const userIdToUsername = hasValidUserCommons
-    ? userCommonsList.reduce((acc, user) => {
+  const hasValidFarmer = Array.isArray(farmerList);
+  const userIdToUsername = hasValidFarmer
+    ? farmerList.reduce((acc, user) => {
         acc[user.userId] = user.username || "";
         return acc;
       }, {})

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -19,7 +19,7 @@ public class UpdateCowHealthJobFactoryInd  {
     private CommonsRepository commonsRepository;
   
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +29,7 @@ public class UpdateCowHealthJobFactoryInd  {
 
     public JobContextConsumer create(Long commonsID) {
         log.info("commonsRepository = " + commonsRepository);
-        log.info("userCommonsRepository = " + userCommonsRepository);
-        return new UpdateCowHealthJobInd(commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService, commonsID);
+        log.info("farmerRepository = " + farmerRepository);
+        return new UpdateCowHealthJobInd(commonsRepository, farmerRepository, userRepository, commonsPlusBuilderService, commonsID);
     }
 }

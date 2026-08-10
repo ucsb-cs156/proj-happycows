@@ -2,7 +2,7 @@ const profitsFixtures = {
   threeProfits: [
     {
       id: 15,
-      userCommons: {
+      farmer: {
         id: 3,
         commonsId: 2,
         userId: 1,
@@ -18,7 +18,7 @@ const profitsFixtures = {
     },
     {
       id: 18,
-      userCommons: {
+      farmer: {
         id: 3,
         commonsId: 2,
         userId: 1,
@@ -34,7 +34,7 @@ const profitsFixtures = {
     },
     {
       id: 22,
-      userCommons: {
+      farmer: {
         id: 3,
         commonsId: 2,
         userId: 1,

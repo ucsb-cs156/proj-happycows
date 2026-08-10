@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
@@ -31,12 +31,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @Tag(name = "User Commons")
-@RequestMapping("/api/usercommons")
+@RequestMapping("/api/farmer")
 @RestController
-public class UserCommonsController extends ApiController {
+public class FarmerController extends ApiController {
 
   @Autowired
-  private UserCommonsRepository userCommonsRepository;
+  private FarmerRepository farmerRepository;
 
   @Autowired
   private CommonsRepository commonsRepository;
@@ -50,20 +50,20 @@ public class UserCommonsController extends ApiController {
   @Operation(summary = "Get a specific user commons (admin only)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("")
-  public UserCommons getUserCommonsById(
+  public Farmer getFarmerById(
       @Parameter(name="userId") @RequestParam Long userId,
       @Parameter(name="commonsId") @RequestParam Long commonsId) throws JsonProcessingException {
 
-    UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
+    Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
-            () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
-    return userCommons;
+            () -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
+    return farmer;
   }
 
   @Operation(summary = "Get a user commons for current user")
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping("/forcurrentuser")
-  public UserCommons getUserCommonsById(
+  public Farmer getFarmerById(
       @Parameter(name="commonsId") @RequestParam Long commonsId) throws JsonProcessingException {
 
     User u = getCurrentUser().getUser();
@@ -71,16 +71,16 @@ public class UserCommonsController extends ApiController {
     Commons commons = commonsRepository.findById(commonsId)
         .orElseThrow(() -> new EntityNotFoundException("Game", commonsId));
     ensureUserCanAccessCourseLinkedCommons(u, commons);
-    UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
+    Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
-            () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
-    return userCommons;
+            () -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
+    return farmer;
   }
 
   @Operation(summary = "Buy a cow, totalWealth updated")
   @PreAuthorize("hasRole('ROLE_USER')")
   @PutMapping("/buy")
-  public ResponseEntity<String> putUserCommonsByIdBuy(
+  public ResponseEntity<String> putFarmerByIdBuy(
           @Parameter(name="commonsId") @RequestParam Long commonsId,
           @Parameter(name="numCows") @RequestParam int numCows) throws NotEnoughMoneyException, JsonProcessingException{
 
@@ -96,28 +96,28 @@ public class UserCommonsController extends ApiController {
           throw new CommonsHiddenException(commonsId);
         }
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
-            () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+            () -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
 
-        if(userCommons.getTotalWealth() >= (commons.getCowPrice() * numCows)){
-          userCommons.setTotalWealth(userCommons.getTotalWealth() - (commons.getCowPrice() * numCows));
-          userCommons.setNumOfCows(userCommons.getNumOfCows() + numCows);
-          userCommons.setCowsBought(userCommons.getCowsBought() + numCows);
+        if(farmer.getTotalWealth() >= (commons.getCowPrice() * numCows)){
+          farmer.setTotalWealth(farmer.getTotalWealth() - (commons.getCowPrice() * numCows));
+          farmer.setNumOfCows(farmer.getNumOfCows() + numCows);
+          farmer.setCowsBought(farmer.getCowsBought() + numCows);
         }
         else{
           throw new NotEnoughMoneyException("You need more money!");
         }
-        userCommonsRepository.save(userCommons);
+        farmerRepository.save(farmer);
 
-        String body = mapper.writeValueAsString(userCommons);
+        String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
     }
 
   @Operation(summary = "Sell a cow, totalWealth updated")
   @PreAuthorize("hasRole('ROLE_USER')")
   @PutMapping("/sell")
-  public ResponseEntity<String> putUserCommonsByIdSell(
+  public ResponseEntity<String> putFarmerByIdSell(
           @Parameter(name="commonsId") @RequestParam Long commonsId,
           @Parameter(name="numCows") @RequestParam int numCows) throws NoCowsException, JsonProcessingException {
         User u = getCurrentUser().getUser();
@@ -132,23 +132,23 @@ public class UserCommonsController extends ApiController {
           throw new CommonsHiddenException(commonsId);
         }
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
-            () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
+            () -> new EntityNotFoundException(Farmer.class, "commonsId", commonsId, "userId", userId));
 
 
-        if(userCommons.getNumOfCows() >= numCows ){
-          double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
-          userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
-          userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
-          userCommons.setCowsSold(userCommons.getCowsSold() + numCows);
+        if(farmer.getNumOfCows() >= numCows ){
+          double cowValue = commons.getCowPrice() * farmer.getCowHealth() / 100;
+          farmer.setTotalWealth(farmer.getTotalWealth() + (cowValue * numCows));
+          farmer.setNumOfCows(farmer.getNumOfCows() - numCows);
+          farmer.setCowsSold(farmer.getCowsSold() + numCows);
         }
         else{
           throw new NoCowsException("You do not have enough cows to sell!");
         }
-        userCommonsRepository.save(userCommons);
+        farmerRepository.save(farmer);
 
-        String body = mapper.writeValueAsString(userCommons);
+        String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
     }
 
@@ -157,9 +157,9 @@ public class UserCommonsController extends ApiController {
     @Operation(summary = "Get all user commons for a specific commons")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/commons/all")
-    public  ResponseEntity<String> getUsersCommonsByCommonsId(
+    public  ResponseEntity<String> getFarmersByCommonsId(
         @Parameter(name="commonsId") @RequestParam Long commonsId) throws JsonProcessingException {
-      Iterable<UserCommons> uc = userCommonsRepository.findByCommonsId(commonsId);
+      Iterable<Farmer> uc = farmerRepository.findByCommonsId(commonsId);
       
    
     String body = mapper.writeValueAsString(uc);

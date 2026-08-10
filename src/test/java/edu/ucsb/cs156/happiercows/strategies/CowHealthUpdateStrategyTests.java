@@ -2,7 +2,7 @@ package edu.ucsb.cs156.happiercows.strategies;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class CowHealthUpdateStrategyTests {
             .capacityPerUser(20)
             .carryingCapacity(100)
             .build();
-    UserCommons uc = UserCommons.builder().cowHealth(50).build();
+    Farmer uc = Farmer.builder().cowHealth(50).build();
 
     CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalUsers(1).build();
 
@@ -31,7 +31,7 @@ class CowHealthUpdateStrategyTests {
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
-    UserCommons uc1 = UserCommons.builder().cowHealth(50).build();
+    Farmer uc1 = Farmer.builder().cowHealth(50).build();
 
     CommonsPlus commonsPlus1 = CommonsPlus.builder().commons(commons1).totalUsers(1).build();
 
@@ -40,7 +40,7 @@ class CowHealthUpdateStrategyTests {
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
-    UserCommons uc2 = UserCommons.builder().cowHealth(50).build();
+    Farmer uc2 = Farmer.builder().cowHealth(50).build();
 
     CommonsPlus commonsPlus2 = CommonsPlus.builder().commons(commons2).totalUsers(1).build();
 
@@ -49,7 +49,7 @@ class CowHealthUpdateStrategyTests {
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
-    UserCommons uc0_5 = UserCommons.builder().cowHealth(50).build();
+    Farmer uc0_5 = Farmer.builder().cowHealth(50).build();
 
     CommonsPlus commonsPlus0_5 = CommonsPlus.builder().commons(commons0_5).totalUsers(1).build();
 
