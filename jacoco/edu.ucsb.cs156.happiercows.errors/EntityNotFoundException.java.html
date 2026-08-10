@@ -6,13 +6,20 @@ public class EntityNotFoundException extends RuntimeException {
 <span class="fc" id="L6">        .formatted(entityType.getSimpleName(), id.toString()));</span>
 <span class="fc" id="L7">  }</span>
 
+  // Allows callers to supply a user-facing display name that differs from
+  // the entity's class name (e.g. &quot;Game&quot; for the Commons entity).
+  public EntityNotFoundException(String entityDisplayName, Object id) {
+<span class="fc" id="L12">    super(&quot;%s with id %s not found&quot;</span>
+<span class="fc" id="L13">        .formatted(entityDisplayName, id.toString()));</span>
+<span class="fc" id="L14">  }</span>
+
   public EntityNotFoundException(Class&lt;?&gt; entityType, String id1Label, Object id1, String id2Label, Object id2) {
-<span class="fc" id="L10">    super(&quot;%s with %s %s and %s %s not found&quot;</span>
-<span class="fc" id="L11">        .formatted(entityType.getSimpleName(),</span>
+<span class="fc" id="L17">    super(&quot;%s with %s %s and %s %s not found&quot;</span>
+<span class="fc" id="L18">        .formatted(entityType.getSimpleName(),</span>
             id1Label,
-<span class="fc" id="L13">            id1.toString(),</span>
+<span class="fc" id="L20">            id1.toString(),</span>
             id2Label,
-<span class="fc" id="L15">            id2.toString()));</span>
-<span class="fc" id="L16">  }</span>
+<span class="fc" id="L22">            id2.toString()));</span>
+<span class="fc" id="L23">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

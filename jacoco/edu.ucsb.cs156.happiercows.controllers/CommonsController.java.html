@@ -138,7 +138,7 @@ import java.util.stream.StreamSupport;
     public CommonsPlus getCommonsPlusById(
             @Parameter(name=&quot;id&quot;) @RequestParam long id) throws JsonProcessingException {
 <span class="fc" id="L140">                CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsRepository.findById(id)</span>
-<span class="fc" id="L141">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id)));</span>
+<span class="fc" id="L141">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id)));</span>
 
 <span class="fc" id="L143">        return commonsPlus;</span>
     }
@@ -222,7 +222,7 @@ import java.util.stream.StreamSupport;
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
 
 <span class="fc" id="L224">        Commons commons = commonsRepository.findById(id)</span>
-<span class="fc" id="L225">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc" id="L225">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
 <span class="fc" id="L227">        return commons;</span>
     }
@@ -342,7 +342,7 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L342">        String username = u.getFullName();</span>
 
 <span class="fc" id="L344">        Commons joinedCommons = commonsRepository.findById(commonsId)</span>
-<span class="fc" id="L345">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, commonsId));</span>
+<span class="fc" id="L345">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, commonsId));</span>
 
 <span class="fc bfc" id="L347" title="All 4 branches covered.">        if (joinedCommons.getCourseId() != null &amp;&amp; !courseAccessService.isEligibleForCommons(u, joinedCommons)) {</span>
 <span class="fc" id="L348">            throw new CourseAccessDeniedException(commonsId);</span>
@@ -387,11 +387,11 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L387">        }</span>
 
 <span class="fc" id="L389">        commonsRepository.findById(id)</span>
-<span class="fc" id="L390">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc" id="L390">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
 <span class="fc" id="L392">        commonsRepository.deleteById(id);</span>
 
-<span class="fc" id="L394">        String responseString = String.format(&quot;commons with id %d deleted&quot;, id);</span>
+<span class="fc" id="L394">        String responseString = String.format(&quot;game with id %d deleted&quot;, id);</span>
 <span class="fc" id="L395">        return genericMessage(responseString);</span>
 
     }
@@ -409,7 +409,7 @@ import java.util.stream.StreamSupport;
 
 <span class="fc" id="L410">        userCommonsRepository.delete(userCommons);</span>
 
-<span class="fc" id="L412">        String responseString = String.format(&quot;user with id %d deleted from commons with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
+<span class="fc" id="L412">        String responseString = String.format(&quot;user with id %d deleted from game with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
 
 <span class="fc" id="L414">        return genericMessage(responseString);</span>
     }
@@ -422,7 +422,7 @@ import java.util.stream.StreamSupport;
             @Parameter(name=&quot;request body&quot;) @RequestBody DashboardSettingsParams params
     ) {
 <span class="fc" id="L424">        Commons commons = commonsRepository.findById(id)</span>
-<span class="fc" id="L425">                .orElseThrow(() -&gt; new EntityNotFoundException(Commons.class, id));</span>
+<span class="fc" id="L425">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
 <span class="fc" id="L427">        commons.setShowLeaderboard(params.isShowLeaderboard());</span>
 <span class="fc" id="L428">        commons.setShowOverviewSection(params.isShowOverviewSection());</span>

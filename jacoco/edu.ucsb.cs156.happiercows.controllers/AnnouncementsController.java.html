@@ -69,7 +69,7 @@ import java.util.Optional;
 <span class="fc" id="L69">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
 <span class="fc bfc" id="L71" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
-<span class="fc" id="L72">                return ResponseEntity.badRequest().body(&quot;Commons_id must exist.&quot;);</span>
+<span class="fc" id="L72">                return ResponseEntity.badRequest().body(&quot;Game_id must exist.&quot;);</span>
             }
         }
 
@@ -120,7 +120,7 @@ import java.util.Optional;
 <span class="fc" id="L120">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
 <span class="fc bfc" id="L122" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
-<span class="fc" id="L123">                return ResponseEntity.badRequest().body(&quot;Commons_id must exist.&quot;);</span>
+<span class="fc" id="L123">                return ResponseEntity.badRequest().body(&quot;Game_id must exist.&quot;);</span>
             }
         }
 
@@ -145,7 +145,7 @@ import java.util.Optional;
 
 <span class="fc bfc" id="L146" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
 <span class="fc" id="L147">                return ResponseEntity.status(HttpStatus.FORBIDDEN)</span>
-<span class="fc" id="L148">                    .body(&quot;User is not a member of this commons.&quot;);</span>
+<span class="fc" id="L148">                    .body(&quot;User is not a member of this game.&quot;);</span>
             }
         }
 
@@ -192,7 +192,7 @@ import java.util.Optional;
 <span class="fc" id="L192">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
 <span class="fc bfc" id="L194" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
-<span class="fc" id="L195">                return ResponseEntity.badRequest().body(&quot;Commons_id must exist.&quot;);</span>
+<span class="fc" id="L195">                return ResponseEntity.badRequest().body(&quot;Game_id must exist.&quot;);</span>
             }
         }
 
