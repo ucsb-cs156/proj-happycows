@@ -47,14 +47,14 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
       <Modal.Header closeButton>
         <Modal.Title>Confirm Deletion</Modal.Title>
       </Modal.Header>
-      <Modal.Body>Are you sure you want to delete this commons?</Modal.Body>
+      <Modal.Body>Are you sure you want to delete this game?</Modal.Body>
       <Modal.Footer>
         <Button
           variant="secondary"
           data-testid={`AdminCommonsCard-Modal-Cancel-${commons.id}`}
           onClick={() => setShowModal(false)}
         >
-          Keep this Commons
+          Keep this Game
         </Button>
         <Button
           variant="danger"

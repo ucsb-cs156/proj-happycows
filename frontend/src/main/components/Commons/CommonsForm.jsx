@@ -129,7 +129,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
       >
         <Col className="" md={6}>
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="name">Commons Name</Form.Label>
+            <Form.Label htmlFor="name">Game Name</Form.Label>
             <OverlayTrigger
               placement="top"
               overlay={
@@ -145,7 +145,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
                 type="text"
                 defaultValue={DefaultVals.name}
                 isInvalid={!!errors.name}
-                {...register("name", { required: "Commons name is required" })}
+                {...register("name", { required: "Game name is required" })}
               />
             </OverlayTrigger>
             <Form.Control.Feedback type="invalid">
@@ -289,7 +289,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               overlay={
                 <Tooltip>
                   This number controls the rate at which cow health decreases
-                  when the number of cows in the commons is greater than the
+                  when the number of cows in the game is greater than the
                   effective carrying capacity. The way in which the number is
                   used depends on the selected Health Update Formulas below.
                 </Tooltip>
@@ -324,11 +324,10 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               placement="bottom"
               overlay={
                 <Tooltip>
-                  This is the minimum carrying capacity for the commons; at
-                  least this many cows may graze in the commons regardless of
-                  the number of players. If this number is zero, then only the
-                  Capacity Per User is used to determine the actual carrying
-                  capacity.
+                  This is the minimum carrying capacity for the game; at least
+                  this many cows may graze in the game regardless of the number
+                  of players. If this number is zero, then only the Capacity Per
+                  User is used to determine the actual carrying capacity.
                 </Tooltip>
               }
               delay="100"
@@ -360,9 +359,9 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               placement="bottom"
               overlay={
                 <Tooltip>
-                  When this number is greater than zero, the commons will be
-                  able to support at least this many cows per farmer; that is,
-                  the effective carrying capacity of the commons is the value of
+                  When this number is greater than zero, the game will be able
+                  to support at least this many cows per farmer; that is, the
+                  effective carrying capacity of the game is the value of
                   Carrying Capacity, or Capacity Per User times the number of
                   Farmers, whichever is greater. If this number is zero, then
                   the Carrying Capacity is fixed regardless of the number of
@@ -499,8 +498,8 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               overlay={
                 <Tooltip>
                   When checked, regular users will have access to the chat for
-                  this commons. When unchecked, only admins can see the chat for
-                  this commons.
+                  this game. When unchecked, only admins can see the chat for
+                  this game.
                 </Tooltip>
               }
               delay="100"

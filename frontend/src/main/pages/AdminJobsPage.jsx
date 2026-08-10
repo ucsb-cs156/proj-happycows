@@ -49,7 +49,7 @@ const AdminJobsPage = () => {
 
   const submitSetCowHealthJob = async (data) => {
     toast(
-      `Submitted Job: Set Cow Health (Commons: ${data.selectedCommonsName}, Health: ${data.healthValue})`,
+      `Submitted Job: Set Cow Health (Game: ${data.selectedCommonsName}, Health: ${data.healthValue})`,
     );
     SetCowHealthMutation.mutate(data);
   };
@@ -81,12 +81,12 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitUpdateCowHealthJob = async (data) => {
-    if (data.selectedCommonsName === "All Commons") {
+    if (data.selectedCommonsName === "All Games") {
       toast("Submitted Job: Update Cow Health");
       UpdateCowHealthMutation.mutate();
     } else {
       toast(
-        `Submitted Job: Update Cow Health (Commons: ${data.selectedCommonsName})`,
+        `Submitted Job: Update Cow Health (Game: ${data.selectedCommonsName})`,
       );
       UpdateCowHealthSingleMutation.mutate(data);
     }
@@ -137,12 +137,12 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitMilkTheCowsJob = async (data) => {
-    if (data.selectedCommonsName === "All Commons") {
+    if (data.selectedCommonsName === "All Games") {
       toast("Submitted Job: Milk The Cows!");
       MilkTheCowsMutation.mutate();
     } else {
       toast(
-        `Submitted Job: Milk The Cows! (Commons: ${data.selectedCommonsName})`,
+        `Submitted Job: Milk The Cows! (Game: ${data.selectedCommonsName})`,
       );
       MilkTheCowsSingleMutation.mutate(data);
     }
@@ -185,7 +185,7 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitInstructorReportSpecificCommonsJob = async (data) => {
-    toast("Submitted Job: Instructor Report (Specific Commons)");
+    toast("Submitted Job: Instructor Report (Specific Game)");
     InstructorReportSpecificCommonsMutation.mutate(data);
   };
 
@@ -195,7 +195,7 @@ const AdminJobsPage = () => {
       form: <TestJobForm submitAction={submitTestJob} />,
     },
     {
-      name: "Set Cow Health for a Specific Commons",
+      name: "Set Cow Health for a Specific Game",
       form: <SetCowHealthForm submitAction={submitSetCowHealthJob} />,
     },
     {
@@ -215,7 +215,7 @@ const AdminJobsPage = () => {
       form: <InstructorReportForm submitAction={submitInstructorReportJob} />,
     },
     {
-      name: "Instructor Report (for specific commons)",
+      name: "Instructor Report (for specific game)",
       form: (
         <InstructorReportSpecificCommonsForm
           submitAction={submitInstructorReportSpecificCommonsJob}

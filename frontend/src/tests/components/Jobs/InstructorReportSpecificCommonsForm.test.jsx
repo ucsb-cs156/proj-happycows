@@ -32,7 +32,7 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
     );
 
     expect(
-      await screen.findByText("There are no commons on which to run this job."),
+      await screen.findByText("There are no games on which to run this job."),
     ).toBeInTheDocument();
   });
 
@@ -60,7 +60,7 @@ describe("InstructorReportSpecificCommonsForm tests", () => {
     fireEvent.click(commonsRadio);
 
     expect(
-      screen.queryByText("There are no commons on which to run this job."),
+      screen.queryByText("There are no games on which to run this job."),
     ).not.toBeInTheDocument();
 
     const submitButton = screen.getByTestId(

@@ -111,9 +111,9 @@ describe("AdminEditCommonsPage tests", () => {
         </QueryClientProvider>,
       );
 
-      expect(await screen.findByLabelText(/Commons Name/)).toBeInTheDocument();
+      expect(await screen.findByLabelText(/Game Name/)).toBeInTheDocument();
 
-      const nameField = screen.getByLabelText(/Commons Name/);
+      const nameField = screen.getByLabelText(/Game Name/);
       const startingBalanceField = screen.getByLabelText(/Starting Balance/);
       const cowPriceField = screen.getByLabelText(/Cow Price/);
       const milkPriceField = screen.getByLabelText(/Milk Price/);
@@ -153,9 +153,9 @@ describe("AdminEditCommonsPage tests", () => {
         </QueryClientProvider>,
       );
 
-      expect(await screen.findByLabelText(/Commons Name/)).toBeInTheDocument();
+      expect(await screen.findByLabelText(/Game Name/)).toBeInTheDocument();
 
-      const nameField = screen.getByLabelText(/Commons Name/);
+      const nameField = screen.getByLabelText(/Game Name/);
       const startingBalanceField = screen.getByLabelText(/Starting Balance/);
       const cowPriceField = screen.getByLabelText(/Cow Price/);
       const milkPriceField = screen.getByLabelText(/Milk Price/);
@@ -211,7 +211,7 @@ describe("AdminEditCommonsPage tests", () => {
 
       await waitFor(() => expect(mockToast).toHaveBeenCalled());
       expect(mockToast).toBeCalledWith(
-        "Commons Updated - id: 5 name: Phill's Commons",
+        "Game Updated - id: 5 name: Phill's Commons",
       );
       expect(mockNavigate).toBeCalledWith({
         to: "/admin/listcommonsv2?focus=5",

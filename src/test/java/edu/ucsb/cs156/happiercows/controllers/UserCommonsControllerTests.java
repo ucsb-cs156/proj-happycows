@@ -185,7 +185,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
         verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
-        String expectedString = "{\"message\":\"Not enrolled in course associated with commons\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
+        String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -225,7 +225,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         verify(commonsRepository, times(1)).findById(eq(1L));
         verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
-        String expectedString = "{\"message\":\"Commons with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Game with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -333,7 +333,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
         verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
-        String expectedString = "{\"message\":\"Not enrolled in course associated with commons\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
+        String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -403,7 +403,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         verify(courseAccessService, times(1)).isEligibleForCommons(eq(currentUser), eq(testCommons));
         verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(anyLong(), anyLong());
 
-        String expectedString = "{\"message\":\"Not enrolled in course associated with commons\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
+        String expectedString = "{\"message\":\"Not enrolled in course associated with game\",\"type\":\"NotEnrolledInCourseAssociatedWithCommonsException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -454,7 +454,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(404)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"Commons with id 234 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Game with id 234 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -472,7 +472,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(404)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"Commons with id 234 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Game with id 234 not found\",\"type\":\"EntityNotFoundException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -606,7 +606,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(400)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"Commons with id 1 is hidden\",\"type\":\"CommonsHiddenException\"}";
+        String expectedString = "{\"message\":\"Game with id 1 is hidden\",\"type\":\"CommonsHiddenException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
@@ -628,7 +628,7 @@ public class UserCommonsControllerTests extends ControllerTestCase {
                 .andExpect(status().is(400)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"Commons with id 1 is hidden\",\"type\":\"CommonsHiddenException\"}";
+        String expectedString = "{\"message\":\"Game with id 1 is hidden\",\"type\":\"CommonsHiddenException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);

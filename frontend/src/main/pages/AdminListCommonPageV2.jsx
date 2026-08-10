@@ -66,7 +66,7 @@ export default function AdminListCommonsPageV2() {
       <div className="pt-2">
         <Row className="pt-5 page-header align-items-center">
           <Col md={3}>
-            <h2 style={{ margin: 0 }}>Commons</h2>
+            <h2 style={{ margin: 0 }}>Games</h2>
           </Col>
           <Col md={6}>
             <div className="search-container">

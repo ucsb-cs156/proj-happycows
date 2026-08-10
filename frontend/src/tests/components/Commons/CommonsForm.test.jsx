@@ -42,7 +42,7 @@ describe("CommonsForm tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText(/Commons Name/)).toBeInTheDocument();
+    expect(await screen.findByText(/Game Name/)).toBeInTheDocument();
 
     [
       /Starting Balance/,
@@ -99,7 +99,7 @@ describe("CommonsForm tests", () => {
     //Check default empty field
     fireEvent.click(submitButton);
     expect(
-      await screen.findByText("Commons name is required"),
+      await screen.findByText("Game name is required"),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Degradation rate is required"),

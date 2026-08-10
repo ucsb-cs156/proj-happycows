@@ -74,7 +74,7 @@ export default function HomePage({ hour = null }) {
     navigate("/play/" + id);
   };
 
-  //create a list of commons that the user hasn't joined for use in the "Join a New Commons" list.
+  //create a list of commons that the user hasn't joined for use in the "Join A New Game" list.
   const commonsNotJoinedList = filterCommonsNotJoinedAndNotHidden(
     commons,
     commonsJoined,
@@ -100,7 +100,7 @@ export default function HomePage({ hour = null }) {
             <Col sm>
               <CommonsList
                 commonList={commonsNotJoinedList}
-                title="Join A New Commons"
+                title="Join A New Game"
                 buttonText={"Join"}
                 buttonLink={mutation.mutate}
               />
@@ -109,7 +109,7 @@ export default function HomePage({ hour = null }) {
             <Col sm>
               <CommonsList
                 commonList={commonsJoined}
-                title="Visit A Commons"
+                title="Visit A Game"
                 buttonText={"Visit"}
                 buttonLink={visitButtonClick}
               />

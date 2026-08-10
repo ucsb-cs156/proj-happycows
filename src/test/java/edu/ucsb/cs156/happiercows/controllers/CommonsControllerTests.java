@@ -915,7 +915,7 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         Map<String, Object> responseMap = responseToJson(response);
 
-        assertEquals(responseMap.get("message"), "Commons with id 18 not found");
+        assertEquals(responseMap.get("message"), "Game with id 18 not found");
         assertEquals(responseMap.get("type"), "EntityNotFoundException");
     }
 
@@ -932,7 +932,7 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         Map<String, Object> responseMap = responseToJson(response);
 
-        assertEquals(responseMap.get("message"), "Commons with id 18 not found");
+        assertEquals(responseMap.get("message"), "Game with id 18 not found");
         assertEquals(responseMap.get("type"), "EntityNotFoundException");
     }
 
@@ -1042,7 +1042,7 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         Map<String, Object> responseMap = responseToJson(response);
 
-        assertEquals(responseMap.get("message"), "Commons with id 2 not found");
+        assertEquals(responseMap.get("message"), "Game with id 2 not found");
         assertEquals(responseMap.get("type"), "EntityNotFoundException");
     }
 
@@ -1071,7 +1071,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         Map<String, Object> responseMap = responseToJson(response);
         assertEquals("CourseAccessDeniedException", responseMap.get("type"));
         assertEquals(
-                "You are not enrolled in the course required to join commons with id 2",
+                "You are not enrolled in the course required to join game with id 2",
                 responseMap.get("message"));
     }
 
@@ -1222,7 +1222,7 @@ public class CommonsControllerTests extends ControllerTestCase {
 
         String responseString = response.getResponse().getContentAsString();
 
-        String expectedString = "{\"message\":\"commons with id 2 deleted\"}";
+        String expectedString = "{\"message\":\"game with id 2 deleted\"}";
 
         assertEquals(expectedString, responseString);
     }
@@ -1240,7 +1240,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         verify(commonsRepository, times(1)).findById(2L);
 
 
-        String expectedString = "{\"message\":\"Commons with id 2 not found\",\"type\":\"EntityNotFoundException\"}";
+        String expectedString = "{\"message\":\"Game with id 2 not found\",\"type\":\"EntityNotFoundException\"}";
 
         Map<String, Object> expectedJson = mapper.readValue(expectedString, new TypeReference<Map<String, Object>>() {
         });
@@ -1280,7 +1280,7 @@ public class CommonsControllerTests extends ControllerTestCase {
         verify(userCommonsRepository, times(1)).delete(uc);
 
         String responseString = response.getResponse().getContentAsString();
-        String expectedString = "{\"message\":\"user with id 1 deleted from commons with id 2, 0 users remain\"}";
+        String expectedString = "{\"message\":\"user with id 1 deleted from game with id 2, 0 users remain\"}";
 
         assertEquals(responseString, expectedString);
     }

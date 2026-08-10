@@ -26,7 +26,7 @@ export default function ReportTable({
       accessor: "id",
     },
     {
-      Header: "commonsId",
+      Header: "gameId",
       accessor: "commonsId",
       Cell: (props) => {
         return <div style={{ textAlign: "right" }}>{props.value}</div>;

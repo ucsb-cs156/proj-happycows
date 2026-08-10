@@ -503,7 +503,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         verify(announcementRepository, times(0)).findCurrentByCommonsId(commonsId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
-        assertEquals("User is not a member of this commons.", responseString);
+        assertEquals("User is not a member of this game.", responseString);
     }
 
     @WithMockUser(roles = {"ADMIN"})

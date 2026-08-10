@@ -197,7 +197,7 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders();
     expect(
-      screen.getByText(/No messages available for this commons/i),
+      screen.getByText(/No messages available for this game/i),
     ).toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
@@ -338,7 +338,7 @@ describe("ChatHistoryPage", () => {
     renderWithProviders();
     expect(screen.queryAllByTestId(/ChatMessageDisplay-/)).toHaveLength(0);
     expect(
-      screen.getByText(/No messages available for this commons/i),
+      screen.getByText(/No messages available for this game/i),
     ).toBeInTheDocument();
 
     useInfiniteQuerySpy.mockRestore();
@@ -794,7 +794,7 @@ describe("ChatHistoryPage", () => {
 
     renderWithProviders();
     expect(
-      screen.queryByText(/No messages available for this commons/i),
+      screen.queryByText(/No messages available for this game/i),
     ).not.toBeInTheDocument();
   });
 

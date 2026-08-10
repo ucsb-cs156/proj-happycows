@@ -53,7 +53,7 @@ export default function CommonsEditPage() {
   });
 
   const onSuccess = (_, commons) => {
-    toast(`Commons Updated - id: ${commons.id} name: ${commons.name}`);
+    toast(`Game Updated - id: ${commons.id} name: ${commons.name}`);
   };
 
   const mutation = useBackendMutation(
@@ -76,7 +76,7 @@ export default function CommonsEditPage() {
   return (
     <BasicLayout>
       <div className="pt-2">
-        <h1>Edit Commons</h1>
+        <h1>Edit Game</h1>
         {commons && (
           <CommonsForm
             initialCommons={commons}

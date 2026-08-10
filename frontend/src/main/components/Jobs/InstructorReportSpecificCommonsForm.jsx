@@ -32,7 +32,7 @@ function InstructorReportSpecificCommonsForm({ submitAction }) {
   };
 
   if (!commons || commons.length === 0) {
-    return <div>There are no commons on which to run this job.</div>;
+    return <div>There are no games on which to run this job.</div>;
   }
 
   if (selectedCommons === null) {
@@ -50,7 +50,7 @@ function InstructorReportSpecificCommonsForm({ submitAction }) {
       />
       <p>
         Click this button to generate an instructor report for the selected
-        commons.
+        game.
       </p>
       <Button
         type="submit"

@@ -43,7 +43,7 @@ function SetCowHealthForm({
   };
 
   if (!commons || commons.length === 0) {
-    return <div>There are no commons on which to run this job.</div>;
+    return <div>There are no games on which to run this job.</div>;
   }
 
   if (selectedCommons === null) {
@@ -55,7 +55,7 @@ function SetCowHealthForm({
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-3">
         <Form.Text htmlFor="description">
-          Set the cow health for all cows in a single commons.
+          Set the cow health for all cows in a single game.
         </Form.Text>
       </Form.Group>
 

@@ -9,7 +9,7 @@ function CommonsSelect({
   return (
     <Form.Group className="mb-3">
       <Form.Text htmlFor="commons" className="fw-bold fs-5">
-        Commons
+        Game
       </Form.Text>
       <div className="ms-3" data-testid={`${testid}-CommonsSelect-div`}>
         {commons.map((object) => (

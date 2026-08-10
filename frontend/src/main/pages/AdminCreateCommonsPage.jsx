@@ -16,7 +16,7 @@ const AdminCreateCommonsPage = () => {
   const onSuccess = (commons) => {
     toast(
       <div>
-        Commons successfully created!
+        Game successfully created!
         <br />
         {`id: ${commons.id}`}
         <br />
@@ -54,7 +54,7 @@ const AdminCreateCommonsPage = () => {
 
   return (
     <BasicLayout>
-      <h2>Create Commons</h2>
+      <h2>Create Game</h2>
       <CommonsForm submitAction={submitAction} />
     </BasicLayout>
   );

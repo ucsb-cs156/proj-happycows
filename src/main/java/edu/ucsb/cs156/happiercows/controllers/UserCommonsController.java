@@ -69,7 +69,7 @@ public class UserCommonsController extends ApiController {
     User u = getCurrentUser().getUser();
     Long userId = u.getId();
     Commons commons = commonsRepository.findById(commonsId)
-        .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+        .orElseThrow(() -> new EntityNotFoundException("Game", commonsId));
     ensureUserCanAccessCourseLinkedCommons(u, commons);
     UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
         .orElseThrow(
@@ -88,7 +88,7 @@ public class UserCommonsController extends ApiController {
         Long userId = u.getId();
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
-          ()->new EntityNotFoundException(Commons.class, commonsId));
+          ()->new EntityNotFoundException("Game", commonsId));
 
         ensureUserCanAccessCourseLinkedCommons(u, commons);
 
@@ -124,7 +124,7 @@ public class UserCommonsController extends ApiController {
         Long userId = u.getId();
 
         Commons commons = commonsRepository.findById(commonsId).orElseThrow( 
-          ()->new EntityNotFoundException(Commons.class, commonsId));
+          ()->new EntityNotFoundException("Game", commonsId));
 
         ensureUserCanAccessCourseLinkedCommons(u, commons);
 

@@ -13,7 +13,7 @@ function MilkTheCowsForm({ submitAction, testid = "MilkTheCowsForm" }) {
     [],
   );
 
-  const allCommonsProp = { id: 0, name: "All Commons" };
+  const allCommonsProp = { id: 0, name: "All Games" };
 
   const commons = [allCommonsProp, ...commonsAll];
 
@@ -42,7 +42,7 @@ function MilkTheCowsForm({ submitAction, testid = "MilkTheCowsForm" }) {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-3">
         <Form.Text htmlFor="description">
-          Milk the cows in a single or all commons.
+          Milk the cows in a single or all games.
         </Form.Text>
       </Form.Group>
 

@@ -192,16 +192,16 @@ export default function PlayPage() {
     >
       <BasicLayout>
         <Container>
-          {!commonsPlus && <h1>This commons does not exist!</h1>}
+          {!commonsPlus && <h1>This game does not exist!</h1>}
           {deniedAccess && (
             <h1>
-              You do not currently have access to this Commons. Please contact
-              your instructor if you think this is an error
+              You do not currently have access to this Game. Please contact your
+              instructor if you think this is an error
             </h1>
           )}
-          {notallowed && <h1>You have yet to join this commons!</h1>}
+          {notallowed && <h1>You have yet to join this game!</h1>}
           {hidden && (
-            <h1>This commons has been hidden by the site administrator.</h1>
+            <h1>This game has been hidden by the site administrator.</h1>
           )}
 
           {allowed && !!currentUser && (

@@ -83,7 +83,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Edit Announcement for Commons Sample Commons",
+      "Edit Announcement for Game Sample Commons",
     );
   });
 
@@ -272,7 +272,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Edit Announcement for Commons Sample Commons",
+      "Edit Announcement for Game Sample Commons",
     );
 
     const startDateField = await screen.findByTestId(

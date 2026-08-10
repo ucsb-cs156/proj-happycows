@@ -50,7 +50,7 @@ export default function AdminAnnouncementsPage() {
       <div className="pt-2">
         <Row className="pt-5 pb-3" style={{ gap: "30px" }}>
           <Col md="auto">
-            <h2>Announcements for Commons: {commonsName}</h2>
+            <h2>Announcements for Game: {commonsName}</h2>
           </Col>
           <Col style={buttonStyle}>
             <Button

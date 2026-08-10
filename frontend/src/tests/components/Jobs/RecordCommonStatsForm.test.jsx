@@ -24,7 +24,7 @@ describe("RecordCommonStatsForm tests", () => {
       </QueryClientProvider>,
     );
     expect(
-      screen.getByText(/Record statistics for all commons/i),
+      screen.getByText(/Record statistics for all games/i),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("RecordCommonStatsForm-Submit-Button"),
@@ -107,7 +107,7 @@ describe("RecordCommonStatsForm tests", () => {
       </QueryClientProvider>,
     );
     expect(
-      screen.getByText(/Record statistics for all commons/i),
+      screen.getByText(/Record statistics for all games/i),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/This will create a CommonStats/i),

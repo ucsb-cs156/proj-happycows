@@ -61,7 +61,7 @@ describe("AdminJobsPage tests", () => {
 
     expect(await screen.findByText("Test Job")).toBeInTheDocument();
     expect(
-      await screen.findByText("Set Cow Health for a Specific Commons"),
+      await screen.findByText("Set Cow Health for a Specific Game"),
     ).toBeInTheDocument();
     expect(await screen.findByText("Update Cow Health")).toBeInTheDocument();
     expect(await screen.findByText("Milk The Cows")).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("AdminJobsPage tests", () => {
     );
 
     const setCowHealthButton = await screen.findByText(
-      "Set Cow Health for a Specific Commons",
+      "Set Cow Health for a Specific Game",
     );
     expect(setCowHealthButton).toBeInTheDocument();
     setCowHealthButton.click();
@@ -147,7 +147,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Set Cow Health (Commons: Anika's Commons, Health: 10)`,
+      `Submitted Job: Set Cow Health (Game: Anika's Commons, Health: 10)`,
     );
   });
 
@@ -194,7 +194,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Update Cow Health (Commons: Anika's Commons)`,
+      `Submitted Job: Update Cow Health (Game: Anika's Commons)`,
     );
   });
 
@@ -280,7 +280,7 @@ describe("AdminJobsPage tests", () => {
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Milk The Cows! (Commons: Anika's Commons)`,
+      `Submitted Job: Milk The Cows! (Game: Anika's Commons)`,
     );
   });
 
@@ -372,7 +372,7 @@ describe("AdminJobsPage tests", () => {
     );
 
     // assert
-    const label = "Instructor Report (for specific commons)";
+    const label = "Instructor Report (for specific game)";
     expect(await screen.findByText(label)).toBeInTheDocument();
 
     const InstructorReportJobButton = screen.getByText(label);
@@ -381,7 +381,7 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() =>
       expect(
-        screen.queryByText("There are no commons on which to run this job."),
+        screen.queryByText("There are no games on which to run this job."),
       ).not.toBeInTheDocument(),
     );
 
@@ -401,7 +401,7 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith(
-        "Submitted Job: Instructor Report (Specific Commons)",
+        "Submitted Job: Instructor Report (Specific Game)",
       );
     });
   });

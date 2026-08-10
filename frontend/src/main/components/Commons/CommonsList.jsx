@@ -58,7 +58,7 @@ const CommonsList = (props) => {
                     { fontFamily: "Sancreek", paddingBottom: "10px" }
                   }
                 >
-                  Common's Name
+                  Game Name
                 </Col>
                 <Col sm={4}></Col>
               </Row>
@@ -88,7 +88,7 @@ const CommonsList = (props) => {
               }
               data-testid="commonsList-default-message"
             >
-              There are currently no commons to {defaultMessage}
+              There are currently no games to {defaultMessage}
             </Row>
           </Container>
         </Card.Subtitle>

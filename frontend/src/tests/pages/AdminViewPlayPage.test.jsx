@@ -209,7 +209,7 @@ describe("AdminViewPlayPage tests", () => {
       await screen.findByText(/This is a Admin Feature for/),
     ).toBeInTheDocument();
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
-    expect(await screen.findByText(/Play Page for common/)).toBeInTheDocument();
+    expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
 
     const bannerElement = screen.getByTestId(
       "adminviewplaypage-read-only-banner",
@@ -223,7 +223,7 @@ describe("AdminViewPlayPage tests", () => {
             `,
     );
     expect(bannerElement).toHaveTextContent(
-      "This is a Admin Feature for Phillip ConradVisiting Farmer 's Play Page for common Sample Commons in Read Only Mode.",
+      "This is a Admin Feature for Phillip ConradVisiting Farmer 's Play Page for game Sample Commons in Read Only Mode.",
     );
   });
 
@@ -266,7 +266,7 @@ describe("AdminViewPlayPage tests", () => {
       await screen.findByText(/This is a Admin Feature for/),
     ).toBeInTheDocument();
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
-    expect(await screen.findByText(/Play Page for common/)).toBeInTheDocument();
+    expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
   test("renders when userCommons is truthy and commonsPlus is falsy", async () => {
     axiosMock
@@ -286,7 +286,7 @@ describe("AdminViewPlayPage tests", () => {
       await screen.findByText(/This is a Admin Feature for/),
     ).toBeInTheDocument();
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
-    expect(await screen.findByText(/Play Page for common/)).toBeInTheDocument();
+    expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
   test("renders CardGroup when userCommons and commonsPlus are truthy", async () => {
     render(

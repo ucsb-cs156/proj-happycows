@@ -89,7 +89,7 @@ const AdminEditAnnouncementsPage = () => {
 
   return (
     <BasicLayout>
-      <h2>Edit Announcement for Commons {commonsName}</h2>
+      <h2>Edit Announcement for Game {commonsName}</h2>
       <AnnouncementForm
         initialContents={announcement}
         submitAction={submitAction}
