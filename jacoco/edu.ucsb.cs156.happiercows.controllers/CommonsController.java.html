@@ -6,7 +6,7 @@ import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
@@ -14,7 +14,7 @@ import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,7 +48,7 @@ import java.util.stream.StreamSupport;
     private CommonsRepository commonsRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -348,15 +348,15 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L348">            throw new CourseAccessDeniedException(commonsId);</span>
         }
 
-<span class="fc" id="L351">        Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L351">        Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
-<span class="fc bfc" id="L353" title="All 2 branches covered.">        if (userCommonsLookup.isPresent()) {</span>
+<span class="fc bfc" id="L353" title="All 2 branches covered.">        if (farmerLookup.isPresent()) {</span>
             // user is already a member of this commons
 <span class="fc" id="L355">            String body = mapper.writeValueAsString(joinedCommons);</span>
 <span class="fc" id="L356">            return ResponseEntity.ok().body(body);</span>
         }
 
-<span class="fc" id="L359">        UserCommons uc = UserCommons.builder()</span>
+<span class="fc" id="L359">        Farmer uc = Farmer.builder()</span>
 <span class="fc" id="L360">                .user(u)</span>
 <span class="fc" id="L361">                .commons(joinedCommons)</span>
 <span class="fc" id="L362">                .username(username)</span>
@@ -368,7 +368,7 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L368">                .cowDeaths(0)</span>
 <span class="fc" id="L369">                .build();</span>
 
-<span class="fc" id="L371">        userCommonsRepository.save(uc);</span>
+<span class="fc" id="L371">        farmerRepository.save(uc);</span>
 
 <span class="fc" id="L373">        String body = mapper.writeValueAsString(joinedCommons);</span>
 <span class="fc" id="L374">        return ResponseEntity.ok().body(body);</span>
@@ -380,10 +380,10 @@ import java.util.stream.StreamSupport;
     public Object deleteCommons(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
         
-<span class="fc" id="L383">        Iterable&lt;UserCommons&gt; userCommons = userCommonsRepository.findByCommonsId(id);</span>
+<span class="fc" id="L383">        Iterable&lt;Farmer&gt; farmer = farmerRepository.findByCommonsId(id);</span>
 
-<span class="fc bfc" id="L385" title="All 2 branches covered.">        for (UserCommons commons : userCommons) {</span>
-<span class="fc" id="L386">            userCommonsRepository.delete(commons);</span>
+<span class="fc bfc" id="L385" title="All 2 branches covered.">        for (Farmer commons : farmer) {</span>
+<span class="fc" id="L386">            farmerRepository.delete(commons);</span>
 <span class="fc" id="L387">        }</span>
 
 <span class="fc" id="L389">        commonsRepository.findById(id)</span>
@@ -402,12 +402,12 @@ import java.util.stream.StreamSupport;
     public Object deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,
                                        @PathVariable(&quot;userId&quot;) Long userId) throws Exception {
 
-<span class="fc" id="L405">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L405">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
 <span class="fc" id="L406">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
-                        UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId)
+                        Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId)
                 );
 
-<span class="fc" id="L410">        userCommonsRepository.delete(userCommons);</span>
+<span class="fc" id="L410">        farmerRepository.delete(farmer);</span>
 
 <span class="fc" id="L412">        String responseString = String.format(&quot;user with id %d deleted from game with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
 
@@ -443,9 +443,9 @@ import java.util.stream.StreamSupport;
     @GetMapping(&quot;/numcows&quot;)
     public ResponseEntity&lt;List&lt;Integer&gt;&gt; getNumCowsForCommonsId(
             @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L446">        Iterable&lt;UserCommons&gt; userCommonsList = userCommonsRepository.findByCommonsId(commonsId);</span>
-<span class="fc" id="L447">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(userCommonsList.spliterator(), false)</span>
-<span class="fc" id="L448">                .map(UserCommons::getNumOfCows)</span>
+<span class="fc" id="L446">        Iterable&lt;Farmer&gt; farmerList = farmerRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L447">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(farmerList.spliterator(), false)</span>
+<span class="fc" id="L448">                .map(Farmer::getNumOfCows)</span>
 <span class="fc" id="L449">                .collect(Collectors.toList());</span>
 <span class="fc" id="L450">        return ResponseEntity.ok().body(numCowsList);</span>
     }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
     private CommonsRepository commonsRepository;
   
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 
     public JobContextConsumer create(Long commonsID) {
 <span class="fc" id="L31">        log.info(&quot;commonsRepository = &quot; + commonsRepository);</span>
-<span class="fc" id="L32">        log.info(&quot;userCommonsRepository = &quot; + userCommonsRepository);</span>
-<span class="fc" id="L33">        return new UpdateCowHealthJobInd(commonsRepository, userCommonsRepository, userRepository, commonsPlusBuilderService, commonsID);</span>
+<span class="fc" id="L32">        log.info(&quot;farmerRepository = &quot; + farmerRepository);</span>
+<span class="fc" id="L33">        return new UpdateCowHealthJobInd(commonsRepository, farmerRepository, userRepository, commonsPlusBuilderService, commonsID);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

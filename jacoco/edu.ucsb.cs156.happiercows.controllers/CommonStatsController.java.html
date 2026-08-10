@@ -4,7 +4,7 @@ import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.helpers.CommonStatsCSVHelper;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Autowired
     CommonStatsRepository commonStatsRepository;

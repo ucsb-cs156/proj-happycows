@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CowHealthUpdateStrategies.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.strategies</a> &gt; <span class="el_source">CowHealthUpdateStrategies.java</span></div><h1>CowHealthUpdateStrategies.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.strategies;
 
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
 <span class="fc" id="L24">    Linear(&quot;Linear&quot;,</span>
             &quot;Cow health increases/decreases proportionally to the number of cows over/under the carrying capacity.&quot;) {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 <span class="fc" id="L28">            return uC.getCowHealth()</span>
 <span class="fc" id="L29">                    - (totalCows - commonsPlus.getEffectiveCapacity()) * commonsPlus.getCommons().getDegradationRate();</span>
         }
@@ -32,7 +32,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
 <span class="fc" id="L32">    Constant(&quot;Constant&quot;,</span>
             &quot;Cow health changes increases/decreases by the degradation rate, depending on if the number of cows exceeds the carrying capacity.&quot;) {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 <span class="fc bfc" id="L36" title="All 2 branches covered.">            if (totalCows &lt;= commonsPlus.getEffectiveCapacity()) {</span>
 <span class="fc" id="L37">                return uC.getCowHealth() + commonsPlus.getCommons().getDegradationRate();</span>
             } else {
@@ -42,14 +42,14 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     },
 <span class="fc" id="L43">    Noop(&quot;Do nothing&quot;, &quot;Cow health does not change.&quot;) {</span>
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 <span class="fc" id="L46">            return uC.getCowHealth();</span>
         }
     },
 <span class="fc" id="L49">    Milan(&quot;Milan&quot;,</span>
             &quot;Cow health increases/decreases proportionally to the square of ratio of cows/total capacity according to a formula from Milan de Vries.&quot;) {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 <span class="fc" id="L53">            double excess = totalCows - commonsPlus.getEffectiveCapacity();</span>
 <span class="fc" id="L54">            double adjustmentFactor = 1.0;</span>
 <span class="fc" id="L55">            double x = (excess / commonsPlus.getEffectiveCapacity());</span>
@@ -64,7 +64,7 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
 <span class="fc" id="L64">    Mattanjah(&quot;Mattanjah&quot;,</span>
             &quot;Cow health increases/decreases proportionally to the square of ratio of excess/total capacity * degradation rate according to a formula from Mattanjah de Vries.&quot;) {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, UserCommons uC, int totalCows) {
+        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
 
 <span class="fc" id="L69">            double excess = totalCows - commonsPlus.getEffectiveCapacity();</span>
 <span class="fc" id="L70">            double adjustmentFactor = 1.0;</span>

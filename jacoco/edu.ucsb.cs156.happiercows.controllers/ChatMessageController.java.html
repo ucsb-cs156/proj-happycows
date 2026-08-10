@@ -19,8 +19,8 @@ import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 import edu.ucsb.cs156.happiercows.repositories.ChatMessageRepository;
 
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 import org.springframework.security.core.Authentication;
 
@@ -37,7 +37,7 @@ import java.util.Optional;
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -55,14 +55,14 @@ import java.util.Optional;
 <span class="fc" id="L55">            log.info(&quot;User is not an admin&quot;);</span>
 <span class="fc" id="L56">            User user = getCurrentUser().getUser();</span>
 <span class="fc" id="L57">            Long userId = user.getId();</span>
-<span class="fc" id="L58">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L58">            Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
-<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            if (!farmerLookup.isPresent()) {</span>
 <span class="fc" id="L61">                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
             }
 
-<span class="fc" id="L64">            UserCommons userCommons = userCommonsLookup.get();</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(!userCommons.getCommons().isShowChat()){</span>
+<span class="fc" id="L64">            Farmer farmer = farmerLookup.get();</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if(!farmer.getCommons().isShowChat()){</span>
 <span class="fc" id="L66">                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
             }
         }
@@ -111,14 +111,14 @@ import java.util.Optional;
 <span class="fc" id="L111">        Authentication auth = SecurityContextHolder.getContext().getAuthentication();</span>
 <span class="fc bfc" id="L112" title="All 2 branches covered.">        if (!auth.getAuthorities().stream().anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;))){</span>
 <span class="fc" id="L113">            log.info(&quot;User is not an admin&quot;);</span>
-<span class="fc" id="L114">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L114">            Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
 
-<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (!userCommonsLookup.isPresent()) {</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">            if (!farmerLookup.isPresent()) {</span>
 <span class="fc" id="L117">                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
             }
 
-<span class="fc" id="L120">            UserCommons userCommons = userCommonsLookup.get();</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">            if(!userCommons.getCommons().isShowChat()){</span>
+<span class="fc" id="L120">            Farmer farmer = farmerLookup.get();</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if(!farmer.getCommons().isShowChat()){</span>
 <span class="fc" id="L122">                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>
             }
         }
@@ -164,9 +164,9 @@ import java.util.Optional;
         }
 
         // Check if showChat is true
-<span class="fc" id="L167">        Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);</span>
-<span class="fc" id="L168">        UserCommons userCommons = userCommonsLookup.get();</span>
-<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (!userCommons.getCommons().isShowChat()){</span>
+<span class="fc" id="L167">        Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);</span>
+<span class="fc" id="L168">        Farmer farmer = farmerLookup.get();</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (!farmer.getCommons().isShowChat()){</span>
             // Check if the user is an admin
 <span class="fc" id="L171">            Authentication auth = SecurityContextHolder.getContext().getAuthentication();</span>
 <span class="fc bfc" id="L172" title="All 2 branches covered.">            if (!auth.getAuthorities().stream().anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;))){</span>

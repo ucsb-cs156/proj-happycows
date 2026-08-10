@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service(&quot;CommonsPlusBuilderService&quot;)
 <span class="fc" id="L18">public class CommonsPlusBuilderService {</span>
@@ -21,13 +21,13 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     public CommonsPlus toCommonsPlus(Commons c) {
 <span class="fc" id="L27">        Optional&lt;Integer&gt; numCows = commonsRepository.getNumCows(c.getId());</span>
 <span class="fc" id="L28">        Optional&lt;Integer&gt; numUsers = commonsRepository.getNumUsers(c.getId());</span>
 <span class="fc" id="L29">        List&lt;Integer&gt; cowsPerFarmer = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L30">        userCommonsRepository.findByCommonsId(c.getId())</span>
+<span class="fc" id="L30">        farmerRepository.findByCommonsId(c.getId())</span>
 <span class="fc" id="L31">                .forEach((uc) -&gt; cowsPerFarmer.add(uc.getNumOfCows()));</span>
 
 <span class="fc" id="L33">        cowsPerFarmer.sort(Comparator.naturalOrder());</span>

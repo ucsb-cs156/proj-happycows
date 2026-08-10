@@ -3,9 +3,9 @@
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -23,7 +23,7 @@ public class SetCowHealthJob implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
 
@@ -40,14 +40,14 @@ public class SetCowHealthJob implements JobContextConsumer {
             }
 <span class="fc" id="L41">            ctx.log(&quot;Commons &quot; + commons.get().getName());</span>
 
-<span class="fc" id="L43">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commons.get().getId());</span>
+<span class="fc" id="L43">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commons.get().getId());</span>
 
-<span class="fc bfc" id="L45" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
-<span class="fc" id="L46">                User user = userCommons.getUser();</span>
-<span class="fc" id="L47">                ctx.log(&quot;User: &quot; + user.getFullName() + &quot;, numCows: &quot; + userCommons.getNumOfCows() + &quot;, cowHealth: &quot; + userCommons.getCowHealth());</span>
-<span class="fc" id="L48">                ctx.log(&quot; old cow health: &quot; + userCommons.getCowHealth() + &quot;, new cow health: &quot; + newCowHealth);</span>
-<span class="fc" id="L49">                userCommons.setCowHealth(newCowHealth);</span>
-<span class="fc" id="L50">                userCommonsRepository.save(userCommons);</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">            for (Farmer farmer : allFarmer) {</span>
+<span class="fc" id="L46">                User user = farmer.getUser();</span>
+<span class="fc" id="L47">                ctx.log(&quot;User: &quot; + user.getFullName() + &quot;, numCows: &quot; + farmer.getNumOfCows() + &quot;, cowHealth: &quot; + farmer.getCowHealth());</span>
+<span class="fc" id="L48">                ctx.log(&quot; old cow health: &quot; + farmer.getCowHealth() + &quot;, new cow health: &quot; + newCowHealth);</span>
+<span class="fc" id="L49">                farmer.setCowHealth(newCowHealth);</span>
+<span class="fc" id="L50">                farmerRepository.save(farmer);</span>
 <span class="fc" id="L51">            }</span>
 
 <span class="fc" id="L53">            ctx.log(&quot;Cow health has been set!&quot;);</span>

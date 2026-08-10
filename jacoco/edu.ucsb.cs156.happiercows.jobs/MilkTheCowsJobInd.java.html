@@ -2,10 +2,10 @@
 
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -19,7 +19,7 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
@@ -45,10 +45,10 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
 <span class="fc" id="L45">            double milkPrice = commonMilked.getMilkPrice();</span>
 <span class="fc" id="L46">            ctx.log(&quot;Milking cows for Commons: &quot; + name + &quot;, Milk Price: &quot; + formatDollars(milkPrice));</span>
 
-<span class="fc" id="L48">            Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commonMilked.getId());</span>
+<span class="fc" id="L48">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commonMilked.getId());</span>
 
-<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (UserCommons userCommons : allUserCommons) {</span>
-<span class="fc" id="L51">                MilkTheCowsJob.milkCows(ctx, commonMilked, userCommons, profitRepository, userCommonsRepository);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (Farmer farmer : allFarmer) {</span>
+<span class="fc" id="L51">                MilkTheCowsJob.milkCows(ctx, commonMilked, farmer, profitRepository, farmerRepository);</span>
 <span class="fc" id="L52">            }</span>
             
 

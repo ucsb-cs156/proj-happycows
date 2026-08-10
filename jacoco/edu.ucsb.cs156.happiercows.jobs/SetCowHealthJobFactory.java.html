@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +17,15 @@ import lombok.extern.slf4j.Slf4j;
     private CommonsRepository commonsRepository;
   
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     public JobContextConsumer create(Long commonsID, double health) {
 <span class="fc" id="L26">        log.info(&quot;commonsRepository = &quot; + commonsRepository);</span>
-<span class="fc" id="L27">        log.info(&quot;userCommonsRepository = &quot; + userCommonsRepository);</span>
-<span class="fc" id="L28">        return new SetCowHealthJob(commonsID, health, commonsRepository, userCommonsRepository, userRepository);</span>
+<span class="fc" id="L27">        log.info(&quot;farmerRepository = &quot; + farmerRepository);</span>
+<span class="fc" id="L28">        return new SetCowHealthJob(commonsID, health, commonsRepository, farmerRepository, userRepository);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

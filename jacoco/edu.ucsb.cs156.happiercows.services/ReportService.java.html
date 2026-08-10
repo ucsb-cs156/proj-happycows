@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service(&quot;ReportService&quot;)
 <span class="fc" id="L16">public class ReportService {</span>
@@ -25,16 +25,16 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     public Report createReport(Long commonsId) {
 <span class="fc" id="L31">        Report report = createAndSaveReportHeader(commonsId);</span>
         
-<span class="fc" id="L33">        Iterable&lt;UserCommons&gt; allUserCommons = userCommonsRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L33">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commonsId);</span>
 
 
-<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (UserCommons userCommons : allUserCommons) {</span>
-<span class="fc" id="L37">               createAndSaveReportLine(report, userCommons);</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (Farmer farmer : allFarmer) {</span>
+<span class="fc" id="L37">               createAndSaveReportLine(report, farmer);</span>
 <span class="fc" id="L38">        }</span>
 
 <span class="fc" id="L40">        return report;</span>
@@ -66,17 +66,17 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 <span class="fc" id="L66">        return report;</span>
     }
 
-    public ReportLine createAndSaveReportLine(Report report, UserCommons userCommons) {
+    public ReportLine createAndSaveReportLine(Report report, Farmer farmer) {
 <span class="fc" id="L70">        ReportLine reportLine = ReportLine.builder()</span>
 <span class="fc" id="L71">                .reportId(report.getId())</span>
-<span class="fc" id="L72">                .userId(userCommons.getUser().getId())</span>
-<span class="fc" id="L73">                .username(userCommons.getUsername())</span>
-<span class="fc" id="L74">                .totalWealth(userCommons.getTotalWealth())</span>
-<span class="fc" id="L75">                .numOfCows(userCommons.getNumOfCows())</span>
-<span class="fc" id="L76">                .avgCowHealth(userCommons.getCowHealth())</span>
-<span class="fc" id="L77">                .cowsBought(userCommons.getCowsBought())</span>
-<span class="fc" id="L78">                .cowsSold(userCommons.getCowsSold())</span>
-<span class="fc" id="L79">                .cowDeaths(userCommons.getCowDeaths())</span>
+<span class="fc" id="L72">                .userId(farmer.getUser().getId())</span>
+<span class="fc" id="L73">                .username(farmer.getUsername())</span>
+<span class="fc" id="L74">                .totalWealth(farmer.getTotalWealth())</span>
+<span class="fc" id="L75">                .numOfCows(farmer.getNumOfCows())</span>
+<span class="fc" id="L76">                .avgCowHealth(farmer.getCowHealth())</span>
+<span class="fc" id="L77">                .cowsBought(farmer.getCowsBought())</span>
+<span class="fc" id="L78">                .cowsSold(farmer.getCowsSold())</span>
+<span class="fc" id="L79">                .cowDeaths(farmer.getCowDeaths())</span>
 <span class="fc" id="L80">                .build();</span>
 
 <span class="fc" id="L82">        reportLineRepository.save(reportLine);</span>

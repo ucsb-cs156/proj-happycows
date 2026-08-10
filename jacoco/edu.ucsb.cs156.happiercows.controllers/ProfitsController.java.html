@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfitsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">ProfitsController.java</span></div><h1>ProfitsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Profit;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +32,7 @@ import java.util.List;
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Autowired
     ProfitRepository profitRepository;
@@ -46,10 +46,10 @@ import java.util.List;
 
     ) {
 
-<span class="fc" id="L49">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L50">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L49">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L50">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L52">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommons(userCommons);</span>
+<span class="fc" id="L52">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByFarmer(farmer);</span>
 
 <span class="fc" id="L54">        return profits;</span>
     }
@@ -61,10 +61,10 @@ import java.util.List;
     ) {
 <span class="fc" id="L62">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L64">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L65">            .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L64">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L65">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L67">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByUserCommons(userCommons);</span>
+<span class="fc" id="L67">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByFarmer(farmer);</span>
 
 <span class="fc" id="L69">        return profits;</span>
     }
@@ -80,10 +80,10 @@ import java.util.List;
     ) {
 <span class="fc" id="L81">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L83">        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(UserCommons.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L83">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L86">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByUserCommons(userCommons);</span>
+<span class="fc" id="L86">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByFarmer(farmer);</span>
 
 <span class="fc" id="L88">        List&lt;Profit&gt; allProfits = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L89">        iterableProfits.forEach(allProfits::add);</span>
