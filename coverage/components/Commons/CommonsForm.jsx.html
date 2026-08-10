@@ -607,8 +607,7 @@
 <a name='L542'></a><a href='#L542'>542</a>
 <a name='L543'></a><a href='#L543'>543</a>
 <a name='L544'></a><a href='#L544'>544</a>
-<a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L545'></a><a href='#L545'>545</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -934,7 +933,6 @@
 <span class="cline-any cline-yes">81x</span>
 <span class="cline-any cline-yes">81x</span>
 <span class="cline-any cline-yes">81x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1284,7 +1282,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
       &gt;
         &lt;Col className="" md={6}&gt;
           &lt;Form.Group className="mb-3"&gt;
-            &lt;Form.Label htmlFor="name"&gt;Commons Name&lt;/Form.Label&gt;
+            &lt;Form.Label htmlFor="name"&gt;Game Name&lt;/Form.Label&gt;
             &lt;OverlayTrigger
               placement="top"
               overlay={
@@ -1300,7 +1298,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
                 type="text"
                 defaultValue={DefaultVals.name}
                 isInvalid={!!errors.name}
-                {...register("name", { required: "Commons name is required" })}
+                {...register("name", { required: "Game name is required" })}
               /&gt;
             &lt;/OverlayTrigger&gt;
             &lt;Form.Control.Feedback type="invalid"&gt;
@@ -1444,7 +1442,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               overlay={
                 &lt;Tooltip&gt;
                   This number controls the rate at which cow health decreases
-                  when the number of cows in the commons is greater than the
+                  when the number of cows in the game is greater than the
                   effective carrying capacity. The way in which the number is
                   used depends on the selected Health Update Formulas below.
                 &lt;/Tooltip&gt;
@@ -1479,11 +1477,10 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               placement="bottom"
               overlay={
                 &lt;Tooltip&gt;
-                  This is the minimum carrying capacity for the commons; at
-                  least this many cows may graze in the commons regardless of
-                  the number of players. If this number is zero, then only the
-                  Capacity Per User is used to determine the actual carrying
-                  capacity.
+                  This is the minimum carrying capacity for the game; at least
+                  this many cows may graze in the game regardless of the number
+                  of players. If this number is zero, then only the Capacity Per
+                  User is used to determine the actual carrying capacity.
                 &lt;/Tooltip&gt;
               }
               delay="100"
@@ -1515,9 +1512,9 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               placement="bottom"
               overlay={
                 &lt;Tooltip&gt;
-                  When this number is greater than zero, the commons will be
-                  able to support at least this many cows per farmer; that is,
-                  the effective carrying capacity of the commons is the value of
+                  When this number is greater than zero, the game will be able
+                  to support at least this many cows per farmer; that is, the
+                  effective carrying capacity of the game is the value of
                   Carrying Capacity, or Capacity Per User times the number of
                   Farmers, whichever is greater. If this number is zero, then
                   the Carrying Capacity is fixed regardless of the number of
@@ -1654,8 +1651,8 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
               overlay={
                 &lt;Tooltip&gt;
                   When checked, regular users will have access to the chat for
-                  this commons. When unchecked, only admins can see the chat for
-                  this commons.
+                  this game. When unchecked, only admins can see the chat for
+                  this game.
                 &lt;/Tooltip&gt;
               }
               delay="100"
@@ -1705,7 +1702,7 @@ export default CommonsForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-08T21:33:45.012Z
+                at 2026-08-10T21:40:41.618Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
