@@ -25,7 +25,7 @@ public class DashboardWebIT extends WebTestCase {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("Create Commons").click();
+        page.getByText("Create Game").click();
 
         page.getByTestId("CommonsForm-name").fill("Web Test Commons For Dashboard Defaults");
         page.getByTestId("CommonsForm-Submit-Button").click();
@@ -34,7 +34,7 @@ public class DashboardWebIT extends WebTestCase {
         page.getByRole(
                         AriaRole.LINK,
                         new Page.GetByRoleOptions()
-                                .setName("List Commons")
+                                .setName("List Games")
                                 .setExact(true))
                 .click();
 

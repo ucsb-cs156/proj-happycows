@@ -27,7 +27,7 @@ public class UserCommonsWebIT extends WebTestCase {
 
         // Make the testing commons
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("Create Commons").click();
+        page.getByText("Create Game").click();
 
         page.getByTestId("CommonsForm-name").fill("Web Test Commons");
         page.getByTestId("CommonsForm-Submit-Button").click();
