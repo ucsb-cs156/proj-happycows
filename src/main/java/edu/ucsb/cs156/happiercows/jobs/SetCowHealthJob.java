@@ -3,9 +3,9 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -23,7 +23,7 @@ public class SetCowHealthJob implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
 
@@ -40,14 +40,14 @@ public class SetCowHealthJob implements JobContextConsumer {
             }
             ctx.log("Commons " + commons.get().getName());
 
-            Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commons.get().getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commons.get().getId());
 
-            for (UserCommons userCommons : allUserCommons) {
-                User user = userCommons.getUser();
-                ctx.log("User: " + user.getFullName() + ", numCows: " + userCommons.getNumOfCows() + ", cowHealth: " + userCommons.getCowHealth());
-                ctx.log(" old cow health: " + userCommons.getCowHealth() + ", new cow health: " + newCowHealth);
-                userCommons.setCowHealth(newCowHealth);
-                userCommonsRepository.save(userCommons);
+            for (Farmer farmer : allFarmer) {
+                User user = farmer.getUser();
+                ctx.log("User: " + user.getFullName() + ", numCows: " + farmer.getNumOfCows() + ", cowHealth: " + farmer.getCowHealth());
+                ctx.log(" old cow health: " + farmer.getCowHealth() + ", new cow health: " + newCowHealth);
+                farmer.setCowHealth(newCowHealth);
+                farmerRepository.save(farmer);
             }
 
             ctx.log("Cow health has been set!");

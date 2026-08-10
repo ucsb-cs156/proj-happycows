@@ -6,7 +6,7 @@ import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
@@ -14,7 +14,7 @@ import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,7 +48,7 @@ public class CommonsController extends ApiController {
     private CommonsRepository commonsRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -348,15 +348,15 @@ public class CommonsController extends ApiController {
             throw new CourseAccessDeniedException(commonsId);
         }
 
-        Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+        Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-        if (userCommonsLookup.isPresent()) {
+        if (farmerLookup.isPresent()) {
             // user is already a member of this commons
             String body = mapper.writeValueAsString(joinedCommons);
             return ResponseEntity.ok().body(body);
         }
 
-        UserCommons uc = UserCommons.builder()
+        Farmer uc = Farmer.builder()
                 .user(u)
                 .commons(joinedCommons)
                 .username(username)
@@ -368,7 +368,7 @@ public class CommonsController extends ApiController {
                 .cowDeaths(0)
                 .build();
 
-        userCommonsRepository.save(uc);
+        farmerRepository.save(uc);
 
         String body = mapper.writeValueAsString(joinedCommons);
         return ResponseEntity.ok().body(body);
@@ -380,10 +380,10 @@ public class CommonsController extends ApiController {
     public Object deleteCommons(
             @Parameter(name="id") @RequestParam Long id) {
         
-        Iterable<UserCommons> userCommons = userCommonsRepository.findByCommonsId(id);
+        Iterable<Farmer> farmer = farmerRepository.findByCommonsId(id);
 
-        for (UserCommons commons : userCommons) {
-            userCommonsRepository.delete(commons);
+        for (Farmer commons : farmer) {
+            farmerRepository.delete(commons);
         }
 
         commonsRepository.findById(id)
@@ -402,12 +402,12 @@ public class CommonsController extends ApiController {
     public Object deleteUserFromCommon(@PathVariable("commonsId") Long commonsId,
                                        @PathVariable("userId") Long userId) throws Exception {
 
-        UserCommons userCommons = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)
+        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        UserCommons.class, "commonsId", commonsId, "userId", userId)
+                        Farmer.class, "commonsId", commonsId, "userId", userId)
                 );
 
-        userCommonsRepository.delete(userCommons);
+        farmerRepository.delete(farmer);
 
         String responseString = String.format("user with id %d deleted from game with id %d, %d users remain", userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));
 
@@ -443,9 +443,9 @@ public class CommonsController extends ApiController {
     @GetMapping("/numcows")
     public ResponseEntity<List<Integer>> getNumCowsForCommonsId(
             @Parameter(name="commonsId") @RequestParam Long commonsId) {
-        Iterable<UserCommons> userCommonsList = userCommonsRepository.findByCommonsId(commonsId);
-        List<Integer> numCowsList = StreamSupport.stream(userCommonsList.spliterator(), false)
-                .map(UserCommons::getNumOfCows)
+        Iterable<Farmer> farmerList = farmerRepository.findByCommonsId(commonsId);
+        List<Integer> numCowsList = StreamSupport.stream(farmerList.spliterator(), false)
+                .map(Farmer::getNumOfCows)
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(numCowsList);
     }

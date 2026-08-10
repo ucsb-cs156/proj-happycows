@@ -31,7 +31,7 @@ describe("AdminViewPlayPage tests", () => {
   const queryClient = new QueryClient();
 
   beforeEach(() => {
-    const userCommons = {
+    const farmer = {
       commonsId: 1,
       id: 1,
       totalWealth: 0,
@@ -46,10 +46,10 @@ describe("AdminViewPlayPage tests", () => {
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
     axiosMock
-      .onGet("/api/usercommons", {
+      .onGet("/api/farmer", {
         params: { userId: 1, commonsId: 1 },
       })
-      .reply(200, userCommons);
+      .reply(200, farmer);
     axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
       id: 1,
       name: "Sample Commons",
@@ -77,8 +77,8 @@ describe("AdminViewPlayPage tests", () => {
         },
       })
       .reply(200, []);
-    axiosMock.onPut("/api/usercommons/sell").reply(200, userCommons);
-    axiosMock.onPut("/api/usercommons/buy").reply(200, userCommons);
+    axiosMock.onPut("/api/farmer/sell").reply(200, farmer);
+    axiosMock.onPut("/api/farmer/buy").reply(200, farmer);
   });
 
   test("renders without crashing", () => {
@@ -227,8 +227,8 @@ describe("AdminViewPlayPage tests", () => {
     );
   });
 
-  test("renders when userCommons is falsy but commonsPlus is truthy", async () => {
-    // Mock the response so that userCommons is falsy but commonsPlus is truthy
+  test("renders when farmer is falsy but commonsPlus is truthy", async () => {
+    // Mock the response so that farmer is falsy but commonsPlus is truthy
     axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
       commons: {
         id: 1,
@@ -268,7 +268,7 @@ describe("AdminViewPlayPage tests", () => {
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
     expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
-  test("renders when userCommons is truthy and commonsPlus is falsy", async () => {
+  test("renders when farmer is truthy and commonsPlus is falsy", async () => {
     axiosMock
       .onGet("/api/commons/plus", { params: { id: 1 } })
       .reply(200, null);
@@ -288,7 +288,7 @@ describe("AdminViewPlayPage tests", () => {
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
     expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
-  test("renders CardGroup when userCommons and commonsPlus are truthy", async () => {
+  test("renders CardGroup when farmer and commonsPlus are truthy", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

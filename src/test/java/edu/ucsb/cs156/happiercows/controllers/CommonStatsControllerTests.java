@@ -8,12 +8,12 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
@@ -56,7 +56,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     CommonsRepository commonsRepository;
   
     @MockBean
-    UserCommonsRepository userCommonsRepository;   
+    FarmerRepository farmerRepository;   
 
     @MockBean
     CommonStatsRepository commonStatsRepository;    

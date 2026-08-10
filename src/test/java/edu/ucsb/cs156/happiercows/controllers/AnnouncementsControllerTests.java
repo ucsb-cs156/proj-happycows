@@ -41,8 +41,8 @@ import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementRepository;
 import edu.ucsb.cs156.happiercows.entities.Announcement;
 
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +55,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     AnnouncementRepository announcementRepository;
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -84,7 +84,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", commonsId, start, end, announcement).with(csrf()))
@@ -113,8 +113,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         MvcResult response = mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
@@ -142,8 +142,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&announcementText={announcement}", commonsId, announcement).with(csrf()))
@@ -168,8 +168,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
@@ -233,8 +233,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", commonsId, start, end, announcement).with(csrf()))
@@ -259,7 +259,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
@@ -341,8 +341,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.findByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         MvcResult response = mockMvc.perform(get("/api/announcements/getbycommonsid?commonsId={commonsId}", commonsId))
@@ -380,7 +380,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.findByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         mockMvc.perform(get("/api/announcements/getbycommonsid?commonsId={commonsId}", commonsId))
@@ -464,8 +464,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.findCurrentByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
@@ -473,7 +473,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .andReturn();
 
         // assert
-        verify(userCommonsRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
+        verify(farmerRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
         verify(announcementRepository, atLeastOnce()).findCurrentByCommonsId(commonsId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
@@ -491,7 +491,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
@@ -499,7 +499,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .andReturn();
 
         // assert
-        verify(userCommonsRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
+        verify(farmerRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
         verify(announcementRepository, times(0)).findCurrentByCommonsId(commonsId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
@@ -550,7 +550,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .andReturn();
 
         // assert
-        verify(userCommonsRepository, times(0)).findByCommonsIdAndUserId(any(), any());
+        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(any(), any());
         verify(announcementRepository, atLeastOnce()).findCurrentByCommonsId(commonsId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
@@ -654,8 +654,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&announcementText={announcement}", id, commonsId, announcement).with(csrf()))
@@ -683,7 +683,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
@@ -707,8 +707,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.empty());
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
@@ -733,8 +733,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
@@ -760,8 +760,8 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        UserCommons userCommons = UserCommons.builder().build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        Farmer farmer = Farmer.builder().build();
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         // act
         mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", id, commonsId, start, end, announcement).with(csrf()))

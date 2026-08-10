@@ -37,8 +37,8 @@ import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.repositories.ChatMessageRepository;
 import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +51,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     ChatMessageRepository chatMessageRepository;
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -78,10 +78,10 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().showChat(true).build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
 
         // act
@@ -142,7 +142,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         // act
         mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
@@ -273,10 +273,10 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().showChat(true).build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
@@ -303,7 +303,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
 
         //act 
         mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
@@ -369,10 +369,10 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
             .commons(Commons.builder().build())
             .build();
-when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -401,10 +401,10 @@ when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenRetu
         ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().showChat(true).build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -453,10 +453,10 @@ when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenRetu
         ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(2L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -488,10 +488,10 @@ when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenRetu
         ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().showChat(false).build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -521,10 +521,10 @@ when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenRetu
         ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
-        UserCommons userCommons = UserCommons.builder()
+        Farmer farmer = Farmer.builder()
                 .commons(Commons.builder().showChat(false).build())
                 .build();
-        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))

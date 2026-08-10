@@ -7,11 +7,11 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
@@ -49,7 +49,7 @@ public class ReportsControllerTests extends ControllerTestCase {
         ReportLineRepository reportLineRepository;
 
         @MockBean
-        UserCommonsRepository userCommonsRepository;
+        FarmerRepository farmerRepository;
 
         @MockBean
         UserRepository userRepository;
@@ -79,7 +79,7 @@ public class ReportsControllerTests extends ControllerTestCase {
                         .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
                         .build();
 
-        UserCommons userCommons = UserCommons
+        Farmer farmer = Farmer
                         .builder()
                         .user(user)
                         .username("Chris Gaucho")

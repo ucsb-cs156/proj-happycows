@@ -20,7 +20,7 @@ import edu.ucsb.cs156.happiercows.WebTestCase;
 @ActiveProfiles("integration")
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 
-public class UserCommonsWebIT extends WebTestCase {
+public class FarmerWebIT extends WebTestCase {
     @Test
     public void adminBuySellCows() throws Exception {
         setupUser(true);

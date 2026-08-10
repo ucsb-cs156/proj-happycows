@@ -84,7 +84,7 @@ beforeEach(() => {
     .reply(200, systemInfoFixtures.showingNeither);
   axiosMock.onGet("/api/commons/numcows").reply(200, [1, 2, 3, 5, 10, 15]);
   axiosMock.onGet("/api/commons/timeseries").reply(200, []);
-  axiosMock.onGet("/api/usercommons/commons/all").reply(200, []);
+  axiosMock.onGet("/api/farmer/commons/all").reply(200, []);
   axiosMock.onPut("/api/commons/dashboardSettings").reply(200, {
     ...baseCommonsPlus.commons,
   });

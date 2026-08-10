@@ -126,10 +126,10 @@ describe("ChatHistoryPage", () => {
     renderWithProviders();
 
     expect(useBackendSpy).toHaveBeenCalledWith(
-      [`/api/usercommons/commons/all?commonsId=1`],
+      [`/api/farmer/commons/all?commonsId=1`],
       {
         method: "GET",
-        url: "/api/usercommons/commons/all",
+        url: "/api/farmer/commons/all",
         params: { commonsId: 1 },
       },
       [],
@@ -640,7 +640,7 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("maps userId to username using reduce when userCommonsList is valid array", () => {
+  test("maps userId to username using reduce when farmerList is valid array", () => {
     vi.spyOn(backend, "useBackend").mockReturnValue({
       data: [
         { userId: 1, username: "Alice" },

@@ -95,10 +95,10 @@ export default function DashboardPage() {
   // Stryker restore all
 
   // Stryker disable all
-  const { data: userCommons } = useBackend(
-    [`/api/usercommons/commons/all?commonsId=${id}`],
+  const { data: farmer } = useBackend(
+    [`/api/farmer/commons/all?commonsId=${id}`],
     {
-      url: "/api/usercommons/commons/all",
+      url: "/api/farmer/commons/all",
       params: { commonsId: id },
     },
     [],
@@ -416,7 +416,7 @@ export default function DashboardPage() {
             testid="DashboardPage-LeaderboardSection"
           >
             <LeaderboardTable
-              leaderboardUsers={userCommons}
+              leaderboardUsers={farmer}
               currentUser={currentUser}
             />
           </DashboardSectionCard>

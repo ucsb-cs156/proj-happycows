@@ -3,11 +3,11 @@ package edu.ucsb.cs156.happiercows.jobs;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
     CommonsRepository commonsRepository;
 
     @Mock
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Mock
     UserRepository userRepository;
@@ -68,7 +68,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
         when(commonsRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act
-        MilkTheCowsJobInd MilkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, userCommonsRepository,
+        MilkTheCowsJobInd MilkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         MilkTheCowsJobInd.accept(ctx);
 
@@ -80,13 +80,13 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
     }
 
     @Test
-    void test_log_output_with_commons_and_user_commons() throws Exception {
+    void test_log_output_with_commons_and_farmer() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        UserCommons origUserCommons = UserCommons
+        Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -96,14 +96,14 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
                 .build();
 
         when(commonsRepository.findAll()).thenReturn(Arrays.asList(testCommons));
-        when(userCommonsRepository.findByCommonsId(testCommons.getId()))
-                .thenReturn(Arrays.asList(origUserCommons));
+        when(farmerRepository.findByCommonsId(testCommons.getId()))
+                .thenReturn(Arrays.asList(origFarmer));
         when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // Act
-        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, userCommonsRepository,
+        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         milkTheCowsJobInd.accept(ctx);
         
@@ -142,7 +142,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(futureCommons));
 
         // Act
-        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, userCommonsRepository,
+        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         milkTheCowsJobInd.accept(ctx);
 
@@ -157,7 +157,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
     @Test
     void commons_id_getter_returns_value_from_constructor() {
 
-        MilkTheCowsJobInd job = new MilkTheCowsJobInd(commonsRepository, userCommonsRepository,
+        MilkTheCowsJobInd job = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
                 userRepository, profitRepository, 42L);
 
         assertEquals(42L, job.getCommonsID());

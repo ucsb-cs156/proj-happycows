@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 
@@ -16,7 +16,7 @@ public class MilkTheCowsJobFactory {
     private CommonsRepository commonsRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -27,7 +27,7 @@ public class MilkTheCowsJobFactory {
     public JobContextConsumer create() {
         return new MilkTheCowsJob(
                 commonsRepository,
-                userCommonsRepository,
+                farmerRepository,
                 userRepository,
                 profitRepository);
     }

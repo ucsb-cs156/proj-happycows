@@ -1,5 +1,5 @@
-const userCommonsFixtures = {
-  oneUserCommons: [
+const farmerFixtures = {
+  oneFarmer: [
     {
       userId: 1,
       username: "George Washington",
@@ -12,7 +12,7 @@ const userCommonsFixtures = {
       cowDeaths: 5,
     },
   ],
-  threeUserCommons: [
+  threeFarmer: [
     {
       userId: 1,
       username: "George Washington",
@@ -47,7 +47,7 @@ const userCommonsFixtures = {
       cowDeaths: 1000,
     },
   ],
-  fiveUserCommons: [
+  fiveFarmer: [
     {
       userId: 1,
       username: "George Washington",
@@ -104,7 +104,7 @@ const userCommonsFixtures = {
       cowDeaths: 60,
     },
   ],
-  tenUserCommons: [
+  tenFarmer: [
     {
       userId: 1,
       username: "George Washington",
@@ -219,4 +219,4 @@ const userCommonsFixtures = {
   ],
 };
 
-export default userCommonsFixtures;
+export default farmerFixtures;

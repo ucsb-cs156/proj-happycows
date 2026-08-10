@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserCommonsKey implements Serializable {
+public class FarmerKey implements Serializable {
     @JoinColumn(name = "user_id")
     private long userId;
 

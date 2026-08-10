@@ -19,10 +19,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.entities.UserCommonsKey;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.FarmerKey;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
@@ -38,7 +38,7 @@ public class AverageCowHealthServiceTests {
     CommonsRepository commonsRepository;
   
     @MockBean
-    UserCommonsRepository userCommonsRepository;    
+    FarmerRepository farmerRepository;    
 
     @Autowired
     AverageCowHealthService averageCowHealthService;
@@ -65,7 +65,7 @@ public class AverageCowHealthServiceTests {
         .email("cgaucho@example.org")
         .build();
 
-    UserCommons userCommons1 = UserCommons
+    Farmer farmer1 = Farmer
         .builder()
         .user(user1)
         .username("Chris Gaucho")
@@ -85,7 +85,7 @@ public class AverageCowHealthServiceTests {
         .email("jdoe@example.org")
         .build();
 
-    UserCommons userCommons2 = UserCommons
+    Farmer farmer2 = Farmer
         .builder()
         .user(user2)
         .username("John Doe")
@@ -101,8 +101,8 @@ public class AverageCowHealthServiceTests {
 
     @BeforeEach
     void setup() {
-        userCommons1.setId(new UserCommonsKey(user1.getId(), commons.getId()));
-        userCommons2.setId(new UserCommonsKey(user2.getId(), commons.getId()));
+        farmer1.setId(new FarmerKey(user1.getId(), commons.getId()));
+        farmer2.setId(new FarmerKey(user2.getId(), commons.getId()));
     }
 
     @Test
@@ -110,8 +110,8 @@ public class AverageCowHealthServiceTests {
         // arrange
 
         when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(userCommonsRepository.findByCommonsId(commons.getId()))
-                .thenReturn(Arrays.asList(userCommons1));
+        when(farmerRepository.findByCommonsId(commons.getId()))
+                .thenReturn(Arrays.asList(farmer1));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(20)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user1));
@@ -129,8 +129,8 @@ public class AverageCowHealthServiceTests {
         // arrange
 
         when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(userCommonsRepository.findByCommonsId(commons.getId()))
-                .thenReturn(Arrays.asList(userCommons1,userCommons2));
+        when(farmerRepository.findByCommonsId(commons.getId()))
+                .thenReturn(Arrays.asList(farmer1,farmer2));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(120)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user1));
@@ -146,7 +146,7 @@ public class AverageCowHealthServiceTests {
 
     @Test
     void test_getAverageCowHealthThrowsException() {
-        when(userCommonsRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
+        when(farmerRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             averageCowHealthService.getAverageCowHealth(1L);
@@ -155,7 +155,7 @@ public class AverageCowHealthServiceTests {
 
     @Test
     void test_getTotalNumCowsThrowsException() {
-        when(userCommonsRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
+        when(farmerRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             averageCowHealthService.getTotalNumCows(1L);

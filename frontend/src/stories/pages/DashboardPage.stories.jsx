@@ -64,7 +64,7 @@ AdminView.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/usercommons/commons/all", () => {
+    http.get("/api/farmer/commons/all", () => {
       return HttpResponse.json([], { status: 200 });
     }),
     http.put("/api/commons/dashboardSettings", () => {
@@ -123,7 +123,7 @@ StudentView.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/usercommons/commons/all", () => {
+    http.get("/api/farmer/commons/all", () => {
       return HttpResponse.json([], { status: 200 });
     }),
   ],

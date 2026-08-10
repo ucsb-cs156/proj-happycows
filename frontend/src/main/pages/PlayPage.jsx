@@ -31,11 +31,11 @@ export default function PlayPage() {
   };
 
   // Stryker disable all
-  const { data: userCommons, error: userCommonsError } = useBackend(
-    [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
+  const { data: farmer, error: farmerError } = useBackend(
+    [`/api/farmer/forcurrentuser?commonsId=${commonsId}`],
     {
       method: "GET",
-      url: "/api/usercommons/forcurrentuser",
+      url: "/api/farmer/forcurrentuser",
       params: {
         commonsId: commonsId,
       },
@@ -78,11 +78,11 @@ export default function PlayPage() {
     matched = commonsforuser.some((com) => com.id === commonsPlus.commons.id);
   }
 
-  const userCommonsErrorResponse = userCommonsError?.response ?? {};
-  const userCommonsErrorData = userCommonsErrorResponse.data ?? {};
+  const farmerErrorResponse = farmerError?.response ?? {};
+  const farmerErrorData = farmerErrorResponse.data ?? {};
   const deniedAccess =
-    userCommonsErrorResponse.status === 403 &&
-    userCommonsErrorData.type ===
+    farmerErrorResponse.status === 403 &&
+    farmerErrorData.type ===
       "NotEnrolledInCourseAssociatedWithCommonsException";
   const allowed =
     commonsPlusExists &&
@@ -93,7 +93,7 @@ export default function PlayPage() {
   const hidden = commonsPlusExists && commonsPlus.commons.hidden;
 
   // Stryker disable all
-  const { data: userCommonsProfits } = useBackend(
+  const { data: farmerProfits } = useBackend(
     [`/api/profits/all/commonsid?commonsId=${commonsId}`],
     {
       method: "GET",
@@ -106,10 +106,10 @@ export default function PlayPage() {
   // Stryker restore all
 
   // Stryker disable all
-  const objectToAxiosParamsBuy = (newUserCommons) => ({
-    url: "/api/usercommons/buy",
+  const objectToAxiosParamsBuy = (newFarmer) => ({
+    url: "/api/farmer/buy",
     method: "PUT",
-    data: newUserCommons,
+    data: newFarmer,
     params: {
       commonsId: commonsId,
       numCows: numCows,
@@ -119,21 +119,21 @@ export default function PlayPage() {
 
   // Stryker disable all
   const mutationbuy = useBackendMutation(objectToAxiosParamsBuy, null, [
-    `/api/usercommons/forcurrentuser?commonsId=${commonsId}`,
+    `/api/farmer/forcurrentuser?commonsId=${commonsId}`,
   ]);
   // Stryker restore all
 
-  const onBuy = (userCommons, numCows) => {
-    mutationbuy.mutate(userCommons, numCows);
+  const onBuy = (farmer, numCows) => {
+    mutationbuy.mutate(farmer, numCows);
   };
 
   const onSuccessSell = () => {};
 
   // Stryker disable all
-  const objectToAxiosParamsSell = (newUserCommons) => ({
-    url: "/api/usercommons/sell",
+  const objectToAxiosParamsSell = (newFarmer) => ({
+    url: "/api/farmer/sell",
     method: "PUT",
-    data: newUserCommons,
+    data: newFarmer,
     params: {
       commonsId: commonsId,
       numCows: numCows,
@@ -145,12 +145,12 @@ export default function PlayPage() {
   const mutationsell = useBackendMutation(
     objectToAxiosParamsSell,
     { onSuccess: onSuccessSell },
-    [`/api/usercommons/forcurrentuser?commonsId=${commonsId}`],
+    [`/api/farmer/forcurrentuser?commonsId=${commonsId}`],
   );
   // Stryker restore all
 
-  const onSell = (userCommons, numCows) => {
-    mutationsell.mutate(userCommons, numCows);
+  const onSell = (farmer, numCows) => {
+    mutationsell.mutate(farmer, numCows);
   };
 
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -218,20 +218,20 @@ export default function PlayPage() {
 
           <br />
 
-          {allowed && !!userCommons && !!commonsPlus && (
+          {allowed && !!farmer && !!commonsPlus && (
             <CardGroup>
               <ManageCows
-                userCommons={userCommons}
+                farmer={farmer}
                 commons={commonsPlus.commons}
                 setMessage={setMessage}
                 openModal={openModal}
               />
-              <FarmStats userCommons={userCommons} />
-              <Profits userCommons={userCommons} profits={userCommonsProfits} />
+              <FarmStats farmer={farmer} />
+              <Profits farmer={farmer} profits={farmerProfits} />
               <ManageCowsModal
                 number={numCows}
                 setNumber={setNumCows}
-                userCommons={userCommons}
+                farmer={farmer}
                 isOpen={isModalOpen}
                 message={message}
                 onClose={closeModal}

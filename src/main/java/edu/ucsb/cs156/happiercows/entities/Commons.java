@@ -65,7 +65,7 @@ public class Commons {
 
     @OneToMany(mappedBy = "commons", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private List<UserCommons> joinedUsers;
+    private List<Farmer> joinedUsers;
 
     /**
      * The starting date is the first day of play, and the last date is the

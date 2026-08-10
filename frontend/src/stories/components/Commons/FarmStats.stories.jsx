@@ -1,7 +1,7 @@
 import React from "react";
 
 import FarmStats from "main/components/Commons/FarmStats";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 
 export default {
   title: "components/Commons/FarmStats",
@@ -15,5 +15,5 @@ const Template = (args) => {
 export const Uncontrolled = Template.bind({});
 
 Uncontrolled.args = {
-  userCommons: userCommonsFixtures.oneUserCommons[0],
+  farmer: farmerFixtures.oneFarmer[0],
 };

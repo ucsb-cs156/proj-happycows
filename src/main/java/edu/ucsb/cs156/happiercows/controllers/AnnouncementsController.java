@@ -20,8 +20,8 @@ import edu.ucsb.cs156.happiercows.entities.Announcement;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementRepository;
 
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 import org.springframework.security.core.Authentication;
 import java.time.LocalDateTime;
@@ -44,7 +44,7 @@ public class AnnouncementsController extends ApiController{
     private AnnouncementRepository announcementRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -66,9 +66,9 @@ public class AnnouncementsController extends ApiController{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }
@@ -117,9 +117,9 @@ public class AnnouncementsController extends ApiController{
             log.info("User is not an admin");
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }
@@ -140,10 +140,10 @@ public class AnnouncementsController extends ApiController{
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            Optional<UserCommons> userCommonsLookup =
-                userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup =
+                farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("User is not a member of this game.");
             }
@@ -189,9 +189,9 @@ public class AnnouncementsController extends ApiController{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }

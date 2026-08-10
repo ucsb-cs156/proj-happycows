@@ -9,7 +9,7 @@ const ManageCowsModal = ({
   isOpen,
   onClose,
   message,
-  userCommons,
+  farmer,
   onBuy,
   onSell,
 }) => {
@@ -28,9 +28,9 @@ const ManageCowsModal = ({
       );
     } else {
       if (message.includes("buy")) {
-        onBuy(userCommons, number);
+        onBuy(farmer, number);
       } else {
-        onSell(userCommons, number);
+        onSell(farmer, number);
       }
       setNumber(1);
       onClose(); // Close the modal

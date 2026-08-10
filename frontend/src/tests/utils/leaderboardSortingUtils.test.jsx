@@ -3,51 +3,46 @@ import {
   sortByNumCows,
   sortByCowHealth,
 } from "../../main/utils/leaderboardSortingUtils";
-import userCommonsFixtures from "../../fixtures/userCommonsFixtures";
+import farmerFixtures from "../../fixtures/farmerFixtures";
 
 describe("leaderboardSortingUtils tests", () => {
-  const {
-    _oneUserCommons,
-    _threeUserCommons,
-    fiveUserCommons,
-    tenUserCommons,
-  } = userCommonsFixtures;
+  const { _oneFarmer, _threeFarmer, fiveFarmer, tenFarmer } = farmerFixtures;
 
   //-----------------------------//
   //        Wealth Tests
   //----------------------------//
   test("sortByWealth", () => {
-    const sortedUserCommons = sortByWealth(fiveUserCommons);
+    const sortedFarmer = sortByWealth(fiveFarmer);
     const expectedWealths = [100000, 1000, 1000, 800, 50];
     for (let i in expectedWealths) {
-      expect(sortedUserCommons[i].totalWealth).toBe(expectedWealths[i]);
+      expect(sortedFarmer[i].totalWealth).toBe(expectedWealths[i]);
     }
   });
 
   test("sortByWealthReturnOne", () => {
-    const sortedUserCommons = sortByWealth(tenUserCommons, 1);
-    expect(sortedUserCommons.length).toBe(1);
-    expect(sortedUserCommons[0].totalWealth).toBe(100000);
+    const sortedFarmer = sortByWealth(tenFarmer, 1);
+    expect(sortedFarmer.length).toBe(1);
+    expect(sortedFarmer[0].totalWealth).toBe(100000);
   });
 
   test("sortByWealthReturnThree", () => {
-    const sortedUserCommons = sortByWealth(tenUserCommons, 3);
-    expect(sortedUserCommons.length).toBe(3);
+    const sortedFarmer = sortByWealth(tenFarmer, 3);
+    expect(sortedFarmer.length).toBe(3);
     const expectedWealths = [100000, 100000, 1000];
     for (let i in expectedWealths) {
-      expect(sortedUserCommons[i].totalWealth).toBe(expectedWealths[i]);
+      expect(sortedFarmer[i].totalWealth).toBe(expectedWealths[i]);
     }
   });
 
-  // Expected behavior here is to just return the full sorted array of userCommons
+  // Expected behavior here is to just return the full sorted array of farmer
   test("sortByWealthExpectTooMany", () => {
-    const sortedUserCommons = sortByWealth(tenUserCommons, 25);
-    expect(sortedUserCommons.length).toBe(tenUserCommons.length);
+    const sortedFarmer = sortByWealth(tenFarmer, 25);
+    expect(sortedFarmer.length).toBe(tenFarmer.length);
     const expectedWealths = [
       100000, 100000, 1000, 1000, 1000, 1000, 800, 800, 50, 50,
     ];
     for (let i in expectedWealths) {
-      expect(sortedUserCommons[i].totalWealth).toBe(expectedWealths[i]);
+      expect(sortedFarmer[i].totalWealth).toBe(expectedWealths[i]);
     }
   });
 
@@ -56,35 +51,35 @@ describe("leaderboardSortingUtils tests", () => {
   //----------------------------//
 
   test("sortByNumCows", () => {
-    const sortedUserCommons = sortByNumCows(fiveUserCommons);
+    const sortedFarmer = sortByNumCows(fiveFarmer);
     const expectedNumCows = [1000, 100, 60, 8, 5];
     for (let i in expectedNumCows) {
-      expect(sortedUserCommons[i].numOfCows).toBe(expectedNumCows[i]);
+      expect(sortedFarmer[i].numOfCows).toBe(expectedNumCows[i]);
     }
   });
 
   test("sortByNumCowsReturnOne", () => {
-    const sortedUserCommons = sortByNumCows(tenUserCommons, 1);
-    expect(sortedUserCommons.length).toBe(1);
-    expect(sortedUserCommons[0].numOfCows).toBe(1000);
+    const sortedFarmer = sortByNumCows(tenFarmer, 1);
+    expect(sortedFarmer.length).toBe(1);
+    expect(sortedFarmer[0].numOfCows).toBe(1000);
   });
 
   test("sortByNumCowsReturnThree", () => {
-    const sortedUserCommons = sortByNumCows(tenUserCommons, 3);
-    expect(sortedUserCommons.length).toBe(3);
+    const sortedFarmer = sortByNumCows(tenFarmer, 3);
+    expect(sortedFarmer.length).toBe(3);
     const expectedNumCows = [1000, 1000, 100];
     for (let i in expectedNumCows) {
-      expect(sortedUserCommons[i].numOfCows).toBe(expectedNumCows[i]);
+      expect(sortedFarmer[i].numOfCows).toBe(expectedNumCows[i]);
     }
   });
 
-  // Expected behavior here is to just return the full sorted array of userCommons
+  // Expected behavior here is to just return the full sorted array of farmer
   test("sortByNumCowsExpectTooMany", () => {
-    const sortedUserCommons = sortByNumCows(tenUserCommons, 25);
-    expect(sortedUserCommons.length).toBe(tenUserCommons.length);
+    const sortedFarmer = sortByNumCows(tenFarmer, 25);
+    expect(sortedFarmer.length).toBe(tenFarmer.length);
     const expectedNumCows = [1000, 1000, 100, 100, 60, 60, 8, 8, 5, 5];
     for (let i in expectedNumCows) {
-      expect(sortedUserCommons[i].numOfCows).toBe(expectedNumCows[i]);
+      expect(sortedFarmer[i].numOfCows).toBe(expectedNumCows[i]);
     }
   });
 
@@ -94,37 +89,37 @@ describe("leaderboardSortingUtils tests", () => {
   // if tests fail due to floating point error, try using .toBeCloseTo(number, numDigits?) instead of .toBe()
 
   test("sortByCowHealth", () => {
-    const sortedUserCommons = sortByCowHealth(fiveUserCommons);
+    const sortedFarmer = sortByCowHealth(fiveFarmer);
     const expectedCowHealths = [98.0, 93.0, 84.0, 72.0, 2.0];
     for (let i in expectedCowHealths) {
-      expect(sortedUserCommons[i].cowHealth).toBe(expectedCowHealths[i]);
+      expect(sortedFarmer[i].cowHealth).toBe(expectedCowHealths[i]);
     }
   });
 
   test("sortByCowHealthReturnOne", () => {
-    const sortedUserCommons = sortByCowHealth(tenUserCommons, 1);
-    expect(sortedUserCommons.length).toBe(1);
-    expect(sortedUserCommons[0].cowHealth).toBe(98.0);
+    const sortedFarmer = sortByCowHealth(tenFarmer, 1);
+    expect(sortedFarmer.length).toBe(1);
+    expect(sortedFarmer[0].cowHealth).toBe(98.0);
   });
 
   test("sortByCowHealthReturnThree", () => {
-    const sortedUserCommons = sortByCowHealth(tenUserCommons, 3);
-    expect(sortedUserCommons.length).toBe(3);
+    const sortedFarmer = sortByCowHealth(tenFarmer, 3);
+    expect(sortedFarmer.length).toBe(3);
     const expectedCowHealths = [98.0, 98.0, 93.0];
     for (let i in expectedCowHealths) {
-      expect(sortedUserCommons[i].cowHealth).toBe(expectedCowHealths[i]);
+      expect(sortedFarmer[i].cowHealth).toBe(expectedCowHealths[i]);
     }
   });
 
-  // Expected behavior here is to just return the full sorted array of userCommons
+  // Expected behavior here is to just return the full sorted array of farmer
   test("sortByCowHealthExpectTooMany", () => {
-    const sortedUserCommons = sortByCowHealth(tenUserCommons, 25);
-    expect(sortedUserCommons.length).toBe(tenUserCommons.length);
+    const sortedFarmer = sortByCowHealth(tenFarmer, 25);
+    expect(sortedFarmer.length).toBe(tenFarmer.length);
     const expectedCowHealths = [
       98.0, 98.0, 93.0, 93.0, 84.0, 84.0, 72.0, 72.0, 2.0, 2.0,
     ];
     for (let i in expectedCowHealths) {
-      expect(sortedUserCommons[i].cowHealth).toBe(expectedCowHealths[i]);
+      expect(sortedFarmer[i].cowHealth).toBe(expectedCowHealths[i]);
     }
   });
 });

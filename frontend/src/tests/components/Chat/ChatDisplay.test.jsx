@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import { vi } from "vitest";
 
 import ChatDisplay from "main/components/Chat/ChatDisplay";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 import { chatMessageFixtures } from "fixtures/chatMessageFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
@@ -82,8 +82,8 @@ describe("ChatDisplay tests", () => {
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.threeChatMessages });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     //act
     renderChatDisplay();
@@ -98,7 +98,7 @@ describe("ChatDisplay tests", () => {
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
 
     const container = screen.getByTestId("ChatDisplay");
@@ -156,7 +156,7 @@ describe("ChatDisplay tests", () => {
     axiosMock
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.oneChatMessage });
-    axiosMock.onGet("/api/usercommons/commons/all").reply(200, [{ userId: 1 }]);
+    axiosMock.onGet("/api/farmer/commons/all").reply(200, [{ userId: 1 }]);
 
     //act
     renderChatDisplay();
@@ -171,7 +171,7 @@ describe("ChatDisplay tests", () => {
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
 
     await waitFor(() => {
@@ -199,8 +199,8 @@ describe("ChatDisplay tests", () => {
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.twelveChatMessages });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     //act
     renderChatDisplay();
@@ -215,7 +215,7 @@ describe("ChatDisplay tests", () => {
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/usercommons/commons/all");
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
     expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
 
     await waitFor(() => {
@@ -244,8 +244,8 @@ describe("ChatDisplay tests", () => {
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
 
@@ -265,8 +265,8 @@ describe("ChatDisplay tests", () => {
       totalElements: 10,
     });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
 
@@ -285,8 +285,8 @@ describe("ChatDisplay tests", () => {
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
 
@@ -303,8 +303,8 @@ describe("ChatDisplay tests", () => {
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
 
@@ -325,8 +325,8 @@ describe("ChatDisplay tests", () => {
   test("ignores chat responses whose content field is not an array", async () => {
     axiosMock.onGet("/api/chat/get").reply(200, { content: "invalid" });
     axiosMock
-      .onGet("/api/usercommons/commons/all")
-      .reply(200, userCommonsFixtures.threeUserCommons);
+      .onGet("/api/farmer/commons/all")
+      .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
 
@@ -358,7 +358,7 @@ describe("ChatDisplay tests", () => {
       if (key?.startsWith("/api/currentUser")) {
         return { data: { root: { user: { id: 1 }, roles: [] } } };
       }
-      if (key?.startsWith("/api/usercommons/commons/all")) {
+      if (key?.startsWith("/api/farmer/commons/all")) {
         return { data: { invalid: true } };
       }
       return { data: [] };
@@ -421,10 +421,10 @@ describe("ChatDisplay tests", () => {
     );
     expect(useBackendSpy).toHaveBeenNthCalledWith(
       2,
-      [`/api/usercommons/commons/all`],
+      [`/api/farmer/commons/all`],
       {
         method: "GET",
-        url: "/api/usercommons/commons/all",
+        url: "/api/farmer/commons/all",
         params: { commonsId },
       },
       [],

@@ -20,7 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
@@ -37,7 +37,7 @@ public class CommonStatsServiceTests {
     CommonsRepository commonsRepository;
   
     @MockBean
-    UserCommonsRepository userCommonsRepository;   
+    FarmerRepository farmerRepository;   
 
     @MockBean
     CommonStatsRepository commonStatsRepository;    

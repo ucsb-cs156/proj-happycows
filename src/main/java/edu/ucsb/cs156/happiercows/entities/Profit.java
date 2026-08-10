@@ -25,7 +25,7 @@ public class Profit {
         @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
         @JoinColumn(name = "commons_id", referencedColumnName = "commons_id")
     })
-    private UserCommons userCommons;
+    private Farmer farmer;
     private double amount;
     private LocalDateTime timestamp;
     private int numCows;

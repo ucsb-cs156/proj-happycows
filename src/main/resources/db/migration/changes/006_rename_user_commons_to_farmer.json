@@ -1,0 +1,97 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "006-rename-user_commons-table-to-farmer",
+        "author": "pc",
+        "comment": "Rename the user_commons table to farmer (see issue #274): a row in this table represents one farmer's participation in one game (commons).",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "tableExists": {
+              "tableName": "user_commons"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameTable": {
+              "oldTableName": "user_commons",
+              "newTableName": "farmer"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "006-rename-fk_user_commons_users-to-fk_farmer_users",
+        "author": "pc",
+        "comment": "Rename the FK_USER_COMMONS_USERS constraint on the farmer table to FK_FARMER_USERS.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "farmer",
+              "foreignKeyName": "FK_USER_COMMONS_USERS"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "farmer",
+              "constraintName": "FK_USER_COMMONS_USERS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "USER_ID",
+              "baseTableName": "farmer",
+              "constraintName": "FK_FARMER_USERS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "USERS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "006-rename-fk_user_commons_commons-to-fk_farmer_commons",
+        "author": "pc",
+        "comment": "Rename the FK_USER_COMMONS_COMMONS constraint on the farmer table to FK_FARMER_COMMONS.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "farmer",
+              "foreignKeyName": "FK_USER_COMMONS_COMMONS"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "farmer",
+              "constraintName": "FK_USER_COMMONS_COMMONS"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "COMMONS_ID",
+              "baseTableName": "farmer",
+              "constraintName": "FK_FARMER_COMMONS",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "COMMONS"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

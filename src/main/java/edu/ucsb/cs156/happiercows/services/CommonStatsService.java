@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service("CommonStatsService")
 public class CommonStatsService {
@@ -18,7 +18,7 @@ public class CommonStatsService {
     CommonsRepository commonsRepository;
 
     @Autowired
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Autowired
     private AverageCowHealthService averageCowHealthService;

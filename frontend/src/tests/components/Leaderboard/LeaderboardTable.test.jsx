@@ -58,7 +58,7 @@ describe("LeaderboardTable tests", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <LeaderboardTable
-            leaderboardUsers={leaderboardFixtures.fiveUserCommonsLB}
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
             currentUser={currentUser}
           />
         </MemoryRouter>
@@ -125,7 +125,7 @@ describe("LeaderboardTable tests", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <LeaderboardTable
-            leaderboardUsers={leaderboardFixtures.fiveUserCommonsLB}
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
             currentUser={currentUser}
           />
         </MemoryRouter>
@@ -151,7 +151,7 @@ describe("LeaderboardTable tests", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <LeaderboardTable
-            leaderboardUsers={leaderboardFixtures.threeUserCommonsLB}
+            leaderboardUsers={leaderboardFixtures.threeFarmerLB}
             currentUser={currentUser}
           />
         </MemoryRouter>
@@ -192,7 +192,7 @@ describe("LeaderboardTable tests", () => {
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <LeaderboardTable
-            leaderboardUsers={leaderboardFixtures.fiveUserCommonsLB}
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
             currentUser={currentUser}
           />
         </MemoryRouter>

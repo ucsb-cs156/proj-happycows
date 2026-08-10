@@ -32,14 +32,14 @@ public class User {
   private Instant lastOnline = Instant.now();
 
   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
-  @JoinTable(name = "user_commons", 
+  @JoinTable(name = "farmer", 
     joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
     inverseJoinColumns = @JoinColumn(name = "commons_id", referencedColumnName = "id"))
     private List<Commons> commons;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private List<UserCommons> joinedCommons;
+    private List<Farmer> joinedCommons;
 
 
     @Override

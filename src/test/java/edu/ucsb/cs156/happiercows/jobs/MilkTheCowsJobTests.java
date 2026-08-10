@@ -3,11 +3,11 @@ package edu.ucsb.cs156.happiercows.jobs;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
     CommonsRepository commonsRepository;
 
     @Mock
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @Mock
     UserRepository userRepository;
@@ -68,7 +68,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
         JobContext ctx = new JobContext(null, jobStarted);
 
         // Act
-        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, userCommonsRepository,
+        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
                 userRepository, profitRepository);
 
         milkTheCowsJob.accept(ctx);
@@ -83,13 +83,13 @@ public class MilkTheCowsJobTests extends JobTestCase {
     }
 
     @Test
-    void test_log_output_with_commons_and_user_commons() throws Exception {
+    void test_log_output_with_commons_and_farmer() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        UserCommons origUserCommons = UserCommons
+        Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -99,13 +99,13 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 .build();
 
         when(commonsRepository.findAll()).thenReturn(Arrays.asList(testCommons));
-        when(userCommonsRepository.findByCommonsId(testCommons.getId()))
-                .thenReturn(Arrays.asList(origUserCommons));
+        when(farmerRepository.findByCommonsId(testCommons.getId()))
+                .thenReturn(Arrays.asList(origFarmer));
         when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act
-        MilkTheCowsJob MilkTheCowsJob = new MilkTheCowsJob(commonsRepository, userCommonsRepository,
+        MilkTheCowsJob MilkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
                 userRepository, profitRepository);
         MilkTheCowsJob.accept(ctx);
 
@@ -143,7 +143,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
         when(commonsRepository.findAll()).thenReturn(Arrays.asList(futureCommons));
 
         // Act
-        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, userCommonsRepository,
+        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
                 userRepository, profitRepository);
         milkTheCowsJob.accept(ctx);
 
@@ -163,7 +163,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        UserCommons origUserCommons = UserCommons
+        Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -172,7 +172,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 .cowHealth(10)
                 .build();
 
-        UserCommons updatedUserCommons = UserCommons
+        Farmer updatedFarmer = Farmer
                 .builder()
                 .user(user)
                 .commons(testCommons)
@@ -182,17 +182,17 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 .build();
 
         Commons commonsTemp[] = {testCommons};
-        UserCommons userCommonsTemp[] = {origUserCommons};
+        Farmer farmerTemp[] = {origFarmer};
         when(commonsRepository.findAll()).thenReturn(Arrays.asList(commonsTemp));
-        when(userCommonsRepository.findByCommonsId(testCommons.getId()))
-                .thenReturn(Arrays.asList(userCommonsTemp));
+        when(farmerRepository.findByCommonsId(testCommons.getId()))
+                .thenReturn(Arrays.asList(farmerTemp));
         when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userCommonsRepository.save(updatedUserCommons)).thenReturn(updatedUserCommons);
+        when(farmerRepository.save(updatedFarmer)).thenReturn(updatedFarmer);
 
 
         // Act
-        MilkTheCowsJob.milkCows(ctx, testCommons, origUserCommons, profitRepository, userCommonsRepository);
+        MilkTheCowsJob.milkCows(ctx, testCommons, origFarmer, profitRepository, farmerRepository);
 
         // Assert
 
@@ -200,7 +200,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0, totalWealth: $300.00
                 Profit for user: Chris Gaucho is: $0.20, newWealth: $300.20""";
 
-        verify(userCommonsRepository).save(updatedUserCommons);
+        verify(farmerRepository).save(updatedFarmer);
         assertEquals(expected, jobStarted.getLog());
     }
 }

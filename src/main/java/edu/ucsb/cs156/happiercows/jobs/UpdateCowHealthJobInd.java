@@ -5,7 +5,7 @@ import java.util.Optional;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -19,7 +19,7 @@ public class UpdateCowHealthJobInd implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
@@ -40,7 +40,7 @@ public class UpdateCowHealthJobInd implements JobContextConsumer {
                 return;
             }
             CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);
-            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, userCommonsRepository, ctx); 
+            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, farmerRepository, ctx); 
             ctx.log("Cow health has been updated!");
         } else {
             ctx.log(String.format("No commons found for id %d", commonsID));

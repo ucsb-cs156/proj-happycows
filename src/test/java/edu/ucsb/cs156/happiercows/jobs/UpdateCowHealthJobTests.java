@@ -4,10 +4,10 @@ import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
@@ -39,7 +39,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         CommonsRepository commonsRepository;
 
         @Mock
-        UserCommonsRepository userCommonsRepository;
+        FarmerRepository farmerRepository;
 
         @Mock
         UserRepository userRepository;
@@ -71,7 +71,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
 
 
-        private final UserCommons userCommons = UserCommons
+        private final Farmer farmer = Farmer
                         .builder()
                         .user(user)
                         .commons(commons)
@@ -86,7 +86,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         private final JobContext ctx = new JobContext(null, job);
 
         private void runUpdateCowHealthJob() throws Exception {
-                var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository, userCommonsRepository,
+                var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository, farmerRepository,
                                 userRepository, commonsPlusBuilderService);
                 updateCowHealthJob.accept(ctx);
         }
@@ -134,7 +134,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         List<CommonsPlus> listOfCommonsPlus = List.of(commonsPlus);
         
         when(commonsRepository.findAll()).thenReturn(listOfCommons);
-        when(userCommonsRepository.findByCommonsId(commons.getId())).thenReturn(List.of(userCommons));
+        when(farmerRepository.findByCommonsId(commons.getId())).thenReturn(List.of(farmer));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(totalCows));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(numUsers));
@@ -150,7 +150,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 setupUpdateCowHealthTestOnCommons(101, 1);
                 runUpdateCowHealthJob();
 
-                assertEquals(expectedNewHealth, userCommons.getCowHealth());
+                assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
@@ -168,7 +168,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 setupUpdateCowHealthTestOnCommons(99, 1);
                 runUpdateCowHealthJob();
 
-                assertEquals(expectedNewHealth, userCommons.getCowHealth());
+                assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
@@ -187,7 +187,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 setupUpdateCowHealthTestOnCommons(commons.getCarryingCapacity(), 1);
                 runUpdateCowHealthJob();
 
-                assertEquals(expectedNewHealth, userCommons.getCowHealth());
+                assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
@@ -205,7 +205,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
                                 mockStrategy,
                                 commonsPlusBuilderService.toCommonsPlus(commons),
-                                userCommons,
+                                farmer,
                                 1);
                 assertEquals(0.0, newHealth);
         }
@@ -217,15 +217,15 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
                                 mockStrategy,
                                 commonsPlusBuilderService.toCommonsPlus(commons),
-                                userCommons,
+                                farmer,
                                 1);
                 assertEquals(100.0, newHealth);
         }
 
         @Test
         void test_updating_values_for_multiple_users() throws Exception {
-                var userCommons1 = userCommons;
-                var userCommons2 = UserCommons
+                var farmer1 = farmer;
+                var farmer2 = Farmer
                                 .builder()
                                 .user(user)
                                 .commons(commons)
@@ -243,8 +243,8 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(commonsRepository.findAll()).thenReturn(commonsList);
                 when(commonsPlusBuilderService.convertToCommonsPlus(eq(commonsList))).thenReturn(commonsPlusList);
                 when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
-                when(userCommonsRepository.findByCommonsId(commons.getId()))
-                                .thenReturn(List.of(userCommons1, userCommons2));
+                when(farmerRepository.findByCommonsId(commons.getId()))
+                                .thenReturn(List.of(farmer1, farmer2));
                 when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(99));
                 when(userRepository.findById(1L)).thenReturn(Optional.of(user));
                 when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(2));
@@ -262,14 +262,14 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
                 assertEquals(expected, job.getLog());
 
-                assertEquals(11.0, userCommons1.getCowHealth());
-                assertEquals(21.0, userCommons2.getCowHealth());
+                assertEquals(11.0, farmer1.getCowHealth());
+                assertEquals(21.0, farmer2.getCowHealth());
         }
 
         @Test
         void test_calculateCowDeaths_health_zero() throws Exception {
                 // arrange
-                UserCommons userCommons = UserCommons
+                Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
                                 .commons(commons)
@@ -280,18 +280,18 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                                 .build();
 
                 // act
-                UpdateCowHealthJob.calculateCowDeaths(userCommons, ctx);
+                UpdateCowHealthJob.calculateCowDeaths(farmer, ctx);
 
                 // assert
-                assertEquals(0, userCommons.getNumOfCows());
-                assertEquals(5, userCommons.getCowDeaths());
-                assertEquals(100.0, userCommons.getCowHealth());
+                assertEquals(0, farmer.getNumOfCows());
+                assertEquals(5, farmer.getCowDeaths());
+                assertEquals(100.0, farmer.getCowHealth());
         }
 
         @Test
         void test_calculateCowDeaths_health_nonZero() throws Exception {
                 // arrange
-                UserCommons userCommons = UserCommons
+                Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
                                 .commons(commons)
@@ -302,17 +302,17 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                                 .build();
 
                 // act
-                UpdateCowHealthJob.calculateCowDeaths(userCommons, ctx);
+                UpdateCowHealthJob.calculateCowDeaths(farmer, ctx);
 
                 // assert
-                assertEquals(5, userCommons.getNumOfCows());
-                assertEquals(42, userCommons.getCowDeaths());
-                assertEquals(1.0, userCommons.getCowHealth());
+                assertEquals(5, farmer.getNumOfCows());
+                assertEquals(42, farmer.getCowDeaths());
+                assertEquals(1.0, farmer.getCowHealth());
         }
 
         @Test
         void test_cowDeaths_in_job_context() throws Exception {
-                UserCommons userCommons = UserCommons
+                Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
                                 .commons(commons)
@@ -332,7 +332,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
 
                 when(commonsRepository.findAll()).thenReturn(List.of(commons));
-                when(userCommonsRepository.findByCommonsId(commons.getId())).thenReturn(List.of(userCommons));
+                when(farmerRepository.findByCommonsId(commons.getId())).thenReturn(List.of(farmer));
                 when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(99));
                 when(userRepository.findById(1L)).thenReturn(Optional.of(user));
                 when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
@@ -349,9 +349,9 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
                 assertEquals(expected, job.getLog());
 
-                assertEquals(0, userCommons.getNumOfCows());
-                assertEquals(5, userCommons.getCowDeaths());
-                assertEquals(100.0, userCommons.getCowHealth());
+                assertEquals(0, farmer.getNumOfCows());
+                assertEquals(5, farmer.getCowDeaths());
+                assertEquals(100.0, farmer.getCowHealth());
         }
 
         @Test
@@ -387,7 +387,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
 
                 var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository,
-                                userCommonsRepository,
+                                farmerRepository,
                                 userRepository, commonsPlusBuilderService);
 
                 var thrown = Assertions.assertThrows(RuntimeException.class, () -> {
@@ -405,7 +405,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.empty());
 
                 var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository,
-                                userCommonsRepository,
+                                farmerRepository,
                                 userRepository, commonsPlusBuilderService);
 
                 var thrown = Assertions.assertThrows(RuntimeException.class, () -> {
@@ -418,7 +418,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
         @Test
         void commons_plus_builder_service_getter_returns_value_from_constructor() {
-                var job = new UpdateCowHealthJob(commonsRepository, userCommonsRepository,
+                var job = new UpdateCowHealthJob(commonsRepository, farmerRepository,
                                 userRepository, commonsPlusBuilderService);
 
                 assertSame(commonsPlusBuilderService, job.getCommonsPlusBuilderService());

@@ -4,7 +4,7 @@ import { useCurrentUser, hasRole } from "main/utils/currentUser";
 import { useParams } from "react-router";
 
 // add parameters
-const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
+const ManageCows = ({ farmer, commons, setMessage, openModal }) => {
   // update cowPrice from fixture
   const { data: currentUser } = useCurrentUser();
   let { userId } = useParams();
@@ -29,7 +29,7 @@ const ManageCows = ({ userCommons, commons, setMessage, openModal }) => {
           💵 Market Cow Price: ${commons?.cowPrice}
         </Card.Title>
         <Card.Title className="text-center">
-          🐮 Number of Cows: {userCommons.numOfCows}
+          🐮 Number of Cows: {farmer.numOfCows}
         </Card.Title>
         <Card.Title className="text-center">
           🥛 Current Milk Price: ${commons?.milkPrice}

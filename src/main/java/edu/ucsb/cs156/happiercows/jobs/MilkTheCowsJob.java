@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -21,7 +21,7 @@ public class MilkTheCowsJob implements JobContextConsumer {
     @Getter
     private CommonsRepository commonsRepository;
     @Getter
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
@@ -45,43 +45,43 @@ public class MilkTheCowsJob implements JobContextConsumer {
             double milkPrice = commons.getMilkPrice();
             ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));
 
-            Iterable<UserCommons> allUserCommons = userCommonsRepository.findByCommonsId(commons.getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commons.getId());
 
-            for (UserCommons userCommons : allUserCommons) {
-                milkCows(ctx, commons, userCommons, profitRepository, userCommonsRepository);
+            for (Farmer farmer : allFarmer) {
+                milkCows(ctx, commons, farmer, profitRepository, farmerRepository);
             }
         }
 
         ctx.log("Cows have been milked!");
     }
 
-    /** This method performs the function of milking the cows for a single userCommons.
+    /** This method performs the function of milking the cows for a single farmer.
      *  It is a public method only so it can be exposed to the unit tests
      * @param ctx the JobContext
      * @param commons the Commons
-     * @param userCommons the UserCommons
+     * @param farmer the Farmer
      *
      */
 
-    public static void milkCows(JobContext ctx, Commons commons, UserCommons userCommons, ProfitRepository profitRepository, UserCommonsRepository userCommonsRepository) {
-        User user = userCommons.getUser();
+    public static void milkCows(JobContext ctx, Commons commons, Farmer farmer, ProfitRepository profitRepository, FarmerRepository farmerRepository) {
+        User user = farmer.getUser();
 
         ctx.log("User: " + user.getFullName()
-                + ", numCows: " + userCommons.getNumOfCows()
-                + ", cowHealth: " + userCommons.getCowHealth()
-                + ", totalWealth: " + formatDollars(userCommons.getTotalWealth()));
+                + ", numCows: " + farmer.getNumOfCows()
+                + ", cowHealth: " + farmer.getCowHealth()
+                + ", totalWealth: " + formatDollars(farmer.getTotalWealth()));
 
-        double profitAmount = calculateMilkingProfit(commons, userCommons);
+        double profitAmount = calculateMilkingProfit(commons, farmer);
         Profit profit = Profit.builder()
-                .userCommons(userCommons)
+                .farmer(farmer)
                 .amount(profitAmount)
                 .timestamp(LocalDateTime.now())
-                .numCows(userCommons.getNumOfCows())
-                .avgCowHealth(userCommons.getCowHealth())
+                .numCows(farmer.getNumOfCows())
+                .avgCowHealth(farmer.getCowHealth())
                 .build();
-        double newWeath = userCommons.getTotalWealth() + profitAmount;
-        userCommons.setTotalWealth(newWeath);
-        userCommonsRepository.save(userCommons);
+        double newWeath = farmer.getTotalWealth() + profitAmount;
+        farmer.setTotalWealth(newWeath);
+        farmerRepository.save(farmer);
         profit = profitRepository.save(profit);
         ctx.log("Profit for user: " + user.getFullName()
                 + " is: " + formatDollars(profitAmount)
@@ -91,12 +91,12 @@ public class MilkTheCowsJob implements JobContextConsumer {
     /**
      * Calculate the profit for a user from milking their cows.
      *
-     * @param userCommons
+     * @param farmer
      * @return
      */
-    public static double calculateMilkingProfit(Commons commons, UserCommons userCommons) {
+    public static double calculateMilkingProfit(Commons commons, Farmer farmer) {
         double milkPrice = commons.getMilkPrice();
-        double profit = userCommons.getNumOfCows() * (userCommons.getCowHealth() / 100.0) * milkPrice;
+        double profit = farmer.getNumOfCows() * (farmer.getCowHealth() / 100.0) * milkPrice;
         return profit;
     }
 }

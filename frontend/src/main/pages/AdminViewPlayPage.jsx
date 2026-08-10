@@ -17,9 +17,9 @@ const AdminViewPlayPage = () => {
   const { data: currentUser } = useCurrentUser();
 
   // Stryker disable all
-  const { data: userCommons } = useBackend("/api/usercommons", {
+  const { data: farmer } = useBackend("/api/farmer", {
     method: "GET",
-    url: "/api/usercommons",
+    url: "/api/farmer",
     params: {
       userId: userId,
       commonsId: commonsId,
@@ -42,7 +42,7 @@ const AdminViewPlayPage = () => {
   // Stryker restore all
 
   // Stryker disable all
-  const { data: userCommonsProfits } = useBackend([`/api/profits/all`], {
+  const { data: farmerProfits } = useBackend([`/api/profits/all`], {
     method: "GET",
     url: "/api/profits/all",
     params: {
@@ -82,7 +82,7 @@ const AdminViewPlayPage = () => {
     textAlign: "center",
   };
 
-  const visiting_user = userCommons?.username;
+  const visiting_user = farmer?.username;
   const visiting_commons = commonsPlus?.commons.name;
   // Stryker disable all
   const admin_name = currentUser?.root ? currentUser?.root?.user?.fullName : "";
@@ -105,7 +105,7 @@ const AdminViewPlayPage = () => {
           </Card.Body>
         </Card>
         <Container>
-          {!!currentUser && <CommonsPlay currentUser={userCommons} />}
+          {!!currentUser && <CommonsPlay currentUser={farmer} />}
           {!!commonsPlus && (
             <CommonsOverview
               commonsPlus={commonsPlus}
@@ -113,14 +113,11 @@ const AdminViewPlayPage = () => {
             />
           )}
           <br />
-          {!!userCommons && !!commonsPlus && (
+          {!!farmer && !!commonsPlus && (
             <CardGroup data-testid="adminviewplaypage-card-group">
-              <ManageCows
-                userCommons={userCommons}
-                commons={commonsPlus.commons}
-              />
-              <FarmStats userCommons={userCommons} />
-              <Profits userCommons={userCommons} profits={userCommonsProfits} />
+              <ManageCows farmer={farmer} commons={commonsPlus.commons} />
+              <FarmStats farmer={farmer} />
+              <Profits farmer={farmer} profits={farmerProfits} />
             </CardGroup>
           )}
         </Container>

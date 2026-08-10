@@ -23,12 +23,12 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.entities.UserCommonsKey;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.FarmerKey;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
@@ -44,7 +44,7 @@ class ReportServiceTests {
   CommonsRepository commonsRepository;
 
   @MockBean
-  UserCommonsRepository userCommonsRepository;
+  FarmerRepository farmerRepository;
 
   @MockBean
   ReportRepository reportRepository;
@@ -77,7 +77,7 @@ class ReportServiceTests {
       .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
       .build();
 
-  UserCommons userCommons = UserCommons
+  Farmer farmer = Farmer
       .builder()
       .user(user)
       .username("Chris Gaucho")
@@ -121,7 +121,7 @@ class ReportServiceTests {
 
   @BeforeEach
   void setup() {
-    userCommons.setId(new UserCommonsKey(user.getId(), commons.getId()));
+    farmer.setId(new FarmerKey(user.getId(), commons.getId()));
   }
 
   @Test
@@ -129,8 +129,8 @@ class ReportServiceTests {
         // arrange
 
         when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(userCommonsRepository.findByCommonsId(commons.getId()))
-                .thenReturn(Arrays.asList(userCommons));
+        when(farmerRepository.findByCommonsId(commons.getId()))
+                .thenReturn(Arrays.asList(farmer));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
@@ -167,8 +167,8 @@ class ReportServiceTests {
         // arrange
 
         when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(userCommonsRepository.findByCommonsId(commons.getId()))
-                .thenReturn(Arrays.asList(userCommons));
+        when(farmerRepository.findByCommonsId(commons.getId()))
+                .thenReturn(Arrays.asList(farmer));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
@@ -189,15 +189,15 @@ class ReportServiceTests {
         // arrange
 
         when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(userCommonsRepository.findByCommonsId(commons.getId()))
-                .thenReturn(Arrays.asList(userCommons));
+        when(farmerRepository.findByCommonsId(commons.getId()))
+                .thenReturn(Arrays.asList(farmer));
         when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
 
         // act
 
-        ReportLine reportLine = reportService.createAndSaveReportLine(expectedReportHeader, userCommons);
+        ReportLine reportLine = reportService.createAndSaveReportLine(expectedReportHeader, farmer);
 
         // assert
 

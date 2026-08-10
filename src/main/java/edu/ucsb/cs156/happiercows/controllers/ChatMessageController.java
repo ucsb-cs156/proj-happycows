@@ -19,8 +19,8 @@ import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 import edu.ucsb.cs156.happiercows.repositories.ChatMessageRepository;
 
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 import org.springframework.security.core.Authentication;
 
@@ -37,7 +37,7 @@ public class ChatMessageController extends ApiController{
     private ChatMessageRepository chatMessageRepository;
 
     @Autowired
-    private UserCommonsRepository userCommonsRepository;
+    private FarmerRepository farmerRepository;
 
     @Autowired
     ObjectMapper mapper;
@@ -55,14 +55,14 @@ public class ChatMessageController extends ApiController{
             log.info("User is not an admin");
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            UserCommons userCommons = userCommonsLookup.get();
-            if(!userCommons.getCommons().isShowChat()){
+            Farmer farmer = farmerLookup.get();
+            if(!farmer.getCommons().isShowChat()){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
@@ -111,14 +111,14 @@ public class ChatMessageController extends ApiController{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
-            UserCommons userCommons = userCommonsLookup.get();
-            if(!userCommons.getCommons().isShowChat()){
+            Farmer farmer = farmerLookup.get();
+            if(!farmer.getCommons().isShowChat()){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
@@ -164,9 +164,9 @@ public class ChatMessageController extends ApiController{
         }
 
         // Check if showChat is true
-        Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);
-        UserCommons userCommons = userCommonsLookup.get();
-        if (!userCommons.getCommons().isShowChat()){
+        Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);
+        Farmer farmer = farmerLookup.get();
+        if (!farmer.getCommons().isShowChat()){
             // Check if the user is an admin
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){

@@ -12,7 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 
 @RestClientTest(MilkTheCowsJobFactoryInd.class)
@@ -23,7 +23,7 @@ public class MilkTheCowsJobFactoryIndTests extends JobTestCase {
     CommonsRepository commonsRepository;
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -42,7 +42,7 @@ public class MilkTheCowsJobFactoryIndTests extends JobTestCase {
 
         // Assert
         assertEquals(commonsRepository,milkTheCowsJobInd.getCommonsRepository());
-        assertEquals(userCommonsRepository,milkTheCowsJobInd.getUserCommonsRepository());
+        assertEquals(farmerRepository,milkTheCowsJobInd.getFarmerRepository());
         assertEquals(userRepository,milkTheCowsJobInd.getUserRepository());
         assertEquals(profitRepository,milkTheCowsJobInd.getProfitRepository());
 

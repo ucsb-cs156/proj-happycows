@@ -6,10 +6,10 @@ import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.User;
-import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
-import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
 import org.springframework.data.domain.Page;
@@ -49,7 +49,7 @@ public class ProfitsControllerTests extends ControllerTestCase {
     ProfitRepository profitRepository;
 
     @MockBean
-    UserCommonsRepository userCommonsRepository;
+    FarmerRepository farmerRepository;
 
     @MockBean
     UserRepository userRepository;
@@ -59,14 +59,14 @@ public class ProfitsControllerTests extends ControllerTestCase {
 
     User user = User.builder().id(1).build();
     Commons commons = Commons.builder().id(1).build();
-    UserCommons uc1 = UserCommons.builder().user(user)
+    Farmer uc1 = Farmer.builder().user(user)
             .commons(commons).build();
 
     LocalDateTime t1 = LocalDateTime.parse("2022-03-05T15:50:10");
 
-    Profit p1 = Profit.builder().id(41).amount(123.45).timestamp(t1).userCommons(uc1).numCows(1).avgCowHealth(80).build();
-    Profit p2 = Profit.builder().id(42).amount(23.45).timestamp(t1).userCommons(uc1).numCows(1).avgCowHealth(80).build();
-    Profit p3 = Profit.builder().id(43).amount(3.45).timestamp(t1).userCommons(uc1).numCows(1).avgCowHealth(80).build();
+    Profit p1 = Profit.builder().id(41).amount(123.45).timestamp(t1).farmer(uc1).numCows(1).avgCowHealth(80).build();
+    Profit p2 = Profit.builder().id(42).amount(23.45).timestamp(t1).farmer(uc1).numCows(1).avgCowHealth(80).build();
+    Profit p3 = Profit.builder().id(43).amount(3.45).timestamp(t1).farmer(uc1).numCows(1).avgCowHealth(80).build();
 
     List<Profit> profits = List.of(p1);
     List<Profit> profits2 = List.of(p1, p2, p3);
@@ -77,35 +77,35 @@ public class ProfitsControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/profits/all/commonsid?commonsId=2").contentType("application/json"))
                 .andExpect(status().isNotFound()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
 
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("UserCommons with commonsId 2 and userId 1 not found",
+        assertEquals("Farmer with commonsId 2 and userId 1 not found",
                 json.get("message"));
     }
 
     @WithMockUser(roles = {"USER"})
     @Test
     public void get_profits_all_commons_using_commons_id() throws Exception {
-        UserCommons expectedUserCommons = p1.getUserCommons();
-        when(profitRepository.findAllByUserCommons(uc1)).thenReturn(profits);
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedUserCommons));
+        Farmer expectedFarmer = p1.getFarmer();
+        when(profitRepository.findAllByFarmer(uc1)).thenReturn(profits);
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
 
         MvcResult response = mockMvc.perform(get("/api/profits/all/commonsid?commonsId=2")).andDo(print())
                 .andExpect(status().isOk()).andReturn();
 
-        verify(profitRepository, times(1)).findAllByUserCommons(uc1);
+        verify(profitRepository, times(1)).findAllByFarmer(uc1);
 
         String responseString = response.getResponse().getContentAsString();
         List<Profit> actualProfits = objectMapper.readValue(responseString, new TypeReference<List<Profit>>() {
         });
 
-        // json serialized result doesn't include userCommons.user or userCommons.commons,
+        // json serialized result doesn't include farmer.user or farmer.commons,
         // so we exclude them from expected
         System.out.println("Hello world");
-        p1.getUserCommons().setUser(null);
-        p1.getUserCommons().setCommons(null);
+        p1.getFarmer().setUser(null);
+        p1.getFarmer().setCommons(null);
 
         assertEquals(profits, actualProfits);
     }
@@ -115,34 +115,34 @@ public class ProfitsControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/profits/all?userId=1&commonsId=2").contentType("application/json"))
                 .andExpect(status().isNotFound()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
 
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("UserCommons with commonsId 2 and userId 1 not found",
+        assertEquals("Farmer with commonsId 2 and userId 1 not found",
                 json.get("message"));
     }
         @WithMockUser(roles = {"ADMIN"})
     @Test
     public void admin_get_profits_all_commons_using_commons_id() throws Exception {
-        UserCommons expectedUserCommons = p1.getUserCommons();
-        when(profitRepository.findAllByUserCommons(uc1)).thenReturn(profits);
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedUserCommons));
+        Farmer expectedFarmer = p1.getFarmer();
+        when(profitRepository.findAllByFarmer(uc1)).thenReturn(profits);
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
 
         MvcResult response = mockMvc.perform(get("/api/profits/all?userId=1&commonsId=2")).andDo(print())
                 .andExpect(status().isOk()).andReturn();
 
-        verify(profitRepository, times(1)).findAllByUserCommons(uc1);
+        verify(profitRepository, times(1)).findAllByFarmer(uc1);
 
         String responseString = response.getResponse().getContentAsString();
         List<Profit> actualProfits = objectMapper.readValue(responseString, new TypeReference<List<Profit>>() {
         });
 
-        // json serialized result doesn't include userCommons.user or userCommons.commons,
+        // json serialized result doesn't include farmer.user or farmer.commons,
         // so we exclude them from expected
         System.out.println("Hello world");
-        p1.getUserCommons().setUser(null);
-        p1.getUserCommons().setCommons(null);
+        p1.getFarmer().setUser(null);
+        p1.getFarmer().setCommons(null);
 
         assertEquals(profits, actualProfits);
     }
@@ -154,24 +154,24 @@ public class ProfitsControllerTests extends ControllerTestCase {
         MvcResult response = mockMvc.perform(get("/api/profits/paged/commonsid?commonsId=2").contentType("application/json"))
                 .andExpect(status().isNotFound()).andReturn();
 
-        verify(userCommonsRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
+        verify(farmerRepository, times(1)).findByCommonsIdAndUserId(2L, 1L);
 
         Map<String, Object> json = responseToJson(response);
         assertEquals("EntityNotFoundException", json.get("type"));
-        assertEquals("UserCommons with commonsId 2 and userId 1 not found",
+        assertEquals("Farmer with commonsId 2 and userId 1 not found",
                 json.get("message"));
     }
 
     @WithMockUser(roles = {"USER"})
     @Test
     public void get_profits_all_commons_using_commons_id_with_pagination() throws Exception {
-        UserCommons expectedUserCommons = p1.getUserCommons();
+        Farmer expectedFarmer = p1.getFarmer();
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
 
         // Mocking the behavior for pagination
         Page<Profit> profitPage = new PageImpl<>(profits);
-        when(profitRepository.findAllByUserCommons(eq(uc1))).thenReturn(profitPage);
+        when(profitRepository.findAllByFarmer(eq(uc1))).thenReturn(profitPage);
 
         MvcResult response = mockMvc.perform(get("/api/profits/paged/commonsid?commonsId=2&pageNumber=0&pageSize=7"))
                 .andDo(print())
@@ -192,13 +192,13 @@ public class ProfitsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void get_profits_all_commons_using_commons_id_with_pagination_2() throws Exception {
-        UserCommons expectedUserCommons = p1.getUserCommons();
+        Farmer expectedFarmer = p1.getFarmer();
 
-        when(userCommonsRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedUserCommons));
+        when(farmerRepository.findByCommonsIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
 
         // Mocking the behavior for pagination
         Page<Profit> profitPage = new PageImpl<>(profits2);
-        when(profitRepository.findAllByUserCommons(eq(uc1))).thenReturn(profitPage);
+        when(profitRepository.findAllByFarmer(eq(uc1))).thenReturn(profitPage);
 
         MvcResult response = mockMvc.perform(get("/api/profits/paged/commonsid?commonsId=2&pageNumber=1&pageSize=2"))
                 .andDo(print())

@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import Profits from "main/components/Commons/Profits";
-import userCommonsFixtures from "fixtures/userCommonsFixtures";
+import farmerFixtures from "fixtures/farmerFixtures";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -9,7 +9,7 @@ describe("Profits tests", () => {
     const queryClient = new QueryClient();
     render(
       <QueryClientProvider client={queryClient}>
-        <Profits userCommons={userCommonsFixtures.oneUserCommons[0]} />
+        <Profits farmer={farmerFixtures.oneFarmer[0]} />
       </QueryClientProvider>,
     );
     await waitFor(() => {
