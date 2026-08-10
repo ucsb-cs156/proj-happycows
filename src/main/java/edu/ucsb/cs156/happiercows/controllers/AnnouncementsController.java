@@ -69,7 +69,7 @@ public class AnnouncementsController extends ApiController{
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
             if (!userCommonsLookup.isPresent()) {
-                return ResponseEntity.badRequest().body("Commons_id must exist.");
+                return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }
 
@@ -120,7 +120,7 @@ public class AnnouncementsController extends ApiController{
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
             if (!userCommonsLookup.isPresent()) {
-                return ResponseEntity.badRequest().body("Commons_id must exist.");
+                return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }
 
@@ -145,7 +145,7 @@ public class AnnouncementsController extends ApiController{
 
             if (!userCommonsLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body("User is not a member of this commons.");
+                    .body("User is not a member of this game.");
             }
         }
 
@@ -192,7 +192,7 @@ public class AnnouncementsController extends ApiController{
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
 
             if (!userCommonsLookup.isPresent()) {
-                return ResponseEntity.badRequest().body("Commons_id must exist.");
+                return ResponseEntity.badRequest().body("Game_id must exist.");
             }
         }
 

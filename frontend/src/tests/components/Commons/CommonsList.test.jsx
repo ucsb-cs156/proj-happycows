@@ -20,7 +20,7 @@ describe("CommonsList tests", () => {
     const subtitle_name = screen.getByTestId("commonsList-subtitle-name");
     expect(subtitle_name).toBeInTheDocument();
     expect(typeof subtitle_name.textContent).toBe("string");
-    expect(subtitle_name.textContent).toEqual("Common's Name");
+    expect(subtitle_name.textContent).toEqual("Game Name");
 
     const subtitle_id = screen.getByTestId("commonsList-subtitle-id");
     expect(subtitle_id).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe("CommonsList tests", () => {
     const subtitle_name = screen.getByTestId("commonsList-subtitle-name");
     expect(subtitle_name).toBeInTheDocument();
     expect(typeof subtitle_name.textContent).toBe("string");
-    expect(subtitle_name.textContent).toEqual("Common's Name");
+    expect(subtitle_name.textContent).toEqual("Game Name");
 
     const subtitle_id = screen.getByTestId("commonsList-subtitle-id");
     expect(subtitle_id).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe("CommonsList tests", () => {
     expect(subtitle_name).toBeInTheDocument();
     expect(typeof subtitle_name.textContent).toBe("string");
     expect(subtitle_name.textContent).toEqual(
-      "There are currently no commons to join",
+      "There are currently no games to join",
     );
     expect(subtitle_name).toHaveStyle("justify-content: center;");
 
@@ -148,7 +148,7 @@ describe("CommonsList tests", () => {
     expect(subtitle_name).toBeInTheDocument();
     expect(typeof subtitle_name.textContent).toBe("string");
     expect(subtitle_name.textContent).toEqual(
-      "There are currently no commons to visit",
+      "There are currently no games to visit",
     );
     expect(subtitle_name).toHaveStyle("justify-content: center;");
 

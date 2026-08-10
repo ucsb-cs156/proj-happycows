@@ -76,7 +76,7 @@ const AdminCreateAnnouncementsPage = () => {
 
   return (
     <BasicLayout>
-      <h2>Create Announcement for Commons {commonsName}</h2>
+      <h2>Create Announcement for Game {commonsName}</h2>
       <AnnouncementForm submitAction={submitAction} />
     </BasicLayout>
   );

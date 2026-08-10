@@ -63,7 +63,7 @@ describe("AdminCreateCommonsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Commons")).toBeInTheDocument();
+    expect(await screen.findByText("Create Game")).toBeInTheDocument();
   });
 
   test("When you fill in form and click submit, the right things happens", async () => {
@@ -91,9 +91,9 @@ describe("AdminCreateCommonsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Create Commons")).toBeInTheDocument();
+    expect(await screen.findByText("Create Game")).toBeInTheDocument();
 
-    const commonsNameField = screen.getByLabelText("Commons Name");
+    const commonsNameField = screen.getByLabelText("Game Name");
     const startingBalanceField = screen.getByLabelText("Starting Balance");
     const cowPriceField = screen.getByLabelText("Cow Price");
     const milkPriceField = screen.getByLabelText("Milk Price");
@@ -157,7 +157,7 @@ describe("AdminCreateCommonsPage tests", () => {
 
     expect(mockToast).toBeCalledWith(
       <div>
-        Commons successfully created!
+        Game successfully created!
         <br />
         id: 5
         <br />

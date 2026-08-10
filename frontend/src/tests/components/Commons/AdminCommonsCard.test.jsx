@@ -282,7 +282,7 @@ describe("AdminCommonsCard tests", () => {
 
     expect(screen.getByText("Confirm Deletion")).toBeInTheDocument();
     expect(
-      screen.getByText("Are you sure you want to delete this commons?"),
+      screen.getByText("Are you sure you want to delete this game?"),
     ).toBeInTheDocument();
   });
 
@@ -325,7 +325,7 @@ describe("AdminCommonsCard tests", () => {
 
     axiosMock
       .onDelete("/api/commons", { params: { id: 1 } })
-      .reply(200, "Commons with id 1 was deleted");
+      .reply(200, "Game with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -350,7 +350,7 @@ describe("AdminCommonsCard tests", () => {
     fireEvent.click(confirmDeleteButton);
 
     await waitFor(() => {
-      expect(mockToast).toHaveBeenCalledWith("Commons with id 1 was deleted");
+      expect(mockToast).toHaveBeenCalledWith("Game with id 1 was deleted");
     });
 
     expect(axiosMock.history.delete.length).toBe(1);
@@ -598,7 +598,7 @@ describe("AdminCommonsCard tests", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.getByText("Keep this Commons")).toBeInTheDocument();
+    expect(screen.getByText("Keep this Game")).toBeInTheDocument();
     expect(screen.getByText("Permanently Delete")).toBeInTheDocument();
   });
 
@@ -785,7 +785,7 @@ describe("AdminCommonsCard tests", () => {
 
     axiosMock
       .onDelete("/api/commons", { params: { id: 1 } })
-      .reply(200, "Commons with id 1 was deleted");
+      .reply(200, "Game with id 1 was deleted");
 
     render(
       <QueryClientProvider client={queryClient}>

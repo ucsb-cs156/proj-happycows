@@ -25,7 +25,7 @@ public class CommonsWebIT extends WebTestCase {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("Create Commons").click();
+        page.getByText("Create Game").click();
 
         
 
@@ -40,7 +40,7 @@ public class CommonsWebIT extends WebTestCase {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("Create Commons").click();
+        page.getByText("Create Game").click();
     
         page.getByTestId("CommonsForm-name").fill("Web Test Commons");
         page.getByTestId("CommonsForm-Submit-Button").click();
@@ -51,7 +51,7 @@ public class CommonsWebIT extends WebTestCase {
         page.getByRole(
                         AriaRole.LINK,
                         new Page.GetByRoleOptions()
-                                .setName("List Commons")
+                                .setName("List Games")
                                 .setExact(true))
                 .click();
   
@@ -71,7 +71,7 @@ public class CommonsWebIT extends WebTestCase {
         // return to home page
         page.getByText("Happy Cows").click(); 
         
-        assertThat(page.getByText("There are currently no commons to join")).isVisible();
+        assertThat(page.getByText("There are currently no games to join")).isVisible();
     }
   
     @Test
@@ -79,9 +79,9 @@ public class CommonsWebIT extends WebTestCase {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
-        page.getByText("Create Commons").click();
+        page.getByText("Create Game").click();
 
-        assertThat(page.getByText("Create Commons")).isVisible();
+        assertThat(page.getByText("Create Game")).isVisible();
 
         page.getByTestId("CommonsForm-name").fill("Web Test Commons 2");
         page.getByTestId("CommonsForm-startingBalance").fill("9000");
@@ -104,7 +104,7 @@ public class CommonsWebIT extends WebTestCase {
         page.getByRole(
                         AriaRole.LINK,
                         new Page.GetByRoleOptions()
-                                .setName("List Commons")
+                                .setName("List Games")
                                 .setExact(true))
                 .click();
         var commonsCard = page.getByTestId("AdminCommonsCard-1");

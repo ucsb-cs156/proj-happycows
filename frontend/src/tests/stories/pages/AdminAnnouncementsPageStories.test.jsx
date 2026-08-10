@@ -77,7 +77,7 @@ describe("Announcement page stories", () => {
     renderStory(CreateAnnouncementsStory);
 
     expect(
-      await screen.findByText("Create Announcement for Commons Sample Commons"),
+      await screen.findByText("Create Announcement for Game Sample Commons"),
     ).toBeInTheDocument();
     expect(screen.queryByTestId("AnnouncementForm-id")).not.toBeInTheDocument();
     expect(screen.getByTestId("AnnouncementForm-startDate")).toHaveValue("");
@@ -91,7 +91,7 @@ describe("Announcement page stories", () => {
     renderStory(EditAnnouncementsStory);
 
     expect(
-      await screen.findByText("Edit Announcement for Commons Sample Commons"),
+      await screen.findByText("Edit Announcement for Game Sample Commons"),
     ).toBeInTheDocument();
     expect(await screen.findByTestId("AnnouncementForm-id")).toHaveValue("1");
 

@@ -32,7 +32,7 @@ describe("SetCowHealthForm tests", () => {
     );
 
     expect(
-      await screen.findByText("There are no commons on which to run this job."),
+      await screen.findByText("There are no games on which to run this job."),
     ).toBeInTheDocument();
   });
 

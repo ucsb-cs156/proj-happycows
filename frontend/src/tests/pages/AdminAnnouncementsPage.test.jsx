@@ -76,7 +76,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Commons: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Commons"),
     ).toBeInTheDocument();
 
     const headerRow = container.querySelector(".row.pt-5.pb-3");
@@ -93,7 +93,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Commons: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Commons"),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(firstAnnouncement.announcementText),
@@ -110,7 +110,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Commons: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Commons"),
     ).toBeInTheDocument();
     const createButton = screen.getByText("Create Announcement");
     expect(createButton).toHaveAttribute(
@@ -155,7 +155,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Commons: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Commons"),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-id`),

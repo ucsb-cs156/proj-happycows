@@ -44,8 +44,8 @@ describe("AppNavbar tests", () => {
     const adminMenu = screen.getByTestId("appnavbar-admin-dropdown");
     expect(adminMenu).toBeInTheDocument();
     fireEvent.click(screen.getByText("Admin"));
-    expect(await screen.findByText("List Commons")).toBeInTheDocument();
-    expect(screen.queryByText("List Commons V2")).not.toBeInTheDocument();
+    expect(await screen.findByText("List Games")).toBeInTheDocument();
+    expect(screen.queryByText("List Games V2")).not.toBeInTheDocument();
   });
 
   test("renders H2Console and Swagger links correctly", async () => {

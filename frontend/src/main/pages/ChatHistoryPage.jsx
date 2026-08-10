@@ -140,9 +140,9 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
         <div className="d-flex flex-column mb-3">
           <div className="d-flex justify-content-between align-items-center">
             <span className="text-muted">
-              Commons #{commonsId} {readOnly && "• Admin Read Only"}
+              Game #{commonsId} {readOnly && "• Admin Read Only"}
             </span>
-            <span className="text-muted">Commons #{commonsId}</span>
+            <span className="text-muted">Game #{commonsId}</span>
           </div>
 
           {isAdmin && (
@@ -184,7 +184,7 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
           )}
           {!isInitialLoading && messages.length === 0 && (
             <div className="text-center text-muted my-3">
-              No messages available for this commons.
+              No messages available for this game.
             </div>
           )}
           {messages.map((message) => (

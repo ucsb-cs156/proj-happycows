@@ -13,7 +13,7 @@ function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
     [],
   );
 
-  const allCommonsProp = { id: 0, name: "All Commons" };
+  const allCommonsProp = { id: 0, name: "All Games" };
 
   const commons = [allCommonsProp, ...commonsAll];
 
@@ -41,7 +41,7 @@ function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
     <Form onSubmit={handleSubmit(onSubmit)}>
       <Form.Group className="mb-3">
         <Form.Text htmlFor="description">
-          Updated the cows' health in a single or all commons.
+          Updated the cows' health in a single or all games.
         </Form.Text>
       </Form.Group>
 

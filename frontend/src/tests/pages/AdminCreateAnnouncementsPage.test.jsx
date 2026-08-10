@@ -75,7 +75,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Create Announcement for Commons Sample Commons",
+      "Create Announcement for Game Sample Commons",
     );
   });
 
@@ -228,7 +228,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Create Announcement for Commons Sample Commons",
+      "Create Announcement for Game Sample Commons",
     );
 
     const startDateField = screen.getByTestId("AnnouncementForm-startDate");

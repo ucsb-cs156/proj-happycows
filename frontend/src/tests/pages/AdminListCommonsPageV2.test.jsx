@@ -67,12 +67,12 @@ describe("AdminListCommonPageV2 tests", () => {
     );
 
     // Existing assertions
-    expect(screen.getByText("Commons")).toBeInTheDocument();
+    expect(screen.getByText("Games")).toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
 
     // ✅ Stryker-killers for style mutants:
-    // 1) <h2 style={{ margin: 0 }}>Commons</h2>
-    const heading = screen.getByRole("heading", { name: "Commons" });
+    // 1) <h2 style={{ margin: 0 }}>Games</h2>
+    const heading = screen.getByRole("heading", { name: "Games" });
     expect(heading).toHaveStyle("margin: 0px");
 
     // 2) Download All Stats button style={{ borderRadius: "30px", padding: "10px 20px" }}
@@ -97,7 +97,7 @@ describe("AdminListCommonPageV2 tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getByText("Commons")).toBeInTheDocument();
+    expect(screen.getByText("Games")).toBeInTheDocument();
     expect(screen.getByText("Download All Stats")).toBeInTheDocument();
   });
 

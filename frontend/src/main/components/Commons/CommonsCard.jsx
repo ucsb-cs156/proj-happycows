@@ -27,7 +27,7 @@ const CommonsCard = ({ buttonText, buttonLink, commons }) => {
                   ) {
                     // Stryker disable all: unable to read alert text in tests
                     alert(
-                      "This commons has not started yet and cannot be joined.\nThe starting date is " +
+                      "This game has not started yet and cannot be joined.\nThe starting date is " +
                         parseInt(commons.startingDate.substring(5, 7)) +
                         "/" +
                         parseInt(commons.startingDate.substring(8, 10)) +

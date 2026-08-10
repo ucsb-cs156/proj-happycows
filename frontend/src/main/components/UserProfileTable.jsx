@@ -18,7 +18,7 @@ export default function UserProfileTable({ user }) {
           <td>{user.email}</td>
         </tr>
         <tr>
-          <th>Joined Commons</th>
+          <th>Joined Games</th>
           <td>{commonsString(user.commons)}</td>
         </tr>
         <tr>

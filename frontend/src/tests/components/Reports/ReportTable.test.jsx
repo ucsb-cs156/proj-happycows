@@ -42,7 +42,7 @@ describe("ReportTable tests", () => {
     ];
     const expectedHeaders = [
       "id",
-      "commonsId",
+      "gameId",
       "Name",
       "Num Users",
       "Num Cows",

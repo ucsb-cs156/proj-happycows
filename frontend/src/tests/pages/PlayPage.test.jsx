@@ -146,7 +146,7 @@ describe("PlayPage tests", () => {
 
     expect(
       screen.queryByText(
-        "This commons has been hidden by the site administrator.",
+        "This game has been hidden by the site administrator.",
       ),
     ).not.toBeInTheDocument();
   });
@@ -177,7 +177,7 @@ describe("PlayPage tests", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "This commons has been hidden by the site administrator.",
+          "This game has been hidden by the site administrator.",
         ),
       ).toBeInTheDocument();
     });
@@ -197,7 +197,7 @@ describe("PlayPage tests", () => {
 
     expect(await screen.findByTestId("buy-cow-button")).toBeInTheDocument();
     expect(
-      screen.queryByText("This commons does not exist!"),
+      screen.queryByText("This game does not exist!"),
     ).not.toBeInTheDocument();
 
     const buyCowButton = screen.getByTestId("buy-cow-button");
@@ -469,7 +469,7 @@ describe("PlayPage tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("You have yet to join this commons!"),
+        screen.getByText("You have yet to join this game!"),
       ).toBeInTheDocument();
     });
 
@@ -511,7 +511,7 @@ describe("PlayPage tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("You have yet to join this commons!"),
+        screen.getByText("You have yet to join this game!"),
       ).toBeInTheDocument();
     });
 
@@ -556,7 +556,7 @@ describe("PlayPage tests", () => {
     });
 
     expect(
-      screen.queryByText("You have yet to join this commons!"),
+      screen.queryByText("You have yet to join this game!"),
     ).not.toBeInTheDocument();
     expect(screen.getByTestId("commons-card")).toBeInTheDocument();
   });
@@ -596,7 +596,7 @@ describe("PlayPage tests", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("You have yet to join this commons!"),
+        screen.getByText("You have yet to join this game!"),
       ).toBeInTheDocument();
     });
 
@@ -639,9 +639,7 @@ describe("PlayPage tests", () => {
     renderPage();
 
     await waitFor(() => {
-      expect(
-        screen.getByText("This commons does not exist!"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("This game does not exist!")).toBeInTheDocument();
     });
   });
 
@@ -688,7 +686,7 @@ describe("PlayPage tests", () => {
     renderPage();
 
     expect(
-      await screen.findByText("You have yet to join this commons!"),
+      await screen.findByText("You have yet to join this game!"),
     ).toBeInTheDocument();
 
     expect(
@@ -738,12 +736,12 @@ describe("PlayPage tests", () => {
 
     expect(
       await screen.findByText(
-        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+        "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
       ),
     ).toBeInTheDocument();
 
     expect(
-      screen.queryByText("You have yet to join this commons!"),
+      screen.queryByText("You have yet to join this game!"),
     ).not.toBeInTheDocument();
     expect(screen.queryByTestId("commonsPlay-title")).not.toBeInTheDocument();
     expect(screen.queryByTestId("ManageCows")).not.toBeInTheDocument();
@@ -772,7 +770,7 @@ describe("PlayPage tests", () => {
     expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
-        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+        "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
       ),
     ).not.toBeInTheDocument();
   });
@@ -797,7 +795,7 @@ describe("PlayPage tests", () => {
     expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
-        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+        "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
       ),
     ).not.toBeInTheDocument();
   });
@@ -825,7 +823,7 @@ describe("PlayPage tests", () => {
     expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
-        "You do not currently have access to this Commons. Please contact your instructor if you think this is an error",
+        "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
       ),
     ).not.toBeInTheDocument();
   });

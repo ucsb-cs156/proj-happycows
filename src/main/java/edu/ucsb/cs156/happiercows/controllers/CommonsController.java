@@ -138,7 +138,7 @@ public class CommonsController extends ApiController {
     public CommonsPlus getCommonsPlusById(
             @Parameter(name="id") @RequestParam long id) throws JsonProcessingException {
                 CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Commons.class, id)));
+                .orElseThrow(() -> new EntityNotFoundException("Game", id)));
 
         return commonsPlus;
     }
@@ -222,7 +222,7 @@ public class CommonsController extends ApiController {
             @Parameter(name="id") @RequestParam Long id) throws JsonProcessingException {
 
         Commons commons = commonsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Commons.class, id));
+                .orElseThrow(() -> new EntityNotFoundException("Game", id));
 
         return commons;
     }
@@ -342,7 +342,7 @@ public class CommonsController extends ApiController {
         String username = u.getFullName();
 
         Commons joinedCommons = commonsRepository.findById(commonsId)
-                .orElseThrow(() -> new EntityNotFoundException(Commons.class, commonsId));
+                .orElseThrow(() -> new EntityNotFoundException("Game", commonsId));
 
         if (joinedCommons.getCourseId() != null && !courseAccessService.isEligibleForCommons(u, joinedCommons)) {
             throw new CourseAccessDeniedException(commonsId);
@@ -387,11 +387,11 @@ public class CommonsController extends ApiController {
         }
 
         commonsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Commons.class, id));
+                .orElseThrow(() -> new EntityNotFoundException("Game", id));
 
         commonsRepository.deleteById(id);
 
-        String responseString = String.format("commons with id %d deleted", id);
+        String responseString = String.format("game with id %d deleted", id);
         return genericMessage(responseString);
 
     }
@@ -409,7 +409,7 @@ public class CommonsController extends ApiController {
 
         userCommonsRepository.delete(userCommons);
 
-        String responseString = String.format("user with id %d deleted from commons with id %d, %d users remain", userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));
+        String responseString = String.format("user with id %d deleted from game with id %d, %d users remain", userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));
 
         return genericMessage(responseString);
     }
@@ -422,7 +422,7 @@ public class CommonsController extends ApiController {
             @Parameter(name="request body") @RequestBody DashboardSettingsParams params
     ) {
         Commons commons = commonsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Commons.class, id));
+                .orElseThrow(() -> new EntityNotFoundException("Game", id));
 
         commons.setShowLeaderboard(params.isShowLeaderboard());
         commons.setShowOverviewSection(params.isShowOverviewSection());
