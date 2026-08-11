@@ -2,12 +2,12 @@
 
 import java.util.Optional;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.AllArgsConstructor;
@@ -17,33 +17,33 @@ import lombok.Getter;
 public class UpdateCowHealthJobInd implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
-    private CommonsPlusBuilderService commonsPlusBuilderService;
+    private GamePlusBuilderService gamePlusBuilderService;
     @Getter
-    private Long commonsID;
+    private Long gameID;
 
     @Override
     public void accept(JobContext ctx) throws Exception {
 <span class="fc" id="L32">        ctx.log(&quot;Updating cow health...&quot;);</span>
 
-<span class="fc" id="L34">       Optional&lt;Commons&gt; commonUpdatedOpt = commonsRepository.findById(commonsID);</span>
+<span class="fc" id="L34">       Optional&lt;Game&gt; commonUpdatedOpt = gameRepository.findById(gameID);</span>
 
 
 <span class="fc bfc" id="L37" title="All 2 branches covered.">        if(commonUpdatedOpt.isPresent()){</span>
-<span class="fc" id="L38">            Commons commonsUpdated = commonUpdatedOpt.get();</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commonsUpdated, commonsRepository, ctx)) {</span>
+<span class="fc" id="L38">            Game gameUpdated = commonUpdatedOpt.get();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (!GameGate.shouldProcess(gameUpdated, gameRepository, ctx)) {</span>
 <span class="fc" id="L40">                return;</span>
             }
-<span class="fc" id="L42">            CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);</span>
-<span class="fc" id="L43">            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, farmerRepository, ctx); </span>
+<span class="fc" id="L42">            GamePlus gamePlus = gamePlusBuilderService.toGamePlus(gameUpdated);</span>
+<span class="fc" id="L43">            UpdateCowHealthJob.runUpdateJobInGame(gameUpdated, gamePlus, gamePlusBuilderService, gameRepository, farmerRepository, ctx); </span>
 <span class="fc" id="L44">            ctx.log(&quot;Cow health has been updated!&quot;);</span>
 <span class="fc" id="L45">        } else {</span>
-<span class="fc" id="L46">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
+<span class="fc" id="L46">            ctx.log(String.format(&quot;No game found for id %d&quot;, gameID));</span>
         }
 <span class="fc" id="L48">    }</span>
     

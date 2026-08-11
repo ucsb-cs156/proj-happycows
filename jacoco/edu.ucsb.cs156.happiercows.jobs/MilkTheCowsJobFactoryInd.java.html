@@ -3,7 +3,7 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -13,7 +13,7 @@ import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 <span class="fc" id="L13">public class MilkTheCowsJobFactoryInd {</span>
 
     @Autowired
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
 
     @Autowired
     private FarmerRepository farmerRepository;
@@ -25,13 +25,13 @@ import edu.ucsb.cs156.jobs.services.JobContextConsumer;
     private ProfitRepository profitRepository;
 
 
-    public JobContextConsumer create(Long commonsID) {
+    public JobContextConsumer create(Long gameID) {
 <span class="fc" id="L29">        return new MilkTheCowsJobInd(</span>
-                commonsRepository,
+                gameRepository,
                 farmerRepository,
                 userRepository,
                 profitRepository,
-<span class="fc" id="L34">                commonsID);</span>
+<span class="fc" id="L34">                gameID);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

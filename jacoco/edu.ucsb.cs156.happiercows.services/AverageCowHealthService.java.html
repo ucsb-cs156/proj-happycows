@@ -4,22 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service(&quot;AverageCowHealthService&quot;)
 <span class="fc" id="L11">public class AverageCowHealthService {</span>
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
 
-    public int getTotalNumCows(Long commonsId) {
-<span class="fc" id="L20">        commonsRepository.findById(commonsId).orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Commons with id %d not found&quot;, commonsId)));</span>
+    public int getTotalNumCows(Long gameId) {
+<span class="fc" id="L20">        gameRepository.findById(gameId).orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
 
-<span class="fc" id="L22">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L22">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(gameId);</span>
 
 <span class="fc" id="L24">        int totalNumCows = 0;</span>
 
@@ -30,10 +30,10 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L30">        return totalNumCows;</span>
     }
 
-    public double getAverageCowHealth(Long commonsId) {
-<span class="fc" id="L34">        commonsRepository.findById(commonsId).orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Commons with id %d not found&quot;, commonsId)));</span>
+    public double getAverageCowHealth(Long gameId) {
+<span class="fc" id="L34">        gameRepository.findById(gameId).orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
 
-<span class="fc" id="L36">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L36">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(gameId);</span>
 
 <span class="fc" id="L38">        double totalHealth = 0;</span>
 
@@ -41,7 +41,7 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L41">            totalHealth += farmer.getCowHealth() * farmer.getNumOfCows();</span>
 <span class="fc" id="L42">        }</span>
 
-<span class="fc" id="L44">        return totalHealth / getTotalNumCows(commonsId);</span>
+<span class="fc" id="L44">        return totalHealth / getTotalNumCows(gameId);</span>
     }
 
     

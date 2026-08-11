@@ -3,11 +3,11 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -22,15 +22,15 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
     ReportLineRepository reportLineRepository;
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
 
-    public Report createReport(Long commonsId) {
-<span class="fc" id="L31">        Report report = createAndSaveReportHeader(commonsId);</span>
+    public Report createReport(Long gameId) {
+<span class="fc" id="L31">        Report report = createAndSaveReportHeader(gameId);</span>
         
-<span class="fc" id="L33">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L33">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(gameId);</span>
 
 
 <span class="fc bfc" id="L36" title="All 2 branches covered.">        for (Farmer farmer : allFarmer) {</span>
@@ -40,25 +40,25 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L40">        return report;</span>
     }
 
-    public Report createAndSaveReportHeader(Long commonsId) {
-<span class="fc" id="L44">        Commons commons = commonsRepository.findById(commonsId)</span>
-<span class="fc" id="L45">                .orElseThrow(() -&gt; new RuntimeException(String.format(&quot;Commons with id %d not found&quot;, commonsId)));</span>
+    public Report createAndSaveReportHeader(Long gameId) {
+<span class="fc" id="L44">        Game game = gameRepository.findById(gameId)</span>
+<span class="fc" id="L45">                .orElseThrow(() -&gt; new RuntimeException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
 
 <span class="fc" id="L47">        Report report = Report.builder()</span>
-<span class="fc" id="L48">                .commonsId(commonsId)</span>
+<span class="fc" id="L48">                .gameId(gameId)</span>
 
-<span class="fc" id="L50">                .name(commons.getName())</span>
-<span class="fc" id="L51">                .cowPrice(commons.getCowPrice())</span>
-<span class="fc" id="L52">                .milkPrice(commons.getMilkPrice())</span>
-<span class="fc" id="L53">                .startingBalance(commons.getStartingBalance())</span>
-<span class="fc" id="L54">                .startingDate(commons.getStartingDate())</span>
-<span class="fc" id="L55">                .showLeaderboard(commons.isShowLeaderboard())</span>
-<span class="fc" id="L56">                .carryingCapacity(commons.getCarryingCapacity())</span>
-<span class="fc" id="L57">                .degradationRate(commons.getDegradationRate())</span>
-<span class="fc" id="L58">                .belowCapacityHealthUpdateStrategy(commons.getBelowCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L59">                .aboveCapacityHealthUpdateStrategy(commons.getAboveCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L60">                .numUsers(commonsRepository.getNumUsers(commonsId).orElse(0))</span>
-<span class="fc" id="L61">                .numCows(commonsRepository.getNumCows(commonsId).orElse(0))</span>
+<span class="fc" id="L50">                .name(game.getName())</span>
+<span class="fc" id="L51">                .cowPrice(game.getCowPrice())</span>
+<span class="fc" id="L52">                .milkPrice(game.getMilkPrice())</span>
+<span class="fc" id="L53">                .startingBalance(game.getStartingBalance())</span>
+<span class="fc" id="L54">                .startingDate(game.getStartingDate())</span>
+<span class="fc" id="L55">                .showLeaderboard(game.isShowLeaderboard())</span>
+<span class="fc" id="L56">                .carryingCapacity(game.getCarryingCapacity())</span>
+<span class="fc" id="L57">                .degradationRate(game.getDegradationRate())</span>
+<span class="fc" id="L58">                .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L59">                .aboveCapacityHealthUpdateStrategy(game.getAboveCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L60">                .numUsers(gameRepository.getNumUsers(gameId).orElse(0))</span>
+<span class="fc" id="L61">                .numCows(gameRepository.getNumCows(gameId).orElse(0))</span>
 
 <span class="fc" id="L63">                .build();</span>
 

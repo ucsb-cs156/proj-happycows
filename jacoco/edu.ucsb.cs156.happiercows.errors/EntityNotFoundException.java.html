@@ -7,7 +7,7 @@ public class EntityNotFoundException extends RuntimeException {
 <span class="fc" id="L7">  }</span>
 
   // Allows callers to supply a user-facing display name that differs from
-  // the entity's class name (e.g. &quot;Game&quot; for the Commons entity).
+  // the entity's class name (e.g. &quot;Game&quot; for the Game entity).
   public EntityNotFoundException(String entityDisplayName, Object id) {
 <span class="fc" id="L12">    super(&quot;%s with id %s not found&quot;</span>
 <span class="fc" id="L13">        .formatted(entityDisplayName, id.toString()));</span>

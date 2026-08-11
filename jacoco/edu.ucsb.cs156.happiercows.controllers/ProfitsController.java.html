@@ -3,7 +3,7 @@
 import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +29,7 @@ import java.util.List;
 <span class="fc" id="L29">public class ProfitsController extends ApiController {</span>
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -37,51 +37,51 @@ import java.util.List;
     @Autowired
     ProfitRepository profitRepository;
 
-    @Operation(summary = &quot;Get all profits belonging to a user commons as a admin via CommonsID and UserId&quot;)
+    @Operation(summary = &quot;Get all profits belonging to a user game as a admin via GameID and UserId&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
-    public Iterable&lt;Profit&gt; allProfitsByCommonsId(
+    public Iterable&lt;Profit&gt; allProfitsByGameId(
             @Parameter(name=&quot;userId&quot;) @RequestParam Long userId,
-            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
+            @Parameter(name=&quot;gameId&quot;) @RequestParam Long gameId
 
     ) {
 
-<span class="fc" id="L49">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L50">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L49">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
+<span class="fc" id="L50">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId));</span>
 
 <span class="fc" id="L52">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByFarmer(farmer);</span>
 
 <span class="fc" id="L54">        return profits;</span>
     }
-    @Operation(summary = &quot;Get all profits belonging to a user commons as a user via CommonsID&quot;)
+    @Operation(summary = &quot;Get all profits belonging to a user game as a user via GameID&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-    @GetMapping(&quot;/all/commonsid&quot;)
-    public Iterable&lt;Profit&gt; allProfitsByCommonsId(
-            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId
+    @GetMapping(&quot;/all/gameid&quot;)
+    public Iterable&lt;Profit&gt; allProfitsByGameId(
+            @Parameter(name=&quot;gameId&quot;) @RequestParam Long gameId
     ) {
 <span class="fc" id="L62">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L64">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L65">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L64">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
+<span class="fc" id="L65">            .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId));</span>
 
 <span class="fc" id="L67">        Iterable&lt;Profit&gt; profits = profitRepository.findAllByFarmer(farmer);</span>
 
 <span class="fc" id="L69">        return profits;</span>
     }
 
-    @Operation(summary = &quot;Get all profits belonging to a user commons as a user via CommonsID with pagination&quot;)
+    @Operation(summary = &quot;Get all profits belonging to a user game as a user via GameID with pagination&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
-    @GetMapping(&quot;/paged/commonsid&quot;)
-    public Page&lt;Profit&gt; allProfitsByCommonsIdWithPagination(
-            @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId,
+    @GetMapping(&quot;/paged/gameid&quot;)
+    public Page&lt;Profit&gt; allProfitsByGameIdWithPagination(
+            @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId,
             @Parameter(name = &quot;pageNumber&quot;, description = &quot;Page number, 0 indexed&quot;) @RequestParam(defaultValue = &quot;0&quot;) int pageNumber,
             @Parameter(name = &quot;pageSize&quot;, description = &quot;Number of records per page&quot;) @RequestParam(defaultValue = &quot;7&quot;) int pageSize
 
     ) {
 <span class="fc" id="L81">        Long userId = getCurrentUser().getUser().getId();</span>
 
-<span class="fc" id="L83">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
-<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId));</span>
+<span class="fc" id="L83">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
+<span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId));</span>
 
 <span class="fc" id="L86">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByFarmer(farmer);</span>
 

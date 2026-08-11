@@ -3,7 +3,7 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -13,7 +13,7 @@ import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 <span class="fc" id="L13">public class MilkTheCowsJobFactory {</span>
 
     @Autowired
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
 
     @Autowired
     private FarmerRepository farmerRepository;
@@ -26,7 +26,7 @@ import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 
     public JobContextConsumer create() {
 <span class="fc" id="L28">        return new MilkTheCowsJob(</span>
-                commonsRepository,
+                gameRepository,
                 farmerRepository,
                 userRepository,
                 profitRepository);

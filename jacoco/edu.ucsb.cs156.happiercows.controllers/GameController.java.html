@@ -1,19 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">CommonsController.java</span></div><h1>CommonsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">GameController.java</span></div><h1>GameController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
-import edu.ucsb.cs156.happiercows.models.CreateCommonsParams;
+import edu.ucsb.cs156.happiercows.models.CreateGameParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 
 
 import java.util.ArrayList;
@@ -40,12 +40,12 @@ import java.util.stream.StreamSupport;
 
 
 <span class="fc" id="L42">@Slf4j</span>
-@Tag(name = &quot;Commons&quot;)
-@RequestMapping(&quot;/api/commons&quot;)
+@Tag(name = &quot;Game&quot;)
+@RequestMapping(&quot;/api/game&quot;)
 @RestController
-<span class="fc" id="L46">public class CommonsController extends ApiController {</span>
+<span class="fc" id="L46">public class GameController extends ApiController {</span>
     @Autowired
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
 
     @Autowired
     private FarmerRepository farmerRepository;
@@ -54,7 +54,7 @@ import java.util.stream.StreamSupport;
     ObjectMapper mapper;
 
     @Autowired
-    CommonsPlusBuilderService commonsPlusBuilderService;
+    GamePlusBuilderService gamePlusBuilderService;
 
     @Autowired
     CommonStatsRepository commonStatsRepository;
@@ -62,36 +62,36 @@ import java.util.stream.StreamSupport;
     @Autowired
     CourseAccessService courseAccessService;
 
-    @Value(&quot;${app.commons.default.startingBalance}&quot;)
+    @Value(&quot;${app.game.default.startingBalance}&quot;)
     private double defaultStartingBalance;
 
-    @Value(&quot;${app.commons.default.cowPrice}&quot;)
+    @Value(&quot;${app.game.default.cowPrice}&quot;)
     private double defaultCowPrice;
 
-    @Value(&quot;${app.commons.default.milkPrice}&quot;)
+    @Value(&quot;${app.game.default.milkPrice}&quot;)
     private double defaultMilkPrice;
 
-    @Value(&quot;${app.commons.default.degradationRate}&quot;)
+    @Value(&quot;${app.game.default.degradationRate}&quot;)
     private double defaultDegradationRate;
 
-    @Value(&quot;${app.commons.default.carryingCapacity}&quot;)
+    @Value(&quot;${app.game.default.carryingCapacity}&quot;)
     private int defaultCarryingCapacity;
 
-    @Value(&quot;${app.commons.default.capacityPerUser}&quot;)
+    @Value(&quot;${app.game.default.capacityPerUser}&quot;)
     private int defaultCapacityPerUser;
 
-    @Value(&quot;${app.commons.default.aboveCapacityHealthUpdateStrategy}&quot;)
+    @Value(&quot;${app.game.default.aboveCapacityHealthUpdateStrategy}&quot;)
     private String defaultAboveCapacityHealthUpdateStrategy;
 
-    @Value(&quot;${app.commons.default.belowCapacityHealthUpdateStrategy}&quot;)
+    @Value(&quot;${app.game.default.belowCapacityHealthUpdateStrategy}&quot;)
     private String defaultBelowCapacityHealthUpdateStrategy;
 
     @Operation(summary = &quot;Get default common values&quot;)
     @GetMapping(&quot;/defaults&quot;)
-    public ResponseEntity&lt;Commons&gt; getDefaultCommons() throws JsonProcessingException {
-<span class="fc" id="L92">        log.info(&quot;getDefaultCommons()...&quot;);</span>
+    public ResponseEntity&lt;Game&gt; getDefaultGame() throws JsonProcessingException {
+<span class="fc" id="L92">        log.info(&quot;getDefaultGame()...&quot;);</span>
 
-<span class="fc" id="L94">        Commons defaultCommons = Commons.builder()</span>
+<span class="fc" id="L94">        Game defaultGame = Game.builder()</span>
 <span class="fc" id="L95">                .startingBalance(defaultStartingBalance)</span>
 <span class="fc" id="L96">                .cowPrice(defaultCowPrice)</span>
 <span class="fc" id="L97">                .milkPrice(defaultMilkPrice)</span>
@@ -103,63 +103,63 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L103">                .hidden(false)</span>
 <span class="fc" id="L104">                .build();</span>
 
-<span class="fc" id="L106">        return ResponseEntity.ok().body(defaultCommons);</span>
+<span class="fc" id="L106">        return ResponseEntity.ok().body(defaultGame);</span>
     }
 
-    @Operation(summary = &quot;Get a list of all commons&quot;)
+    @Operation(summary = &quot;Get a list of all game&quot;)
     @GetMapping(&quot;/all&quot;)
-    public ResponseEntity&lt;String&gt; getCommons() throws JsonProcessingException {
-<span class="fc" id="L112">        log.info(&quot;getCommons()...&quot;);</span>
-<span class="fc" id="L113">        Iterable&lt;Commons&gt; commons = commonsRepository.findAll();</span>
-<span class="fc" id="L114">        String body = mapper.writeValueAsString(commons);</span>
+    public ResponseEntity&lt;String&gt; getGame() throws JsonProcessingException {
+<span class="fc" id="L112">        log.info(&quot;getGame()...&quot;);</span>
+<span class="fc" id="L113">        Iterable&lt;Game&gt; game = gameRepository.findAll();</span>
+<span class="fc" id="L114">        String body = mapper.writeValueAsString(game);</span>
 <span class="fc" id="L115">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @Operation(summary = &quot;Get a list of all commons and number of cows/users, newest first&quot;)
+    @Operation(summary = &quot;Get a list of all game and number of cows/users, newest first&quot;)
     @GetMapping(&quot;/allplus&quot;)
-    public ResponseEntity&lt;String&gt; getCommonsPlus() throws JsonProcessingException {
-<span class="fc" id="L121">        log.info(&quot;getCommonsPlus()...&quot;);</span>
-<span class="fc" id="L122">        Iterable&lt;Commons&gt; commonsListIter = commonsRepository.findAll();</span>
+    public ResponseEntity&lt;String&gt; getGamePlus() throws JsonProcessingException {
+<span class="fc" id="L121">        log.info(&quot;getGamePlus()...&quot;);</span>
+<span class="fc" id="L122">        Iterable&lt;Game&gt; gameListIter = gameRepository.findAll();</span>
 
         // findAll() has no defined order, so sort newest first for a deterministic response
-<span class="fc" id="L125">        List&lt;Commons&gt; commonsList = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L126">        commonsListIter.forEach(commonsList::add);</span>
-<span class="fc" id="L127">        commonsList.sort(Comparator.comparingLong(Commons::getId).reversed());</span>
+<span class="fc" id="L125">        List&lt;Game&gt; gameList = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L126">        gameListIter.forEach(gameList::add);</span>
+<span class="fc" id="L127">        gameList.sort(Comparator.comparingLong(Game::getId).reversed());</span>
 
-<span class="fc" id="L129">        Iterable&lt;CommonsPlus&gt; commonsPlusList = commonsPlusBuilderService.convertToCommonsPlus(commonsList);</span>
+<span class="fc" id="L129">        Iterable&lt;GamePlus&gt; gamePlusList = gamePlusBuilderService.convertToGamePlus(gameList);</span>
 
-<span class="fc" id="L131">        String body = mapper.writeValueAsString(commonsPlusList);</span>
+<span class="fc" id="L131">        String body = mapper.writeValueAsString(gamePlusList);</span>
 <span class="fc" id="L132">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @Operation(summary = &quot;Get the number of cows/users in a commons&quot;)
+    @Operation(summary = &quot;Get the number of cows/users in a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/plus&quot;)
-    public CommonsPlus getCommonsPlusById(
+    public GamePlus getGamePlusById(
             @Parameter(name=&quot;id&quot;) @RequestParam long id) throws JsonProcessingException {
-<span class="fc" id="L140">                CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsRepository.findById(id)</span>
+<span class="fc" id="L140">                GamePlus gamePlus = gamePlusBuilderService.toGamePlus(gameRepository.findById(id)</span>
 <span class="fc" id="L141">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id)));</span>
 
-<span class="fc" id="L143">        return commonsPlus;</span>
+<span class="fc" id="L143">        return gamePlus;</span>
     }
 
-    @Operation(summary = &quot;Update a commons&quot;)
+    @Operation(summary = &quot;Update a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;/update&quot;)
-    public ResponseEntity&lt;String&gt; updateCommons(
+    public ResponseEntity&lt;String&gt; updateGame(
             @Parameter(name=&quot;id&quot;) @RequestParam long id,
-            @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
+            @Parameter(name=&quot;request body&quot;) @RequestBody CreateGameParams params
     ) {
-<span class="fc" id="L153">        Optional&lt;Commons&gt; existing = commonsRepository.findById(id);</span>
+<span class="fc" id="L153">        Optional&lt;Game&gt; existing = gameRepository.findById(id);</span>
 
-        Commons updated;
+        Game updated;
         HttpStatus status;
 
 <span class="fc bfc" id="L158" title="All 2 branches covered.">        if (existing.isPresent()) {</span>
 <span class="fc" id="L159">            updated = existing.get();</span>
 <span class="fc" id="L160">            status = HttpStatus.NO_CONTENT;</span>
         } else {
-<span class="fc" id="L162">            updated = new Commons();</span>
+<span class="fc" id="L162">            updated = new Game();</span>
 <span class="fc" id="L163">            status = HttpStatus.CREATED;</span>
         }
 
@@ -185,7 +185,7 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L185">            throw new IllegalArgumentException(&quot;Degradation Rate cannot be negative&quot;);</span>
         }
 
-        // Reference: frontend/src/main/components/Commons/CommonsForm.js
+        // Reference: frontend/src/main/components/Game/GameForm.js
 <span class="fc bfc" id="L189" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
 <span class="fc" id="L190">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
         }
@@ -210,31 +210,31 @@ import java.util.stream.StreamSupport;
 
 <span class="fc" id="L211">        updated.setHidden(params.isHidden());</span>
 <span class="fc" id="L212">        updated.setCourseId(params.getCourseId());</span>
-<span class="fc" id="L213">        commonsRepository.save(updated);</span>
+<span class="fc" id="L213">        gameRepository.save(updated);</span>
 
 <span class="fc" id="L215">        return ResponseEntity.status(status).build();</span>
     }
 
-    @Operation(summary = &quot;Get a specific commons&quot;)
+    @Operation(summary = &quot;Get a specific game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;&quot;)
-    public Commons getCommonsById(
+    public Game getGameById(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) throws JsonProcessingException {
 
-<span class="fc" id="L224">        Commons commons = commonsRepository.findById(id)</span>
+<span class="fc" id="L224">        Game game = gameRepository.findById(id)</span>
 <span class="fc" id="L225">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
-<span class="fc" id="L227">        return commons;</span>
+<span class="fc" id="L227">        return game;</span>
     }
 
-    @Operation(summary = &quot;Create a new commons&quot;)
+    @Operation(summary = &quot;Create a new game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PostMapping(value = &quot;/new&quot;, produces = &quot;application/json&quot;)
-    public ResponseEntity&lt;String&gt; createCommons(
-            @Parameter(name=&quot;request body&quot;) @RequestBody CreateCommonsParams params
+    public ResponseEntity&lt;String&gt; createGame(
+            @Parameter(name=&quot;request body&quot;) @RequestBody CreateGameParams params
     ) throws JsonProcessingException {
 
-<span class="fc" id="L237">        var builder = Commons.builder()</span>
+<span class="fc" id="L237">        var builder = Game.builder()</span>
 <span class="fc" id="L238">                .name(params.getName())</span>
 <span class="fc" id="L239">                .cowPrice(params.getCowPrice())</span>
 <span class="fc" id="L240">                .milkPrice(params.getMilkPrice())</span>
@@ -257,9 +257,9 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L257">            builder.belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.valueOf(params.getBelowCapacityHealthUpdateStrategy()));</span>
         }
 
-<span class="fc" id="L260">        Commons commons = builder.build();</span>
+<span class="fc" id="L260">        Game game = builder.build();</span>
 
-        // Reference: frontend/src/main/components/Commons/CommonsForm.js
+        // Reference: frontend/src/main/components/Game/GameForm.js
 <span class="fc bfc" id="L263" title="All 2 branches covered.">        if (params.getName().equals(&quot;&quot;)) {</span>
 <span class="fc" id="L264">            throw new IllegalArgumentException(&quot;Name cannot be empty&quot;);</span>
         }
@@ -287,7 +287,7 @@ import java.util.stream.StreamSupport;
 
 <span class="fc" id="L288">        validateDates(params);</span>
 
-<span class="fc" id="L290">        Commons saved = commonsRepository.save(commons);</span>
+<span class="fc" id="L290">        Game saved = gameRepository.save(game);</span>
 <span class="fc" id="L291">        String body = mapper.writeValueAsString(saved);</span>
 
 <span class="fc" id="L293">        return ResponseEntity.ok().body(body);</span>
@@ -300,7 +300,7 @@ import java.util.stream.StreamSupport;
      *
      * @param params the params to validate
      */
-    public static void validateDates(CreateCommonsParams params) {
+    public static void validateDates(CreateGameParams params) {
 <span class="fc bfc" id="L304" title="All 2 branches covered.">        if (params.getStartingDate() == null) {</span>
 <span class="fc" id="L305">            throw new IllegalArgumentException(&quot;Starting Date is required&quot;);</span>
         }
@@ -331,36 +331,36 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L331">        return ResponseEntity.ok().body(courseIds);</span>
     }
 
-    @Operation(summary = &quot;Join a commons&quot;)
+    @Operation(summary = &quot;Join a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @PostMapping(value = &quot;/join&quot;, produces = &quot;application/json&quot;)
     public ResponseEntity&lt;String&gt; joinCommon(
-            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws Exception {
+            @Parameter(name=&quot;gameId&quot;) @RequestParam Long gameId) throws Exception {
 
 <span class="fc" id="L340">        User u = getCurrentUser().getUser();</span>
 <span class="fc" id="L341">        Long userId = u.getId();</span>
 <span class="fc" id="L342">        String username = u.getFullName();</span>
 
-<span class="fc" id="L344">        Commons joinedCommons = commonsRepository.findById(commonsId)</span>
-<span class="fc" id="L345">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, commonsId));</span>
+<span class="fc" id="L344">        Game joinedGame = gameRepository.findById(gameId)</span>
+<span class="fc" id="L345">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, gameId));</span>
 
-<span class="fc bfc" id="L347" title="All 4 branches covered.">        if (joinedCommons.getCourseId() != null &amp;&amp; !courseAccessService.isEligibleForCommons(u, joinedCommons)) {</span>
-<span class="fc" id="L348">            throw new CourseAccessDeniedException(commonsId);</span>
+<span class="fc bfc" id="L347" title="All 4 branches covered.">        if (joinedGame.getCourseId() != null &amp;&amp; !courseAccessService.isEligibleForGame(u, joinedGame)) {</span>
+<span class="fc" id="L348">            throw new CourseAccessDeniedException(gameId);</span>
         }
 
-<span class="fc" id="L351">        Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
+<span class="fc" id="L351">        Optional&lt;Farmer&gt; farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);</span>
 
 <span class="fc bfc" id="L353" title="All 2 branches covered.">        if (farmerLookup.isPresent()) {</span>
-            // user is already a member of this commons
-<span class="fc" id="L355">            String body = mapper.writeValueAsString(joinedCommons);</span>
+            // user is already a member of this game
+<span class="fc" id="L355">            String body = mapper.writeValueAsString(joinedGame);</span>
 <span class="fc" id="L356">            return ResponseEntity.ok().body(body);</span>
         }
 
 <span class="fc" id="L359">        Farmer uc = Farmer.builder()</span>
 <span class="fc" id="L360">                .user(u)</span>
-<span class="fc" id="L361">                .commons(joinedCommons)</span>
+<span class="fc" id="L361">                .game(joinedGame)</span>
 <span class="fc" id="L362">                .username(username)</span>
-<span class="fc" id="L363">                .totalWealth(joinedCommons.getStartingBalance())</span>
+<span class="fc" id="L363">                .totalWealth(joinedGame.getStartingBalance())</span>
 <span class="fc" id="L364">                .numOfCows(0)</span>
 <span class="fc" id="L365">                .cowHealth(100)</span>
 <span class="fc" id="L366">                .cowsBought(0)</span>
@@ -370,92 +370,92 @@ import java.util.stream.StreamSupport;
 
 <span class="fc" id="L371">        farmerRepository.save(uc);</span>
 
-<span class="fc" id="L373">        String body = mapper.writeValueAsString(joinedCommons);</span>
+<span class="fc" id="L373">        String body = mapper.writeValueAsString(joinedGame);</span>
 <span class="fc" id="L374">        return ResponseEntity.ok().body(body);</span>
     }
 
-    @Operation(summary = &quot;Delete a Commons&quot;)
+    @Operation(summary = &quot;Delete a Game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;&quot;)
-    public Object deleteCommons(
+    public Object deleteGame(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
         
-<span class="fc" id="L383">        Iterable&lt;Farmer&gt; farmer = farmerRepository.findByCommonsId(id);</span>
+<span class="fc" id="L383">        Iterable&lt;Farmer&gt; farmer = farmerRepository.findByGameId(id);</span>
 
-<span class="fc bfc" id="L385" title="All 2 branches covered.">        for (Farmer commons : farmer) {</span>
-<span class="fc" id="L386">            farmerRepository.delete(commons);</span>
+<span class="fc bfc" id="L385" title="All 2 branches covered.">        for (Farmer game : farmer) {</span>
+<span class="fc" id="L386">            farmerRepository.delete(game);</span>
 <span class="fc" id="L387">        }</span>
 
-<span class="fc" id="L389">        commonsRepository.findById(id)</span>
+<span class="fc" id="L389">        gameRepository.findById(id)</span>
 <span class="fc" id="L390">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
-<span class="fc" id="L392">        commonsRepository.deleteById(id);</span>
+<span class="fc" id="L392">        gameRepository.deleteById(id);</span>
 
 <span class="fc" id="L394">        String responseString = String.format(&quot;game with id %d deleted&quot;, id);</span>
 <span class="fc" id="L395">        return genericMessage(responseString);</span>
 
     }
 
-    @Operation(summary=&quot;Delete a user from a commons&quot;)
+    @Operation(summary=&quot;Delete a user from a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @DeleteMapping(&quot;/{commonsId}/users/{userId}&quot;)
-    public Object deleteUserFromCommon(@PathVariable(&quot;commonsId&quot;) Long commonsId,
+    @DeleteMapping(&quot;/{gameId}/users/{userId}&quot;)
+    public Object deleteUserFromCommon(@PathVariable(&quot;gameId&quot;) Long gameId,
                                        @PathVariable(&quot;userId&quot;) Long userId) throws Exception {
 
-<span class="fc" id="L405">        Farmer farmer = farmerRepository.findByCommonsIdAndUserId(commonsId, userId)</span>
+<span class="fc" id="L405">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
 <span class="fc" id="L406">                .orElseThrow(() -&gt; new EntityNotFoundException(</span>
-                        Farmer.class, &quot;commonsId&quot;, commonsId, &quot;userId&quot;, userId)
+                        Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId)
                 );
 
 <span class="fc" id="L410">        farmerRepository.delete(farmer);</span>
 
-<span class="fc" id="L412">        String responseString = String.format(&quot;user with id %d deleted from game with id %d, %d users remain&quot;, userId, commonsId, commonsRepository.getNumUsers(commonsId).orElse(0));</span>
+<span class="fc" id="L412">        String responseString = String.format(&quot;user with id %d deleted from game with id %d, %d users remain&quot;, userId, gameId, gameRepository.getNumUsers(gameId).orElse(0));</span>
 
 <span class="fc" id="L414">        return genericMessage(responseString);</span>
     }
 
-    @Operation(summary = &quot;Update the dashboard visibility settings for a commons (admin only)&quot;)
+    @Operation(summary = &quot;Update the dashboard visibility settings for a game (admin only)&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @PutMapping(&quot;/dashboardSettings&quot;)
-    public ResponseEntity&lt;Commons&gt; updateDashboardSettings(
+    public ResponseEntity&lt;Game&gt; updateDashboardSettings(
             @Parameter(name=&quot;id&quot;) @RequestParam long id,
             @Parameter(name=&quot;request body&quot;) @RequestBody DashboardSettingsParams params
     ) {
-<span class="fc" id="L424">        Commons commons = commonsRepository.findById(id)</span>
+<span class="fc" id="L424">        Game game = gameRepository.findById(id)</span>
 <span class="fc" id="L425">                .orElseThrow(() -&gt; new EntityNotFoundException(&quot;Game&quot;, id));</span>
 
-<span class="fc" id="L427">        commons.setShowLeaderboard(params.isShowLeaderboard());</span>
-<span class="fc" id="L428">        commons.setShowOverviewSection(params.isShowOverviewSection());</span>
-<span class="fc" id="L429">        commons.setShowCowsPerFarmerSection(params.isShowCowsPerFarmerSection());</span>
-<span class="fc" id="L430">        commons.setShowHistogramSection(params.isShowHistogramSection());</span>
-<span class="fc" id="L431">        commons.setShowTrendsSection(params.isShowTrendsSection());</span>
-<span class="fc" id="L432">        commons.setShowHealthSection(params.isShowHealthSection());</span>
-<span class="fc" id="L433">        commons.setShowTotalCowsSection(params.isShowTotalCowsSection());</span>
-<span class="fc" id="L434">        commons.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());</span>
+<span class="fc" id="L427">        game.setShowLeaderboard(params.isShowLeaderboard());</span>
+<span class="fc" id="L428">        game.setShowOverviewSection(params.isShowOverviewSection());</span>
+<span class="fc" id="L429">        game.setShowCowsPerFarmerSection(params.isShowCowsPerFarmerSection());</span>
+<span class="fc" id="L430">        game.setShowHistogramSection(params.isShowHistogramSection());</span>
+<span class="fc" id="L431">        game.setShowTrendsSection(params.isShowTrendsSection());</span>
+<span class="fc" id="L432">        game.setShowHealthSection(params.isShowHealthSection());</span>
+<span class="fc" id="L433">        game.setShowTotalCowsSection(params.isShowTotalCowsSection());</span>
+<span class="fc" id="L434">        game.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());</span>
 
-<span class="fc" id="L436">        Commons saved = commonsRepository.save(commons);</span>
+<span class="fc" id="L436">        Game saved = gameRepository.save(game);</span>
 
 <span class="fc" id="L438">        return ResponseEntity.ok().body(saved);</span>
     }
 
-    @Operation(summary = &quot;Get the number of cows for each farmer in a commons&quot;)
+    @Operation(summary = &quot;Get the number of cows for each farmer in a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/numcows&quot;)
-    public ResponseEntity&lt;List&lt;Integer&gt;&gt; getNumCowsForCommonsId(
-            @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L446">        Iterable&lt;Farmer&gt; farmerList = farmerRepository.findByCommonsId(commonsId);</span>
+    public ResponseEntity&lt;List&lt;Integer&gt;&gt; getNumCowsForGameId(
+            @Parameter(name=&quot;gameId&quot;) @RequestParam Long gameId) {
+<span class="fc" id="L446">        Iterable&lt;Farmer&gt; farmerList = farmerRepository.findByGameId(gameId);</span>
 <span class="fc" id="L447">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(farmerList.spliterator(), false)</span>
 <span class="fc" id="L448">                .map(Farmer::getNumOfCows)</span>
 <span class="fc" id="L449">                .collect(Collectors.toList());</span>
 <span class="fc" id="L450">        return ResponseEntity.ok().body(numCowsList);</span>
     }
 
-    @Operation(summary = &quot;Get timeseries stats for a commons&quot;)
+    @Operation(summary = &quot;Get timeseries stats for a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/timeseries&quot;)
-    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getCommonsTimeSeries(
+    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getGameTimeSeries(
             @Parameter(name=&quot;commonId&quot;) @RequestParam Long commonId) {
-<span class="fc" id="L458">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByCommonsId(commonId);</span>
+<span class="fc" id="L458">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByGameId(commonId);</span>
 <span class="fc" id="L459">        List&lt;CommonStats&gt; sortedStats = StreamSupport.stream(commonStats.spliterator(), false)</span>
 <span class="fc" id="L460">                .sorted(Comparator.comparing(CommonStats::getCreateDate))</span>
 <span class="fc" id="L461">                .collect(Collectors.toList());</span>

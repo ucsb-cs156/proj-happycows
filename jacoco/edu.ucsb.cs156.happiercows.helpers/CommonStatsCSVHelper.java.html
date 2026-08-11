@@ -42,7 +42,7 @@ public class CommonStatsCSVHelper {
 
 <span class="fc" id="L43">    List&lt;String&gt; headers = Arrays.asList(</span>
         &quot;id&quot;,
-        &quot;commonsId&quot;,
+        &quot;gameId&quot;,
         &quot;numCows&quot;,
         &quot;avgHealth&quot;,
         &quot;createDate&quot;);
@@ -56,7 +56,7 @@ public class CommonStatsCSVHelper {
 <span class="fc bfc" id="L56" title="All 2 branches covered.">    for (CommonStats line : stats) {</span>
 <span class="fc" id="L57">      List&lt;String&gt; data = Arrays.asList(</span>
 <span class="fc" id="L58">          String.valueOf(line.getId()),</span>
-<span class="fc" id="L59">          String.valueOf(line.getCommonsId()),</span>
+<span class="fc" id="L59">          String.valueOf(line.getGameId()),</span>
 <span class="fc" id="L60">          String.valueOf(line.getNumCows()),</span>
 <span class="fc" id="L61">          String.valueOf(line.getAvgHealth()),</span>
 <span class="fc" id="L62">          formatter.format(line.getCreateDate()));</span>

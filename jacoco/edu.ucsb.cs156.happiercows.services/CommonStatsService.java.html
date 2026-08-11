@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
@@ -15,7 +15,7 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
     CommonStatsRepository commonStatsRepository;
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -23,16 +23,16 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
     @Autowired
     private AverageCowHealthService averageCowHealthService;
 
-    public CommonStats createCommonStats(Long commonsId) {
+    public CommonStats createCommonStats(Long gameId) {
 
-<span class="fc" id="L28">        commonsRepository.findById(commonsId)</span>
-<span class="fc" id="L29">            .orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Commons with id %d not found&quot;, commonsId)));</span>
+<span class="fc" id="L28">        gameRepository.findById(gameId)</span>
+<span class="fc" id="L29">            .orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
         
-<span class="fc" id="L31">        double avgHealth = averageCowHealthService.getAverageCowHealth(commonsId);</span>
-<span class="fc" id="L32">        int totalNumCows = averageCowHealthService.getTotalNumCows(commonsId);</span>
+<span class="fc" id="L31">        double avgHealth = averageCowHealthService.getAverageCowHealth(gameId);</span>
+<span class="fc" id="L32">        int totalNumCows = averageCowHealthService.getTotalNumCows(gameId);</span>
 
 <span class="fc" id="L34">        CommonStats stats = CommonStats.builder()</span>
-<span class="fc" id="L35">                .commonsId(commonsId)</span>
+<span class="fc" id="L35">                .gameId(gameId)</span>
 <span class="fc" id="L36">                .numCows(totalNumCows)</span>
 <span class="fc" id="L37">                .avgHealth(avgHealth)</span>
 <span class="fc" id="L38">                .build();</span>
@@ -40,9 +40,9 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L40">        return stats;</span>
     }
 
-    public CommonStats createAndSaveCommonStats(Long commonsId) {
+    public CommonStats createAndSaveCommonStats(Long gameId) {
         
-<span class="fc" id="L45">        CommonStats stats = createCommonStats(commonsId);</span>
+<span class="fc" id="L45">        CommonStats stats = createCommonStats(gameId);</span>
 <span class="fc" id="L46">        commonStatsRepository.save(stats);</span>
 
 <span class="fc" id="L48">        return stats;</span>

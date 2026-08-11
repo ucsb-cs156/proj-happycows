@@ -2,11 +2,11 @@
 
 import java.time.LocalDateTime;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -19,7 +19,7 @@ import lombok.Getter;
 public class MilkTheCowsJob implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
@@ -35,20 +35,20 @@ public class MilkTheCowsJob implements JobContextConsumer {
     public void accept(JobContext ctx) throws Exception {
 <span class="fc" id="L36">        ctx.log(&quot;Starting to milk the cows&quot;);</span>
 
-<span class="fc" id="L38">        Iterable&lt;Commons&gt; allCommons = commonsRepository.findAll();</span>
+<span class="fc" id="L38">        Iterable&lt;Game&gt; allGame = gameRepository.findAll();</span>
 
-<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (Commons commons : allCommons) {</span>
-<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (Game game : allGame) {</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">            if (!GameGate.shouldProcess(game, gameRepository, ctx)) {</span>
 <span class="fc" id="L42">                continue;</span>
             }
-<span class="fc" id="L44">            String name = commons.getName();</span>
-<span class="fc" id="L45">            double milkPrice = commons.getMilkPrice();</span>
-<span class="fc" id="L46">            ctx.log(&quot;Milking cows for Commons: &quot; + name + &quot;, Milk Price: &quot; + formatDollars(milkPrice));</span>
+<span class="fc" id="L44">            String name = game.getName();</span>
+<span class="fc" id="L45">            double milkPrice = game.getMilkPrice();</span>
+<span class="fc" id="L46">            ctx.log(&quot;Milking cows for Game: &quot; + name + &quot;, Milk Price: &quot; + formatDollars(milkPrice));</span>
 
-<span class="fc" id="L48">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commons.getId());</span>
+<span class="fc" id="L48">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(game.getId());</span>
 
 <span class="fc bfc" id="L50" title="All 2 branches covered.">            for (Farmer farmer : allFarmer) {</span>
-<span class="fc" id="L51">                milkCows(ctx, commons, farmer, profitRepository, farmerRepository);</span>
+<span class="fc" id="L51">                milkCows(ctx, game, farmer, profitRepository, farmerRepository);</span>
 <span class="fc" id="L52">            }</span>
 <span class="fc" id="L53">        }</span>
 
@@ -58,12 +58,12 @@ public class MilkTheCowsJob implements JobContextConsumer {
     /** This method performs the function of milking the cows for a single farmer.
      *  It is a public method only so it can be exposed to the unit tests
      * @param ctx the JobContext
-     * @param commons the Commons
+     * @param game the Game
      * @param farmer the Farmer
      *
      */
 
-    public static void milkCows(JobContext ctx, Commons commons, Farmer farmer, ProfitRepository profitRepository, FarmerRepository farmerRepository) {
+    public static void milkCows(JobContext ctx, Game game, Farmer farmer, ProfitRepository profitRepository, FarmerRepository farmerRepository) {
 <span class="fc" id="L67">        User user = farmer.getUser();</span>
 
 <span class="fc" id="L69">        ctx.log(&quot;User: &quot; + user.getFullName()</span>
@@ -71,7 +71,7 @@ public class MilkTheCowsJob implements JobContextConsumer {
 <span class="fc" id="L71">                + &quot;, cowHealth: &quot; + farmer.getCowHealth()</span>
 <span class="fc" id="L72">                + &quot;, totalWealth: &quot; + formatDollars(farmer.getTotalWealth()));</span>
 
-<span class="fc" id="L74">        double profitAmount = calculateMilkingProfit(commons, farmer);</span>
+<span class="fc" id="L74">        double profitAmount = calculateMilkingProfit(game, farmer);</span>
 <span class="fc" id="L75">        Profit profit = Profit.builder()</span>
 <span class="fc" id="L76">                .farmer(farmer)</span>
 <span class="fc" id="L77">                .amount(profitAmount)</span>
@@ -94,8 +94,8 @@ public class MilkTheCowsJob implements JobContextConsumer {
      * @param farmer
      * @return
      */
-    public static double calculateMilkingProfit(Commons commons, Farmer farmer) {
-<span class="fc" id="L98">        double milkPrice = commons.getMilkPrice();</span>
+    public static double calculateMilkingProfit(Game game, Farmer farmer) {
+<span class="fc" id="L98">        double milkPrice = game.getMilkPrice();</span>
 <span class="fc" id="L99">        double profit = farmer.getNumOfCows() * (farmer.getCowHealth() / 100.0) * milkPrice;</span>
 <span class="fc" id="L100">        return profit;</span>
     }

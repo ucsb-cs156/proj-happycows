@@ -25,10 +25,10 @@ public class Farmer {
     @JsonIgnore
     private User user;
 
-    @MapsId(&quot;commonsId&quot;)
+    @MapsId(&quot;gameId&quot;)
     @ManyToOne
     @JsonIgnore
-    private Commons commons;
+    private Game game;
 
     private String username;
 
@@ -44,15 +44,15 @@ public class Farmer {
 
     private int cowDeaths;
 
-    // userID and commonsId are used by the frontend
+    // userID and gameId are used by the frontend
     @JsonInclude
     public long getUserId() {
 <span class="fc" id="L50">      return user.getId();</span>
     }
 
     @JsonInclude
-    public long getCommonsId() {
-<span class="fc" id="L55">        return commons.getId();</span>
+    public long getGameId() {
+<span class="fc" id="L55">        return game.getId();</span>
     }
 
     public void setId(FarmerKey id) {

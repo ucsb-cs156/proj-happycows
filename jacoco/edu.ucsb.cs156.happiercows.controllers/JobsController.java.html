@@ -2,8 +2,8 @@
 
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJob;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobFactory;
-import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommons;
-import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommonsFactory;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGame;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
 import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJob;
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Autowired InstructorReportJobFactory instructorReportJobFactory;
 
-  @Autowired InstructorReportJobSingleCommonsFactory instructorReportJobSingleCommonsFactory;
+  @Autowired InstructorReportJobSingleGameFactory instructorReportJobSingleGameFactory;
 
   @Autowired UpdateCowHealthJobFactoryInd updateCowHealthJobFactoryInd;
 
@@ -76,12 +76,12 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L76">    return jobService.runAsJob(milkTheCowsJob);</span>
   }
 
-  @Operation(summary = &quot;Launch Job to Milk the Cows for a single commons&quot;)
+  @Operation(summary = &quot;Launch Job to Milk the Cows for a single game&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @PostMapping(&quot;/launch/milkthecowjobsinglecommons&quot;)
-  public Job launchMilkTheCowsJobSingleCommons(
-      @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L84">    JobContextConsumer milkTheCowsJobInd = milkTheCowsJobFactoryInd.create(commonsId);</span>
+  @PostMapping(&quot;/launch/milkthecowjobsinglegame&quot;)
+  public Job launchMilkTheCowsJobSingleGame(
+      @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
+<span class="fc" id="L84">    JobContextConsumer milkTheCowsJobInd = milkTheCowsJobFactoryInd.create(gameId);</span>
 <span class="fc" id="L85">    return jobService.runAsJob(milkTheCowsJobInd);</span>
   }
 
@@ -93,12 +93,12 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L93">    return jobService.runAsJob(updateCowHealthJob);</span>
   }
 
-  @Operation(summary = &quot;Launch Job to Update Cow Health for a single commons&quot;)
+  @Operation(summary = &quot;Launch Job to Update Cow Health for a single game&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @PostMapping(&quot;/launch/updatecowhealthsinglecommons&quot;)
-  public Job updateCowHealthSingleCommons(
-      @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L101">    JobContextConsumer updateCowHealthJobInd = updateCowHealthJobFactoryInd.create(commonsId);</span>
+  @PostMapping(&quot;/launch/updatecowhealthsinglegame&quot;)
+  public Job updateCowHealthSingleGame(
+      @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
+<span class="fc" id="L101">    JobContextConsumer updateCowHealthJobInd = updateCowHealthJobFactoryInd.create(gameId);</span>
 <span class="fc" id="L102">    return jobService.runAsJob(updateCowHealthJobInd);</span>
   }
 
@@ -106,9 +106,9 @@ import org.springframework.web.bind.annotation.RestController;
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/setcowhealth&quot;)
   public Job setCowHealth(
-      @Parameter(name = &quot;commonsID&quot;) @RequestParam Long commonsID,
+      @Parameter(name = &quot;gameID&quot;) @RequestParam Long gameID,
       @Parameter(name = &quot;health&quot;) @RequestParam double health) {
-<span class="fc" id="L111">    JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(commonsID, health);</span>
+<span class="fc" id="L111">    JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(gameID, health);</span>
 
     // Reference: frontend/src/components/Jobs/SetCowHealthForm.js
 <span class="fc bfc" id="L114" title="All 4 branches covered.">    if (health &lt; 0 || health &gt; 100) {</span>
@@ -127,18 +127,18 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L127">    return jobService.runAsJob(instructorReportJob);</span>
   }
 
-  @Operation(summary = &quot;Launch Job to Produce Instructor Report for a single commons&quot;)
+  @Operation(summary = &quot;Launch Job to Produce Instructor Report for a single game&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @PostMapping(&quot;/launch/instructorreportsinglecommons&quot;)
-  public Job instructorReportSingleCommons(
-      @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
+  @PostMapping(&quot;/launch/instructorreportsinglegame&quot;)
+  public Job instructorReportSingleGame(
+      @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
 
-<span class="fc" id="L136">    InstructorReportJobSingleCommons instructorReportJobSingleCommons =</span>
-<span class="fc" id="L137">        (InstructorReportJobSingleCommons) instructorReportJobSingleCommonsFactory.create(commonsId);</span>
-<span class="fc" id="L138">    return jobService.runAsJob(instructorReportJobSingleCommons);</span>
+<span class="fc" id="L136">    InstructorReportJobSingleGame instructorReportJobSingleGame =</span>
+<span class="fc" id="L137">        (InstructorReportJobSingleGame) instructorReportJobSingleGameFactory.create(gameId);</span>
+<span class="fc" id="L138">    return jobService.runAsJob(instructorReportJobSingleGame);</span>
   }
 
-  @Operation(summary = &quot;Launch Job to Record the Stats of all Commons&quot;)
+  @Operation(summary = &quot;Launch Job to Record the Stats of all Game&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
   @PostMapping(&quot;/launch/recordcommonstats&quot;)
   public Job recordCommonStats() {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SetCowHealthJob.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.jobs</a> &gt; <span class="el_source">SetCowHealthJob.java</span></div><h1>SetCowHealthJob.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.jobs;
 
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SetCowHealthJob implements JobContextConsumer {
 
-    private long commonsID;
+    private long gameID;
     private double newCowHealth;
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
@@ -31,16 +31,16 @@ public class SetCowHealthJob implements JobContextConsumer {
     public void accept(JobContext ctx) throws Exception {
 <span class="fc" id="L32">        ctx.log(&quot;Setting cow health...&quot;);</span>
 
-<span class="fc" id="L34">        Optional&lt;Commons&gt; commons = commonsRepository.findById(commonsID);</span>
+<span class="fc" id="L34">        Optional&lt;Game&gt; game = gameRepository.findById(gameID);</span>
 
 
-<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (commons.isPresent()) {</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">            if (!CommonsGate.shouldProcess(commons.get(), commonsRepository, ctx)) {</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (game.isPresent()) {</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">            if (!GameGate.shouldProcess(game.get(), gameRepository, ctx)) {</span>
 <span class="fc" id="L39">                return;</span>
             }
-<span class="fc" id="L41">            ctx.log(&quot;Commons &quot; + commons.get().getName());</span>
+<span class="fc" id="L41">            ctx.log(&quot;Game &quot; + game.get().getName());</span>
 
-<span class="fc" id="L43">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByCommonsId(commons.get().getId());</span>
+<span class="fc" id="L43">            Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(game.get().getId());</span>
 
 <span class="fc bfc" id="L45" title="All 2 branches covered.">            for (Farmer farmer : allFarmer) {</span>
 <span class="fc" id="L46">                User user = farmer.getUser();</span>
@@ -52,7 +52,7 @@ public class SetCowHealthJob implements JobContextConsumer {
 
 <span class="fc" id="L53">            ctx.log(&quot;Cow health has been set!&quot;);</span>
 <span class="fc" id="L54">        } else {</span>
-<span class="fc" id="L55">            ctx.log(String.format(&quot;No commons found for id %d&quot;, commonsID));</span>
+<span class="fc" id="L55">            ctx.log(String.format(&quot;No game found for id %d&quot;, gameID));</span>
         }
 
 <span class="fc" id="L58">    }</span>

@@ -3,7 +3,7 @@
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.helpers.ReportCSVHelper;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L37">public class ReportsController extends ApiController {</span>
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -54,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
     public Iterable&lt;Report&gt; allReports() {
 <span class="fc" id="L55">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
 <span class="fc" id="L56">                Sort.by(List.of(</span>
-                        new Order(Sort.Direction.ASC, &quot;commonsId&quot;),
+                        new Order(Sort.Direction.ASC, &quot;gameId&quot;),
                         new Order(Sort.Direction.DESC, &quot;id&quot;))));
 <span class="fc" id="L59">        return reports;</span>
     }
@@ -68,12 +68,12 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L68">        return reports;</span>
     }
 
-    @Operation(summary = &quot;Get report headers for a given user commons&quot;)
+    @Operation(summary = &quot;Get report headers for a given user game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/headers&quot;)
-    public Iterable&lt;Report&gt; allReportsByCommonsId(
-            @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L76">        Iterable&lt;Report&gt; reports = reportRepository.findAllByCommonsId(commonsId);</span>
+    public Iterable&lt;Report&gt; allReportsByGameId(
+            @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
+<span class="fc" id="L76">        Iterable&lt;Report&gt; reports = reportRepository.findAllByGameId(gameId);</span>
 <span class="fc" id="L77">        return reports;</span>
     }
 
@@ -86,7 +86,7 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L86">        return reportLines;</span>
     }
 
-    @Operation(summary = &quot;Get report lines for a report id and user commons id&quot;)
+    @Operation(summary = &quot;Get report lines for a report id and user game id&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/download&quot;)
     public ResponseEntity&lt;Resource&gt; getLinesCSV(

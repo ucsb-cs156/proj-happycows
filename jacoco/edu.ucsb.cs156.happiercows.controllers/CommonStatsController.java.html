@@ -2,7 +2,7 @@
 
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.helpers.CommonStatsCSVHelper;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L31">public class CommonStatsController {</span>
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -46,23 +46,23 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L46">        return commonStatsRepository.findAll();</span>
     }
 
-    @Operation(summary = &quot;Get all stats for a commons&quot;)
+    @Operation(summary = &quot;Get all stats for a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-    @GetMapping(&quot;/commons&quot;)
-    public Iterable&lt;CommonStats&gt; allCommonStatsForCommons(
-            @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) {
-<span class="fc" id="L54">        return commonStatsRepository.findAllByCommonsId(commonsId);</span>
+    @GetMapping(&quot;/game&quot;)
+    public Iterable&lt;CommonStats&gt; allCommonStatsForGame(
+            @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
+<span class="fc" id="L54">        return commonStatsRepository.findAllByGameId(gameId);</span>
     }
 
-    @Operation(summary = &quot;Get all stats for a commons as csv&quot;)
+    @Operation(summary = &quot;Get all stats for a game as csv&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(value = &quot;/download&quot;)
     public ResponseEntity&lt;Resource&gt; getCSV(
-            @Parameter(name = &quot;commonsId&quot;) @RequestParam Long commonsId) throws IOException {
+            @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) throws IOException {
 
-<span class="fc" id="L63">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByCommonsId(commonsId);</span>
+<span class="fc" id="L63">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByGameId(gameId);</span>
                 
-<span class="fc" id="L65">        String filename = String.format(&quot;stats%05d.csv&quot;,commonsId);</span>
+<span class="fc" id="L65">        String filename = String.format(&quot;stats%05d.csv&quot;,gameId);</span>
 
 <span class="fc" id="L67">        ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);</span>
 <span class="fc" id="L68">        InputStreamResource isr = new InputStreamResource(bais);</span>
@@ -72,7 +72,7 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L72">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;)).body(isr);</span>
     }
 
-    @Operation(summary = &quot;Get all stats for all commons as csv&quot;)
+    @Operation(summary = &quot;Get all stats for all game as csv&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(value = &quot;/downloadAll&quot;)
     public ResponseEntity&lt;Resource&gt; getAllCSV() throws IOException {
