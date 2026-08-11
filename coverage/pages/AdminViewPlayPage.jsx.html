@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>109/109</span>
+                <span class='fraction'>105/105</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>109/109</span>
+                <span class='fraction'>105/105</span>
             </div>
         
             
@@ -196,13 +196,7 @@
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L134'></a><a href='#L134'>134</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -240,9 +234,6 @@
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">21x</span>
@@ -312,9 +303,6 @@
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-yes">21x</span>
@@ -345,17 +333,17 @@
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router";
 import { Card, Container, CardGroup, Button } from "react-bootstrap";
-import CommonsOverview from "main/components/Commons/CommonsOverview";
-import CommonsPlay from "main/components/Commons/CommonsPlay";
-import FarmStats from "main/components/Commons/FarmStats";
-import ManageCows from "main/components/Commons/ManageCows";
-import Profits from "main/components/Commons/Profits";
+import GameOverview from "main/components/Game/GameOverview";
+import GamePlay from "main/components/Game/GamePlay";
+import FarmStats from "main/components/Game/FarmStats";
+import ManageCows from "main/components/Game/ManageCows";
+import Profits from "main/components/Game/Profits";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import ChatPanel from "main/components/Chat/ChatPanel";
 &nbsp;
 const AdminViewPlayPage = () =&gt; {
-  const { userId, commonsId } = useParams();
+  const { userId, gameId } = useParams();
 &nbsp;
   const { data: currentUser } = useCurrentUser();
 &nbsp;
@@ -365,23 +353,20 @@ const AdminViewPlayPage = () =&gt; {
     url: "/api/farmer",
     params: {
       userId: userId,
-      commonsId: commonsId,
+      gameId: gameId,
     },
   });
 &nbsp;
   // Stryker restore all
 &nbsp;
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
   // Stryker restore all
 &nbsp;
   // Stryker disable all
@@ -390,7 +375,7 @@ const AdminViewPlayPage = () =&gt; {
     url: "/api/profits/all",
     params: {
       userId: userId,
-      commonsId: commonsId,
+      gameId: gameId,
     },
   });
   // Stryker restore all
@@ -426,7 +411,7 @@ const AdminViewPlayPage = () =&gt; {
   };
 &nbsp;
   const visiting_user = farmer?.username;
-  const visiting_commons = commonsPlus?.commons.name;
+  const visiting_game = gamePlus?.game.name;
   // Stryker disable all
   const admin_name = currentUser?.root ? currentUser?.root?.user?.fullName : "";
   // Stryker restore all
@@ -443,22 +428,19 @@ const AdminViewPlayPage = () =&gt; {
               This is a Admin Feature for &lt;strong&gt;{admin_name}&lt;/strong&gt;
               &lt;br /&gt;
               Visiting Farmer &lt;strong&gt;{visiting_user}&lt;/strong&gt;'s Play Page for
-              game &lt;strong&gt;{visiting_commons}&lt;/strong&gt; in Read Only Mode.
+              game &lt;strong&gt;{visiting_game}&lt;/strong&gt; in Read Only Mode.
             &lt;/Card.Title&gt;
           &lt;/Card.Body&gt;
         &lt;/Card&gt;
         &lt;Container&gt;
-          {!!currentUser &amp;&amp; &lt;CommonsPlay currentUser={farmer} /&gt;}
-          {!!commonsPlus &amp;&amp; (
-            &lt;CommonsOverview
-              commonsPlus={commonsPlus}
-              currentUser={currentUser}
-            /&gt;
+          {!!currentUser &amp;&amp; &lt;GamePlay currentUser={farmer} /&gt;}
+          {!!gamePlus &amp;&amp; (
+            &lt;GameOverview gamePlus={gamePlus} currentUser={currentUser} /&gt;
           )}
           &lt;br /&gt;
-          {!!farmer &amp;&amp; !!commonsPlus &amp;&amp; (
+          {!!farmer &amp;&amp; !!gamePlus &amp;&amp; (
             &lt;CardGroup data-testid="adminviewplaypage-card-group"&gt;
-              &lt;ManageCows farmer={farmer} commons={commonsPlus.commons} /&gt;
+              &lt;ManageCows farmer={farmer} game={gamePlus.game} /&gt;
               &lt;FarmStats farmer={farmer} /&gt;
               &lt;Profits farmer={farmer} profits={farmerProfits} /&gt;
             &lt;/CardGroup&gt;
@@ -466,7 +448,7 @@ const AdminViewPlayPage = () =&gt; {
         &lt;/Container&gt;
       &lt;/BasicLayout&gt;
       &lt;div style={chatContainerStyle} data-testid="adminviewplaypage-chat-div"&gt;
-        {!!isChatOpen &amp;&amp; &lt;ChatPanel commonsId={userId} /&gt;}
+        {!!isChatOpen &amp;&amp; &lt;ChatPanel gameId={userId} /&gt;}
         &lt;Button
           style={chatButtonStyle}
           onClick={toggleChatWindow}
@@ -487,7 +469,7 @@ export default AdminViewPlayPage;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-10T23:22:46.387Z
+                at 2026-08-11T16:46:53.919Z
             </div>
         <script src="../prettify.js"></script>
         <script>

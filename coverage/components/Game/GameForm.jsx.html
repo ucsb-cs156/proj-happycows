@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Commons/CommonsForm.jsx</title>
+    <title>Code coverage report for components/Game/GameForm.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Commons</a> CommonsForm.jsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Game</a> GameForm.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -1162,18 +1162,18 @@
 import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
 import { useEffect } from "react";
-import HealthUpdateStrategiesDropdown from "main/components/Commons/HealthStrategiesUpdateDropdown";
+import HealthUpdateStrategiesDropdown from "main/components/Game/HealthStrategiesUpdateDropdown";
 import CourseSelectDropdown from "main/components/Courses/CourseSelectDropdown";
 &nbsp;
-function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
-  let modifiedCommons = initialCommons ? { ...initialCommons } : {}; // make a shallow copy of initialCommons
+function GameForm({ initialGame, submitAction, buttonLabel = "Create" }) {
+  let modifiedGame = initialGame ? { ...initialGame } : {}; // make a shallow copy of initialGame
 &nbsp;
-  if (modifiedCommons.startingDate) {
-    modifiedCommons.startingDate = modifiedCommons.startingDate.split("T")[0];
+  if (modifiedGame.startingDate) {
+    modifiedGame.startingDate = modifiedGame.startingDate.split("T")[0];
   }
 &nbsp;
-  if (modifiedCommons.lastDate) {
-    modifiedCommons.lastDate = modifiedCommons.lastDate.split("T")[0];
+  if (modifiedGame.lastDate) {
+    modifiedGame.lastDate = modifiedGame.lastDate.split("T")[0];
   }
 &nbsp;
   // Stryker disable all
@@ -1184,31 +1184,31 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
     reset,
     getValues,
   } = useForm(
-    // modifiedCommons is guaranteed to be defined (initialCommons or {})
-    { defaultValues: modifiedCommons },
+    // modifiedGame is guaranteed to be defined (initialGame or {})
+    { defaultValues: modifiedGame },
   );
   // Stryker restore all
 &nbsp;
   // Stryker disable all
   const { data: healthUpdateStrategies } = useBackend(
-    "/api/commons/all-health-update-strategies",
+    "/api/game/all-health-update-strategies",
     {
       method: "GET",
-      url: "/api/commons/all-health-update-strategies",
+      url: "/api/game/all-health-update-strategies",
     },
   );
   // Stryker restore all
 &nbsp;
   // Stryker disable all
-  const { data: defaultValuesData } = useBackend("/api/commons/defaults", {
+  const { data: defaultValuesData } = useBackend("/api/game/defaults", {
     method: "GET",
-    url: "/api/commons/defaults",
+    url: "/api/game/defaults",
   });
   // Stryker restore all
 &nbsp;
   // Stryker disable all
   useEffect(() =&gt; {
-    if (defaultValuesData &amp;&amp; !initialCommons) {
+    if (defaultValuesData &amp;&amp; !initialGame) {
       const {
         startingBalance,
         cowPrice,
@@ -1231,10 +1231,10 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
         belowCapacityStrategy,
       });
     }
-  }, [defaultValuesData, initialCommons, reset]);
+  }, [defaultValuesData, initialGame, reset]);
   // Stryker restore all
 &nbsp;
-  const testid = "CommonsForm";
+  const testid = "GameForm";
   const curr = new Date();
   const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
   // Default end date is 4 months after the default start date (today); see issue #250
@@ -1259,7 +1259,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
 &nbsp;
   return (
     &lt;Form onSubmit={handleSubmit(submitAction)}&gt;
-      {initialCommons &amp;&amp; (
+      {initialGame &amp;&amp; (
         &lt;Form.Group className="mb-3"&gt;
           &lt;Form.Label htmlFor="id"&gt;Id&lt;/Form.Label&gt;
           &lt;Form.Control
@@ -1267,7 +1267,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
             id="id"
             type="text"
             {...register("id")}
-            value={initialCommons.id}
+            value={initialGame.id}
             disabled
           /&gt;
         &lt;/Form.Group&gt;
@@ -1673,7 +1673,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
           &lt;CourseSelectDropdown
             formName="courseId"
             displayName="Course"
-            initialValue={modifiedCommons.courseId}
+            initialValue={modifiedGame.courseId}
             register={register}
             includeNoCourseOption
             testIdPrefix={testid}
@@ -1684,7 +1684,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
       &lt;Row className="mb-5"&gt;
         &lt;Button
           type="submit"
-          data-testid="CommonsForm-Submit-Button"
+          data-testid="GameForm-Submit-Button"
           className="pl-1 w-30 text-left"
           style={{ width: "30%" }}
         &gt;
@@ -1694,7 +1694,7 @@ function CommonsForm({ initialCommons, submitAction, buttonLabel = "Create" }) {
     &lt;/Form&gt;
   );
 }
-export default CommonsForm;
+export default GameForm;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1702,7 +1702,7 @@ export default CommonsForm;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-10T23:22:46.387Z
+                at 2026-08-11T16:46:53.919Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

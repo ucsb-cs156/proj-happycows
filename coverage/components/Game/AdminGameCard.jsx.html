@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Commons/AdminCommonsCard.jsx</title>
+    <title>Code coverage report for components/Game/AdminGameCard.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Commons</a> AdminCommonsCard.jsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Game</a> AdminGameCard.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -564,28 +564,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from "react";
 import { Card, Button, Modal, Row, Col } from "react-bootstrap";
 import { useBackendMutation } from "main/utils/useBackend";
-import { onDeleteSuccess } from "main/utils/commonsUtils";
+import { onDeleteSuccess } from "main/utils/gameUtils";
 import { useNavigate } from "react-router";
 import { hasRole } from "main/utils/currentUser";
 &nbsp;
-export default function AdminCommonsCard({ commonItem, currentUser }) {
+export default function AdminGameCard({ commonItem, currentUser }) {
   const [showModal, setShowModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
-  const commons = commonItem.commons;
+  const game = commonItem.game;
 &nbsp;
   const deleteMutation = useBackendMutation(
     (commonItem) =&gt; ({
-      url: "/api/commons",
+      url: "/api/game",
       method: "DELETE",
-      params: { id: commonItem.commons.id },
+      params: { id: commonItem.game.id },
     }),
     { onSuccess: onDeleteSuccess },
-    ["/api/commons/allplus"],
+    ["/api/game/allplus"],
   );
 &nbsp;
   const handleEdit = () =&gt; {
-    navigate(`/admin/editcommons/${commons.id}`);
+    navigate(`/admin/editgame/${game.id}`);
   };
 &nbsp;
   const handleDelete = () =&gt; {
@@ -603,7 +603,7 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
 &nbsp;
   const deleteModal = (
     &lt;Modal
-      data-testid={`AdminCommonsCard-Modal-${commons.id}`}
+      data-testid={`AdminGameCard-Modal-${game.id}`}
       show={showModal}
       onHide={() =&gt; setShowModal(false)}
     &gt;
@@ -614,14 +614,14 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
       &lt;Modal.Footer&gt;
         &lt;Button
           variant="secondary"
-          data-testid={`AdminCommonsCard-Modal-Cancel-${commons.id}`}
+          data-testid={`AdminGameCard-Modal-Cancel-${game.id}`}
           onClick={() =&gt; setShowModal(false)}
         &gt;
           Keep this Game
         &lt;/Button&gt;
         &lt;Button
           variant="danger"
-          data-testid={`AdminCommonsCard-Modal-Delete-${commons.id}`}
+          data-testid={`AdminGameCard-Modal-Delete-${game.id}`}
           onClick={confirmDelete}
         &gt;
           Permanently Delete
@@ -658,7 +658,7 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
     &lt;&gt;
       &lt;Card
         className="mb-3"
-        data-testid={`AdminCommonsCard-${commons.id}`}
+        data-testid={`AdminGameCard-${game.id}`}
         style={cardStyle}
         onMouseEnter={() =&gt; setIsHovered(true)}
         onMouseLeave={() =&gt; setIsHovered(false)}
@@ -667,12 +667,12 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
           &lt;Card.Title className="mb-0"&gt;
             &lt;Row&gt;
               &lt;Col&gt;
-                {commons.name} (ID: {commons.id})
+                {game.name} (ID: {game.id})
               &lt;/Col&gt;
               &lt;Col&gt;
                 &lt;div&gt;
                   &lt;strong&gt;Hidden:&amp;nbsp;&lt;/strong&gt;
-                  {String(commons.hidden)}
+                  {String(game.hidden)}
                 &lt;/div&gt;
               &lt;/Col&gt;
             &lt;/Row&gt;
@@ -684,49 +684,49 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               &lt;div&gt;
                 &lt;strong&gt;Cow Price:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.cowPrice}&lt;/div&gt;
+              &lt;div&gt;{game.cowPrice}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Milk Price:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.milkPrice}&lt;/div&gt;
+              &lt;div&gt;{game.milkPrice}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Start Balance:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.startingBalance}&lt;/div&gt;
+              &lt;div&gt;{game.startingBalance}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Starting Date:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{formatDate(commons.startingDate)}&lt;/div&gt;
+              &lt;div&gt;{formatDate(game.startingDate)}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Last Date:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{formatDate(commons.lastDate)}&lt;/div&gt;
+              &lt;div&gt;{formatDate(game.lastDate)}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Degrad Rate:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.degradationRate}&lt;/div&gt;
+              &lt;div&gt;{game.degradationRate}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Show Dashboard:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{String(commons.showLeaderboard)}&lt;/div&gt;
+              &lt;div&gt;{String(game.showLeaderboard)}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Show Chat:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{String(commons.showChat)}&lt;/div&gt;
+              &lt;div&gt;{String(game.showChat)}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
@@ -738,13 +738,13 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               &lt;div&gt;
                 &lt;strong&gt;Cap / User:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.capacityPerUser}&lt;/div&gt;
+              &lt;div&gt;{game.capacityPerUser}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
                 &lt;strong&gt;Carry Cap:&lt;/strong&gt;
               &lt;/div&gt;
-              &lt;div&gt;{commons.carryingCapacity}&lt;/div&gt;
+              &lt;div&gt;{game.carryingCapacity}&lt;/div&gt;
             &lt;/Col&gt;
             &lt;Col xs={12} sm={6} md={3} className="mb-3"&gt;
               &lt;div&gt;
@@ -759,7 +759,7 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               variant="primary"
               size="sm"
               onClick={handleEdit}
-              data-testid={`AdminCommonsCard-Edit-${commons.id}`}
+              data-testid={`AdminGameCard-Edit-${game.id}`}
             &gt;
               Edit
             &lt;/Button&gt;
@@ -767,39 +767,39 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
               variant="danger"
               size="sm"
               onClick={handleDelete}
-              data-testid={`AdminCommonsCard-Delete-${commons.id}`}
+              data-testid={`AdminGameCard-Delete-${game.id}`}
             &gt;
               Delete
             &lt;/Button&gt;
             &lt;Button
               variant="success"
               size="sm"
-              href={`/api/commonstats/download?commonsId=${commons.id}`}
-              data-testid={`AdminCommonsCard-StatsCSV-${commons.id}`}
+              href={`/api/commonstats/download?gameId=${game.id}`}
+              data-testid={`AdminGameCard-StatsCSV-${game.id}`}
             &gt;
               Stats CSV
             &lt;/Button&gt;
             &lt;Button
               variant="info"
               size="sm"
-              href={`/admin/announcements/${commons.id}`}
-              data-testid={`AdminCommonsCard-Announcements-${commons.id}`}
+              href={`/admin/announcements/${game.id}`}
+              data-testid={`AdminGameCard-Announcements-${game.id}`}
             &gt;
               Announcements
             &lt;/Button&gt;
             &lt;Button
               variant="info"
               size="sm"
-              href={`/admin/chat/${commons.id}`}
-              data-testid={`AdminCommonsCard-Chat-${commons.id}`}
+              href={`/admin/chat/${game.id}`}
+              data-testid={`AdminGameCard-Chat-${game.id}`}
             &gt;
               Chat
             &lt;/Button&gt;
             &lt;Button
               variant="info"
               size="sm"
-              href={`/admin/dashboard/${commons.id}`}
-              data-testid={`AdminCommonsCard-Dashboard-${commons.id}`}
+              href={`/admin/dashboard/${game.id}`}
+              data-testid={`AdminGameCard-Dashboard-${game.id}`}
             &gt;
               Dashboard
             &lt;/Button&gt;
@@ -817,7 +817,7 @@ export default function AdminCommonsCard({ commonItem, currentUser }) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-10T23:22:46.387Z
+                at 2026-08-11T16:46:53.919Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for components/Commons/CommonsSelect.jsx</title>
+    <title>Code coverage report for components/Game/GamePlay.jsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Commons</a> CommonsSelect.jsx</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">components/Game</a> GamePlay.jsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/21</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>4/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/21</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -88,71 +88,56 @@
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">157x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L26'></a><a href='#L26'>26</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Form } from "react-bootstrap";
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useState } from "react";
+import greetingsList from "../../../assets/PlayGreetings.json";
+import "../../pages/HomePage.css";
+import { Card } from "react-bootstrap";
+export default function GamePlay({ currentUser }) {
+  // Stryker disable  all
+  const firstName = currentUser?.root ? currentUser?.root?.user?.givenName : "";
 &nbsp;
-function CommonsSelect({
-  commons,
-  handleCommonsSelection,
-  selectedCommons,
-  testid = "CommonsSelect",
-}) {
+  const [welcomeText, _] = useState(
+    greetingsList[Math.floor(Math.random() * greetingsList.length)],
+  );
+  // Stryker restore all
+&nbsp;
   return (
-    &lt;Form.Group className="mb-3"&gt;
-      &lt;Form.Text htmlFor="commons" className="fw-bold fs-5"&gt;
-        Game
-      &lt;/Form.Text&gt;
-      &lt;div className="ms-3" data-testid={`${testid}-CommonsSelect-div`}&gt;
-        {commons.map((object) =&gt; (
-          &lt;Form.Check
-            key={object.id}
-            type="radio"
-            label={object.name}
-            data-testid={`${testid}-commons-${object.id}`}
-            onChange={() =&gt; handleCommonsSelection(object.id, object.name)}
-            checked={selectedCommons === object.id}
-          /&gt;
-        ))}
-      &lt;/div&gt;
-    &lt;/Form.Group&gt;
+    &lt;div data-testid="GamePlay"&gt;
+      &lt;Card data-testid="game-card" className="woodentitle"&gt;
+        &lt;div className="text-center border-0 my-3"&gt;
+          &lt;h1 data-testid="gamePlay-title" className="animate-charcter"&gt;
+            {welcomeText} {firstName}!
+          &lt;/h1&gt;
+        &lt;/div&gt;
+      &lt;/Card&gt;
+    &lt;/div&gt;
   );
 }
-&nbsp;
-export default CommonsSelect;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -160,7 +145,7 @@ export default CommonsSelect;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-10T23:22:46.387Z
+                at 2026-08-11T16:46:53.919Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
