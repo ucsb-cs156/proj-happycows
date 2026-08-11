@@ -1,16 +1,16 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategy;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration
 public class UpdateCowHealthJobTests extends JobTestCase {
         @Mock
-        CommonsRepository commonsRepository;
+        GameRepository gameRepository;
 
         @Mock
         FarmerRepository farmerRepository;
@@ -45,7 +45,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         UserRepository userRepository;
 
         @Mock
-        CommonsPlusBuilderService commonsPlusBuilderService;
+        GamePlusBuilderService gamePlusBuilderService;
 
         private final User user = User
                         .builder()
@@ -54,9 +54,9 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                         .email("cgaucho@example.org")
                         .build();
 
-        private final Commons commons = Commons
+        private final Game game = Game
                         .builder()
-                        .name("test commons")
+                        .name("test game")
                         .cowPrice(10)
                         .milkPrice(2)
                         .startingBalance(300)
@@ -74,7 +74,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         private final Farmer farmer = Farmer
                         .builder()
                         .user(user)
-                        .commons(commons)
+                        .game(game)
                         .totalWealth(300)
                         .numOfCows(1)
                         .cowHealth(10.0)
@@ -86,13 +86,13 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         private final JobContext ctx = new JobContext(null, job);
 
         private void runUpdateCowHealthJob() throws Exception {
-                var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository, farmerRepository,
-                                userRepository, commonsPlusBuilderService);
+                var updateCowHealthJob = new UpdateCowHealthJob(gameRepository, farmerRepository,
+                                userRepository, gamePlusBuilderService);
                 updateCowHealthJob.accept(ctx);
         }
 
         @Test
-        void test_log_output_with_no_commons() throws Exception {
+        void test_log_output_with_no_game() throws Exception {
                 runUpdateCowHealthJob();
 
                 String expected = """
@@ -102,59 +102,59 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         }
 
         @Test
-        void test_skips_commons_when_game_not_in_progress() throws Exception {
-                Commons futureCommons = Commons
+        void test_skips_game_when_game_not_in_progress() throws Exception {
+                Game futureGame = Game
                                 .builder()
-                                .name("future commons")
+                                .name("future game")
                                 .startingDate(LocalDateTime.now().plusDays(5))
                                 .lastDate(LocalDateTime.now().plusDays(10))
                                 .build();
 
-                List<Commons> listOfCommons = List.of(futureCommons);
-                CommonsPlus futureCommonsPlus = CommonsPlus.builder().commons(futureCommons).totalCows(1)
+                List<Game> listOfGame = List.of(futureGame);
+                GamePlus futureGamePlus = GamePlus.builder().game(futureGame).totalCows(1)
                                 .totalUsers(1).build();
 
-                when(commonsRepository.findAll()).thenReturn(listOfCommons);
-                when(commonsPlusBuilderService.convertToCommonsPlus(eq(listOfCommons)))
-                                .thenReturn(List.of(futureCommonsPlus));
+                when(gameRepository.findAll()).thenReturn(listOfGame);
+                when(gamePlusBuilderService.convertToGamePlus(eq(listOfGame)))
+                                .thenReturn(List.of(futureGamePlus));
 
                 runUpdateCowHealthJob();
 
                 String expected = """
                                 Updating cow health...
-                                Skipping Commons id=0 (future commons) because the game is not in progress
+                                Skipping Game id=0 (future game) because the game is not in progress
                                 Cow health has been updated!""";
                 assertEquals(expected, job.getLog());
         }
 
-    private void setupUpdateCowHealthTestOnCommons(int totalCows, int numUsers) {
-        List<Commons> listOfCommons = List.of(commons); 
-        CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(totalCows).totalUsers(numUsers).build();
+    private void setupUpdateCowHealthTestOnGame(int totalCows, int numUsers) {
+        List<Game> listOfGame = List.of(game); 
+        GamePlus gamePlus = GamePlus.builder().game(game).totalCows(totalCows).totalUsers(numUsers).build();
 
-        List<CommonsPlus> listOfCommonsPlus = List.of(commonsPlus);
+        List<GamePlus> listOfGamePlus = List.of(gamePlus);
         
-        when(commonsRepository.findAll()).thenReturn(listOfCommons);
-        when(farmerRepository.findByCommonsId(commons.getId())).thenReturn(List.of(farmer));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(totalCows));
+        when(gameRepository.findAll()).thenReturn(listOfGame);
+        when(farmerRepository.findByGameId(game.getId())).thenReturn(List.of(farmer));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(totalCows));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(numUsers));
-        when(commonsPlusBuilderService.convertToCommonsPlus(eq(listOfCommons))).thenReturn(listOfCommonsPlus);
-        when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(numUsers));
+        when(gamePlusBuilderService.convertToGamePlus(eq(listOfGame))).thenReturn(listOfGamePlus);
+        when(gamePlusBuilderService.toGamePlus(eq(game))).thenReturn(gamePlus);
     }
 
         @Test
         void test_uses_above_capacity_update_strategy() throws Exception {
-                commons.setAboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
+                game.setAboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
                 double expectedNewHealth = 9.0;
 
-                setupUpdateCowHealthTestOnCommons(101, 1);
+                setupUpdateCowHealthTestOnGame(101, 1);
                 runUpdateCowHealthJob();
 
                 assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
                                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0
                                  old cow health: 10.0, new cow health: 9.0
                                 Cow health has been updated!""";
@@ -163,16 +163,16 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
         @Test
         void test_uses_below_capacity_update_strategy() throws Exception {
-                commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
+                game.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
                 double expectedNewHealth = 11.0;
-                setupUpdateCowHealthTestOnCommons(99, 1);
+                setupUpdateCowHealthTestOnGame(99, 1);
                 runUpdateCowHealthJob();
 
                 assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
                                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0
                                  old cow health: 10.0, new cow health: 11.0
                                 Cow health has been updated!""";
@@ -181,17 +181,17 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
         @Test
         void test_uses_below_capacity_update_strategy_if_equal_to_carrying_capacity() throws Exception {
-                commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
+                game.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant);
                 double expectedNewHealth = 11.0;
 
-                setupUpdateCowHealthTestOnCommons(commons.getCarryingCapacity(), 1);
+                setupUpdateCowHealthTestOnGame(game.getCarryingCapacity(), 1);
                 runUpdateCowHealthJob();
 
                 assertEquals(expectedNewHealth, farmer.getCowHealth());
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
                                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0
                                  old cow health: 10.0, new cow health: 11.0
                                 Cow health has been updated!""";
@@ -204,7 +204,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(mockStrategy.calculateNewCowHealth(any(), any(), anyInt())).thenReturn(-1.0);
                 var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
                                 mockStrategy,
-                                commonsPlusBuilderService.toCommonsPlus(commons),
+                                gamePlusBuilderService.toGamePlus(game),
                                 farmer,
                                 1);
                 assertEquals(0.0, newHealth);
@@ -216,7 +216,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 when(mockStrategy.calculateNewCowHealth(any(), any(), anyInt())).thenReturn(101.0);
                 var newHealth = UpdateCowHealthJob.calculateNewCowHealthUsingStrategy(
                                 mockStrategy,
-                                commonsPlusBuilderService.toCommonsPlus(commons),
+                                gamePlusBuilderService.toGamePlus(game),
                                 farmer,
                                 1);
                 assertEquals(100.0, newHealth);
@@ -228,32 +228,32 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 var farmer2 = Farmer
                                 .builder()
                                 .user(user)
-                                .commons(commons)
+                                .game(game)
                                 .totalWealth(300)
                                 .numOfCows(6)
                                 .cowHealth(20)
                                 .build();
-                commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
+                game.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
                 
-                CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(6).totalUsers(1).build();
+                GamePlus gamePlus = GamePlus.builder().game(game).totalCows(6).totalUsers(1).build();
 
-                List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
-                List<Commons> commonsList = List.of(commons);
+                List<GamePlus> gamePlusList = List.of(gamePlus);
+                List<Game> gameList = List.of(game);
 
-                when(commonsRepository.findAll()).thenReturn(commonsList);
-                when(commonsPlusBuilderService.convertToCommonsPlus(eq(commonsList))).thenReturn(commonsPlusList);
-                when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
-                when(farmerRepository.findByCommonsId(commons.getId()))
+                when(gameRepository.findAll()).thenReturn(gameList);
+                when(gamePlusBuilderService.convertToGamePlus(eq(gameList))).thenReturn(gamePlusList);
+                when(gamePlusBuilderService.toGamePlus(eq(game))).thenReturn(gamePlus);
+                when(farmerRepository.findByGameId(game.getId()))
                                 .thenReturn(List.of(farmer1, farmer2));
-                when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(99));
+                when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(99));
                 when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-                when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(2));
+                when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(2));
 
                 runUpdateCowHealthJob();
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
                                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0
                                  old cow health: 10.0, new cow health: 11.0
                                 User: Chris Gaucho, numCows: 6, cowHealth: 20.0
@@ -272,7 +272,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
-                                .commons(commons)
+                                .game(game)
                                 .totalWealth(300)
                                 .numOfCows(5)
                                 .cowHealth(0.0)
@@ -294,7 +294,7 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
-                                .commons(commons)
+                                .game(game)
                                 .totalWealth(300)
                                 .numOfCows(5)
                                 .cowHealth(1.0)
@@ -315,33 +315,33 @@ public class UpdateCowHealthJobTests extends JobTestCase {
                 Farmer farmer = Farmer
                                 .builder()
                                 .user(user)
-                                .commons(commons)
+                                .game(game)
                                 .totalWealth(300)
                                 .numOfCows(5)
                                 .cowHealth(-1.0)
                                 .cowDeaths(0)
                                 .build();
-                commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
+                game.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
 
-                CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
+                GamePlus gamePlus = GamePlus.builder().game(game).totalCows(5).totalUsers(1).build();
 
-                List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
-                List<Commons> commonsList = List.of(commons);
+                List<GamePlus> gamePlusList = List.of(gamePlus);
+                List<Game> gameList = List.of(game);
 
-                when(commonsPlusBuilderService.convertToCommonsPlus(eq(commonsList))).thenReturn(commonsPlusList);
-                when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
+                when(gamePlusBuilderService.convertToGamePlus(eq(gameList))).thenReturn(gamePlusList);
+                when(gamePlusBuilderService.toGamePlus(eq(game))).thenReturn(gamePlus);
 
-                when(commonsRepository.findAll()).thenReturn(List.of(commons));
-                when(farmerRepository.findByCommonsId(commons.getId())).thenReturn(List.of(farmer));
-                when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(99));
+                when(gameRepository.findAll()).thenReturn(List.of(game));
+                when(farmerRepository.findByGameId(game.getId())).thenReturn(List.of(farmer));
+                when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(99));
                 when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-                when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
+                when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(1));
 
                 runUpdateCowHealthJob();
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
                                 User: Chris Gaucho, numCows: 5, cowHealth: -1.0
                                  5 cows for this user died.
                                  old cow health: -1.0, new cow health: 100.0
@@ -355,25 +355,25 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         }
 
         @Test
-        void test_skipping_job_when_commons_has_zero_users() throws Exception {
-                CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalCows(5).totalUsers(1).build();
+        void test_skipping_job_when_game_has_zero_users() throws Exception {
+                GamePlus gamePlus = GamePlus.builder().game(game).totalCows(5).totalUsers(1).build();
 
-                List<CommonsPlus> commonsPlusList = List.of(commonsPlus);
-                List<Commons> commonsList = List.of(commons);
+                List<GamePlus> gamePlusList = List.of(gamePlus);
+                List<Game> gameList = List.of(game);
 
-                when(commonsPlusBuilderService.convertToCommonsPlus(eq(commonsList))).thenReturn(commonsPlusList);
-                when(commonsPlusBuilderService.toCommonsPlus(eq(commons))).thenReturn(commonsPlus);
-                commons.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
+                when(gamePlusBuilderService.convertToGamePlus(eq(gameList))).thenReturn(gamePlusList);
+                when(gamePlusBuilderService.toGamePlus(eq(game))).thenReturn(gamePlus);
+                game.setBelowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear);
 
-                when(commonsRepository.findAll()).thenReturn(List.of(commons));
-                when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(0));
+                when(gameRepository.findAll()).thenReturn(List.of(game));
+                when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(0));
 
                 runUpdateCowHealthJob();
 
                 String expected = """
                                 Updating cow health...
-                                Commons test commons, degradationRate: 1.0, effectiveCapacity: 100
-                                No users in this commons, skipping
+                                Game test game, degradationRate: 1.0, effectiveCapacity: 100
+                                No users in this game, skipping
                                 Cow health has been updated!""";
 
                 assertEquals(expected, job.getLog());
@@ -381,14 +381,14 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
         @Test
         void test_throws_exception_when_get_num_cows_fails() {
-                setupUpdateCowHealthTestOnCommons(100, 1);
-                commons.setId(117);
-                when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.empty());
-                when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(1));
+                setupUpdateCowHealthTestOnGame(100, 1);
+                game.setId(117);
+                when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.empty());
+                when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(1));
 
-                var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository,
+                var updateCowHealthJob = new UpdateCowHealthJob(gameRepository,
                                 farmerRepository,
-                                userRepository, commonsPlusBuilderService);
+                                userRepository, gamePlusBuilderService);
 
                 var thrown = Assertions.assertThrows(RuntimeException.class, () -> {
                         updateCowHealthJob.accept(ctx);
@@ -400,13 +400,13 @@ public class UpdateCowHealthJobTests extends JobTestCase {
 
         @Test
         void test_throws_exception_when_get_num_users_fails() {
-                setupUpdateCowHealthTestOnCommons(100, 1);
-                commons.setId(117);
-                when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.empty());
+                setupUpdateCowHealthTestOnGame(100, 1);
+                game.setId(117);
+                when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.empty());
 
-                var updateCowHealthJob = new UpdateCowHealthJob(commonsRepository,
+                var updateCowHealthJob = new UpdateCowHealthJob(gameRepository,
                                 farmerRepository,
-                                userRepository, commonsPlusBuilderService);
+                                userRepository, gamePlusBuilderService);
 
                 var thrown = Assertions.assertThrows(RuntimeException.class, () -> {
                         updateCowHealthJob.accept(ctx);
@@ -417,10 +417,10 @@ public class UpdateCowHealthJobTests extends JobTestCase {
         }
 
         @Test
-        void commons_plus_builder_service_getter_returns_value_from_constructor() {
-                var job = new UpdateCowHealthJob(commonsRepository, farmerRepository,
-                                userRepository, commonsPlusBuilderService);
+        void game_plus_builder_service_getter_returns_value_from_constructor() {
+                var job = new UpdateCowHealthJob(gameRepository, farmerRepository,
+                                userRepository, gamePlusBuilderService);
 
-                assertSame(commonsPlusBuilderService, job.getCommonsPlusBuilderService());
+                assertSame(gamePlusBuilderService, job.getGamePlusBuilderService());
         }
 }

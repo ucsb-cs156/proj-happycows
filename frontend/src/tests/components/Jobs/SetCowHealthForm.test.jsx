@@ -4,7 +4,7 @@ import SetCowHealthForm from "main/components/Jobs/SetCowHealthForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import commonsFixtures from "fixtures/commonsFixtures";
+import gameFixtures from "fixtures/gameFixtures";
 import * as useBackendModule from "main/utils/useBackend";
 import { vi } from "vitest";
 
@@ -21,7 +21,7 @@ describe("SetCowHealthForm tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
   it("renders the fallback text correctlyl", async () => {
-    axiosMock.onGet("/api/commons/all").reply(200, []);
+    axiosMock.onGet("/api/game/all").reply(200, []);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -38,9 +38,7 @@ describe("SetCowHealthForm tests", () => {
 
   it("validates health > 0", async () => {
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -76,9 +74,7 @@ describe("SetCowHealthForm tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -114,9 +110,7 @@ describe("SetCowHealthForm tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -154,9 +148,7 @@ describe("SetCowHealthForm tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -192,9 +184,7 @@ describe("SetCowHealthForm tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -204,11 +194,9 @@ describe("SetCowHealthForm tests", () => {
       </QueryClientProvider>,
     );
 
-    const commonsRadio = await screen.findByTestId(
-      "SetCowHealthForm-commons-1",
-    );
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("SetCowHealthForm-game-1");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const healthInput = screen.getByTestId("SetCowHealthForm-healthValue");
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -226,17 +214,15 @@ describe("SetCowHealthForm tests", () => {
 
     expect(submitAction).toHaveBeenCalledWith({
       healthValue: "10",
-      selectedCommons: 1,
-      selectedCommonsName: "Anika's Commons",
+      selectedGame: 1,
+      selectedGameName: "Anika's Game",
     });
   });
 
   test("when localstorage has no value, the default value of healthValue is 100", async () => {
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -261,9 +247,7 @@ describe("SetCowHealthForm tests", () => {
     getItemSpy.mockImplementation((key) =>
       key === "SetCowHealthForm-health" ? 42 : null,
     );
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -291,9 +275,7 @@ describe("SetCowHealthForm tests", () => {
       key === "SetCowHealthForm-health" ? 42 : null,
     );
 
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -322,15 +304,13 @@ describe("SetCowHealthForm tests", () => {
     });
   });
 
-  test("the first item in commons array is selected by default", async () => {
+  test("the first item in game array is selected by default", async () => {
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation((key) =>
       key === "SetCowHealthForm-health" ? 42 : null,
     );
 
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -340,14 +320,14 @@ describe("SetCowHealthForm tests", () => {
       </QueryClientProvider>,
     );
 
-    const defaultId = commonsFixtures.threeCommons[0].id;
-    const testIdForFirstItem = `SetCowHealthForm-commons-${defaultId}`;
+    const defaultId = gameFixtures.threeGame[0].id;
+    const testIdForFirstItem = `SetCowHealthForm-game-${defaultId}`;
     await waitFor(() => {
       expect(screen.getByTestId(testIdForFirstItem)).toBeInTheDocument();
     });
 
-    const commons = screen.getByTestId(testIdForFirstItem);
-    expect(commons).toHaveAttribute("checked", "");
+    const game = screen.getByTestId(testIdForFirstItem);
+    expect(game).toHaveAttribute("checked", "");
   });
 
   test("the correct parameters are passed to useBackend", async () => {
@@ -364,8 +344,8 @@ describe("SetCowHealthForm tests", () => {
 
     await waitFor(() => {
       expect(useBackendSpy).toHaveBeenCalledWith(
-        ["/api/commons/all"],
-        { url: "/api/commons/all" },
+        ["/api/game/all"],
+        { url: "/api/game/all" },
         [],
       );
     });

@@ -22,8 +22,8 @@ public class CowDeath {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name="commons_id")
-  private long commonsId;
+  @Column(name="game_id")
+  private long gameId;
 
   @Column(name="user_id")
   private long userId;

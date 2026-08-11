@@ -25,20 +25,20 @@ public class FarmerWebIT extends WebTestCase {
     public void adminBuySellCows() throws Exception {
         setupUser(true);
 
-        // Make the testing commons
+        // Make the testing game
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByText("Create Game").click();
 
-        page.getByTestId("CommonsForm-name").fill("Web Test Commons");
-        page.getByTestId("CommonsForm-Submit-Button").click();
+        page.getByTestId("GameForm-name").fill("Web Test Game");
+        page.getByTestId("GameForm-Submit-Button").click();
 
-        assertThat(page.getByTestId("commonsCard-name-1")).hasText("Web Test Commons");
+        assertThat(page.getByTestId("gameCard-name-1")).hasText("Web Test Game");
 
-        // Join commons
-        page.getByTestId("commonsCard-button-Join-1").click();
+        // Join game
+        page.getByTestId("gameCard-button-Join-1").click();
 
-        // Visit commons
-        page.getByTestId("commonsCard-button-Visit-1").click();
+        // Visit game
+        page.getByTestId("gameCard-button-Visit-1").click();
         
         // Buy cows
 

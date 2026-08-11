@@ -2,8 +2,8 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJob;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobFactory;
-import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommons;
-import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommonsFactory;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGame;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
 import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJob;
@@ -46,7 +46,7 @@ public class JobsController extends ApiController {
 
   @Autowired InstructorReportJobFactory instructorReportJobFactory;
 
-  @Autowired InstructorReportJobSingleCommonsFactory instructorReportJobSingleCommonsFactory;
+  @Autowired InstructorReportJobSingleGameFactory instructorReportJobSingleGameFactory;
 
   @Autowired UpdateCowHealthJobFactoryInd updateCowHealthJobFactoryInd;
 
@@ -76,12 +76,12 @@ public class JobsController extends ApiController {
     return jobService.runAsJob(milkTheCowsJob);
   }
 
-  @Operation(summary = "Launch Job to Milk the Cows for a single commons")
+  @Operation(summary = "Launch Job to Milk the Cows for a single game")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/launch/milkthecowjobsinglecommons")
-  public Job launchMilkTheCowsJobSingleCommons(
-      @Parameter(name = "commonsId") @RequestParam Long commonsId) {
-    JobContextConsumer milkTheCowsJobInd = milkTheCowsJobFactoryInd.create(commonsId);
+  @PostMapping("/launch/milkthecowjobsinglegame")
+  public Job launchMilkTheCowsJobSingleGame(
+      @Parameter(name = "gameId") @RequestParam Long gameId) {
+    JobContextConsumer milkTheCowsJobInd = milkTheCowsJobFactoryInd.create(gameId);
     return jobService.runAsJob(milkTheCowsJobInd);
   }
 
@@ -93,12 +93,12 @@ public class JobsController extends ApiController {
     return jobService.runAsJob(updateCowHealthJob);
   }
 
-  @Operation(summary = "Launch Job to Update Cow Health for a single commons")
+  @Operation(summary = "Launch Job to Update Cow Health for a single game")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/launch/updatecowhealthsinglecommons")
-  public Job updateCowHealthSingleCommons(
-      @Parameter(name = "commonsId") @RequestParam Long commonsId) {
-    JobContextConsumer updateCowHealthJobInd = updateCowHealthJobFactoryInd.create(commonsId);
+  @PostMapping("/launch/updatecowhealthsinglegame")
+  public Job updateCowHealthSingleGame(
+      @Parameter(name = "gameId") @RequestParam Long gameId) {
+    JobContextConsumer updateCowHealthJobInd = updateCowHealthJobFactoryInd.create(gameId);
     return jobService.runAsJob(updateCowHealthJobInd);
   }
 
@@ -106,9 +106,9 @@ public class JobsController extends ApiController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/launch/setcowhealth")
   public Job setCowHealth(
-      @Parameter(name = "commonsID") @RequestParam Long commonsID,
+      @Parameter(name = "gameID") @RequestParam Long gameID,
       @Parameter(name = "health") @RequestParam double health) {
-    JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(commonsID, health);
+    JobContextConsumer setCowHealthJob = setCowHealthJobFactory.create(gameID, health);
 
     // Reference: frontend/src/components/Jobs/SetCowHealthForm.js
     if (health < 0 || health > 100) {
@@ -127,18 +127,18 @@ public class JobsController extends ApiController {
     return jobService.runAsJob(instructorReportJob);
   }
 
-  @Operation(summary = "Launch Job to Produce Instructor Report for a single commons")
+  @Operation(summary = "Launch Job to Produce Instructor Report for a single game")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/launch/instructorreportsinglecommons")
-  public Job instructorReportSingleCommons(
-      @Parameter(name = "commonsId") @RequestParam Long commonsId) {
+  @PostMapping("/launch/instructorreportsinglegame")
+  public Job instructorReportSingleGame(
+      @Parameter(name = "gameId") @RequestParam Long gameId) {
 
-    InstructorReportJobSingleCommons instructorReportJobSingleCommons =
-        (InstructorReportJobSingleCommons) instructorReportJobSingleCommonsFactory.create(commonsId);
-    return jobService.runAsJob(instructorReportJobSingleCommons);
+    InstructorReportJobSingleGame instructorReportJobSingleGame =
+        (InstructorReportJobSingleGame) instructorReportJobSingleGameFactory.create(gameId);
+    return jobService.runAsJob(instructorReportJobSingleGame);
   }
 
-  @Operation(summary = "Launch Job to Record the Stats of all Commons")
+  @Operation(summary = "Launch Job to Record the Stats of all Game")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/launch/recordcommonstats")
   public Job recordCommonStats() {

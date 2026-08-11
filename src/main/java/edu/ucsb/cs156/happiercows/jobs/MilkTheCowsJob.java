@@ -2,11 +2,11 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 import java.time.LocalDateTime;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -19,7 +19,7 @@ import lombok.Getter;
 public class MilkTheCowsJob implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
@@ -35,20 +35,20 @@ public class MilkTheCowsJob implements JobContextConsumer {
     public void accept(JobContext ctx) throws Exception {
         ctx.log("Starting to milk the cows");
 
-        Iterable<Commons> allCommons = commonsRepository.findAll();
+        Iterable<Game> allGame = gameRepository.findAll();
 
-        for (Commons commons : allCommons) {
-            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {
+        for (Game game : allGame) {
+            if (!GameGate.shouldProcess(game, gameRepository, ctx)) {
                 continue;
             }
-            String name = commons.getName();
-            double milkPrice = commons.getMilkPrice();
-            ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));
+            String name = game.getName();
+            double milkPrice = game.getMilkPrice();
+            ctx.log("Milking cows for Game: " + name + ", Milk Price: " + formatDollars(milkPrice));
 
-            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commons.getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByGameId(game.getId());
 
             for (Farmer farmer : allFarmer) {
-                milkCows(ctx, commons, farmer, profitRepository, farmerRepository);
+                milkCows(ctx, game, farmer, profitRepository, farmerRepository);
             }
         }
 
@@ -58,12 +58,12 @@ public class MilkTheCowsJob implements JobContextConsumer {
     /** This method performs the function of milking the cows for a single farmer.
      *  It is a public method only so it can be exposed to the unit tests
      * @param ctx the JobContext
-     * @param commons the Commons
+     * @param game the Game
      * @param farmer the Farmer
      *
      */
 
-    public static void milkCows(JobContext ctx, Commons commons, Farmer farmer, ProfitRepository profitRepository, FarmerRepository farmerRepository) {
+    public static void milkCows(JobContext ctx, Game game, Farmer farmer, ProfitRepository profitRepository, FarmerRepository farmerRepository) {
         User user = farmer.getUser();
 
         ctx.log("User: " + user.getFullName()
@@ -71,7 +71,7 @@ public class MilkTheCowsJob implements JobContextConsumer {
                 + ", cowHealth: " + farmer.getCowHealth()
                 + ", totalWealth: " + formatDollars(farmer.getTotalWealth()));
 
-        double profitAmount = calculateMilkingProfit(commons, farmer);
+        double profitAmount = calculateMilkingProfit(game, farmer);
         Profit profit = Profit.builder()
                 .farmer(farmer)
                 .amount(profitAmount)
@@ -94,8 +94,8 @@ public class MilkTheCowsJob implements JobContextConsumer {
      * @param farmer
      * @return
      */
-    public static double calculateMilkingProfit(Commons commons, Farmer farmer) {
-        double milkPrice = commons.getMilkPrice();
+    public static double calculateMilkingProfit(Game game, Farmer farmer) {
+        double milkPrice = game.getMilkPrice();
         double profit = farmer.getNumOfCows() * (farmer.getCowHealth() / 100.0) * milkPrice;
         return profit;
     }

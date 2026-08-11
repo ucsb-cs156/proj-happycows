@@ -21,7 +21,7 @@ public class CommonStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private long commonsId;
+    private long gameId;
     private int numCows;
     private double avgHealth;
     

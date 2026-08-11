@@ -403,7 +403,7 @@ public class StudentControllerTests extends ControllerTestCase {
     }
 
     // Header row + blank line, matching the real UCSB eGrades export format
-    // (see docs/examples/egrades.csv). commons-csv's CSVFormat.DEFAULT
+    // (see docs/examples/egrades.csv). game-csv's CSVFormat.DEFAULT
     // ignores blank lines automatically, so no special handling is needed
     // beyond detecting the real 16-column header.
     private static final String UCSB_EGRADES_HEADER =

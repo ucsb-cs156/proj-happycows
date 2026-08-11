@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
@@ -34,7 +34,7 @@ public class CommonStatsServiceTests {
     UserRepository userRepository;
   
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
   
     @MockBean
     FarmerRepository farmerRepository;   
@@ -48,10 +48,10 @@ public class CommonStatsServiceTests {
     @Autowired
     CommonStatsService commonStatsService;
 
-    private Commons commons = Commons
+    private Game game = Game
         .builder()
         .id(17L)
-        .name("test commons")
+        .name("test game")
         .cowPrice(10)
         .milkPrice(2)
         .startingBalance(300)
@@ -65,14 +65,14 @@ public class CommonStatsServiceTests {
 
     CommonStats expectedStats1 = CommonStats
         .builder()
-        .commonsId(17L)
+        .gameId(17L)
         .numCows(20)
         .avgHealth(10)
         .build();
 
     CommonStats expectedStats2 = CommonStats
         .builder()
-        .commonsId(17L)
+        .gameId(17L)
         .numCows(120)
         .avgHealth(20)
         .build();
@@ -82,7 +82,7 @@ public class CommonStatsServiceTests {
     void test_saveStatsOneUser() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
         when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(10.0);
         when(averageCowHealthService.getTotalNumCows(17L)).thenReturn(20);
 
@@ -99,7 +99,7 @@ public class CommonStatsServiceTests {
     void test_saveStatsMultipleUsers() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
         when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(20.0);
         when(averageCowHealthService.getTotalNumCows(17L)).thenReturn(120);
 
@@ -114,7 +114,7 @@ public class CommonStatsServiceTests {
 
     @Test
     void test_getAverageCowHealthThrowsException() {
-        when(commonsRepository.findById(1L)).thenReturn(Optional.empty());
+        when(gameRepository.findById(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             commonStatsService.createAndSaveCommonStats(1L);

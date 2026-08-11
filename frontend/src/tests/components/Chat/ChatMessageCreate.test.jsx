@@ -8,7 +8,7 @@ import axios from "axios";
 import { vi } from "vitest";
 
 describe("ChatMessageCreate", () => {
-  const commonsId = 1;
+  const gameId = 1;
 
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
@@ -101,16 +101,16 @@ describe("ChatMessageCreate", () => {
     const messageText = "Hello World";
     const expectedMessage = {
       content: "Hello%20World",
-      commonsId: "1",
+      gameId: "1",
     };
 
     axiosMock
-      .onPost("/api/chat/post?commonsId=1&content=Hello%20World")
+      .onPost("/api/chat/post?gameId=1&content=Hello%20World")
       .reply(200, chatMessageFixtures.oneChatMessage[0]);
 
     render(
       <QueryClientProvider client={queryClient}>
-        <ChatMessageCreate commonsId={commonsId} />
+        <ChatMessageCreate gameId={gameId} />
       </QueryClientProvider>,
     );
 

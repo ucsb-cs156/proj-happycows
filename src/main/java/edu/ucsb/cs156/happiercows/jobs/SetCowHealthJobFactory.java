@@ -3,7 +3,7 @@ package edu.ucsb.cs156.happiercows.jobs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SetCowHealthJobFactory  {
 
     @Autowired 
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
   
     @Autowired
     private FarmerRepository farmerRepository;
@@ -22,9 +22,9 @@ public class SetCowHealthJobFactory  {
     @Autowired
     private UserRepository userRepository;
 
-    public JobContextConsumer create(Long commonsID, double health) {
-        log.info("commonsRepository = " + commonsRepository);
+    public JobContextConsumer create(Long gameID, double health) {
+        log.info("gameRepository = " + gameRepository);
         log.info("farmerRepository = " + farmerRepository);
-        return new SetCowHealthJob(commonsID, health, commonsRepository, farmerRepository, userRepository);
+        return new SetCowHealthJob(gameID, health, gameRepository, farmerRepository, userRepository);
     }
 }

@@ -47,14 +47,14 @@ describe("AnnouncementTable tests", () => {
   const [firstAnnouncement, secondAnnouncement] =
     announcementFixtures.threeAnnouncements;
 
-  const renderTable = (announcements, currentUser, commonsId = 1) => {
+  const renderTable = (announcements, currentUser, gameId = 1) => {
     return render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
           <AnnouncementTable
             announcements={announcements}
             currentUser={currentUser}
-            commonsId={commonsId}
+            gameId={gameId}
           />
         </MemoryRouter>
       </QueryClientProvider>,
@@ -211,7 +211,7 @@ describe("AnnouncementTable tests", () => {
     expect(mockUseBackendMutation).toHaveBeenCalledWith(
       cellToAxiosParamsDelete,
       expect.objectContaining({ onSuccess: onDeleteSuccess }),
-      ["/api/announcements/getbycommonsid?commonsId=5"],
+      ["/api/announcements/getbygameid?gameId=5"],
     );
   });
 });

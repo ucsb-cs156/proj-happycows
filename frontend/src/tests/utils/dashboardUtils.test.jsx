@@ -1,7 +1,7 @@
 import {
   fieldOrBlank,
-  getCommonsId,
-  getCommonsName,
+  getGameId,
+  getGameName,
   getIsHidden,
   getStartingDate,
   getDaysActive,
@@ -12,169 +12,169 @@ import {
 describe("dashboardUtils tests", () => {
   describe("fieldOrBlank tests", () => {
     it("returns field value when present", () => {
-      const commonsPlus = {
+      const gamePlus = {
         totalUsers: 5,
       };
-      expect(fieldOrBlank(commonsPlus, "totalUsers")).toBe(5);
+      expect(fieldOrBlank(gamePlus, "totalUsers")).toBe(5);
     });
 
     it("returns `--` when field is missing", () => {
-      const commonsPlus = {};
-      expect(fieldOrBlank(commonsPlus, "totalUsers")).toBe("--");
+      const gamePlus = {};
+      expect(fieldOrBlank(gamePlus, "totalUsers")).toBe("--");
     });
 
     it("returns `--` when field is null", () => {
-      const commonsPlus = {
+      const gamePlus = {
         totalUsers: null,
       };
-      expect(fieldOrBlank(commonsPlus, "totalUsers")).toBe("--");
+      expect(fieldOrBlank(gamePlus, "totalUsers")).toBe("--");
     });
   });
 
-  describe("getCommonsId tests", () => {
-    it("returns commons id when present", () => {
-      const commonsPlus = {
-        commons: {
+  describe("getGameId tests", () => {
+    it("returns game id when present", () => {
+      const gamePlus = {
+        game: {
           id: 17,
         },
       };
-      expect(getCommonsId(commonsPlus, 0)).toBe(17);
+      expect(getGameId(gamePlus, 0)).toBe(17);
     });
 
-    it("returns id param when commons id is missing", () => {
-      const commonsPlus = {
-        commons: {},
+    it("returns id param when game id is missing", () => {
+      const gamePlus = {
+        game: {},
       };
-      expect(getCommonsId(commonsPlus, 18)).toBe(18);
+      expect(getGameId(gamePlus, 18)).toBe(18);
     });
 
-    it("returns id param when commons is null", () => {
-      const commonsPlus = {
-        commons: null,
+    it("returns id param when game is null", () => {
+      const gamePlus = {
+        game: null,
       };
-      expect(getCommonsId(commonsPlus, 19)).toBe(19);
+      expect(getGameId(gamePlus, 19)).toBe(19);
     });
 
-    it("returns `--` when both commons id and id param are missing", () => {
-      expect(getCommonsId(null, null)).toBe("--");
+    it("returns `--` when both game id and id param are missing", () => {
+      expect(getGameId(null, null)).toBe("--");
     });
   });
 
-  describe("getCommonsName tests", () => {
-    it("returns commons name when present", () => {
-      const commonsPlus = {
-        commons: {
+  describe("getGameName tests", () => {
+    it("returns game name when present", () => {
+      const gamePlus = {
+        game: {
           name: "Happy Cows",
         },
       };
-      expect(getCommonsName(commonsPlus)).toBe("Happy Cows");
+      expect(getGameName(gamePlus)).toBe("Happy Cows");
     });
 
-    it("returns `--` when commons name is missing", () => {
-      const commonsPlus = {
-        commons: {},
+    it("returns `--` when game name is missing", () => {
+      const gamePlus = {
+        game: {},
       };
-      expect(getCommonsName(commonsPlus)).toBe("--");
+      expect(getGameName(gamePlus)).toBe("--");
     });
 
-    it("returns `--` when commons is null", () => {
-      const commonsPlus = {
-        commons: null,
+    it("returns `--` when game is null", () => {
+      const gamePlus = {
+        game: null,
       };
-      expect(getCommonsName(commonsPlus)).toBe("--");
+      expect(getGameName(gamePlus)).toBe("--");
     });
 
-    it("returns `--` when commonsPlus is null", () => {
-      expect(getCommonsName(null)).toBe("--");
+    it("returns `--` when gamePlus is null", () => {
+      expect(getGameName(null)).toBe("--");
     });
   });
 
   describe("getIsHidden tests", () => {
-    it("returns true when commons is hidden", () => {
-      const commonsPlus = {
-        commons: {
+    it("returns true when game is hidden", () => {
+      const gamePlus = {
+        game: {
           hidden: true,
         },
       };
-      expect(getIsHidden(commonsPlus)).toBe(true);
+      expect(getIsHidden(gamePlus)).toBe(true);
     });
 
-    it("returns false when commons is not hidden", () => {
-      const commonsPlus = {
-        commons: {
+    it("returns false when game is not hidden", () => {
+      const gamePlus = {
+        game: {
           hidden: false,
         },
       };
-      expect(getIsHidden(commonsPlus)).toBe(false);
+      expect(getIsHidden(gamePlus)).toBe(false);
     });
 
     it("returns false when hidden field is missing", () => {
-      const commonsPlus = {
-        commons: {},
+      const gamePlus = {
+        game: {},
       };
-      expect(getIsHidden(commonsPlus)).toBe(false);
+      expect(getIsHidden(gamePlus)).toBe(false);
     });
 
-    it("returns false when commons is null", () => {
-      const commonsPlus = {
-        commons: null,
+    it("returns false when game is null", () => {
+      const gamePlus = {
+        game: null,
       };
-      expect(getIsHidden(commonsPlus)).toBe(false);
+      expect(getIsHidden(gamePlus)).toBe(false);
     });
 
-    it("returns false when commonsPlus is null", () => {
+    it("returns false when gamePlus is null", () => {
       expect(getIsHidden(null)).toBe(false);
     });
   });
 
   describe("getStartingDate tests", () => {
     it("returns starting date when present", () => {
-      const commonsPlus = {
-        commons: {
+      const gamePlus = {
+        game: {
           startingDate: "2024-06-01T00:00:00",
         },
       };
-      expect(getStartingDate(commonsPlus)).toBe("2024-06-01");
+      expect(getStartingDate(gamePlus)).toBe("2024-06-01");
     });
 
     it("returns `--` when starting date is missing", () => {
-      const commonsPlus = {
-        commons: {},
+      const gamePlus = {
+        game: {},
       };
-      expect(getStartingDate(commonsPlus)).toBe("--");
+      expect(getStartingDate(gamePlus)).toBe("--");
     });
 
-    it("returns `--` when commons is null", () => {
-      const commonsPlus = {
-        commons: null,
+    it("returns `--` when game is null", () => {
+      const gamePlus = {
+        game: null,
       };
-      expect(getStartingDate(commonsPlus)).toBe("--");
+      expect(getStartingDate(gamePlus)).toBe("--");
     });
   });
 
   describe("getDaysActive tests", () => {
     it("returns days active when starting date is present", () => {
-      const commonsPlus = {
-        commons: {
+      const gamePlus = {
+        game: {
           startingDate: "2024-06-01T00:00:00",
         },
       };
       vi.useFakeTimers().setSystemTime(new Date("2024-06-10"));
-      expect(getDaysActive(commonsPlus)).toBe(9);
+      expect(getDaysActive(gamePlus)).toBe(9);
     });
 
     it("returns `--` when starting date is missing", () => {
-      const commonsPlus = {
-        commons: {},
+      const gamePlus = {
+        game: {},
       };
-      expect(getDaysActive(commonsPlus)).toBe("--");
+      expect(getDaysActive(gamePlus)).toBe("--");
     });
 
-    it("returns `--` when commons is null", () => {
-      const commonsPlus = {
-        commons: null,
+    it("returns `--` when game is null", () => {
+      const gamePlus = {
+        game: null,
       };
-      expect(getDaysActive(commonsPlus)).toBe("--");
+      expect(getDaysActive(gamePlus)).toBe("--");
     });
   });
 
@@ -211,37 +211,29 @@ describe("dashboardUtils tests", () => {
 
   describe("numericFieldOrBlank tests", () => {
     it("returns formatted number when field is present and numeric", () => {
-      const commonsPlus = {
+      const gamePlus = {
         averageCowsPerFarmer: 3.14159,
       };
-      expect(numericFieldOrBlank(commonsPlus, "averageCowsPerFarmer")).toBe(
-        "3.1",
-      );
+      expect(numericFieldOrBlank(gamePlus, "averageCowsPerFarmer")).toBe("3.1");
     });
 
     it("returns `--` when field is missing", () => {
-      const commonsPlus = {};
-      expect(numericFieldOrBlank(commonsPlus, "averageCowsPerFarmer")).toBe(
-        "--",
-      );
+      const gamePlus = {};
+      expect(numericFieldOrBlank(gamePlus, "averageCowsPerFarmer")).toBe("--");
     });
 
     it("returns `--` when field is null", () => {
-      const commonsPlus = {
+      const gamePlus = {
         averageCowsPerFarmer: null,
       };
-      expect(numericFieldOrBlank(commonsPlus, "averageCowsPerFarmer")).toBe(
-        "--",
-      );
+      expect(numericFieldOrBlank(gamePlus, "averageCowsPerFarmer")).toBe("--");
     });
 
     it("returns `--` when field is non-numeric", () => {
-      const commonsPlus = {
+      const gamePlus = {
         averageCowsPerFarmer: "not-a-number",
       };
-      expect(numericFieldOrBlank(commonsPlus, "averageCowsPerFarmer")).toBe(
-        "--",
-      );
+      expect(numericFieldOrBlank(gamePlus, "averageCowsPerFarmer")).toBe("--");
     });
   });
 });

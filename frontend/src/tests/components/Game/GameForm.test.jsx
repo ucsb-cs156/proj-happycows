@@ -1,0 +1,617 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter as Router } from "react-router";
+import GameForm from "main/components/Game/GameForm";
+import { QueryClient, QueryClientProvider } from "react-query";
+import gameFixtures from "fixtures/gameFixtures";
+import coursesFixtures from "fixtures/coursesFixtures";
+import AxiosMockAdapter from "axios-mock-adapter";
+import axios from "axios";
+import healthUpdateStrategyListFixtures from "fixtures/healthUpdateStrategyListFixtures";
+import { vi } from "vitest";
+
+// Next line uses technique from https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
+import * as useBackendModule from "main/utils/useBackend";
+
+const mockedNavigate = vi.fn();
+
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
+  useNavigate: () => mockedNavigate,
+}));
+
+describe("GameForm tests", () => {
+  const axiosMock = new AxiosMockAdapter(axios);
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);
+  });
+
+  it("renders correctly", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm submitAction={submitAction} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Game Name/)).toBeInTheDocument();
+
+    [
+      /Starting Balance/,
+      /Cow Price/,
+      /Milk Price/,
+      /Starting Date/,
+      /Last Date/,
+      /Degradation Rate/,
+      /Capacity Per User/,
+      /Carrying Capacity/,
+      /When below capacity/,
+      /When above capacity/,
+    ].forEach((pattern) => {
+      expect(screen.getByText(pattern)).toBeInTheDocument();
+    });
+    expect(screen.getByText(/Create/)).toBeInTheDocument();
+    expect(screen.getByTestId("GameForm-Submit-Button")).toHaveTextContent(
+      "Create",
+    );
+  });
+
+  it("has validation errors for required fields", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm submitAction={submitAction} buttonLabel="Create New Game" />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+    const submitButton = screen.getByTestId("GameForm-Submit-Button");
+    expect(submitButton).toBeInTheDocument();
+    expect(screen.getByTestId("GameForm-Submit-Button")).toHaveTextContent(
+      "Create New Game",
+    );
+
+    fireEvent.change(screen.getByTestId("GameForm-degradationRate"), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-carryingCapacity"), {
+      target: { value: "" },
+    });
+
+    //Check default empty field
+    fireEvent.click(submitButton);
+    expect(
+      await screen.findByText("Game name is required"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Degradation rate is required"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Carrying capacity is required"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Capacity Per User is required"),
+    ).toBeInTheDocument();
+
+    //Clear Default Values
+    fireEvent.change(screen.getByTestId("GameForm-milkPrice"), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-cowPrice"), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-startingBalance"), {
+      target: { value: "" },
+    });
+    expect(
+      await screen.findByText("Cow price is required"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Milk price is required")).toBeInTheDocument();
+    expect(
+      screen.getByText("Starting Balance is required"),
+    ).toBeInTheDocument();
+
+    //Reset to Invalid Values
+    fireEvent.change(screen.getByTestId("GameForm-milkPrice"), {
+      target: { value: "-1" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-cowPrice"), {
+      target: { value: "-1" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-startingBalance"), {
+      target: { value: "-1" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-startingDate"), {
+      target: { value: NaN },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-lastDate"), {
+      target: { value: NaN },
+    });
+    fireEvent.click(submitButton);
+
+    //Await
+    await screen.findByTestId("GameForm-milkPrice");
+
+    [
+      "GameForm-name",
+      "GameForm-degradationRate",
+      "GameForm-capacityPerUser",
+      "GameForm-carryingCapacity",
+      "GameForm-milkPrice",
+      "GameForm-cowPrice",
+      "GameForm-startingBalance",
+      "GameForm-startingDate",
+      "GameForm-lastDate",
+    ].forEach((item) => {
+      const element = screen.getByTestId(item);
+      expect(element).toBeInTheDocument();
+      expect(element).toHaveClass("is-invalid");
+    });
+
+    // check that the other testids are present
+
+    ["GameForm-showChat"].forEach((testid) => {
+      const element = screen.getByTestId(testid);
+      expect(element).toBeInTheDocument();
+    });
+
+    expect(submitAction).not.toBeCalled();
+  });
+
+  it("Check Default Values and correct styles", async () => {
+    const curr = new Date();
+    const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
+    const fourMonthsLater = new Date(
+      curr.getFullYear(),
+      curr.getMonth() + 4,
+      curr.getDate(),
+    ).toLocaleDateString("en-CA");
+    const DefaultVals = {
+      name: "",
+      startingBalance: 10000,
+      cowPrice: 100,
+      milkPrice: 1,
+      degradationRate: 0.001,
+      carryingCapacity: 100,
+      startingDate: today,
+      lastDate: fourMonthsLater,
+    };
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+    [
+      "name",
+      "degradationRate",
+      "carryingCapacity",
+      "milkPrice",
+      "cowPrice",
+      "startingBalance",
+      "startingDate",
+      "lastDate",
+    ].forEach((item) => {
+      const element = screen.getByTestId(`GameForm-${item}`);
+      expect(element).toHaveValue(DefaultVals[item]);
+    });
+
+    // Check Style
+    expect(screen.getByTestId("GameForm-r0")).toHaveStyle("width: 80%");
+    expect(screen.getByTestId("GameForm-r1")).toHaveStyle("width: 80%");
+    expect(screen.getByTestId("GameForm-r2")).toHaveStyle("width: 80%");
+    expect(screen.getByTestId("GameForm-r3")).toHaveStyle("width: 300px");
+    expect(screen.getByTestId("GameForm-r3")).toHaveStyle("height: 50px");
+    expect(screen.getByTestId("GameForm-r4")).toHaveStyle("width: 300px");
+    expect(screen.getByTestId("GameForm-r4")).toHaveStyle("height: 50px");
+    expect(screen.getByTestId("GameForm-Submit-Button")).toHaveStyle(
+      "width: 30%",
+    );
+  });
+
+  it("has validation errors for values out of range", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm submitAction={submitAction} buttonLabel="Create" />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("GameForm-Submit-Button"),
+    ).toBeInTheDocument();
+    const submitButton = screen.getByTestId("GameForm-Submit-Button");
+    expect(submitButton).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("GameForm-startingBalance"), {
+      target: { value: "-1" },
+    });
+    fireEvent.click(submitButton);
+    await screen.findByText(/Starting Balance must be ≥ 0.00/i);
+
+    fireEvent.change(screen.getByTestId("GameForm-cowPrice"), {
+      target: { value: "-1" },
+    });
+    fireEvent.click(submitButton);
+    await screen.findByText(/Cow price must be ≥ 0.01/i);
+
+    fireEvent.change(screen.getByTestId("GameForm-milkPrice"), {
+      target: { value: "-1" },
+    });
+    fireEvent.click(submitButton);
+    await screen.findByText(/Milk price must be ≥ 0.01/i);
+
+    fireEvent.change(screen.getByTestId("GameForm-degradationRate"), {
+      target: { value: "-1" },
+    });
+    fireEvent.click(submitButton);
+    await screen.findByText(/Degradation rate must be ≥ 0/i);
+
+    fireEvent.change(screen.getByTestId("GameForm-carryingCapacity"), {
+      target: { value: "-1" },
+    });
+    fireEvent.click(submitButton);
+    await screen.findByText(/Carrying Capacity must be ≥ 1/i);
+
+    expect(submitAction).not.toBeCalled();
+  });
+
+  it("renders correctly when an initialGame is passed in", async () => {
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm initialGame={gameFixtures.threeGame[0]} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Id/)).toBeInTheDocument();
+
+    expect(screen.getByTestId("GameForm-id")).toHaveValue(
+      `${gameFixtures.threeGame[0].id}`,
+    );
+    expect(screen.getByTestId("GameForm-name")).toHaveValue(
+      gameFixtures.threeGame[0].name,
+    );
+    expect(screen.getByTestId("GameForm-startingBalance")).toHaveValue(
+      gameFixtures.threeGame[0].startingBalance,
+    );
+    expect(screen.getByTestId("GameForm-cowPrice")).toHaveValue(
+      gameFixtures.threeGame[0].cowPrice,
+    );
+
+    await screen.findByTestId("aboveCapacityHealthUpdateStrategy-Noop");
+    expect(
+      screen.getByTestId("belowCapacityHealthUpdateStrategy-Noop"),
+    ).toBeInTheDocument();
+  });
+
+  it("renders correctly with date cut off", async () => {
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm initialGame={gameFixtures.threeGame[0]} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByText(/Id/)).toBeInTheDocument();
+    expect(screen.getByTestId("GameForm-startingDate")).toHaveValue(
+      gameFixtures.threeGame[0].startingDate.split("T")[0],
+    );
+    expect(screen.getByTestId("GameForm-lastDate")).toHaveValue(
+      gameFixtures.threeGame[0].lastDate.split("T")[0],
+    );
+  });
+
+  it("shows explanatory tooltips over the starting and last date fields", async () => {
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("GameForm-startingDate"));
+    expect(
+      await screen.findByText(
+        "The first day of play: the game begins at midnight (00:00) at the start of this date.",
+      ),
+    ).toBeInTheDocument();
+
+    fireEvent.mouseOver(screen.getByTestId("GameForm-lastDate"));
+    expect(
+      await screen.findByText(
+        "The last day of play: the game ends at midnight at the end of this date.",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("has validation errors when dates are missing", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm submitAction={submitAction} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("GameForm-startingDate"), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-lastDate"), {
+      target: { value: "" },
+    });
+    fireEvent.click(screen.getByTestId("GameForm-Submit-Button"));
+
+    expect(
+      await screen.findByText("Starting date is required"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Last date is required")).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+  });
+
+  it("requires the last date to be after the starting date", async () => {
+    const submitAction = vi.fn();
+
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm submitAction={submitAction} />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("GameForm-name"), {
+      target: { value: "My Game" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-capacityPerUser"), {
+      target: { value: "5" },
+    });
+    fireEvent.change(screen.getByTestId("GameForm-startingDate"), {
+      target: { value: "2024-05-10" },
+    });
+
+    // equal dates are invalid: the last date must be strictly after
+    fireEvent.change(screen.getByTestId("GameForm-lastDate"), {
+      target: { value: "2024-05-10" },
+    });
+    fireEvent.click(screen.getByTestId("GameForm-Submit-Button"));
+    expect(
+      await screen.findByText("Last date must be after starting date"),
+    ).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+
+    // an earlier date is also invalid
+    fireEvent.change(screen.getByTestId("GameForm-lastDate"), {
+      target: { value: "2024-05-09" },
+    });
+    fireEvent.click(screen.getByTestId("GameForm-Submit-Button"));
+    expect(
+      await screen.findByText("Last date must be after starting date"),
+    ).toBeInTheDocument();
+    expect(submitAction).not.toBeCalled();
+
+    // a later date is valid
+    fireEvent.change(screen.getByTestId("GameForm-lastDate"), {
+      target: { value: "2024-05-11" },
+    });
+    fireEvent.click(screen.getByTestId("GameForm-Submit-Button"));
+    await waitFor(() => {
+      expect(submitAction).toBeCalled();
+    });
+    expect(
+      screen.queryByText("Last date must be after starting date"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders correctly when an initialGame is not passed in", async () => {
+    const curr = new Date();
+    const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
+    const fourMonthsLater = new Date(
+      curr.getFullYear(),
+      curr.getMonth() + 4,
+      curr.getDate(),
+    ).toLocaleDateString("en-CA");
+    const DefaultVals = {
+      name: "",
+      startingBalance: 10000,
+      cowPrice: 100,
+      milkPrice: 1,
+      degradationRate: 0.001,
+      carryingCapacity: 100,
+      startingDate: today,
+      lastDate: fourMonthsLater,
+      aboveCapacityStrategy: "Linear",
+      belowCapacityStrategy: "Constant",
+    };
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+    axiosMock.onGet("/api/game/defaults").reply(200, DefaultVals);
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-name")).toBeInTheDocument();
+    [
+      "name",
+      "degradationRate",
+      "carryingCapacity",
+      "milkPrice",
+      "cowPrice",
+      "startingBalance",
+      "startingDate",
+      "lastDate",
+    ].forEach((item) => {
+      const element = screen.getByTestId(`GameForm-${item}`);
+      expect(element).toHaveValue(DefaultVals[item]);
+    });
+    expect(await screen.findByText(/When below capacity/)).toBeInTheDocument();
+
+    expect(
+      screen.getByTestId("aboveCapacityHealthUpdateStrategy-Linear"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("aboveCapacityHealthUpdateStrategy-Linear"),
+    ).toHaveAttribute("selected");
+    expect(
+      screen.getByTestId("belowCapacityHealthUpdateStrategy-Constant"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("belowCapacityHealthUpdateStrategy-Constant"),
+    ).toHaveAttribute("selected");
+  });
+
+  test("the correct parameters are passed to useBackend", async () => {
+    axiosMock
+      .onGet("/api/game/all-health-update-strategies")
+      .reply(200, healthUpdateStrategyListFixtures.real);
+
+    // https://www.chakshunyu.com/blog/how-to-spy-on-a-named-import-in-jest/
+    const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => {
+      expect(useBackendSpy).toHaveBeenCalledWith(
+        "/api/game/all-health-update-strategies",
+        {
+          method: "GET",
+          url: "/api/game/all-health-update-strategies",
+        },
+      );
+    });
+  });
+
+  test("populates form fields with default values when initialGame is not provided", async () => {
+    const curr = new Date();
+    const today = curr.toLocaleDateString("en-CA"); // Canadian english gives YYYY-MM-DD
+    const fourMonthsLater = new Date(
+      curr.getFullYear(),
+      curr.getMonth() + 4,
+      curr.getDate(),
+    ).toLocaleDateString("en-CA");
+    const defaultValuesData = {
+      name: "",
+      startingBalance: 10000,
+      cowPrice: 100,
+      milkPrice: 1,
+      degradationRate: 0.001,
+      carryingCapacity: 100,
+      startingDate: today,
+      lastDate: fourMonthsLater,
+    };
+
+    vi.spyOn(useBackendModule, "useBackend").mockReturnValue({
+      data: defaultValuesData,
+    });
+
+    vi.spyOn(useBackendModule, "useBackend").mockReturnValue({
+      data: healthUpdateStrategyListFixtures.real,
+    });
+
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <Router>
+          <GameForm />
+        </Router>
+      </QueryClientProvider>,
+    );
+
+    expect(await screen.findByTestId("GameForm-startingBalance")).toHaveValue(
+      defaultValuesData.startingBalance,
+    );
+    expect(screen.getByTestId("GameForm-name")).toHaveValue(
+      defaultValuesData.name,
+    );
+    expect(screen.getByTestId("GameForm-cowPrice")).toHaveValue(
+      defaultValuesData.cowPrice,
+    );
+    expect(screen.getByTestId("GameForm-milkPrice")).toHaveValue(
+      defaultValuesData.milkPrice,
+    );
+    expect(screen.getByTestId("GameForm-degradationRate")).toHaveValue(
+      defaultValuesData.degradationRate,
+    );
+    expect(screen.getByTestId("GameForm-carryingCapacity")).toHaveValue(
+      defaultValuesData.carryingCapacity,
+    );
+    expect(screen.getByTestId("GameForm-startingDate")).toHaveValue(
+      defaultValuesData.startingDate,
+    );
+    expect(screen.getByTestId("GameForm-lastDate")).toHaveValue(
+      defaultValuesData.lastDate,
+    );
+  });
+});

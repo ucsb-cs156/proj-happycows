@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobFactory;
-import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleCommonsFactory;
+import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
 import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJobFactory;
@@ -59,7 +59,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @MockBean InstructorReportJobFactory instructorReportJobFactory;
 
-  @MockBean InstructorReportJobSingleCommonsFactory instructorReportJobSingleCommonsFactory;
+  @MockBean InstructorReportJobSingleGameFactory instructorReportJobSingleGameFactory;
 
   @MockBean MilkTheCowsJobFactoryInd milkTheCowsJobFactoryInd;
 
@@ -137,7 +137,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // act
     MvcResult response =
         mockMvc
-            .perform(post("/api/jobs/launch/milkthecowjobsinglecommons?commonsId=1").with(csrf()))
+            .perform(post("/api/jobs/launch/milkthecowjobsinglegame?gameId=1").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -201,7 +201,7 @@ public class JobsControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/jobs/launch/updatecowhealthsinglecommons?commonsId=1").with(csrf()))
+                post("/api/jobs/launch/updatecowhealthsinglegame?gameId=1").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -222,7 +222,7 @@ public class JobsControllerTests extends ControllerTestCase {
     // act
     MvcResult response =
         mockMvc
-            .perform(post("/api/jobs/launch/setcowhealth?commonsID=1&health=20").with(csrf()))
+            .perform(post("/api/jobs/launch/setcowhealth?gameID=1&health=20").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -236,7 +236,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void admin_can_launch_instructor_report_single_commons_job() throws Exception {
+  public void admin_can_launch_instructor_report_single_game_job() throws Exception {
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
 
@@ -244,7 +244,7 @@ public class JobsControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/jobs/launch/instructorreportsinglecommons?commonsId=1").with(csrf()))
+                post("/api/jobs/launch/instructorreportsinglegame?gameId=1").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
@@ -261,14 +261,14 @@ public class JobsControllerTests extends ControllerTestCase {
   public void admin_launch_set_cow_health_job_with_invalid_parameter() throws Exception {
     MvcResult response =
         mockMvc
-            .perform(post("/api/jobs/launch/setcowhealth?commonsID=1&health=-1").with(csrf()))
+            .perform(post("/api/jobs/launch/setcowhealth?gameID=1&health=-1").with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
     assertInstanceOf(IllegalArgumentException.class, response.getResolvedException());
 
     response =
         mockMvc
-            .perform(post("/api/jobs/launch/setcowhealth?commonsID=1&health=101").with(csrf()))
+            .perform(post("/api/jobs/launch/setcowhealth?gameID=1&health=101").with(csrf()))
             .andExpect(status().isBadRequest())
             .andReturn();
     assertInstanceOf(IllegalArgumentException.class, response.getResolvedException());
@@ -300,11 +300,11 @@ public class JobsControllerTests extends ControllerTestCase {
 
     // boundary are 0 and 100
     mockMvc
-        .perform(post("/api/jobs/launch/setcowhealth?commonsID=1&health=0").with(csrf()))
+        .perform(post("/api/jobs/launch/setcowhealth?gameID=1&health=0").with(csrf()))
         .andExpect(status().isOk());
 
     mockMvc
-        .perform(post("/api/jobs/launch/setcowhealth?commonsID=1&health=100").with(csrf()))
+        .perform(post("/api/jobs/launch/setcowhealth?gameID=1&health=100").with(csrf()))
         .andExpect(status().isOk());
   }
 

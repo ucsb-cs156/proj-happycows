@@ -3,12 +3,12 @@ package edu.ucsb.cs156.happiercows.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -55,7 +55,7 @@ public class ReportsControllerTests extends ControllerTestCase {
         UserRepository userRepository;
 
         @MockBean
-        CommonsRepository commonsRepository;
+        GameRepository gameRepository;
 
         private User user = User
                         .builder()
@@ -64,10 +64,10 @@ public class ReportsControllerTests extends ControllerTestCase {
                         .email("cgaucho@example.org")
                         .build();
 
-        private Commons commons = Commons
+        private Game game = Game
                         .builder()
                         .id(17L)
-                        .name("test commons")
+                        .name("test game")
                         .cowPrice(10)
                         .milkPrice(2)
                         .startingBalance(300)
@@ -83,7 +83,7 @@ public class ReportsControllerTests extends ControllerTestCase {
                         .builder()
                         .user(user)
                         .username("Chris Gaucho")
-                        .commons(commons)
+                        .game(game)
                         .totalWealth(300)
                         .numOfCows(123)
                         .cowHealth(10)
@@ -94,8 +94,8 @@ public class ReportsControllerTests extends ControllerTestCase {
 
         Report expectedReportHeader = Report.builder()
                         .id(432L)
-                        .name("test commons")
-                        .commonsId(17L)
+                        .name("test game")
+                        .gameId(17L)
                         .cowPrice(10)
                         .milkPrice(2)
                         .startingBalance(300)
@@ -160,12 +160,12 @@ public class ReportsControllerTests extends ControllerTestCase {
         @Test
         public void get_reports_headers_commonId() throws Exception {
                 List<Report> reports = List.of(expectedReportHeader);
-                when(reportRepository.findAllByCommonsId(17L)).thenReturn(reports);
+                when(reportRepository.findAllByGameId(17L)).thenReturn(reports);
                
-                MvcResult response = mockMvc.perform(get("/api/reports/headers?commonsId=17")).andDo(print())
+                MvcResult response = mockMvc.perform(get("/api/reports/headers?gameId=17")).andDo(print())
                                 .andExpect(status().isOk()).andReturn();
 
-                verify(reportRepository, times(1)).findAllByCommonsId(eq(17L));
+                verify(reportRepository, times(1)).findAllByGameId(eq(17L));
 
                 String responseString = response.getResponse().getContentAsString();
                 List<Report> actualReports = objectMapper.readValue(responseString, new TypeReference<List<Report>>() {

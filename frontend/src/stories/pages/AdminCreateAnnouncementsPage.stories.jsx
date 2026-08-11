@@ -15,7 +15,7 @@ const createAnnouncementPath = "/admin/announcements/1/create";
 const Template = () => (
   <Routes location={createAnnouncementPath}>
     <Route
-      path="/admin/announcements/:commonsId/create"
+      path="/admin/announcements/:gameId/create"
       element={<AdminCreateAnnouncementsPage />}
     />
   </Routes>
@@ -35,12 +35,12 @@ Default.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/commons/plus", () => {
+    http.get("/api/game/plus", () => {
       return HttpResponse.json(
         {
-          commons: {
+          game: {
             id: 1,
-            name: "Sample Commons",
+            name: "Sample Game",
           },
           totalPlayers: 5,
           totalCows: 5,

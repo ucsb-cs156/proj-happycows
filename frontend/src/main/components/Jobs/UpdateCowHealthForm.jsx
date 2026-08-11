@@ -2,39 +2,39 @@ import { Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
-import CommonsSelect from "main/components/Commons/CommonsSelect";
+import GameSelect from "main/components/Game/GameSelect";
 
 function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
   // Stryker restore all
 
-  const { data: commonsAll } = useBackend(
-    ["/api/commons/all"],
-    { url: "/api/commons/all" },
+  const { data: gameAll } = useBackend(
+    ["/api/game/all"],
+    { url: "/api/game/all" },
     [],
   );
 
-  const allCommonsProp = { id: 0, name: "All Games" };
+  const allGameProp = { id: 0, name: "All Games" };
 
-  const commons = [allCommonsProp, ...commonsAll];
+  const game = [allGameProp, ...gameAll];
 
-  const [selectedCommons, setSelectedCommons] = useState(null);
-  const [selectedCommonsName, setSelectedCommonsName] = useState(null);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [selectedGameName, setSelectedGameName] = useState(null);
 
   const { handleSubmit } = useForm();
 
-  const handleCommonsSelection = (id, name) => {
-    setSelectedCommons(id);
-    setSelectedCommonsName(name);
+  const handleGameSelection = (id, name) => {
+    setSelectedGame(id);
+    setSelectedGameName(name);
   };
 
   const onSubmit = () => {
-    const params = { selectedCommons, selectedCommonsName };
+    const params = { selectedGame, selectedGameName };
     submitAction(params);
   };
 
-  if (selectedCommons === null) {
-    setSelectedCommons(commons[0].id);
-    setSelectedCommonsName(commons[0].name);
+  if (selectedGame === null) {
+    setSelectedGame(game[0].id);
+    setSelectedGameName(game[0].name);
   }
 
   return (
@@ -45,10 +45,10 @@ function UpdateCowHealthForm({ submitAction, testid = "UpdateCowHealthForm" }) {
         </Form.Text>
       </Form.Group>
 
-      <CommonsSelect
-        commons={commons}
-        selectedCommons={selectedCommons}
-        handleCommonsSelection={handleCommonsSelection}
+      <GameSelect
+        game={game}
+        selectedGame={selectedGame}
+        handleGameSelection={handleGameSelection}
         testid={testid}
       />
 

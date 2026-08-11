@@ -50,11 +50,11 @@ public class AnnouncementsController extends ApiController{
     ObjectMapper mapper;
 
 
-    @Operation(summary = "Create an announcement", description = "Create an announcement associated with a specific commons")
+    @Operation(summary = "Create an announcement", description = "Create an announcement associated with a specific game")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PostMapping("/post")
     public ResponseEntity<Object> createAnnouncement(
-        @Parameter(description = "The id of the common") @RequestParam Long commonsId,
+        @Parameter(description = "The id of the common") @RequestParam Long gameId,
         @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
         @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
@@ -62,11 +62,11 @@ public class AnnouncementsController extends ApiController{
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
-        // Make sure the user is part of the commons or is an admin
+        // Make sure the user is part of the game or is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");
@@ -94,7 +94,7 @@ public class AnnouncementsController extends ApiController{
 
         // Create the announcement
         Announcement announcementObj = Announcement.builder()
-        .commonsId(commonsId)
+        .gameId(gameId)
         .startDate(startDateAsDate)
         .endDate(endDateAsDate)
         .announcementText(announcementText)
@@ -106,18 +106,18 @@ public class AnnouncementsController extends ApiController{
         return ResponseEntity.ok(announcementObj);
     }
 
-    @Operation(summary = "Get all announcements", description = "Get all announcements associated with a specific commons.")
+    @Operation(summary = "Get all announcements", description = "Get all announcements associated with a specific game.")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/getbycommonsid")
-    public ResponseEntity<Object> getAnnouncements(@Parameter(description = "The id of the common") @RequestParam Long commonsId) {
+    @GetMapping("/getbygameid")
+    public ResponseEntity<Object> getAnnouncements(@Parameter(description = "The id of the common") @RequestParam Long gameId) {
 
-        // Make sure the user is part of the commons or is an admin
+        // Make sure the user is part of the game or is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
-            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");
@@ -125,15 +125,15 @@ public class AnnouncementsController extends ApiController{
         }
 
         int MAX_ANNOUNCEMENTS = 1000;
-        Page<Announcement> announcements = announcementRepository.findByCommonsId(commonsId, PageRequest.of(0, MAX_ANNOUNCEMENTS, Sort.by("startDate").descending()));
+        Page<Announcement> announcements = announcementRepository.findByGameId(gameId, PageRequest.of(0, MAX_ANNOUNCEMENTS, Sort.by("startDate").descending()));
         return ResponseEntity.ok(announcements);
     }
 
-    @Operation(summary = "Get current announcements", description = "Get current announcements for a commons.")
+    @Operation(summary = "Get current announcements", description = "Get current announcements for a game.")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/current")
     public ResponseEntity<Object> getCurrentAnnouncements(
-        @Parameter(description = "The id of the commons") @RequestParam Long commonsId) {
+        @Parameter(description = "The id of the game") @RequestParam Long gameId) {
 
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
@@ -141,7 +141,7 @@ public class AnnouncementsController extends ApiController{
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             Optional<Farmer> farmerLookup =
-                farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+                farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -151,8 +151,8 @@ public class AnnouncementsController extends ApiController{
 
         int MAX_ANNOUNCEMENTS = 1000;
         Page<Announcement> announcements =
-            announcementRepository.findCurrentByCommonsId(
-                commonsId,
+            announcementRepository.findCurrentByGameId(
+                gameId,
                 PageRequest.of(0, MAX_ANNOUNCEMENTS, Sort.by("startDate").descending())
             );
 
@@ -177,7 +177,7 @@ public class AnnouncementsController extends ApiController{
     @PutMapping("/put")
     public ResponseEntity<Object> editAnnouncement(
         @Parameter(description = "The id of the announcement") @RequestParam Long id,
-        @Parameter(description = "The id of the common") @RequestParam Long commonsId,
+        @Parameter(description = "The id of the common") @RequestParam Long gameId,
         @Parameter(description = "The datetime at which the announcement will be shown (defaults to current time)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
         @Parameter(description = "The datetime at which the announcement will stop being shown (optional)") @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
         @Parameter(description = "The announcement to be sent out") @RequestParam String announcementText) {
@@ -185,11 +185,11 @@ public class AnnouncementsController extends ApiController{
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
-        // Make sure the user is part of the commons or is an admin
+        // Make sure the user is part of the game or is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.badRequest().body("Game_id must exist.");

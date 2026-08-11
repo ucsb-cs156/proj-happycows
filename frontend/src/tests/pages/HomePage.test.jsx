@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import HomePage from "main/pages/HomePage";
-import commonsFixtures from "fixtures/commonsFixtures";
+import gameFixtures from "fixtures/gameFixtures";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
@@ -16,7 +16,7 @@ const mockNavigate = vi.fn();
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
-    commonsId: 1,
+    gameId: 1,
   }),
   useNavigate: () => mockNavigate,
 }));
@@ -32,14 +32,14 @@ describe("HomePage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/mycourses").reply(200, []);
+    axiosMock.onGet("/api/game/mycourses").reply(200, []);
   });
 
   test("renders without crashing when lists return empty list", async () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/commons/all").reply(200, []);
+    axiosMock.onGet("/api/game/all").reply(200, []);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -60,11 +60,11 @@ describe("HomePage tests", () => {
     });
   });
 
-  test("renders with default for commons when api times out", () => {
+  test("renders with default for game when api times out", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/commons/all").timeout();
+    axiosMock.onGet("/api/game/all").timeout();
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -86,7 +86,7 @@ describe("HomePage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/commons/all").reply(200, []);
+    axiosMock.onGet("/api/game/all").reply(200, []);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -99,13 +99,11 @@ describe("HomePage tests", () => {
   });
 
   test("renders without crashing when lists are full", () => {
-    apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons;
+    apiCurrentUserFixtures.userOnly.user.game = gameFixtures.oneGame;
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -121,13 +119,11 @@ describe("HomePage tests", () => {
   });
 
   test("Redirects to the PlayPage when you click visit", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons;
+    apiCurrentUserFixtures.userOnly.user.game = gameFixtures.oneGame;
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -137,9 +133,9 @@ describe("HomePage tests", () => {
     );
 
     expect(
-      await screen.findByTestId("commonsCard-button-Visit-1"),
+      await screen.findByTestId("gameCard-button-Visit-1"),
     ).toBeInTheDocument();
-    const visitButton = screen.getByTestId("commonsCard-button-Visit-1");
+    const visitButton = screen.getByTestId("gameCard-button-Visit-1");
     fireEvent.click(visitButton);
 
     await waitFor(() => {
@@ -148,16 +144,12 @@ describe("HomePage tests", () => {
   });
 
   test("Calls the callback when you click join", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons;
+    apiCurrentUserFixtures.userOnly.user.game = gameFixtures.oneGame;
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
-    axiosMock
-      .onPost("/api/commons/join")
-      .reply(200, commonsFixtures.threeCommons[0]);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
+    axiosMock.onPost("/api/game/join").reply(200, gameFixtures.threeGame[0]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -168,29 +160,25 @@ describe("HomePage tests", () => {
     );
 
     expect(
-      await screen.findByTestId("commonsCard-button-Join-4"),
+      await screen.findByTestId("gameCard-button-Join-4"),
     ).toBeInTheDocument();
-    const joinButton = screen.getByTestId("commonsCard-button-Join-4");
+    const joinButton = screen.getByTestId("gameCard-button-Join-4");
     fireEvent.click(joinButton);
 
     await waitFor(() => {
       expect(axiosMock.history.post.length).toBe(1);
     });
-    expect(axiosMock.history.post[0].url).toBe("/api/commons/join");
-    expect(axiosMock.history.post[0].params).toEqual({ commonsId: 4 });
+    expect(axiosMock.history.post[0].url).toBe("/api/game/join");
+    expect(axiosMock.history.post[0].params).toEqual({ gameId: 4 });
   });
 
   test("Check hour null is working, and that the background image is set correctly", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons;
+    apiCurrentUserFixtures.userOnly.user.game = gameFixtures.oneGame;
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
-    axiosMock
-      .onPost("/api/commons/join")
-      .reply(200, commonsFixtures.threeCommons[0]);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
+    axiosMock.onPost("/api/game/join").reply(200, gameFixtures.threeGame[0]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -201,29 +189,25 @@ describe("HomePage tests", () => {
     );
 
     expect(
-      await screen.findByTestId("commonsCard-button-Join-4"),
+      await screen.findByTestId("gameCard-button-Join-4"),
     ).toBeInTheDocument();
-    const joinButton = screen.getByTestId("commonsCard-button-Join-4");
+    const joinButton = screen.getByTestId("gameCard-button-Join-4");
     fireEvent.click(joinButton);
 
     await waitFor(() => {
       expect(axiosMock.history.post.length).toBe(1);
     });
-    expect(axiosMock.history.post[0].url).toBe("/api/commons/join");
-    expect(axiosMock.history.post[0].params).toEqual({ commonsId: 4 });
+    expect(axiosMock.history.post[0].url).toBe("/api/game/join");
+    expect(axiosMock.history.post[0].params).toEqual({ gameId: 4 });
   });
 
   test("Home page intro card has the correct styles applied", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = commonsFixtures.oneCommons;
+    apiCurrentUserFixtures.userOnly.user.game = gameFixtures.oneGame;
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
-    axiosMock
-      .onPost("/api/commons/join")
-      .reply(200, commonsFixtures.threeCommons[0]);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
+    axiosMock.onPost("/api/game/join").reply(200, gameFixtures.threeGame[0]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -248,15 +232,15 @@ describe("HomePage tests", () => {
     ).toBeInTheDocument();
   });
 
-  test("hides a course-linked commons the user is not eligible for", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = [];
+  test("hides a course-linked game the user is not eligible for", async () => {
+    apiCurrentUserFixtures.userOnly.user.game = [];
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 99 }]);
-    axiosMock.onGet("/api/commons/mycourses").reply(200, [5]);
+      .onGet("/api/game/all")
+      .reply(200, [{ ...gameFixtures.threeGame[0], courseId: 99 }]);
+    axiosMock.onGet("/api/game/mycourses").reply(200, [5]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -270,20 +254,20 @@ describe("HomePage tests", () => {
 
     expect(
       screen.queryByTestId(
-        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+        `gameCard-button-Join-${gameFixtures.threeGame[0].id}`,
       ),
     ).not.toBeInTheDocument();
   });
 
-  test("shows a course-linked commons the user is eligible for", async () => {
-    apiCurrentUserFixtures.userOnly.user.commons = [];
+  test("shows a course-linked game the user is eligible for", async () => {
+    apiCurrentUserFixtures.userOnly.user.game = [];
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
     axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 5 }]);
-    axiosMock.onGet("/api/commons/mycourses").reply(200, [5]);
+      .onGet("/api/game/all")
+      .reply(200, [{ ...gameFixtures.threeGame[0], courseId: 5 }]);
+    axiosMock.onGet("/api/game/mycourses").reply(200, [5]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -295,20 +279,20 @@ describe("HomePage tests", () => {
 
     expect(
       await screen.findByTestId(
-        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+        `gameCard-button-Join-${gameFixtures.threeGame[0].id}`,
       ),
     ).toBeInTheDocument();
   });
 
-  test("shows a course-linked commons to an admin even when not on the roster", async () => {
-    apiCurrentUserFixtures.adminUser.user.commons = [];
+  test("shows a course-linked game to an admin even when not on the roster", async () => {
+    apiCurrentUserFixtures.adminUser.user.game = [];
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, [{ ...commonsFixtures.threeCommons[0], courseId: 99 }]);
-    axiosMock.onGet("/api/commons/mycourses").reply(200, []);
+      .onGet("/api/game/all")
+      .reply(200, [{ ...gameFixtures.threeGame[0], courseId: 99 }]);
+    axiosMock.onGet("/api/game/mycourses").reply(200, []);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -320,7 +304,7 @@ describe("HomePage tests", () => {
 
     expect(
       await screen.findByTestId(
-        `commonsCard-button-Join-${commonsFixtures.threeCommons[0].id}`,
+        `gameCard-button-Join-${gameFixtures.threeGame[0].id}`,
       ),
     ).toBeInTheDocument();
   });

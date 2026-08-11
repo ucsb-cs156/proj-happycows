@@ -4,7 +4,7 @@ import UpdateCowHealthForm from "main/components/Jobs/UpdateCowHealthForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 import AxiosMockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import commonsFixtures from "fixtures/commonsFixtures";
+import gameFixtures from "fixtures/gameFixtures";
 import * as useBackendModule from "main/utils/useBackend";
 import { vi } from "vitest";
 
@@ -23,9 +23,7 @@ describe("UpdateCowHealthForm tests", () => {
     getItemSpy.mockImplementation(() => null);
 
     const submitAction = vi.fn();
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -35,11 +33,9 @@ describe("UpdateCowHealthForm tests", () => {
       </QueryClientProvider>,
     );
 
-    const commonsRadio = await screen.findByTestId(
-      "UpdateCowHealthForm-commons-1",
-    );
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("UpdateCowHealthForm-game-1");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const submitButton = screen.getByTestId(
       "UpdateCowHealthForm-Submit-Button",
@@ -55,15 +51,13 @@ describe("UpdateCowHealthForm tests", () => {
     });
 
     expect(submitAction).toHaveBeenCalledWith({
-      selectedCommons: 1,
-      selectedCommonsName: "Anika's Commons",
+      selectedGame: 1,
+      selectedGameName: "Anika's Game",
     });
   });
 
-  test("the first item in commons array is selected by default", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+  test("the first item in game array is selected by default", async () => {
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     render(
       <QueryClientProvider client={new QueryClient()}>
@@ -74,13 +68,13 @@ describe("UpdateCowHealthForm tests", () => {
     );
 
     const defaultId = 0;
-    const testIdForFirstItem = `UpdateCowHealthForm-commons-${defaultId}`;
+    const testIdForFirstItem = `UpdateCowHealthForm-game-${defaultId}`;
     await waitFor(() => {
       expect(screen.getByTestId(testIdForFirstItem)).toBeInTheDocument();
     });
 
-    const commons = screen.getByTestId(testIdForFirstItem);
-    expect(commons).toHaveAttribute("checked", "");
+    const game = screen.getByTestId(testIdForFirstItem);
+    expect(game).toHaveAttribute("checked", "");
   });
 
   test("the correct parameters are passed to useBackend", async () => {
@@ -97,8 +91,8 @@ describe("UpdateCowHealthForm tests", () => {
 
     await waitFor(() => {
       expect(useBackendSpy).toHaveBeenCalledWith(
-        ["/api/commons/all"],
-        { url: "/api/commons/all" },
+        ["/api/game/all"],
+        { url: "/api/game/all" },
         [],
       );
     });

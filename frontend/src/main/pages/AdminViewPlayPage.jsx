@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import { useParams } from "react-router";
 import { Card, Container, CardGroup, Button } from "react-bootstrap";
-import CommonsOverview from "main/components/Commons/CommonsOverview";
-import CommonsPlay from "main/components/Commons/CommonsPlay";
-import FarmStats from "main/components/Commons/FarmStats";
-import ManageCows from "main/components/Commons/ManageCows";
-import Profits from "main/components/Commons/Profits";
+import GameOverview from "main/components/Game/GameOverview";
+import GamePlay from "main/components/Game/GamePlay";
+import FarmStats from "main/components/Game/FarmStats";
+import ManageCows from "main/components/Game/ManageCows";
+import Profits from "main/components/Game/Profits";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import ChatPanel from "main/components/Chat/ChatPanel";
 
 const AdminViewPlayPage = () => {
-  const { userId, commonsId } = useParams();
+  const { userId, gameId } = useParams();
 
   const { data: currentUser } = useCurrentUser();
 
@@ -22,23 +22,20 @@ const AdminViewPlayPage = () => {
     url: "/api/farmer",
     params: {
       userId: userId,
-      commonsId: commonsId,
+      gameId: gameId,
     },
   });
 
   // Stryker restore all
 
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
   // Stryker restore all
 
   // Stryker disable all
@@ -47,7 +44,7 @@ const AdminViewPlayPage = () => {
     url: "/api/profits/all",
     params: {
       userId: userId,
-      commonsId: commonsId,
+      gameId: gameId,
     },
   });
   // Stryker restore all
@@ -83,7 +80,7 @@ const AdminViewPlayPage = () => {
   };
 
   const visiting_user = farmer?.username;
-  const visiting_commons = commonsPlus?.commons.name;
+  const visiting_game = gamePlus?.game.name;
   // Stryker disable all
   const admin_name = currentUser?.root ? currentUser?.root?.user?.fullName : "";
   // Stryker restore all
@@ -100,22 +97,19 @@ const AdminViewPlayPage = () => {
               This is a Admin Feature for <strong>{admin_name}</strong>
               <br />
               Visiting Farmer <strong>{visiting_user}</strong>'s Play Page for
-              game <strong>{visiting_commons}</strong> in Read Only Mode.
+              game <strong>{visiting_game}</strong> in Read Only Mode.
             </Card.Title>
           </Card.Body>
         </Card>
         <Container>
-          {!!currentUser && <CommonsPlay currentUser={farmer} />}
-          {!!commonsPlus && (
-            <CommonsOverview
-              commonsPlus={commonsPlus}
-              currentUser={currentUser}
-            />
+          {!!currentUser && <GamePlay currentUser={farmer} />}
+          {!!gamePlus && (
+            <GameOverview gamePlus={gamePlus} currentUser={currentUser} />
           )}
           <br />
-          {!!farmer && !!commonsPlus && (
+          {!!farmer && !!gamePlus && (
             <CardGroup data-testid="adminviewplaypage-card-group">
-              <ManageCows farmer={farmer} commons={commonsPlus.commons} />
+              <ManageCows farmer={farmer} game={gamePlus.game} />
               <FarmStats farmer={farmer} />
               <Profits farmer={farmer} profits={farmerProfits} />
             </CardGroup>
@@ -123,7 +117,7 @@ const AdminViewPlayPage = () => {
         </Container>
       </BasicLayout>
       <div style={chatContainerStyle} data-testid="adminviewplaypage-chat-div">
-        {!!isChatOpen && <ChatPanel commonsId={userId} />}
+        {!!isChatOpen && <ChatPanel gameId={userId} />}
         <Button
           style={chatButtonStyle}
           onClick={toggleChatWindow}

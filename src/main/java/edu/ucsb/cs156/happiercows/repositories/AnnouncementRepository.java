@@ -13,11 +13,11 @@ import java.util.Optional;
 
 @Repository
 public interface AnnouncementRepository extends CrudRepository<Announcement, Long> {
-    @Query(value = "SELECT ann FROM announcement ann WHERE ann.commonsId = :commonsId AND (ann.endDate IS NULL OR ann.endDate > CURRENT_TIMESTAMP)")
-    Page<Announcement> findByCommonsId(Long commonsId, Pageable pageable);
+    @Query(value = "SELECT ann FROM announcement ann WHERE ann.gameId = :gameId AND (ann.endDate IS NULL OR ann.endDate > CURRENT_TIMESTAMP)")
+    Page<Announcement> findByGameId(Long gameId, Pageable pageable);
 
-    @Query(value = "SELECT ann FROM announcement ann WHERE ann.commonsId = :commonsId AND ann.startDate <= CURRENT_TIMESTAMP AND (ann.endDate IS NULL OR ann.endDate > CURRENT_TIMESTAMP)")
-    Page<Announcement> findCurrentByCommonsId(Long commonsId, Pageable pageable);
+    @Query(value = "SELECT ann FROM announcement ann WHERE ann.gameId = :gameId AND ann.startDate <= CURRENT_TIMESTAMP AND (ann.endDate IS NULL OR ann.endDate > CURRENT_TIMESTAMP)")
+    Page<Announcement> findCurrentByGameId(Long gameId, Pageable pageable);
 
     @Query(value = "SELECT ann FROM announcement ann WHERE ann.id = :id")
     Optional<Announcement> findByAnnouncementId(Long id);

@@ -1,7 +1,7 @@
 const reportLineFixtures = {
   twoReportLinesHeader: {
     id: 5,
-    commonsId: 1,
+    gameId: 1,
     name: "Blue",
     cowPrice: 100,
     milkPrice: 5,

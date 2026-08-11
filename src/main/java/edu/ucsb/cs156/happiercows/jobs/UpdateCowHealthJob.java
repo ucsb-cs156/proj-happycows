@@ -1,15 +1,15 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,32 +18,32 @@ import lombok.Getter;
 public class UpdateCowHealthJob implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
-    private CommonsPlusBuilderService commonsPlusBuilderService;
+    private GamePlusBuilderService gamePlusBuilderService;
 
     @Override
     public void accept(JobContext ctx) throws Exception {
         ctx.log("Updating cow health...");
 
 
-        Iterable<Commons> allCommons = commonsRepository.findAll();
-        Iterable<CommonsPlus> allCommonsPlus = commonsPlusBuilderService.convertToCommonsPlus(allCommons);
+        Iterable<Game> allGame = gameRepository.findAll();
+        Iterable<GamePlus> allGamePlus = gamePlusBuilderService.convertToGamePlus(allGame);
 
-        for (CommonsPlus commonsPlus : allCommonsPlus) {
+        for (GamePlus gamePlus : allGamePlus) {
 
 
-            Commons commons = commonsPlus.getCommons();
+            Game game = gamePlus.getGame();
 
-            if (!CommonsGate.shouldProcess(commons, commonsRepository, ctx)) {
+            if (!GameGate.shouldProcess(game, gameRepository, ctx)) {
                 continue;
             }
 
-            runUpdateJobInCommons(commons, commonsPlus, commonsPlusBuilderService, commonsRepository, farmerRepository, ctx);
+            runUpdateJobInGame(game, gamePlus, gamePlusBuilderService, gameRepository, farmerRepository, ctx);
 
         }
 
@@ -53,11 +53,11 @@ public class UpdateCowHealthJob implements JobContextConsumer {
     // exposed for testing
     public static double calculateNewCowHealthUsingStrategy(
             CowHealthUpdateStrategy strategy,
-            CommonsPlus commonsPlus,
+            GamePlus gamePlus,
             Farmer farmer,
             int totalCows
     ) {
-        var health = strategy.calculateNewCowHealth(commonsPlus, farmer, totalCows);
+        var health = strategy.calculateNewCowHealth(gamePlus, farmer, totalCows);
         return Math.max(0, Math.min(health, 100));
     }
 
@@ -71,28 +71,28 @@ public class UpdateCowHealthJob implements JobContextConsumer {
         }
     }
 
-    public static void runUpdateJobInCommons(Commons commons, CommonsPlus commonsPlus, CommonsPlusBuilderService commonsPlusBuilderService, CommonsRepository commonsRepository, FarmerRepository farmerRepository, JobContext ctx){
-        ctx.log("Commons " + commons.getName() + ", degradationRate: " + commons.getDegradationRate() + ", effectiveCapacity: " + commonsPlus.getEffectiveCapacity());
+    public static void runUpdateJobInGame(Game game, GamePlus gamePlus, GamePlusBuilderService gamePlusBuilderService, GameRepository gameRepository, FarmerRepository farmerRepository, JobContext ctx){
+        ctx.log("Game " + game.getName() + ", degradationRate: " + game.getDegradationRate() + ", effectiveCapacity: " + gamePlus.getEffectiveCapacity());
 
-            int numUsers = commonsRepository.getNumUsers(commons.getId()).orElseThrow(() -> new RuntimeException("Error calling getNumUsers(" + commons.getId() + ")"));
+            int numUsers = gameRepository.getNumUsers(game.getId()).orElseThrow(() -> new RuntimeException("Error calling getNumUsers(" + game.getId() + ")"));
 
             if (numUsers==0) {
-                ctx.log("No users in this commons, skipping");
+                ctx.log("No users in this game, skipping");
                 return;
             }
 
-            int carryingCapacity = commonsPlus.getEffectiveCapacity();
-            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commons.getId());
+            int carryingCapacity = gamePlus.getEffectiveCapacity();
+            Iterable<Farmer> allFarmer = farmerRepository.findByGameId(game.getId());
 
-            Integer totalCows = commonsRepository.getNumCows(commons.getId()).orElseThrow(() -> new RuntimeException("Error calling getNumCows(" + commons.getId() + ")"));
+            Integer totalCows = gameRepository.getNumCows(game.getId()).orElseThrow(() -> new RuntimeException("Error calling getNumCows(" + game.getId() + ")"));
 
             var isAboveCapacity = totalCows > carryingCapacity;
-            var cowHealthUpdateStrategy = isAboveCapacity ? commons.getAboveCapacityHealthUpdateStrategy() : commons.getBelowCapacityHealthUpdateStrategy();
+            var cowHealthUpdateStrategy = isAboveCapacity ? game.getAboveCapacityHealthUpdateStrategy() : game.getBelowCapacityHealthUpdateStrategy();
 
             for (Farmer farmer : allFarmer) {
                 User user = farmer.getUser();
 
-                var newCowHealth = calculateNewCowHealthUsingStrategy(cowHealthUpdateStrategy, commonsPlusBuilderService.toCommonsPlus(commons), farmer, totalCows);
+                var newCowHealth = calculateNewCowHealthUsingStrategy(cowHealthUpdateStrategy, gamePlusBuilderService.toGamePlus(game), farmer, totalCows);
                 ctx.log("User: " + user.getFullName() + ", numCows: " + farmer.getNumOfCows() + ", cowHealth: " + farmer.getCowHealth());
 
                 double oldHealth = farmer.getCowHealth();

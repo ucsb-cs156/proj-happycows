@@ -3,11 +3,11 @@ package edu.ucsb.cs156.happiercows.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -22,15 +22,15 @@ public class ReportService {
     ReportLineRepository reportLineRepository;
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
 
-    public Report createReport(Long commonsId) {
-        Report report = createAndSaveReportHeader(commonsId);
+    public Report createReport(Long gameId) {
+        Report report = createAndSaveReportHeader(gameId);
         
-        Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonsId);
+        Iterable<Farmer> allFarmer = farmerRepository.findByGameId(gameId);
 
 
         for (Farmer farmer : allFarmer) {
@@ -40,25 +40,25 @@ public class ReportService {
         return report;
     }
 
-    public Report createAndSaveReportHeader(Long commonsId) {
-        Commons commons = commonsRepository.findById(commonsId)
-                .orElseThrow(() -> new RuntimeException(String.format("Commons with id %d not found", commonsId)));
+    public Report createAndSaveReportHeader(Long gameId) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new RuntimeException(String.format("Game with id %d not found", gameId)));
 
         Report report = Report.builder()
-                .commonsId(commonsId)
+                .gameId(gameId)
 
-                .name(commons.getName())
-                .cowPrice(commons.getCowPrice())
-                .milkPrice(commons.getMilkPrice())
-                .startingBalance(commons.getStartingBalance())
-                .startingDate(commons.getStartingDate())
-                .showLeaderboard(commons.isShowLeaderboard())
-                .carryingCapacity(commons.getCarryingCapacity())
-                .degradationRate(commons.getDegradationRate())
-                .belowCapacityHealthUpdateStrategy(commons.getBelowCapacityHealthUpdateStrategy())
-                .aboveCapacityHealthUpdateStrategy(commons.getAboveCapacityHealthUpdateStrategy())
-                .numUsers(commonsRepository.getNumUsers(commonsId).orElse(0))
-                .numCows(commonsRepository.getNumCows(commonsId).orElse(0))
+                .name(game.getName())
+                .cowPrice(game.getCowPrice())
+                .milkPrice(game.getMilkPrice())
+                .startingBalance(game.getStartingBalance())
+                .startingDate(game.getStartingDate())
+                .showLeaderboard(game.isShowLeaderboard())
+                .carryingCapacity(game.getCarryingCapacity())
+                .degradationRate(game.getDegradationRate())
+                .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())
+                .aboveCapacityHealthUpdateStrategy(game.getAboveCapacityHealthUpdateStrategy())
+                .numUsers(gameRepository.getNumUsers(gameId).orElse(0))
+                .numCows(gameRepository.getNumCows(gameId).orElse(0))
 
                 .build();
 

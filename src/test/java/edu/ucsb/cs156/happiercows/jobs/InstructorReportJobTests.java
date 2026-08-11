@@ -16,10 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.services.ReportService;
 import edu.ucsb.cs156.jobs.services.JobContext;
 
@@ -31,14 +31,14 @@ public class InstructorReportJobTests extends JobTestCase {
     ReportService reportService;
 
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Test
     void test_log_output() throws Exception {
 
         // Arrange
 
-        Commons commons= Commons.builder().id(17L).name("CS156")
+        Game game= Game.builder().id(17L).name("CS156")
                 .startingDate(LocalDateTime.now().minusDays(5))
                 .lastDate(LocalDateTime.now().plusDays(5))
                 .build();
@@ -47,32 +47,32 @@ public class InstructorReportJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
       
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commons));      
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(game));      
         when(reportService.createReport(17L)).thenReturn(report);
 
         // Act
-        InstructorReportJob instructorReportJob = new InstructorReportJob(reportService, commonsRepository);
+        InstructorReportJob instructorReportJob = new InstructorReportJob(reportService, gameRepository);
         instructorReportJob.accept(ctx);
 
         // Assert
 
-        verify(commonsRepository).findAll();
+        verify(gameRepository).findAll();
         verify(reportService).createReport(17L);
         
         String expected = """
             Starting instructor report...
-            Starting Commons id=17 (CS156)...
-            Report 17 for commons id=17 (CS156) finished.
+            Starting Game id=17 (CS156)...
+            Report 17 for game id=17 (CS156) finished.
             Instructor report done!""";
 
         assertEquals(expected, jobStarted.getLog());
     }
 
     @Test
-    void test_skips_commons_when_game_not_in_progress() throws Exception {
+    void test_skips_game_when_game_not_in_progress() throws Exception {
 
         // Arrange
-        Commons commons = Commons.builder().id(17L).name("CS156")
+        Game game = Game.builder().id(17L).name("CS156")
                 .startingDate(LocalDateTime.now().plusDays(5))
                 .lastDate(LocalDateTime.now().plusDays(10))
                 .build();
@@ -80,10 +80,10 @@ public class InstructorReportJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commons));
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(game));
 
         // Act
-        InstructorReportJob instructorReportJob = new InstructorReportJob(reportService, commonsRepository);
+        InstructorReportJob instructorReportJob = new InstructorReportJob(reportService, gameRepository);
         instructorReportJob.accept(ctx);
 
         // Assert
@@ -91,7 +91,7 @@ public class InstructorReportJobTests extends JobTestCase {
 
         String expected = """
             Starting instructor report...
-            Skipping Commons id=17 (CS156) because the game is not in progress
+            Skipping Game id=17 (CS156) because the game is not in progress
             Instructor report done!""";
 
         assertEquals(expected, jobStarted.getLog());

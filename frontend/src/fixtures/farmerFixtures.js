@@ -3,7 +3,7 @@ const farmerFixtures = {
     {
       userId: 1,
       username: "George Washington",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 98.0,
       numOfCows: 5,
@@ -16,7 +16,7 @@ const farmerFixtures = {
     {
       userId: 1,
       username: "George Washington",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 93.0,
       numOfCows: 8,
@@ -27,7 +27,7 @@ const farmerFixtures = {
     {
       userId: 2,
       username: "John Adams",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 98.0,
       numOfCows: 5,
@@ -38,7 +38,7 @@ const farmerFixtures = {
     {
       userId: 3,
       username: "Thomas Jefferson",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 100000,
       cowHealth: 2.0,
       numOfCows: 1000,
@@ -51,7 +51,7 @@ const farmerFixtures = {
     {
       userId: 1,
       username: "George Washington",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 93.0,
       numOfCows: 8,
@@ -62,7 +62,7 @@ const farmerFixtures = {
     {
       userId: 2,
       username: "John Adams",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 98.0,
       numOfCows: 5,
@@ -73,7 +73,7 @@ const farmerFixtures = {
     {
       userId: 3,
       username: "Thomas Jefferson",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 100000,
       cowHealth: 2.0,
       numOfCows: 1000,
@@ -84,7 +84,7 @@ const farmerFixtures = {
     {
       userId: 4,
       username: "James Madison",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 50,
       cowHealth: 84.0,
       numOfCows: 100,
@@ -95,7 +95,7 @@ const farmerFixtures = {
     {
       userId: 5,
       username: "James Monroe",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 800,
       cowHealth: 72.0,
       numOfCows: 60,
@@ -108,7 +108,7 @@ const farmerFixtures = {
     {
       userId: 1,
       username: "George Washington",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 93.0,
       numOfCows: 8,
@@ -119,7 +119,7 @@ const farmerFixtures = {
     {
       userId: 2,
       username: "John Adams",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 98.0,
       numOfCows: 5,
@@ -130,7 +130,7 @@ const farmerFixtures = {
     {
       userId: 3,
       username: "Thomas Jefferson",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 100000,
       cowHealth: 2.0,
       numOfCows: 1000,
@@ -141,7 +141,7 @@ const farmerFixtures = {
     {
       userId: 3,
       username: "James Madison",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 50,
       cowHealth: 84.0,
       numOfCows: 100,
@@ -152,7 +152,7 @@ const farmerFixtures = {
     {
       userId: 5,
       username: "James Monroe",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 800,
       cowHealth: 72.0,
       numOfCows: 60,
@@ -163,7 +163,7 @@ const farmerFixtures = {
     {
       userId: 6,
       username: "Ancient McDonald",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 93.0,
       numOfCows: 8,
@@ -174,7 +174,7 @@ const farmerFixtures = {
     {
       userId: 7,
       username: "Old McDonald",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 1000,
       cowHealth: 98.0,
       numOfCows: 5,
@@ -185,7 +185,7 @@ const farmerFixtures = {
     {
       userId: 8,
       username: "Middle Aged McDonald",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 100000,
       cowHealth: 2.0,
       numOfCows: 1000,
@@ -196,7 +196,7 @@ const farmerFixtures = {
     {
       userId: 9,
       username: "Young McDonald",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 50,
       cowHealth: 84.0,
       numOfCows: 100,
@@ -208,7 +208,7 @@ const farmerFixtures = {
       id: 10,
       userId: 10,
       username: "Child McDonald",
-      commonsId: 1,
+      gameId: 1,
       totalWealth: 800,
       cowHealth: 72.0,
       numOfCows: 60,

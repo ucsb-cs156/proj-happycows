@@ -1,11 +1,11 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration
 public class MilkTheCowsJobIndTests extends JobTestCase {
     @Mock
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Mock
     FarmerRepository farmerRepository;
@@ -46,9 +46,9 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
             .email("cgaucho@example.org")
             .build();
 
-    private Commons testCommons = Commons
+    private Game testGame = Game
             .builder()
-            .name("test commons")
+            .name("test game")
             .cowPrice(10)
             .milkPrice(2)
             .startingBalance(300)
@@ -59,28 +59,28 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
             .build();
 
     @Test
-    void error_msg_when_no_commons_found() throws Exception {
+    void error_msg_when_no_game_found() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        when(commonsRepository.findById(1L)).thenReturn(Optional.empty());
+        when(gameRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act
-        MilkTheCowsJobInd MilkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
+        MilkTheCowsJobInd MilkTheCowsJobInd = new MilkTheCowsJobInd(gameRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         MilkTheCowsJobInd.accept(ctx);
 
         // Assert
         String expected = """
                 Starting to milk the cows
-                No commons found for id 1""";
+                No game found for id 1""";
         assertEquals(expected, jobStarted.getLog());
     }
 
     @Test
-    void test_log_output_with_commons_and_farmer() throws Exception {
+    void test_log_output_with_game_and_farmer() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
@@ -89,21 +89,21 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
         Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
+                .game(testGame)
                 .totalWealth(300)
                 .numOfCows(1)
                 .cowHealth(10)
                 .build();
 
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(testCommons));
-        when(farmerRepository.findByCommonsId(testCommons.getId()))
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(testGame));
+        when(farmerRepository.findByGameId(testGame.getId()))
                 .thenReturn(Arrays.asList(origFarmer));
-        when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(testGame.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(testGame));
 
         // Act
-        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
+        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(gameRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         milkTheCowsJobInd.accept(ctx);
         
@@ -112,7 +112,7 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
 
         String expected = """
                 Starting to milk the cows
-                Milking cows for Commons: test commons, Milk Price: $2.00
+                Milking cows for Game: test game, Milk Price: $2.00
                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0, totalWealth: $300.00
                 Profit for user: Chris Gaucho is: $0.20, newWealth: $300.20
                 Cows have been milked!""";
@@ -121,15 +121,15 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
     }
 
     @Test
-    void test_skips_commons_when_game_not_in_progress() throws Exception {
+    void test_skips_game_when_game_not_in_progress() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        Commons futureCommons = Commons
+        Game futureGame = Game
                 .builder()
-                .name("future commons")
+                .name("future game")
                 .cowPrice(10)
                 .milkPrice(2)
                 .startingBalance(300)
@@ -139,28 +139,28 @@ public class MilkTheCowsJobIndTests extends JobTestCase {
                 .degradationRate(0.01)
                 .build();
 
-        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(futureCommons));
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(futureGame));
 
         // Act
-        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
+        MilkTheCowsJobInd milkTheCowsJobInd = new MilkTheCowsJobInd(gameRepository, farmerRepository,
                 userRepository, profitRepository, 1L);
         milkTheCowsJobInd.accept(ctx);
 
         // Assert
         String expected = """
                 Starting to milk the cows
-                Skipping Commons id=0 (future commons) because the game is not in progress""";
+                Skipping Game id=0 (future game) because the game is not in progress""";
 
         assertEquals(expected, jobStarted.getLog());
     }
 
     @Test
-    void commons_id_getter_returns_value_from_constructor() {
+    void game_id_getter_returns_value_from_constructor() {
 
-        MilkTheCowsJobInd job = new MilkTheCowsJobInd(commonsRepository, farmerRepository,
+        MilkTheCowsJobInd job = new MilkTheCowsJobInd(gameRepository, farmerRepository,
                 userRepository, profitRepository, 42L);
 
-        assertEquals(42L, job.getCommonsID());
+        assertEquals(42L, job.getGameID());
     }
 
 }

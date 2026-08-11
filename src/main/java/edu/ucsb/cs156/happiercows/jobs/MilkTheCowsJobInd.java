@@ -1,9 +1,9 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public class MilkTheCowsJobInd implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
@@ -25,7 +25,7 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
     @Getter
     private ProfitRepository profitRepository;
     @Getter
-    private long commonsID;
+    private long gameID;
 
     public String formatDollars(double amount) {
         return  String.format("$%.2f", amount);
@@ -34,18 +34,18 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
     @Override
     public void accept(JobContext ctx) throws Exception {
         ctx.log("Starting to milk the cows");
-        Optional<Commons> commonMilkedOpt = commonsRepository.findById(commonsID);
+        Optional<Game> commonMilkedOpt = gameRepository.findById(gameID);
 
         if(commonMilkedOpt.isPresent()){
-            Commons commonMilked = commonMilkedOpt.get();
-            if (!CommonsGate.shouldProcess(commonMilked, commonsRepository, ctx)) {
+            Game commonMilked = commonMilkedOpt.get();
+            if (!GameGate.shouldProcess(commonMilked, gameRepository, ctx)) {
                 return;
             }
             String name = commonMilked.getName();
             double milkPrice = commonMilked.getMilkPrice();
-            ctx.log("Milking cows for Commons: " + name + ", Milk Price: " + formatDollars(milkPrice));
+            ctx.log("Milking cows for Game: " + name + ", Milk Price: " + formatDollars(milkPrice));
 
-            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonMilked.getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByGameId(commonMilked.getId());
 
             for (Farmer farmer : allFarmer) {
                 MilkTheCowsJob.milkCows(ctx, commonMilked, farmer, profitRepository, farmerRepository);
@@ -54,7 +54,7 @@ public class MilkTheCowsJobInd implements JobContextConsumer {
 
             ctx.log("Cows have been milked!");
         } else {
-            ctx.log(String.format("No commons found for id %d", commonsID));
+            ctx.log(String.format("No game found for id %d", gameID));
         }
     }
 

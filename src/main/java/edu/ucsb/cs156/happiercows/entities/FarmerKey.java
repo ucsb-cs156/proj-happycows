@@ -18,7 +18,7 @@ public class FarmerKey implements Serializable {
     @JoinColumn(name = "user_id")
     private long userId;
 
-    @JoinColumn(name = "commons_id")
-    private long commonsId;
+    @JoinColumn(name = "game_id")
+    private long gameId;
 
 }

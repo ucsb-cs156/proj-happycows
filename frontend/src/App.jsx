@@ -12,13 +12,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
-import AdminCreateCommonsPage from "main/pages/AdminCreateCommonsPage";
+import AdminCreateGamePage from "main/pages/AdminCreateGamePage";
 import AdminViewReportPage from "main/pages/AdminViewReportPage";
 import AdminCoursesIndexPage from "main/pages/AdminCoursesIndexPage";
 import AdminCoursesCreatePage from "main/pages/AdminCoursesCreatePage";
 import AdminCoursesEditPage from "main/pages/AdminCoursesEditPage";
-import AdminEditCommonsPage from "main/pages/AdminEditCommonsPage";
-import AdminListCommonsPageV2 from "main/pages/AdminListCommonPageV2";
+import AdminEditGamePage from "main/pages/AdminEditGamePage";
+import AdminListGamePageV2 from "main/pages/AdminListGamePageV2";
 import InstructorAdminShowPage from "main/pages/InstructorAdminShowPage";
 import AdminChatPage from "main/pages/AdminChatPage";
 import AdminReportsPage from "main/pages/AdminReportsPage";
@@ -41,42 +41,42 @@ function App() {
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
-      <Route path="/admin/createcommons" element={<AdminCreateCommonsPage />} />
-      <Route path="/admin/listcommonsv2" element={<AdminListCommonsPageV2 />} />
-      <Route path="/admin/editcommons/:id" element={<AdminEditCommonsPage />} />
-      <Route path="/admin/chat/:commonsId" element={<AdminChatPage />} />
+      <Route path="/admin/creategame" element={<AdminCreateGamePage />} />
+      <Route path="/admin/listgamev2" element={<AdminListGamePageV2 />} />
+      <Route path="/admin/editgame/:id" element={<AdminEditGamePage />} />
+      <Route path="/admin/chat/:gameId" element={<AdminChatPage />} />
       <Route path="/admin/dashboard/:id" element={<DashboardPage />} />
       <Route path="/admin/listcourses" element={<AdminCoursesIndexPage />} />
       <Route path="/admin/createcourses" element={<AdminCoursesCreatePage />} />
       <Route path="/admin/editcourses/:id" element={<AdminCoursesEditPage />} />
       <Route path="/admin/courses/:id" element={<InstructorAdminShowPage />} />
       <Route
-        path="/admin/play/:commonsId/user/:userId"
+        path="/admin/play/:gameId/user/:userId"
         element={<AdminViewPlayPage />}
       />
       <Route
-        path="/admin/announcements/:commonsId"
+        path="/admin/announcements/:gameId"
         element={<AdminAnnouncementsPage />}
       />
       <Route
-        path="/admin/announcements/:commonsId/create"
+        path="/admin/announcements/:gameId/create"
         element={<AdminCreateAnnouncementsPage />}
       />
       <Route
-        path="/admin/announcements/:commonsId/edit/:announcementId"
+        path="/admin/announcements/:gameId/edit/:announcementId"
         element={<AdminEditAnnouncementsPage />}
       />
       <Route path="/developer" element={<DeveloperPage />} />
-      <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
+      <Route path="/chat/:gameId" element={<ChatHistoryPage />} />
     </>
   ) : null;
 
   const userRoutes = hasRole(currentUser, "ROLE_USER") ? (
     <>
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/dashboard/:commonsId" element={<DashboardPage />} />
-      <Route path="/play/:commonsId" element={<PlayPage />} />
-      <Route path="/chat/:commonsId" element={<ChatHistoryPage />} />
+      <Route path="/dashboard/:gameId" element={<DashboardPage />} />
+      <Route path="/play/:gameId" element={<PlayPage />} />
+      <Route path="/chat/:gameId" element={<ChatHistoryPage />} />
     </>
   ) : null;
 

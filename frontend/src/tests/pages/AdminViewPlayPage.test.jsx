@@ -12,7 +12,7 @@ vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
     userId: 1,
-    commonsId: 1,
+    gameId: 1,
   }),
 }));
 
@@ -32,7 +32,7 @@ describe("AdminViewPlayPage tests", () => {
 
   beforeEach(() => {
     const farmer = {
-      commonsId: 1,
+      gameId: 1,
       id: 1,
       totalWealth: 0,
       userId: 1,
@@ -47,24 +47,24 @@ describe("AdminViewPlayPage tests", () => {
       .reply(200, systemInfoFixtures.showingNeither);
     axiosMock
       .onGet("/api/farmer", {
-        params: { userId: 1, commonsId: 1 },
+        params: { userId: 1, gameId: 1 },
       })
       .reply(200, farmer);
-    axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
+    axiosMock.onGet("/api/game", { params: { id: 1 } }).reply(200, {
       id: 1,
-      name: "Sample Commons",
+      name: "Sample Game",
     });
-    axiosMock.onGet("/api/commons/all").reply(200, [
+    axiosMock.onGet("/api/game/all").reply(200, [
       {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
     ]);
 
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus", { params: { id: 1 } }).reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -73,7 +73,7 @@ describe("AdminViewPlayPage tests", () => {
       .onGet("/api/profits/all", {
         params: {
           userId: 1,
-          commonsId: 1,
+          gameId: 1,
         },
       })
       .reply(200, []);
@@ -101,7 +101,7 @@ describe("AdminViewPlayPage tests", () => {
     );
 
     expect(await screen.findByText(/Announcements/)).toBeInTheDocument();
-    expect(await screen.findByTestId("CommonsPlay")).toBeInTheDocument();
+    expect(await screen.findByTestId("GamePlay")).toBeInTheDocument();
   });
 
   test("Chat toggle button opens and closes the ChatPanel", async () => {
@@ -223,16 +223,16 @@ describe("AdminViewPlayPage tests", () => {
             `,
     );
     expect(bannerElement).toHaveTextContent(
-      "This is a Admin Feature for Phillip ConradVisiting Farmer 's Play Page for game Sample Commons in Read Only Mode.",
+      "This is a Admin Feature for Phillip ConradVisiting Farmer 's Play Page for game Sample Game in Read Only Mode.",
     );
   });
 
-  test("renders when farmer is falsy but commonsPlus is truthy", async () => {
-    // Mock the response so that farmer is falsy but commonsPlus is truthy
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
-      commons: {
+  test("renders when farmer is falsy but gamePlus is truthy", async () => {
+    // Mock the response so that farmer is falsy but gamePlus is truthy
+    axiosMock.onGet("/api/game/plus", { params: { id: 1 } }).reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -240,7 +240,7 @@ describe("AdminViewPlayPage tests", () => {
 
     axiosMock
       .onGet("/api/announcements/current", {
-        params: { commonsId: 1 },
+        params: { gameId: 1 },
       })
       .reply(200, []);
 
@@ -248,7 +248,7 @@ describe("AdminViewPlayPage tests", () => {
       .onGet("/api/profits/all", {
         params: {
           userId: 1,
-          commonsId: 1,
+          gameId: 1,
         },
       })
       .reply(200, []);
@@ -268,10 +268,8 @@ describe("AdminViewPlayPage tests", () => {
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
     expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
-  test("renders when farmer is truthy and commonsPlus is falsy", async () => {
-    axiosMock
-      .onGet("/api/commons/plus", { params: { id: 1 } })
-      .reply(200, null);
+  test("renders when farmer is truthy and gamePlus is falsy", async () => {
+    axiosMock.onGet("/api/game/plus", { params: { id: 1 } }).reply(200, null);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -288,7 +286,7 @@ describe("AdminViewPlayPage tests", () => {
     expect(await screen.findByText(/Visiting Farmer/)).toBeInTheDocument();
     expect(await screen.findByText(/Play Page for game/)).toBeInTheDocument();
   });
-  test("renders CardGroup when farmer and commonsPlus are truthy", async () => {
+  test("renders CardGroup when farmer and gamePlus are truthy", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

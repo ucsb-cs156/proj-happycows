@@ -4,7 +4,7 @@ const profitsFixtures = {
       id: 15,
       farmer: {
         id: 3,
-        commonsId: 2,
+        gameId: 2,
         userId: 1,
         username: "Phill Conrad",
         totalWealth: 400,
@@ -20,7 +20,7 @@ const profitsFixtures = {
       id: 18,
       farmer: {
         id: 3,
-        commonsId: 2,
+        gameId: 2,
         userId: 1,
         username: "Phill Conrad",
         totalWealth: 400,
@@ -36,7 +36,7 @@ const profitsFixtures = {
       id: 22,
       farmer: {
         id: 3,
-        commonsId: 2,
+        gameId: 2,
         userId: 1,
         username: "Phill Conrad",
         totalWealth: 400,

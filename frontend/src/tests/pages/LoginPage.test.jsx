@@ -24,7 +24,7 @@ describe("LoginPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/commons/all").reply(200, []);
+    axiosMock.onGet("/api/game/all").reply(200, []);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

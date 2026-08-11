@@ -37,7 +37,7 @@ vi.mock("main/components/Chat/ChatMessageDisplay", () => ({
   ),
 }));
 
-const mockUseParams = vi.fn(() => ({ commonsId: 1 }));
+const mockUseParams = vi.fn(() => ({ gameId: 1 }));
 const mockNavigate = vi.fn();
 
 vi.mock("react-router", async () => {
@@ -103,7 +103,7 @@ describe("ChatHistoryPage", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
 
-    mockUseParams.mockImplementation(() => ({ commonsId: 1 }));
+    mockUseParams.mockImplementation(() => ({ gameId: 1 }));
 
     vi.spyOn(backend, "useBackend").mockReturnValue({
       data: [
@@ -119,18 +119,18 @@ describe("ChatHistoryPage", () => {
     intersectionCallback = null;
   });
 
-  test("configures user commons query with expected polling options when commonsId present", () => {
+  test("configures user game query with expected polling options when gameId present", () => {
     const useBackendSpy = vi.spyOn(backend, "useBackend");
     const useInfiniteQuerySpy = mockInfiniteQuery();
 
     renderWithProviders();
 
     expect(useBackendSpy).toHaveBeenCalledWith(
-      [`/api/farmer/commons/all?commonsId=1`],
+      [`/api/farmer/game/all?gameId=1`],
       {
         method: "GET",
-        url: "/api/farmer/commons/all",
-        params: { commonsId: 1 },
+        url: "/api/farmer/game/all",
+        params: { gameId: 1 },
       },
       [],
       { refetchInterval: 2000, enabled: true },
@@ -313,7 +313,7 @@ describe("ChatHistoryPage", () => {
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
   });
 
-  test("falls back to Anonymous when user commons hook returns invalid data", () => {
+  test("falls back to Anonymous when user game hook returns invalid data", () => {
     vi.spyOn(backend, "useBackend").mockReturnValue({
       data: { invalid: true },
     });
@@ -520,7 +520,7 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("captures queryFn + queryKey: uses ['chatHistory', commonsId] and correct admin/non-admin URLs", async () => {
+  test("captures queryFn + queryKey: uses ['chatHistory', gameId] and correct admin/non-admin URLs", async () => {
     // non-admin
     const spy1 = vi.spyOn(reactQuery, "useInfiniteQuery");
     spy1.mockReturnValue({
@@ -537,7 +537,7 @@ describe("ChatHistoryPage", () => {
     expect(keyNonAdmin).toEqual(["chatHistory", 1]);
 
     axiosMock
-      .onGet("/api/chat/get", { params: { commonsId: 1, page: 2, size: 25 } })
+      .onGet("/api/chat/get", { params: { gameId: 1, page: 2, size: 25 } })
       .reply(200, { content: [], last: true });
 
     await queryFnNonAdmin({ pageParam: 2 });
@@ -571,7 +571,7 @@ describe("ChatHistoryPage", () => {
 
     axiosMock
       .onGet("/api/chat/admin/get", {
-        params: { commonsId: 1, page: 0, size: 25 },
+        params: { gameId: 1, page: 0, size: 25 },
       })
       .reply(200, { content: [], last: true });
 
@@ -612,8 +612,8 @@ describe("ChatHistoryPage", () => {
     useInfiniteQuerySpy.mockRestore();
   });
 
-  test("disables queries when commonsId is missing", () => {
-    mockUseParams.mockImplementation(() => ({ commonsId: undefined }));
+  test("disables queries when gameId is missing", () => {
+    mockUseParams.mockImplementation(() => ({ gameId: undefined }));
 
     const useBackendSpy = vi
       .spyOn(backend, "useBackend")
@@ -688,7 +688,7 @@ describe("ChatHistoryPage", () => {
 
     expect(mutationSpy).toHaveBeenCalled();
     expect(mutationSpy.mock.calls[0][2]).toEqual([
-      `/api/chat/admin/get?commonsId=1`,
+      `/api/chat/admin/get?gameId=1`,
     ]);
 
     const mutationFn = mutationSpy.mock.calls[0][0];

@@ -265,7 +265,7 @@ export function HrefButtonColumn(label, variant, href, testid) {
     Cell: ({ cell }) => (
       <Button
         variant={variant}
-        href={`${href}${cell.row.values["commons.id"]}`}
+        href={`${href}${cell.row.values["game.id"]}`}
         data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-button`}
       >
         {label}

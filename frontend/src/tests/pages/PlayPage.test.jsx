@@ -11,7 +11,7 @@ import { vi } from "vitest";
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
-    commonsId: 1,
+    gameId: 1,
   }),
 }));
 
@@ -35,17 +35,17 @@ describe("PlayPage tests", () => {
   let currentAnnouncements;
 
   const defaultFarmer = {
-    commonsId: 1,
+    gameId: 1,
     id: 1,
     totalWealth: 0,
     userId: 1,
     showChat: true,
   };
 
-  const defaultCommonsPlus = {
-    commons: {
+  const defaultGamePlus = {
+    game: {
       id: 1,
-      name: "Sample Commons",
+      name: "Sample Game",
       showChat: true,
       hidden: false,
     },
@@ -57,11 +57,11 @@ describe("PlayPage tests", () => {
     currentUser = apiCurrentUserFixtures.userOnly,
     systemInfo = systemInfoFixtures.showingNeither,
     farmerResponse = { status: 200, body: defaultFarmer },
-    commonsPlus = defaultCommonsPlus,
-    commonsAll = [
+    gamePlus = defaultGamePlus,
+    gameAll = [
       {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
         hidden: false,
       },
     ],
@@ -75,28 +75,28 @@ describe("PlayPage tests", () => {
 
     axiosMock
       .onGet("/api/farmer/forcurrentuser", {
-        params: { commonsId: 1 },
+        params: { gameId: 1 },
       })
       .reply(farmerResponse.status, farmerResponse.body);
 
-    axiosMock.onGet("/api/commons", { params: { id: 1 } }).reply(200, {
+    axiosMock.onGet("/api/game", { params: { id: 1 } }).reply(200, {
       id: 1,
-      name: "Sample Commons",
+      name: "Sample Game",
     });
 
-    axiosMock.onGet("/api/commons/all").reply(200, commonsAll);
+    axiosMock.onGet("/api/game/all").reply(200, gameAll);
 
     axiosMock
-      .onGet("/api/commons/plus", {
+      .onGet("/api/game/plus", {
         params: { id: 1 },
       })
-      .reply(200, commonsPlus);
+      .reply(200, gamePlus);
 
     axiosMock
       .onGet("/api/announcements/current")
       .reply(() => [200, currentAnnouncements]);
 
-    axiosMock.onGet("/api/profits/all/commonsid").reply(200, []);
+    axiosMock.onGet("/api/profits/all/gameid").reply(200, []);
 
     axiosMock.onPut("/api/farmer/sell").reply(200, farmerResponse.body);
     axiosMock.onPut("/api/farmer/buy").reply(200, farmerResponse.body);
@@ -129,14 +129,10 @@ describe("PlayPage tests", () => {
     renderPage();
 
     await waitFor(() => {
-      expect(screen.getByTestId("commonsPlay-title")).toBeInTheDocument();
+      expect(screen.getByTestId("gamePlay-title")).toBeInTheDocument();
     });
 
-    for (const testId of [
-      "CommonsOverview",
-      "ManageCows",
-      "playpage-chat-div",
-    ]) {
+    for (const testId of ["GameOverview", "ManageCows", "playpage-chat-div"]) {
       expect(screen.getByTestId(testId)).toBeInTheDocument();
     }
 
@@ -147,19 +143,19 @@ describe("PlayPage tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("cannot join hidden commons", async () => {
+  test("cannot join hidden game", async () => {
     setupDefaultMocks({
-      commonsAll: [
+      gameAll: [
         {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           hidden: true,
         },
       ],
-      commonsPlus: {
-        commons: {
+      gamePlus: {
+        game: {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           showChat: true,
           hidden: true,
         },
@@ -179,8 +175,8 @@ describe("PlayPage tests", () => {
     });
 
     for (const testId of [
-      "commonsPlay-title",
-      "CommonsOverview",
+      "gamePlay-title",
+      "GameOverview",
       "ManageCows",
       "playpage-chat-div",
     ]) {
@@ -229,7 +225,7 @@ describe("PlayPage tests", () => {
     renderPage();
 
     expect(await screen.findByText(/Announcements/)).toBeInTheDocument();
-    expect(await screen.findByTestId("CommonsPlay")).toBeInTheDocument();
+    expect(await screen.findByTestId("GamePlay")).toBeInTheDocument();
   });
 
   test("Make sure div has correct attributes", async () => {
@@ -360,10 +356,10 @@ describe("PlayPage tests", () => {
 
   test("Doesn't show chat button for non-admins if showChat is false", async () => {
     setupDefaultMocks({
-      commonsPlus: {
-        commons: {
+      gamePlus: {
+        game: {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           showChat: false,
           hidden: false,
         },
@@ -373,16 +369,16 @@ describe("PlayPage tests", () => {
       farmerResponse: {
         status: 200,
         body: {
-          commonsId: 1,
+          gameId: 1,
           id: 1,
           totalWealth: 0,
           userId: 1,
         },
       },
-      commonsAll: [
+      gameAll: [
         {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           hidden: false,
         },
       ],
@@ -400,10 +396,10 @@ describe("PlayPage tests", () => {
   test("Shows chat button for admins if showChat is false", async () => {
     setupDefaultMocks({
       currentUser: apiCurrentUserFixtures.adminUser,
-      commonsPlus: {
-        commons: {
+      gamePlus: {
+        game: {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           showChat: false,
           hidden: false,
         },
@@ -413,16 +409,16 @@ describe("PlayPage tests", () => {
       farmerResponse: {
         status: 200,
         body: {
-          commonsId: 1,
+          gameId: 1,
           id: 1,
           totalWealth: 0,
           userId: 1,
         },
       },
-      commonsAll: [
+      gameAll: [
         {
           id: 1,
-          name: "Sample Commons",
+          name: "Sample Game",
           hidden: false,
         },
       ],
@@ -435,7 +431,7 @@ describe("PlayPage tests", () => {
     });
   });
 
-  test("User that has not joined any commons is trying to access an unjoined common", async () => {
+  test("User that has not joined any game is trying to access an unjoined common", async () => {
     setupDefaultMocks({
       currentUser: {
         user: {
@@ -451,7 +447,7 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [],
+          game: [],
         },
         roles: [
           {
@@ -469,10 +465,10 @@ describe("PlayPage tests", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("game-card")).not.toBeInTheDocument();
   });
 
-  test("User that has joined one commons is trying to access an unjoined common", async () => {
+  test("User that has joined one game is trying to access an unjoined common", async () => {
     setupDefaultMocks({
       currentUser: {
         user: {
@@ -488,10 +484,10 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [
+          game: [
             {
               id: 4,
-              name: "Commons4",
+              name: "Game4",
             },
           ],
         },
@@ -511,10 +507,10 @@ describe("PlayPage tests", () => {
       ).toBeInTheDocument();
     });
 
-    expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("game-card")).not.toBeInTheDocument();
   });
 
-  test("User that has joined one commons is trying to access a joined common", async () => {
+  test("User that has joined one game is trying to access a joined common", async () => {
     setupDefaultMocks({
       currentUser: {
         user: {
@@ -530,10 +526,10 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [
+          game: [
             {
               id: 1,
-              name: "Commons1",
+              name: "Game1",
             },
           ],
         },
@@ -554,10 +550,10 @@ describe("PlayPage tests", () => {
     expect(
       screen.queryByText("You have yet to join this game!"),
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId("commons-card")).toBeInTheDocument();
+    expect(screen.getByTestId("game-card")).toBeInTheDocument();
   });
 
-  test("User not allowed and hasn't matched any commons should have 'notallowed' true", async () => {
+  test("User not allowed and hasn't matched any game should have 'notallowed' true", async () => {
     setupDefaultMocks({
       currentUser: {
         user: {
@@ -573,10 +569,10 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [
+          game: [
             {
               id: 4,
-              name: "Commons4",
+              name: "Game4",
             },
           ],
         },
@@ -597,10 +593,10 @@ describe("PlayPage tests", () => {
     });
 
     expect(screen.queryByText("Announcements")).not.toBeInTheDocument();
-    expect(screen.queryByTestId("commons-card")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("game-card")).not.toBeInTheDocument();
   });
 
-  test("User not allowed to access a commons that does not exist", async () => {
+  test("User not allowed to access a game that does not exist", async () => {
     setupDefaultMocks({
       currentUser: {
         user: {
@@ -616,10 +612,10 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [
+          game: [
             {
               id: 4,
-              name: "Commons4",
+              name: "Game4",
             },
           ],
         },
@@ -629,7 +625,7 @@ describe("PlayPage tests", () => {
           },
         ],
       },
-      commonsPlus: undefined,
+      gamePlus: undefined,
     });
 
     renderPage();
@@ -667,10 +663,10 @@ describe("PlayPage tests", () => {
     ];
 
     setupDefaultMocks({
-      commonsPlus: {
-        commons: {
+      gamePlus: {
+        game: {
           id: 999,
-          name: "Different Commons",
+          name: "Different Game",
           showChat: true,
           hidden: false,
         },
@@ -706,10 +702,10 @@ describe("PlayPage tests", () => {
           locale: "en",
           hostedDomain: null,
           admin: false,
-          commons: [
+          game: [
             {
               id: 1,
-              name: "Commons1",
+              name: "Game1",
             },
           ],
         },
@@ -722,8 +718,8 @@ describe("PlayPage tests", () => {
       farmerResponse: {
         status: 403,
         body: {
-          message: "Not enrolled in course associated with commons",
-          type: "NotEnrolledInCourseAssociatedWithCommonsException",
+          message: "Not enrolled in course associated with game",
+          type: "NotEnrolledInCourseAssociatedWithGameException",
         },
       },
     });
@@ -739,7 +735,7 @@ describe("PlayPage tests", () => {
     expect(
       screen.queryByText("You have yet to join this game!"),
     ).not.toBeInTheDocument();
-    expect(screen.queryByTestId("commonsPlay-title")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("gamePlay-title")).not.toBeInTheDocument();
     expect(screen.queryByTestId("ManageCows")).not.toBeInTheDocument();
   });
 
@@ -749,7 +745,7 @@ describe("PlayPage tests", () => {
         ...apiCurrentUserFixtures.userOnly,
         user: {
           ...apiCurrentUserFixtures.userOnly.user,
-          commons: [{ id: 1, name: "Commons1" }],
+          game: [{ id: 1, name: "Game1" }],
         },
       },
       farmerResponse: {
@@ -763,7 +759,7 @@ describe("PlayPage tests", () => {
 
     renderPage();
 
-    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(await screen.findByTestId("gamePlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
         "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
@@ -777,7 +773,7 @@ describe("PlayPage tests", () => {
         ...apiCurrentUserFixtures.userOnly,
         user: {
           ...apiCurrentUserFixtures.userOnly.user,
-          commons: [{ id: 1, name: "Commons1" }],
+          game: [{ id: 1, name: "Game1" }],
         },
       },
       farmerResponse: {
@@ -788,7 +784,7 @@ describe("PlayPage tests", () => {
 
     renderPage();
 
-    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(await screen.findByTestId("gamePlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
         "You do not currently have access to this Game. Please contact your instructor if you think this is an error",
@@ -802,21 +798,21 @@ describe("PlayPage tests", () => {
         ...apiCurrentUserFixtures.userOnly,
         user: {
           ...apiCurrentUserFixtures.userOnly.user,
-          commons: [{ id: 1, name: "Commons1" }],
+          game: [{ id: 1, name: "Game1" }],
         },
       },
       farmerResponse: {
         status: 404,
         body: {
-          message: "Not enrolled in course associated with commons",
-          type: "NotEnrolledInCourseAssociatedWithCommonsException",
+          message: "Not enrolled in course associated with game",
+          type: "NotEnrolledInCourseAssociatedWithGameException",
         },
       },
     });
 
     renderPage();
 
-    expect(await screen.findByTestId("commonsPlay-title")).toBeInTheDocument();
+    expect(await screen.findByTestId("gamePlay-title")).toBeInTheDocument();
     expect(
       screen.queryByText(
         "You do not currently have access to this Game. Please contact your instructor if you think this is an error",

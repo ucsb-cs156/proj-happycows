@@ -1,7 +1,7 @@
 import OurTable from "main/components/OurTable";
 import { Link } from "react-router";
 
-// should take in a players list from a commons
+// should take in a players list from a game
 export default function LeaderboardTable({ leaderboardUsers }) {
   const USD = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -12,7 +12,7 @@ export default function LeaderboardTable({ leaderboardUsers }) {
     {
       Header: "Farmer",
       accessor: (row, _rowIndex) => {
-        const url = `/admin/play/${row.commonsId}/user/${row.userId}`;
+        const url = `/admin/play/${row.gameId}/user/${row.userId}`;
         return <Link to={url}>{row.username}</Link>;
       },
     },

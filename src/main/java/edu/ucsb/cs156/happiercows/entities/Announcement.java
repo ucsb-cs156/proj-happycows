@@ -21,7 +21,7 @@ public class Announcement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long commonsId;
+    private long gameId;
 
     @Column(name="start_date", nullable = false)
     private Date startDate;

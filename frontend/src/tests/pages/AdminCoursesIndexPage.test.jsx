@@ -82,7 +82,7 @@ describe("AdminCoursesIndexPage tests", () => {
     );
   });
 
-  test("renders three commons without crashing for admin user", async () => {
+  test("renders three game without crashing for admin user", async () => {
     setupAdminUser();
     const queryClient = new QueryClient();
     axiosMock.onGet("/api/course/all").reply(200, coursesFixtures.threeCourses);

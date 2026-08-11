@@ -17,7 +17,7 @@ vi.mock("react-router", async () => {
     __esModule: true,
     ...originalModule,
     useParams: () => ({
-      commonsId: 1,
+      gameId: 1,
     }),
     Navigate: (x) => {
       mockedNavigate(x);
@@ -54,10 +54,10 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -75,7 +75,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Create Announcement for Game Sample Commons",
+      "Create Announcement for Game Sample Game",
     );
   });
 
@@ -83,10 +83,10 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/commons/plus", { params: { id: 1 } }).reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus", { params: { id: 1 } }).reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -132,7 +132,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       url: "/api/announcements/post",
       method: "POST",
       params: {
-        commonsId: 1,
+        gameId: 1,
         startDate: "2024-12-12T00:00:00",
         endDate: "2025-12-12T00:00:00",
         announcementText: "Hello",
@@ -163,7 +163,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       url: "/api/announcements/post",
       method: "POST",
       params: {
-        commonsId: 1,
+        gameId: 1,
         startDate: "2024-12-12T00:00:00",
         announcementText: "Hello",
       },
@@ -196,7 +196,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       <div>
         Announcement successfully created!
         <br />
-        {`commonsId: 5`}
+        {`gameId: 5`}
         <br />
         {`startDate: 2024-12-12T00:00:00`}
         <br />
@@ -212,7 +212,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
   test("When you fill in form and click submit, the right things happen", async () => {
     axiosMock.onPost("/api/announcements/post").reply(200, {
       id: 5,
-      commonsId: 1,
+      gameId: 1,
       startDate: "2026-05-17T14:00:00",
       endDate: "2026-12-17T14:00:00",
       announcementText: "My New Announcement",
@@ -228,7 +228,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
 
     const heading = await screen.findByRole("heading", { level: 2 });
     expect(heading).toHaveTextContent(
-      "Create Announcement for Game Sample Commons",
+      "Create Announcement for Game Sample Game",
     );
 
     const startDateField = screen.getByTestId("AnnouncementForm-startDate");
@@ -252,7 +252,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].params).toEqual({
-      commonsId: 1,
+      gameId: 1,
       startDate: "2026-05-17T14:00:00",
       endDate: "2026-12-17T14:00:00",
       announcementText: "My New Announcement",
@@ -262,7 +262,7 @@ describe("AdminCreateAnnouncementsPage tests", () => {
       <div>
         Announcement successfully created!
         <br />
-        {`commonsId: 5`}
+        {`gameId: 5`}
         <br />
         {`startDate: 2026-05-17T14:00:00`}
         <br />

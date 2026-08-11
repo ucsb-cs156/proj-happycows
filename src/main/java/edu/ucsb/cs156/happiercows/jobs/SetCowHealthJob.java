@@ -1,10 +1,10 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -17,11 +17,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class SetCowHealthJob implements JobContextConsumer {
 
-    private long commonsID;
+    private long gameID;
     private double newCowHealth;
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
@@ -31,16 +31,16 @@ public class SetCowHealthJob implements JobContextConsumer {
     public void accept(JobContext ctx) throws Exception {
         ctx.log("Setting cow health...");
 
-        Optional<Commons> commons = commonsRepository.findById(commonsID);
+        Optional<Game> game = gameRepository.findById(gameID);
 
 
-        if (commons.isPresent()) {
-            if (!CommonsGate.shouldProcess(commons.get(), commonsRepository, ctx)) {
+        if (game.isPresent()) {
+            if (!GameGate.shouldProcess(game.get(), gameRepository, ctx)) {
                 return;
             }
-            ctx.log("Commons " + commons.get().getName());
+            ctx.log("Game " + game.get().getName());
 
-            Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commons.get().getId());
+            Iterable<Farmer> allFarmer = farmerRepository.findByGameId(game.get().getId());
 
             for (Farmer farmer : allFarmer) {
                 User user = farmer.getUser();
@@ -52,7 +52,7 @@ public class SetCowHealthJob implements JobContextConsumer {
 
             ctx.log("Cow health has been set!");
         } else {
-            ctx.log(String.format("No commons found for id %d", commonsID));
+            ctx.log(String.format("No game found for id %d", gameID));
         }
 
     }

@@ -17,11 +17,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.entities.FarmerKey;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
@@ -35,7 +35,7 @@ public class AverageCowHealthServiceTests {
     UserRepository userRepository;
   
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
   
     @MockBean
     FarmerRepository farmerRepository;    
@@ -43,10 +43,10 @@ public class AverageCowHealthServiceTests {
     @Autowired
     AverageCowHealthService averageCowHealthService;
 
-    private Commons commons = Commons
+    private Game game = Game
         .builder()
         .id(17L)
-        .name("test commons")
+        .name("test game")
         .cowPrice(10)
         .milkPrice(2)
         .startingBalance(300)
@@ -69,7 +69,7 @@ public class AverageCowHealthServiceTests {
         .builder()
         .user(user1)
         .username("Chris Gaucho")
-        .commons(commons)
+        .game(game)
         .totalWealth(300)
         .numOfCows(20)
         .cowHealth(10)
@@ -89,7 +89,7 @@ public class AverageCowHealthServiceTests {
         .builder()
         .user(user2)
         .username("John Doe")
-        .commons(commons)
+        .game(game)
         .totalWealth(300)
         .numOfCows(100)
         .cowHealth(22)
@@ -101,19 +101,19 @@ public class AverageCowHealthServiceTests {
 
     @BeforeEach
     void setup() {
-        farmer1.setId(new FarmerKey(user1.getId(), commons.getId()));
-        farmer2.setId(new FarmerKey(user2.getId(), commons.getId()));
+        farmer1.setId(new FarmerKey(user1.getId(), game.getId()));
+        farmer2.setId(new FarmerKey(user2.getId(), game.getId()));
     }
 
     @Test
     void test_getAverageCowHealthOneUser() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(farmerRepository.findByCommonsId(commons.getId()))
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(farmerRepository.findByGameId(game.getId()))
                 .thenReturn(Arrays.asList(farmer1));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(20)));
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(Integer.valueOf(20)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user1));
 
         // act
@@ -128,11 +128,11 @@ public class AverageCowHealthServiceTests {
     void test_getAverageCowHealthMultipleUsers() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(farmerRepository.findByCommonsId(commons.getId()))
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(farmerRepository.findByGameId(game.getId()))
                 .thenReturn(Arrays.asList(farmer1,farmer2));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(120)));
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(Integer.valueOf(120)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user1));
         when(userRepository.findById(43L)).thenReturn(Optional.of(user2));
 
@@ -146,7 +146,7 @@ public class AverageCowHealthServiceTests {
 
     @Test
     void test_getAverageCowHealthThrowsException() {
-        when(farmerRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
+        when(farmerRepository.findByGameId(1L)).thenReturn(Arrays.asList());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             averageCowHealthService.getAverageCowHealth(1L);
@@ -155,7 +155,7 @@ public class AverageCowHealthServiceTests {
 
     @Test
     void test_getTotalNumCowsThrowsException() {
-        when(farmerRepository.findByCommonsId(1L)).thenReturn(Arrays.asList());
+        when(farmerRepository.findByGameId(1L)).thenReturn(Arrays.asList());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             averageCowHealthService.getTotalNumCows(1L);

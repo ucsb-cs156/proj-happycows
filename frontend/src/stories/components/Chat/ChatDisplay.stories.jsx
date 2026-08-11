@@ -17,16 +17,16 @@ const Template = (args) => {
 export const Empty = Template.bind({});
 
 Empty.args = {
-  commonsId: 1,
+  gameId: 1,
 };
 
 Empty.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get?page=0&size=10&gameId=1", () => {
       return HttpResponse.json({ content: [] }, { status: 200 });
     }),
 
-    http.get("/api/farmer/all?commonsId=1", () => {
+    http.get("/api/farmer/all?gameId=1", () => {
       return HttpResponse.json([], { status: 200 });
     }),
   ],
@@ -35,12 +35,12 @@ Empty.parameters = {
 export const OneMessage = Template.bind({});
 
 OneMessage.args = {
-  commonsId: 1,
+  gameId: 1,
 };
 
 OneMessage.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get?page=0&size=10&gameId=1", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.oneChatMessage,
@@ -50,7 +50,7 @@ OneMessage.parameters = {
       );
     }),
 
-    http.get("/api/farmer/all?commonsId=1", () => {
+    http.get("/api/farmer/all?gameId=1", () => {
       return HttpResponse.json(farmerFixtures.oneFarmer, {
         status: 200,
       });
@@ -61,12 +61,12 @@ OneMessage.parameters = {
 export const ThreeMessages = Template.bind({});
 
 ThreeMessages.args = {
-  commonsId: 1,
+  gameId: 1,
 };
 
 ThreeMessages.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get?page=0&size=10&gameId=1", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.threeChatMessages,
@@ -76,7 +76,7 @@ ThreeMessages.parameters = {
       );
     }),
 
-    http.get("/api/farmer/all?commonsId=1", () => {
+    http.get("/api/farmer/all?gameId=1", () => {
       return HttpResponse.json(farmerFixtures.threeFarmer, {
         status: 200,
       });
@@ -87,12 +87,12 @@ ThreeMessages.parameters = {
 export const TwelveMessages = Template.bind({});
 
 TwelveMessages.args = {
-  commonsId: 1,
+  gameId: 1,
 };
 
 TwelveMessages.parameters = {
   msw: [
-    http.get("/api/chat/get?page=0&size=10&commonsId=1", () => {
+    http.get("/api/chat/get?page=0&size=10&gameId=1", () => {
       return HttpResponse.json(
         {
           content: chatMessageFixtures.twelveChatMessages,
@@ -102,7 +102,7 @@ TwelveMessages.parameters = {
       );
     }),
 
-    http.get("/api/farmer/all?commonsId=1", () => {
+    http.get("/api/farmer/all?gameId=1", () => {
       return HttpResponse.json(farmerFixtures.tenFarmer, {
         status: 200,
       });

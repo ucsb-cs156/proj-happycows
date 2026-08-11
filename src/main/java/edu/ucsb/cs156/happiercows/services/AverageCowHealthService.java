@@ -4,22 +4,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 @Service("AverageCowHealthService")
 public class AverageCowHealthService {
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
 
-    public int getTotalNumCows(Long commonsId) {
-        commonsRepository.findById(commonsId).orElseThrow(() -> new IllegalArgumentException(String.format("Commons with id %d not found", commonsId)));
+    public int getTotalNumCows(Long gameId) {
+        gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException(String.format("Game with id %d not found", gameId)));
 
-        Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonsId);
+        Iterable<Farmer> allFarmer = farmerRepository.findByGameId(gameId);
 
         int totalNumCows = 0;
 
@@ -30,10 +30,10 @@ public class AverageCowHealthService {
         return totalNumCows;
     }
 
-    public double getAverageCowHealth(Long commonsId) {
-        commonsRepository.findById(commonsId).orElseThrow(() -> new IllegalArgumentException(String.format("Commons with id %d not found", commonsId)));
+    public double getAverageCowHealth(Long gameId) {
+        gameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException(String.format("Game with id %d not found", gameId)));
 
-        Iterable<Farmer> allFarmer = farmerRepository.findByCommonsId(commonsId);
+        Iterable<Farmer> allFarmer = farmerRepository.findByGameId(gameId);
 
         double totalHealth = 0;
 
@@ -41,7 +41,7 @@ public class AverageCowHealthService {
             totalHealth += farmer.getCowHealth() * farmer.getNumOfCows();
         }
 
-        return totalHealth / getTotalNumCows(commonsId);
+        return totalHealth / getTotalNumCows(gameId);
     }
 
     

@@ -19,13 +19,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.entities.FarmerKey;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -41,7 +41,7 @@ class ReportServiceTests {
   UserRepository userRepository;
 
   @MockBean
-  CommonsRepository commonsRepository;
+  GameRepository gameRepository;
 
   @MockBean
   FarmerRepository farmerRepository;
@@ -62,10 +62,10 @@ class ReportServiceTests {
       .email("cgaucho@example.org")
       .build();
 
-  private Commons commons = Commons
+  private Game game = Game
       .builder()
       .id(17L)
-      .name("test commons")
+      .name("test game")
       .cowPrice(10)
       .milkPrice(2)
       .startingBalance(300)
@@ -81,7 +81,7 @@ class ReportServiceTests {
       .builder()
       .user(user)
       .username("Chris Gaucho")
-      .commons(commons)
+      .game(game)
       .totalWealth(300)
       .numOfCows(123)
       .cowHealth(10)
@@ -91,8 +91,8 @@ class ReportServiceTests {
       .build();
 
   Report expectedReportHeader = Report.builder()
-      .name("test commons")
-      .commonsId(17L)
+      .name("test game")
+      .gameId(17L)
 
       .cowPrice(10)
       .milkPrice(2)
@@ -121,18 +121,18 @@ class ReportServiceTests {
 
   @BeforeEach
   void setup() {
-    farmer.setId(new FarmerKey(user.getId(), commons.getId()));
+    farmer.setId(new FarmerKey(user.getId(), game.getId()));
   }
 
   @Test
   void test_createAndSaveReportHeader() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(farmerRepository.findByCommonsId(commons.getId()))
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(farmerRepository.findByGameId(game.getId()))
                 .thenReturn(Arrays.asList(farmer));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
 
         // act
@@ -149,7 +149,7 @@ class ReportServiceTests {
   void test_createAndSaveReportHeader_throwsException() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.empty());
+        when(gameRepository.findById(17L)).thenReturn(Optional.empty());
 
         // act / assert
 
@@ -158,7 +158,7 @@ class ReportServiceTests {
         }, "RuntimeException was expected");
 
         String message = thrown.getMessage();
-        String expectedMessage = "Commons with id 17 not found";
+        String expectedMessage = "Game with id 17 not found";
         Assertions.assertTrue(message.contains(expectedMessage), String.format("Expected message to contain \"%s\" but was \"%s\"", expectedMessage, message));
   }
 
@@ -166,11 +166,11 @@ class ReportServiceTests {
   void test_createAndSaveReport() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(farmerRepository.findByCommonsId(commons.getId()))
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(farmerRepository.findByGameId(game.getId()))
                 .thenReturn(Arrays.asList(farmer));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
 
         // act
@@ -188,11 +188,11 @@ class ReportServiceTests {
   void test_createAndSaveReportLine() {
         // arrange
 
-        when(commonsRepository.findById(17L)).thenReturn(Optional.of(commons));
-        when(farmerRepository.findByCommonsId(commons.getId()))
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(farmerRepository.findByGameId(game.getId()))
                 .thenReturn(Arrays.asList(farmer));
-        when(commonsRepository.getNumUsers(commons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
-        when(commonsRepository.getNumCows(commons.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
+        when(gameRepository.getNumUsers(game.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(game.getId())).thenReturn(Optional.of(Integer.valueOf(123)));
         when(userRepository.findById(42L)).thenReturn(Optional.of(user));
 
         // act

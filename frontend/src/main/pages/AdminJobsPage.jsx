@@ -7,7 +7,7 @@ import UpdateCowHealthForm from "main/components/Jobs/UpdateCowHealthForm";
 import MilkCowsJobForm from "main/components/Jobs/MilkCowsJobForm";
 import InstructorReportForm from "main/components/Jobs/InstructorReportForm";
 import RecordCommonStatsForm from "main/components/Jobs/RecordCommonStatsForm";
-import InstructorReportSpecificCommonsForm from "main/components/Jobs/InstructorReportSpecificCommonsForm";
+import InstructorReportSpecificGameForm from "main/components/Jobs/InstructorReportSpecificGameForm";
 import { toast } from "react-toastify";
 
 import { useBackendMutation } from "main/utils/useBackend";
@@ -35,7 +35,7 @@ const AdminJobsPage = () => {
   // *** SetCowHealth job ***
 
   const objectToAxiosParamsSetCowHealthJob = (data) => ({
-    url: `/api/jobs/launch/setcowhealth?commonsID=${data.selectedCommons}&health=${data.healthValue}`,
+    url: `/api/jobs/launch/setcowhealth?gameID=${data.selectedGame}&health=${data.healthValue}`,
     method: "POST",
   });
 
@@ -49,7 +49,7 @@ const AdminJobsPage = () => {
 
   const submitSetCowHealthJob = async (data) => {
     toast(
-      `Submitted Job: Set Cow Health (Game: ${data.selectedCommonsName}, Health: ${data.healthValue})`,
+      `Submitted Job: Set Cow Health (Game: ${data.selectedGameName}, Health: ${data.healthValue})`,
     );
     SetCowHealthMutation.mutate(data);
   };
@@ -62,7 +62,7 @@ const AdminJobsPage = () => {
   });
 
   const objectToAxiosParamsUpdateCowHealthJobSingle = (data) => ({
-    url: `/api/jobs/launch/updatecowhealthsinglecommons?commonsId=${data.selectedCommons}`,
+    url: `/api/jobs/launch/updatecowhealthsinglegame?gameId=${data.selectedGame}`,
     method: "POST",
   });
 
@@ -81,12 +81,12 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitUpdateCowHealthJob = async (data) => {
-    if (data.selectedCommonsName === "All Games") {
+    if (data.selectedGameName === "All Games") {
       toast("Submitted Job: Update Cow Health");
       UpdateCowHealthMutation.mutate();
     } else {
       toast(
-        `Submitted Job: Update Cow Health (Game: ${data.selectedCommonsName})`,
+        `Submitted Job: Update Cow Health (Game: ${data.selectedGameName})`,
       );
       UpdateCowHealthSingleMutation.mutate(data);
     }
@@ -118,7 +118,7 @@ const AdminJobsPage = () => {
   });
 
   const objectToAxiosParamsMilkTheCowsJobSingle = (data) => ({
-    url: `/api/jobs/launch/milkthecowjobsinglecommons?commonsId=${data.selectedCommons}`,
+    url: `/api/jobs/launch/milkthecowjobsinglegame?gameId=${data.selectedGame}`,
     method: "POST",
   });
 
@@ -137,13 +137,11 @@ const AdminJobsPage = () => {
   // Stryker restore all
 
   const submitMilkTheCowsJob = async (data) => {
-    if (data.selectedCommonsName === "All Games") {
+    if (data.selectedGameName === "All Games") {
       toast("Submitted Job: Milk The Cows!");
       MilkTheCowsMutation.mutate();
     } else {
-      toast(
-        `Submitted Job: Milk The Cows! (Game: ${data.selectedCommonsName})`,
-      );
+      toast(`Submitted Job: Milk The Cows! (Game: ${data.selectedGameName})`);
       MilkTheCowsSingleMutation.mutate(data);
     }
   };
@@ -167,26 +165,26 @@ const AdminJobsPage = () => {
     InstructorReportMutation.mutate();
   };
 
-  // *** Instructor Report (Specific Commons) job ***
+  // *** Instructor Report (Specific Game) job ***
 
-  const objectToAxiosParamsInstructorReportSpecificCommonsJob = (data) => {
+  const objectToAxiosParamsInstructorReportSpecificGameJob = (data) => {
     return {
-      url: `/api/jobs/launch/instructorreportsinglecommons?commonsId=${data.selectedCommons}`,
+      url: `/api/jobs/launch/instructorreportsinglegame?gameId=${data.selectedGame}`,
       method: "POST",
     };
   };
 
   // Stryker disable all
-  const InstructorReportSpecificCommonsMutation = useBackendMutation(
-    objectToAxiosParamsInstructorReportSpecificCommonsJob,
+  const InstructorReportSpecificGameMutation = useBackendMutation(
+    objectToAxiosParamsInstructorReportSpecificGameJob,
     {},
     ["/api/jobs/all"],
   );
   // Stryker restore all
 
-  const submitInstructorReportSpecificCommonsJob = async (data) => {
+  const submitInstructorReportSpecificGameJob = async (data) => {
     toast("Submitted Job: Instructor Report (Specific Game)");
-    InstructorReportSpecificCommonsMutation.mutate(data);
+    InstructorReportSpecificGameMutation.mutate(data);
   };
 
   const jobLaunchers = [
@@ -217,8 +215,8 @@ const AdminJobsPage = () => {
     {
       name: "Instructor Report (for specific game)",
       form: (
-        <InstructorReportSpecificCommonsForm
-          submitAction={submitInstructorReportSpecificCommonsJob}
+        <InstructorReportSpecificGameForm
+          submitAction={submitInstructorReportSpecificGameJob}
         />
       ),
     },

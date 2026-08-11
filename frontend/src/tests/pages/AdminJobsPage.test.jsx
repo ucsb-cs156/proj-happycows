@@ -7,7 +7,7 @@ import AdminJobsPage from "main/pages/AdminJobsPage";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
-import commonsFixtures from "../../fixtures/commonsFixtures";
+import gameFixtures from "../../fixtures/gameFixtures";
 import { vi } from "vitest";
 
 const mockToast = vi.fn();
@@ -104,9 +104,7 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("user can submit a set cow health job", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
@@ -125,11 +123,9 @@ describe("AdminJobsPage tests", () => {
     expect(setCowHealthButton).toBeInTheDocument();
     setCowHealthButton.click();
 
-    const commonsRadio = await screen.findByTestId(
-      "SetCowHealthForm-commons-1",
-    );
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("SetCowHealthForm-game-1");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const healthInput = screen.getByTestId("SetCowHealthForm-healthValue");
     const submitButton = screen.getByTestId("SetCowHealthForm-Submit-Button");
@@ -142,19 +138,17 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/setcowhealth?commonsID=1&health=10`,
+        `/api/jobs/launch/setcowhealth?gameID=1&health=10`,
       );
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Set Cow Health (Game: Anika's Commons, Health: 10)`,
+      `Submitted Job: Set Cow Health (Game: Anika's Game, Health: 10)`,
     );
   });
 
   test("user can submit update cow health job", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
@@ -173,11 +167,9 @@ describe("AdminJobsPage tests", () => {
     expect(UpdateCowHealthJobButton).toBeInTheDocument();
     UpdateCowHealthJobButton.click();
 
-    const commonsRadio = await screen.findByTestId(
-      "UpdateCowHealthForm-commons-1",
-    );
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("UpdateCowHealthForm-game-1");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const submitButton = screen.getByTestId(
       "UpdateCowHealthForm-Submit-Button",
@@ -189,19 +181,17 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/updatecowhealthsinglecommons?commonsId=1`,
+        `/api/jobs/launch/updatecowhealthsinglegame?gameId=1`,
       );
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Update Cow Health (Game: Anika's Commons)`,
+      `Submitted Job: Update Cow Health (Game: Anika's Game)`,
     );
   });
 
-  test("user can submit update cow health job for all commons", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+  test("user can submit update cow health job for all game", async () => {
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
@@ -220,11 +210,9 @@ describe("AdminJobsPage tests", () => {
     expect(UpdateCowHealthJobButton).toBeInTheDocument();
     UpdateCowHealthJobButton.click();
 
-    const commonsRadio = await screen.findByTestId(
-      "UpdateCowHealthForm-commons-0",
-    );
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("UpdateCowHealthForm-game-0");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const submitButton = screen.getByTestId(
       "UpdateCowHealthForm-Submit-Button",
@@ -244,9 +232,7 @@ describe("AdminJobsPage tests", () => {
   });
 
   test("user can submit milk the cows job", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
@@ -265,9 +251,9 @@ describe("AdminJobsPage tests", () => {
     expect(MilkTheCowsJobButton).toBeInTheDocument();
     MilkTheCowsJobButton.click();
 
-    const commonsRadio = await screen.findByTestId("MilkTheCowsForm-commons-1");
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("MilkTheCowsForm-game-1");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const submitButton = screen.getByTestId("MilkTheCowsForm-Submit-Button");
     expect(submitButton).toBeInTheDocument();
@@ -275,19 +261,17 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/milkthecowjobsinglecommons?commonsId=1`,
+        `/api/jobs/launch/milkthecowjobsinglegame?gameId=1`,
       );
     });
 
     expect(mockToast).toHaveBeenCalledWith(
-      `Submitted Job: Milk The Cows! (Game: Anika's Commons)`,
+      `Submitted Job: Milk The Cows! (Game: Anika's Game)`,
     );
   });
 
-  test("user can submit milk the cows job for all commons", async () => {
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+  test("user can submit milk the cows job for all game", async () => {
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
     getItemSpy.mockImplementation(() => null);
@@ -306,9 +290,9 @@ describe("AdminJobsPage tests", () => {
     expect(MilkTheCowsJobButton).toBeInTheDocument();
     MilkTheCowsJobButton.click();
 
-    const commonsRadio = await screen.findByTestId("MilkTheCowsForm-commons-0");
-    expect(commonsRadio).toBeInTheDocument();
-    fireEvent.click(commonsRadio);
+    const gameRadio = await screen.findByTestId("MilkTheCowsForm-game-0");
+    expect(gameRadio).toBeInTheDocument();
+    fireEvent.click(gameRadio);
 
     const submitButton = screen.getByTestId("MilkTheCowsForm-Submit-Button");
     expect(submitButton).toBeInTheDocument();
@@ -356,11 +340,9 @@ describe("AdminJobsPage tests", () => {
     });
   });
 
-  test("user can submit instructor report (specific commons) job", async () => {
+  test("user can submit instructor report (specific game) job", async () => {
     // arrange
-    axiosMock
-      .onGet("/api/commons/all")
-      .reply(200, commonsFixtures.threeCommons);
+    axiosMock.onGet("/api/game/all").reply(200, gameFixtures.threeGame);
 
     // act
     render(
@@ -386,7 +368,7 @@ describe("AdminJobsPage tests", () => {
     );
 
     const submitButton = await screen.findByTestId(
-      "InstructorReportSpecificCommonsForm-Submit-Button",
+      "InstructorReportSpecificGameForm-Submit-Button",
     );
     expect(submitButton).toBeInTheDocument();
     submitButton.click();
@@ -395,7 +377,7 @@ describe("AdminJobsPage tests", () => {
 
     await waitFor(() => {
       expect(axiosMock.history.post[0].url).toBe(
-        `/api/jobs/launch/instructorreportsinglecommons?commonsId=5`,
+        `/api/jobs/launch/instructorreportsinglegame?gameId=5`,
       );
     });
 

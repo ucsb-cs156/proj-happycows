@@ -73,21 +73,21 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCanPostAnnouncements() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
         LocalDateTime end = LocalDateTime.parse("2025-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        MvcResult response = mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", commonsId, start, end, announcement).with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&endDate={end}&announcementText={announcement}", gameId, start, end, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -100,24 +100,24 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userInCommonsCanPostAnnouncements() throws Exception {
+    public void userInGameCanPostAnnouncements() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        MvcResult response = mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&announcementText={announcement}", gameId, start, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -133,20 +133,20 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void userCanPostAnnouncementWithoutStartAndEndTime() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&announcementText={announcement}", commonsId, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&announcementText={announcement}", gameId, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -158,21 +158,21 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void userCannotPostAnnouncementWithEmptyString() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&announcementText={announcement}", gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -184,12 +184,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCannotPostAnnouncementThatIsTooLong() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement = "a".repeat(256);
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
         //act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&announcementText={announcement}", gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -201,16 +201,16 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCanPostAnnouncementAtMaxLength() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         String announcement = "a".repeat(255);
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
         //act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&announcementText={announcement}", gameId, start, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -222,22 +222,22 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void userCannotPostAnnouncementWithEndBeforeStart() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Announcement";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
         LocalDateTime end = LocalDateTime.parse("2022-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", commonsId, start, end, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&endDate={end}&announcementText={announcement}", gameId, start, end, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -246,23 +246,23 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userNotInCommonsCannotPostAnnouncements() throws Exception {
+    public void userNotInGameCannotPostAnnouncements() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
 
         when(announcementRepository.save(any(Announcement.class))).thenReturn(announcementObj);
 
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&startDate={start}&announcementText={announcement}", commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(post("/api/announcements/post?gameId={gameId}&startDate={start}&announcementText={announcement}", gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -293,14 +293,14 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCanDeleteAnnouncements() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long id = 0L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(start).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
@@ -323,7 +323,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // arrange
         Long id1 = 0L;
         Long id2 = 1L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement1 = "Hello world!";
         String announcement2 = "Hello world2!";
@@ -331,25 +331,25 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
-        Announcement announcementObj1 = Announcement.builder().id(id1).commonsId(commonsId).startDate(start).announcementText(announcement1).build();
-        Announcement announcementObj2 = Announcement.builder().id(id2).commonsId(commonsId).startDate(start).announcementText(announcement2).build();
+        Announcement announcementObj1 = Announcement.builder().id(id1).gameId(gameId).startDate(start).announcementText(announcement1).build();
+        Announcement announcementObj2 = Announcement.builder().id(id2).gameId(gameId).startDate(start).announcementText(announcement2).build();
         List<Announcement> announcementList = new ArrayList<>();
         announcementList.add(announcementObj1);
         announcementList.add(announcementObj2);
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
         Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
 
-        when(announcementRepository.findByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+        when(announcementRepository.findByGameId(gameId, pageable)).thenReturn(announcementPage);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/announcements/getbycommonsid?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/getbygameid?gameId={gameId}", gameId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(announcementRepository, atLeastOnce()).findByCommonsId(commonsId, pageable);
+        verify(announcementRepository, atLeastOnce()).findByGameId(gameId, pageable);
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(announcementPage);
         assertEquals(expectedResponseString, responseString);
@@ -357,12 +357,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userCannotGetAllAnnouncementsIfNotInCommons() throws Exception {
+    public void userCannotGetAllAnnouncementsIfNotInGame() throws Exception {
 
         // arrange
         Long id1 = 0L;
         Long id2 = 1L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement1 = "Hello world!";
         String announcement2 = "Hello world2!";
@@ -370,24 +370,24 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
-        Announcement announcementObj1 = Announcement.builder().id(id1).commonsId(commonsId).startDate(start).announcementText(announcement1).build();
-        Announcement announcementObj2 = Announcement.builder().id(id2).commonsId(commonsId).startDate(start).announcementText(announcement2).build();
+        Announcement announcementObj1 = Announcement.builder().id(id1).gameId(gameId).startDate(start).announcementText(announcement1).build();
+        Announcement announcementObj2 = Announcement.builder().id(id2).gameId(gameId).startDate(start).announcementText(announcement2).build();
         List<Announcement> announcementList = new ArrayList<>();
         announcementList.add(announcementObj1);
         announcementList.add(announcementObj2);
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
         Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
 
-        when(announcementRepository.findByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+        when(announcementRepository.findByGameId(gameId, pageable)).thenReturn(announcementPage);
 
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        mockMvc.perform(get("/api/announcements/getbycommonsid?commonsId={commonsId}", commonsId))
+        mockMvc.perform(get("/api/announcements/getbygameid?gameId={gameId}", gameId))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
-        verify(announcementRepository, times(0)).findByCommonsId(commonsId, pageable);
+        verify(announcementRepository, times(0)).findByGameId(gameId, pageable);
     }
 
     @WithMockUser(roles = {"ADMIN"})
@@ -397,29 +397,29 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // arrange
         Long id1 = 0L;
         Long id2 = 1L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement1 = "Hello world!";
         String announcement2 = "Hello world2!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
-        Announcement announcementObj1 = Announcement.builder().id(id1).commonsId(commonsId).startDate(start).announcementText(announcement1).build();
-        Announcement announcementObj2 = Announcement.builder().id(id2).commonsId(commonsId).startDate(start).announcementText(announcement2).build();
+        Announcement announcementObj1 = Announcement.builder().id(id1).gameId(gameId).startDate(start).announcementText(announcement1).build();
+        Announcement announcementObj2 = Announcement.builder().id(id2).gameId(gameId).startDate(start).announcementText(announcement2).build();
         List<Announcement> announcementList = new ArrayList<>();
         announcementList.add(announcementObj1);
         announcementList.add(announcementObj2);
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
         Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
 
-        when(announcementRepository.findByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+        when(announcementRepository.findByGameId(gameId, pageable)).thenReturn(announcementPage);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/announcements/getbycommonsid?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/getbygameid?gameId={gameId}", gameId))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(announcementRepository, atLeastOnce()).findByCommonsId(commonsId, pageable);
+        verify(announcementRepository, atLeastOnce()).findByGameId(gameId, pageable);
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(announcementPage);
         assertEquals(expectedResponseString, responseString);
@@ -427,12 +427,12 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userCanGetCurrentAnnouncementsIfInCommons() throws Exception {
+    public void userCanGetCurrentAnnouncementsIfInGame() throws Exception {
 
         // arrange
         Long id1 = 0L;
         Long id2 = 1L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement1 = "Current announcement 1";
         String announcement2 = "Current announcement 2";
@@ -443,14 +443,14 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         Announcement announcementObj1 = Announcement.builder()
             .id(id1)
-            .commonsId(commonsId)
+            .gameId(gameId)
             .startDate(start)
             .announcementText(announcement1)
             .build();
 
         Announcement announcementObj2 = Announcement.builder()
             .id(id2)
-            .commonsId(commonsId)
+            .gameId(gameId)
             .startDate(start)
             .announcementText(announcement2)
             .build();
@@ -462,19 +462,19 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
         Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
 
-        when(announcementRepository.findCurrentByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+        when(announcementRepository.findCurrentByGameId(gameId, pageable)).thenReturn(announcementPage);
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/current?gameId={gameId}", gameId))
             .andExpect(status().isOk())
             .andReturn();
 
         // assert
-        verify(farmerRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
-        verify(announcementRepository, atLeastOnce()).findCurrentByCommonsId(commonsId, pageable);
+        verify(farmerRepository, atLeastOnce()).findByGameIdAndUserId(gameId, userId);
+        verify(announcementRepository, atLeastOnce()).findCurrentByGameId(gameId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(announcementList);
@@ -483,24 +483,24 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userCannotGetCurrentAnnouncementsIfNotInCommons() throws Exception {
+    public void userCannotGetCurrentAnnouncementsIfNotInGame() throws Exception {
 
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
 
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
 
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/current?gameId={gameId}", gameId))
             .andExpect(status().isForbidden())
             .andReturn();
 
         // assert
-        verify(farmerRepository, atLeastOnce()).findByCommonsIdAndUserId(commonsId, userId);
-        verify(announcementRepository, times(0)).findCurrentByCommonsId(commonsId, pageable);
+        verify(farmerRepository, atLeastOnce()).findByGameIdAndUserId(gameId, userId);
+        verify(announcementRepository, times(0)).findCurrentByGameId(gameId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
         assertEquals("User is not a member of this game.", responseString);
@@ -513,7 +513,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         // arrange
         Long id1 = 0L;
         Long id2 = 1L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement1 = "Current announcement 1";
         String announcement2 = "Current announcement 2";
 
@@ -523,14 +523,14 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         Announcement announcementObj1 = Announcement.builder()
             .id(id1)
-            .commonsId(commonsId)
+            .gameId(gameId)
             .startDate(start)
             .announcementText(announcement1)
             .build();
 
         Announcement announcementObj2 = Announcement.builder()
             .id(id2)
-            .commonsId(commonsId)
+            .gameId(gameId)
             .startDate(start)
             .announcementText(announcement2)
             .build();
@@ -542,16 +542,16 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         Pageable pageable = PageRequest.of(0, 1000, Sort.by("startDate").descending());
         Page<Announcement> announcementPage = new PageImpl<Announcement>(announcementList, pageable, 2);
 
-        when(announcementRepository.findCurrentByCommonsId(commonsId, pageable)).thenReturn(announcementPage);
+        when(announcementRepository.findCurrentByGameId(gameId, pageable)).thenReturn(announcementPage);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/announcements/current?commonsId={commonsId}", commonsId))
+        MvcResult response = mockMvc.perform(get("/api/announcements/current?gameId={gameId}", gameId))
             .andExpect(status().isOk())
             .andReturn();
 
         // assert
-        verify(farmerRepository, times(0)).findByCommonsIdAndUserId(any(), any());
-        verify(announcementRepository, atLeastOnce()).findCurrentByCommonsId(commonsId, pageable);
+        verify(farmerRepository, times(0)).findByGameIdAndUserId(any(), any());
+        verify(announcementRepository, atLeastOnce()).findCurrentByGameId(gameId, pageable);
 
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(announcementList);
@@ -564,13 +564,13 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement = "Hello world!";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT-8:00"));
         Date start = sdf.parse("2024-03-03T17:39:43.000-08:00");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(start).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(start).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
@@ -604,11 +604,11 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
     public void adminCanEditAnnouncement() throws Exception {
 
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
@@ -626,11 +626,11 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         LocalDateTime editedStart = LocalDateTime.parse("2023-03-03T17:39:43");
         LocalDateTime editedEnd = LocalDateTime.parse("2025-03-03T17:39:43");
 
-        Announcement editedAnnouncementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(editedStart)).endDate(asDate(editedEnd)).announcementText(editedAnnouncement).build();
+        Announcement editedAnnouncementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(editedStart)).endDate(asDate(editedEnd)).announcementText(editedAnnouncement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         // act
-        MvcResult editedResponse = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", id, commonsId, editedStart, editedEnd, editedAnnouncement).with(csrf()))
+        MvcResult editedResponse = mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&endDate={end}&announcementText={announcement}", id, gameId, editedStart, editedEnd, editedAnnouncement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -647,18 +647,18 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement = "Hello world!";
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&announcementText={announcement}", id, commonsId, announcement).with(csrf()))
+        MvcResult response = mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&announcementText={announcement}", id, gameId, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -671,22 +671,22 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userCannotEditAnnouncementIfNotInCommons() throws Exception {
+    public void userCannotEditAnnouncementIfNotInGame() throws Exception {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&announcementText={announcement}", id, gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -700,7 +700,7 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement = "Hello world!";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
@@ -708,10 +708,10 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.empty());
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&announcementText={announcement}", id, gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -725,19 +725,19 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement = "";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&announcementText={announcement}", id, gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -751,20 +751,20 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String announcement = "Announcement";
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
         LocalDateTime end = LocalDateTime.parse("2022-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).endDate(asDate(end)).announcementText(announcement).build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         Farmer farmer = Farmer.builder().build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         // act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&endDate={end}&announcementText={announcement}", id, commonsId, start, end, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&endDate={end}&announcementText={announcement}", id, gameId, start, end, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -778,15 +778,15 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement = "a".repeat(256);
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText("short").build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         //act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&announcementText={announcement}", id, gameId, start, announcement).with(csrf()))
             .andExpect(status().isBadRequest()).andReturn();
 
         // assert
@@ -799,15 +799,15 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // arrange
         Long id = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         String announcement = "a".repeat(255);
         LocalDateTime start = LocalDateTime.parse("2024-03-03T17:39:43");
 
-        Announcement announcementObj = Announcement.builder().id(id).commonsId(commonsId).startDate(asDate(start)).announcementText("short").build();
+        Announcement announcementObj = Announcement.builder().id(id).gameId(gameId).startDate(asDate(start)).announcementText("short").build();
         when(announcementRepository.findByAnnouncementId(id)).thenReturn(Optional.of(announcementObj));
 
         //act
-        mockMvc.perform(put("/api/announcements/put?id={id}&commonsId={commonsId}&startDate={start}&announcementText={announcement}", id, commonsId, start, announcement).with(csrf()))
+        mockMvc.perform(put("/api/announcements/put?id={id}&gameId={gameId}&startDate={start}&announcementText={announcement}", id, gameId, start, announcement).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert

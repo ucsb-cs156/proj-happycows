@@ -1,6 +1,6 @@
 package edu.ucsb.cs156.happiercows.strategies;
 
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,35 +24,35 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     Linear("Linear",
             "Cow health increases/decreases proportionally to the number of cows over/under the carrying capacity.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
+        public double calculateNewCowHealth(GamePlus gamePlus, Farmer uC, int totalCows) {
             return uC.getCowHealth()
-                    - (totalCows - commonsPlus.getEffectiveCapacity()) * commonsPlus.getCommons().getDegradationRate();
+                    - (totalCows - gamePlus.getEffectiveCapacity()) * gamePlus.getGame().getDegradationRate();
         }
     },
     Constant("Constant",
             "Cow health changes increases/decreases by the degradation rate, depending on if the number of cows exceeds the carrying capacity.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
-            if (totalCows <= commonsPlus.getEffectiveCapacity()) {
-                return uC.getCowHealth() + commonsPlus.getCommons().getDegradationRate();
+        public double calculateNewCowHealth(GamePlus gamePlus, Farmer uC, int totalCows) {
+            if (totalCows <= gamePlus.getEffectiveCapacity()) {
+                return uC.getCowHealth() + gamePlus.getGame().getDegradationRate();
             } else {
-                return uC.getCowHealth() - commonsPlus.getCommons().getDegradationRate();
+                return uC.getCowHealth() - gamePlus.getGame().getDegradationRate();
             }
         }
     },
     Noop("Do nothing", "Cow health does not change.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
+        public double calculateNewCowHealth(GamePlus gamePlus, Farmer uC, int totalCows) {
             return uC.getCowHealth();
         }
     },
     Milan("Milan",
             "Cow health increases/decreases proportionally to the square of ratio of cows/total capacity according to a formula from Milan de Vries.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
-            double excess = totalCows - commonsPlus.getEffectiveCapacity();
+        public double calculateNewCowHealth(GamePlus gamePlus, Farmer uC, int totalCows) {
+            double excess = totalCows - gamePlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;
-            double x = (excess / commonsPlus.getEffectiveCapacity());
+            double x = (excess / gamePlus.getEffectiveCapacity());
             if(excess != 0){
                 double sign = -1 * excess / Math.abs(excess);
                 adjustmentFactor = 1.0 + sign * x * x;
@@ -64,11 +64,11 @@ public enum CowHealthUpdateStrategies implements CowHealthUpdateStrategy {
     Mattanjah("Mattanjah",
             "Cow health increases/decreases proportionally to the square of ratio of excess/total capacity * degradation rate according to a formula from Mattanjah de Vries.") {
         @Override
-        public double calculateNewCowHealth(CommonsPlus commonsPlus, Farmer uC, int totalCows) {
+        public double calculateNewCowHealth(GamePlus gamePlus, Farmer uC, int totalCows) {
 
-            double excess = totalCows - commonsPlus.getEffectiveCapacity();
+            double excess = totalCows - gamePlus.getEffectiveCapacity();
             double adjustmentFactor = 1.0;
-            double x = (excess / commonsPlus.getEffectiveCapacity()) * commonsPlus.getCommons().getDegradationRate();
+            double x = (excess / gamePlus.getEffectiveCapacity()) * gamePlus.getGame().getDegradationRate();
             if(excess != 0){
                 double sign = -1 * excess / Math.abs(excess);
                 adjustmentFactor = 1.0 + sign * x * x;

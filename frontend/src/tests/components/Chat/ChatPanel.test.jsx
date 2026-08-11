@@ -9,7 +9,7 @@ import AxiosMockAdapter from "axios-mock-adapter";
 describe("ChatPanel", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  const commonsId = 1;
+  const gameId = 1;
 
   beforeEach(() => {
     axiosMock.reset();
@@ -21,7 +21,7 @@ describe("ChatPanel", () => {
   test("renders empty ChatMessageCreate and ChatDisplay", async () => {
     render(
       <QueryClientProvider client={queryClient}>
-        <ChatPanel commonsId={commonsId} />
+        <ChatPanel gameId={gameId} />
       </QueryClientProvider>,
     );
 

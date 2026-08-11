@@ -3,7 +3,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.helpers.ReportCSVHelper;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportsController extends ApiController {
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -54,7 +54,7 @@ public class ReportsController extends ApiController {
     public Iterable<Report> allReports() {
         Iterable<Report> reports = reportRepository.findAll(
                 Sort.by(List.of(
-                        new Order(Sort.Direction.ASC, "commonsId"),
+                        new Order(Sort.Direction.ASC, "gameId"),
                         new Order(Sort.Direction.DESC, "id"))));
         return reports;
     }
@@ -68,12 +68,12 @@ public class ReportsController extends ApiController {
         return reports;
     }
 
-    @Operation(summary = "Get report headers for a given user commons")
+    @Operation(summary = "Get report headers for a given user game")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/headers")
-    public Iterable<Report> allReportsByCommonsId(
-            @Parameter(name = "commonsId") @RequestParam Long commonsId) {
-        Iterable<Report> reports = reportRepository.findAllByCommonsId(commonsId);
+    public Iterable<Report> allReportsByGameId(
+            @Parameter(name = "gameId") @RequestParam Long gameId) {
+        Iterable<Report> reports = reportRepository.findAllByGameId(gameId);
         return reports;
     }
 
@@ -86,7 +86,7 @@ public class ReportsController extends ApiController {
         return reportLines;
     }
 
-    @Operation(summary = "Get report lines for a report id and user commons id")
+    @Operation(summary = "Get report lines for a report id and user game id")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/download")
     public ResponseEntity<Resource> getLinesCSV(

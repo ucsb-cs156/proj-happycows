@@ -34,12 +34,12 @@ public class User {
   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
   @JoinTable(name = "farmer", 
     joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), 
-    inverseJoinColumns = @JoinColumn(name = "commons_id", referencedColumnName = "id"))
-    private List<Commons> commons;
+    inverseJoinColumns = @JoinColumn(name = "game_id", referencedColumnName = "id"))
+    private List<Game> game;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @JsonIgnore
-    private List<Farmer> joinedCommons;
+    private List<Farmer> joinedGame;
 
 
     @Override
