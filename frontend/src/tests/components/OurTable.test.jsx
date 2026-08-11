@@ -88,21 +88,21 @@ describe("OurTable tests", () => {
     PlaintextColumn("Log", (cell) => cell.row.original.log),
   ];
 
-  const commonsRows = [
+  const gameRows = [
     {
-      commons: { id: 7 },
+      game: { id: 7 },
     },
   ];
 
   const hrefColumns = [
     {
       Header: "id",
-      accessor: "commons.id",
+      accessor: "game.id",
     },
     HrefButtonColumn(
       "Stats CSV",
       "success",
-      "/api/commonstats/download?commonsId=",
+      "/api/commonstats/download?gameId=",
       "testId",
     ),
   ];
@@ -119,16 +119,14 @@ describe("OurTable tests", () => {
   });
 
   test("href button appears in table with expected href", async () => {
-    render(
-      <OurTable columns={hrefColumns} data={commonsRows} testid="testId" />,
-    );
+    render(<OurTable columns={hrefColumns} data={gameRows} testid="testId" />);
 
     const button = await screen.findByTestId(
       "testId-cell-row-0-col-Stats CSV-button",
     );
     expect(button).toHaveAttribute(
       "href",
-      "/api/commonstats/download?commonsId=7",
+      "/api/commonstats/download?gameId=7",
     );
   });
 

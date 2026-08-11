@@ -2,7 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.happiercows.helpers.CommonStatsCSVHelper;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommonStatsController {
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -46,23 +46,23 @@ public class CommonStatsController {
         return commonStatsRepository.findAll();
     }
 
-    @Operation(summary = "Get all stats for a commons")
+    @Operation(summary = "Get all stats for a game")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/commons")
-    public Iterable<CommonStats> allCommonStatsForCommons(
-            @Parameter(name = "commonsId") @RequestParam Long commonsId) {
-        return commonStatsRepository.findAllByCommonsId(commonsId);
+    @GetMapping("/game")
+    public Iterable<CommonStats> allCommonStatsForGame(
+            @Parameter(name = "gameId") @RequestParam Long gameId) {
+        return commonStatsRepository.findAllByGameId(gameId);
     }
 
-    @Operation(summary = "Get all stats for a commons as csv")
+    @Operation(summary = "Get all stats for a game as csv")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/download")
     public ResponseEntity<Resource> getCSV(
-            @Parameter(name = "commonsId") @RequestParam Long commonsId) throws IOException {
+            @Parameter(name = "gameId") @RequestParam Long gameId) throws IOException {
 
-        Iterable<CommonStats> commonStats = commonStatsRepository.findAllByCommonsId(commonsId);
+        Iterable<CommonStats> commonStats = commonStatsRepository.findAllByGameId(gameId);
                 
-        String filename = String.format("stats%05d.csv",commonsId);
+        String filename = String.format("stats%05d.csv",gameId);
 
         ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);
         InputStreamResource isr = new InputStreamResource(bais);
@@ -72,7 +72,7 @@ public class CommonStatsController {
                 .contentType(MediaType.parseMediaType("application/csv")).body(isr);
     }
 
-    @Operation(summary = "Get all stats for all commons as csv")
+    @Operation(summary = "Get all stats for all game as csv")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(value = "/downloadAll")
     public ResponseEntity<Resource> getAllCSV() throws IOException {

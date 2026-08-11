@@ -21,14 +21,14 @@ import edu.ucsb.cs156.happiercows.WebTestCase;
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class DashboardWebIT extends WebTestCase {
     @Test
-    public void newCommonsDashboardSectionsAndChatDefaultToHiddenFromStudents() throws Exception {
+    public void newGameDashboardSectionsAndChatDefaultToHiddenFromStudents() throws Exception {
         setupUser(true);
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByText("Create Game").click();
 
-        page.getByTestId("CommonsForm-name").fill("Web Test Commons For Dashboard Defaults");
-        page.getByTestId("CommonsForm-Submit-Button").click();
+        page.getByTestId("GameForm-name").fill("Web Test Game For Dashboard Defaults");
+        page.getByTestId("GameForm-Submit-Button").click();
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByRole(
@@ -38,7 +38,7 @@ public class DashboardWebIT extends WebTestCase {
                                 .setExact(true))
                 .click();
 
-        page.getByTestId("AdminCommonsCard-Dashboard-1").click();
+        page.getByTestId("AdminGameCard-Dashboard-1").click();
 
         // Every dashboard section should default to hidden from students until
         // an instructor explicitly enables it.

@@ -1,7 +1,7 @@
 import OurTable from "main/components/OurTable";
 import { formatter } from "./ReportFormatterUtil";
 
-// should take in a players list from a commons
+// should take in a players list from a game
 export default function ReportLineTable({ reportLines }) {
   const columns = [
     {

@@ -12,18 +12,18 @@ import { formatDateTime } from "main/utils/dateUtils";
 export default function AnnouncementTable({
   announcements,
   currentUser,
-  commonsId,
+  gameId,
 }) {
   const navigate = useNavigate();
 
   const editCallback = (cell) => {
-    navigate(`/admin/announcements/${commonsId}/edit/${cell.row.values.id}`);
+    navigate(`/admin/announcements/${gameId}/edit/${cell.row.values.id}`);
   };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDelete,
     { onSuccess: onDeleteSuccess },
-    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+    [`/api/announcements/getbygameid?gameId=${gameId}`],
   );
 
   const deleteCallback = async (cell) => {

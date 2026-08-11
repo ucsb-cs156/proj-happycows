@@ -14,21 +14,21 @@ const PAGE_SIZE = 25;
 const REFRESH_RATE = 2000;
 
 const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
-  const { commonsId } = useParams();
+  const { gameId } = useParams();
   const navigate = useNavigate();
   const loadMoreRef = useRef(null);
 
   const { data: farmerList } = useBackend(
-    [`/api/farmer/commons/all?commonsId=${commonsId}`],
+    [`/api/farmer/game/all?gameId=${gameId}`],
     {
       method: "GET",
-      url: "/api/farmer/commons/all",
+      url: "/api/farmer/game/all",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
     [],
-    { refetchInterval: REFRESH_RATE, enabled: !!commonsId },
+    { refetchInterval: REFRESH_RATE, enabled: !!gameId },
   );
 
   const hasValidFarmer = Array.isArray(farmerList);
@@ -50,7 +50,7 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
         // React Query will refetch automatically if keys match
       },
     },
-    [`/api/chat/admin/get?commonsId=${commonsId}`], // IMPORTANT
+    [`/api/chat/admin/get?gameId=${gameId}`], // IMPORTANT
   );
 
   const handleDelete = (id) => {
@@ -64,7 +64,7 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
       isAdmin ? "/api/chat/admin/get" : "/api/chat/get",
       {
         params: {
-          commonsId,
+          gameId,
           page: pageParam,
           size: PAGE_SIZE,
         },
@@ -80,11 +80,11 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-  } = useInfiniteQuery(["chatHistory", commonsId], fetchChatPage, {
+  } = useInfiniteQuery(["chatHistory", gameId], fetchChatPage, {
     getNextPageParam: (lastPage, pages) =>
       lastPage?.last === false ? pages.length : undefined,
     refetchInterval: REFRESH_RATE,
-    enabled: !!commonsId,
+    enabled: !!gameId,
   });
 
   useEffect(() => {
@@ -140,9 +140,9 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
         <div className="d-flex flex-column mb-3">
           <div className="d-flex justify-content-between align-items-center">
             <span className="text-muted">
-              Game #{commonsId} {readOnly && "• Admin Read Only"}
+              Game #{gameId} {readOnly && "• Admin Read Only"}
             </span>
-            <span className="text-muted">Game #{commonsId}</span>
+            <span className="text-muted">Game #{gameId}</span>
           </div>
 
           {isAdmin && (
@@ -155,7 +155,7 @@ const ChatHistoryPage = ({ readOnly = false, isAdmin = false }) => {
 
         {!readOnly && (
           <div className="mb-4">
-            <ChatMessageCreate commonsId={commonsId} />
+            <ChatMessageCreate gameId={gameId} />
           </div>
         )}
 

@@ -3,9 +3,9 @@ package edu.ucsb.cs156.happiercows.controllers;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
-import edu.ucsb.cs156.happiercows.errors.CommonsHiddenException;
+import edu.ucsb.cs156.happiercows.errors.GameHiddenException;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
-import edu.ucsb.cs156.happiercows.errors.NotEnrolledInCourseAssociatedWithCommonsException;
+import edu.ucsb.cs156.happiercows.errors.NotEnrolledInCourseAssociatedWithGameException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.ucsb.cs156.happiercows.models.CurrentUser;
@@ -37,7 +37,7 @@ public abstract class ApiController {
     );
   }
 
-  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, CommonsHiddenException.class, CourseAccessDeniedException.class})
+  @ExceptionHandler({ NoCowsException.class, NotEnoughMoneyException.class, GameHiddenException.class, CourseAccessDeniedException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Object handleBadRequest(Throwable e) {
     return Map.of(
@@ -46,7 +46,7 @@ public abstract class ApiController {
     );
   }
 
-  @ExceptionHandler({ NotEnrolledInCourseAssociatedWithCommonsException.class })
+  @ExceptionHandler({ NotEnrolledInCourseAssociatedWithGameException.class })
   @ResponseStatus(HttpStatus.FORBIDDEN)
   public Object handleForbidden(Throwable e) {
     return Map.of(

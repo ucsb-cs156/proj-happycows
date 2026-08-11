@@ -4,13 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
@@ -53,7 +53,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     UserRepository userRepository;
   
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
   
     @MockBean
     FarmerRepository farmerRepository;   
@@ -65,10 +65,10 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     AverageCowHealthService averageCowHealthService;
 
 
-    private Commons commons = Commons
+    private Game game = Game
         .builder()
         .id(17L)
-        .name("test commons")
+        .name("test game")
         .cowPrice(10)
         .milkPrice(2)
         .startingBalance(300)
@@ -82,7 +82,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
 
     CommonStats expectedStats1 = CommonStats
         .builder()
-        .commonsId(17L)
+        .gameId(17L)
         .numCows(20)
         .avgHealth(10)
         .createDate(Instant.parse("2004-03-11T08:00:00Z"))
@@ -90,7 +90,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
 
     CommonStats expectedStats2 = CommonStats
         .builder()
-        .commonsId(42L)
+        .gameId(42L)
         .numCows(120)
         .avgHealth(20)
         .createDate(Instant.parse("2004-03-27T08:00:00Z"))
@@ -116,14 +116,14 @@ public class CommonStatsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void get_stats_by_commonsId() throws Exception {
+    public void get_stats_by_gameId() throws Exception {
         Iterable<CommonStats> expectedStats = List.of(expectedStats1);
-        when(commonStatsRepository.findAllByCommonsId(17L)).thenReturn(expectedStats);
+        when(commonStatsRepository.findAllByGameId(17L)).thenReturn(expectedStats);
 
-        MvcResult response = mockMvc.perform(get("/api/commonstats/commons?commonsId=17")).andDo(print())
+        MvcResult response = mockMvc.perform(get("/api/commonstats/game?gameId=17")).andDo(print())
         .andExpect(status().isOk()).andReturn();
 
-        verify(commonStatsRepository, times(1)).findAllByCommonsId(17L);
+        verify(commonStatsRepository, times(1)).findAllByGameId(17L);
 
         String responseString = response.getResponse().getContentAsString();
                 List<CommonStats> actualStats = objectMapper.readValue(responseString, new TypeReference<List<CommonStats>>() {
@@ -134,18 +134,18 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void test_get_csv() throws Exception {
-            when(commonStatsRepository.findAllByCommonsId(17L)).thenReturn(List.of(expectedStats1));
+            when(commonStatsRepository.findAllByGameId(17L)).thenReturn(List.of(expectedStats1));
             
-            MvcResult response = mockMvc.perform(get("/api/commonstats/download?commonsId=17")).andDo(print())
+            MvcResult response = mockMvc.perform(get("/api/commonstats/download?gameId=17")).andDo(print())
                             .andExpect(status().isOk()).andReturn();
 
-            verify(commonStatsRepository, times(1)).findAllByCommonsId(eq(17L));
+            verify(commonStatsRepository, times(1)).findAllByGameId(eq(17L));
             String responseString = response.getResponse().getContentAsString();
 
             assertEquals("application/csv", response.getResponse().getContentType());
 
             String expected = 
-                    "id,commonsId,numCows,avgHealth,createDate\r\n" +
+                    "id,gameId,numCows,avgHealth,createDate\r\n" +
                     "0,17,20,10.0,2004-03-11 00:00:00\r\n";
                                         
             assertEquals(expected, responseString);
@@ -165,7 +165,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
             assertEquals("application/csv", response.getResponse().getContentType());
 
             String expected = 
-                    "id,commonsId,numCows,avgHealth,createDate\r\n" +
+                    "id,gameId,numCows,avgHealth,createDate\r\n" +
                     "0,17,20,10.0,2004-03-11 00:00:00\r\n" +
                     "0,42,120,20.0,2004-03-27 00:00:00\r\n";
                                         

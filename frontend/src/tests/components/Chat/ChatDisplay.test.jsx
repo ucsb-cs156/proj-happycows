@@ -16,12 +16,12 @@ import AxiosMockAdapter from "axios-mock-adapter";
 describe("ChatDisplay tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
 
-  const commonsId = 1;
+  const gameId = 1;
   const renderChatDisplay = () =>
     render(
       <QueryClientProvider client={new QueryClient()}>
         <MemoryRouter>
-          <ChatDisplay commonsId={commonsId} />
+          <ChatDisplay gameId={gameId} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -82,7 +82,7 @@ describe("ChatDisplay tests", () => {
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.threeChatMessages });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     //act
@@ -94,12 +94,12 @@ describe("ChatDisplay tests", () => {
     });
     expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
     expect(axiosMock.history.get[0].params).toEqual({
-      commonsId: 1,
+      gameId: 1,
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
-    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/game/all");
+    expect(axiosMock.history.get[1].params).toEqual({ gameId: 1 });
 
     const container = screen.getByTestId("ChatDisplay");
 
@@ -156,7 +156,7 @@ describe("ChatDisplay tests", () => {
     axiosMock
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.oneChatMessage });
-    axiosMock.onGet("/api/farmer/commons/all").reply(200, [{ userId: 1 }]);
+    axiosMock.onGet("/api/farmer/game/all").reply(200, [{ userId: 1 }]);
 
     //act
     renderChatDisplay();
@@ -167,12 +167,12 @@ describe("ChatDisplay tests", () => {
     });
     expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
     expect(axiosMock.history.get[0].params).toEqual({
-      commonsId: 1,
+      gameId: 1,
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
-    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/game/all");
+    expect(axiosMock.history.get[1].params).toEqual({ gameId: 1 });
 
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-1")).toBeInTheDocument();
@@ -199,7 +199,7 @@ describe("ChatDisplay tests", () => {
       .onGet("/api/chat/get")
       .reply(200, { content: chatMessageFixtures.twelveChatMessages });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     //act
@@ -211,12 +211,12 @@ describe("ChatDisplay tests", () => {
     });
     expect(axiosMock.history.get[0].url).toBe("/api/chat/get");
     expect(axiosMock.history.get[0].params).toEqual({
-      commonsId: 1,
+      gameId: 1,
       page: 0,
       size: 10,
     });
-    expect(axiosMock.history.get[1].url).toBe("/api/farmer/commons/all");
-    expect(axiosMock.history.get[1].params).toEqual({ commonsId: 1 });
+    expect(axiosMock.history.get[1].url).toBe("/api/farmer/game/all");
+    expect(axiosMock.history.get[1].params).toEqual({ gameId: 1 });
 
     await waitFor(() => {
       expect(screen.getByTestId("ChatMessageDisplay-12")).toBeInTheDocument();
@@ -244,7 +244,7 @@ describe("ChatDisplay tests", () => {
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
@@ -265,7 +265,7 @@ describe("ChatDisplay tests", () => {
       totalElements: 10,
     });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
@@ -279,13 +279,13 @@ describe("ChatDisplay tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("history link points to the commons specific route", async () => {
+  test("history link points to the game specific route", async () => {
     axiosMock.onGet("/api/chat/get").reply(200, {
       content: chatMessageFixtures.twelveChatMessages,
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
@@ -303,7 +303,7 @@ describe("ChatDisplay tests", () => {
       totalElements: 12,
     });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
@@ -325,7 +325,7 @@ describe("ChatDisplay tests", () => {
   test("ignores chat responses whose content field is not an array", async () => {
     axiosMock.onGet("/api/chat/get").reply(200, { content: "invalid" });
     axiosMock
-      .onGet("/api/farmer/commons/all")
+      .onGet("/api/farmer/game/all")
       .reply(200, farmerFixtures.threeFarmer);
 
     renderChatDisplay();
@@ -343,7 +343,7 @@ describe("ChatDisplay tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("handles user commons responses that are not arrays", async () => {
+  test("handles user game responses that are not arrays", async () => {
     const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
     useBackendSpy.mockImplementation((queryKey) => {
       const key = Array.isArray(queryKey) ? queryKey[0] : "";
@@ -358,7 +358,7 @@ describe("ChatDisplay tests", () => {
       if (key?.startsWith("/api/currentUser")) {
         return { data: { root: { user: { id: 1 }, roles: [] } } };
       }
-      if (key?.startsWith("/api/farmer/commons/all")) {
+      if (key?.startsWith("/api/farmer/game/all")) {
         return { data: { invalid: true } };
       }
       return { data: [] };
@@ -396,7 +396,7 @@ describe("ChatDisplay tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("configures chat and user commons queries with expected arguments", () => {
+  test("configures chat and user game queries with expected arguments", () => {
     const useBackendSpy = vi.spyOn(useBackendModule, "useBackend");
     useBackendSpy
       .mockReturnValueOnce({ data: { content: [], totalElements: 0 } })
@@ -406,12 +406,12 @@ describe("ChatDisplay tests", () => {
 
     expect(useBackendSpy).toHaveBeenNthCalledWith(
       1,
-      [`/api/chat/get?page=0&size=10&commonsId=${commonsId}`],
+      [`/api/chat/get?page=0&size=10&gameId=${gameId}`],
       {
         method: "GET",
         url: "/api/chat/get",
         params: {
-          commonsId,
+          gameId,
           page: 0,
           size: 10,
         },
@@ -421,11 +421,11 @@ describe("ChatDisplay tests", () => {
     );
     expect(useBackendSpy).toHaveBeenNthCalledWith(
       2,
-      [`/api/farmer/commons/all`],
+      [`/api/farmer/game/all`],
       {
         method: "GET",
-        url: "/api/farmer/commons/all",
-        params: { commonsId },
+        url: "/api/farmer/game/all",
+        params: { gameId },
       },
       [],
       { refetchInterval: 2000 },

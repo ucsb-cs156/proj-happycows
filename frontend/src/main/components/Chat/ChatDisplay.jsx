@@ -5,19 +5,17 @@ import { Link } from "react-router";
 
 // Props for storybook manual injection
 
-const ChatDisplay = ({ commonsId }) => {
+const ChatDisplay = ({ gameId }) => {
   const initialMessagePageSize = 10;
   const refreshRate = 2000;
 
   const { data: messagesPage } = useBackend(
-    [
-      `/api/chat/get?page=0&size=${initialMessagePageSize}&commonsId=${commonsId}`,
-    ],
+    [`/api/chat/get?page=0&size=${initialMessagePageSize}&gameId=${gameId}`],
     {
       method: "GET",
       url: `/api/chat/get`,
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
         page: 0,
         size: initialMessagePageSize,
       },
@@ -27,12 +25,12 @@ const ChatDisplay = ({ commonsId }) => {
   );
 
   const { data: farmerList } = useBackend(
-    [`/api/farmer/commons/all`],
+    [`/api/farmer/game/all`],
     {
       method: "GET",
-      url: "/api/farmer/commons/all",
+      url: "/api/farmer/game/all",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
     [],
@@ -62,7 +60,7 @@ const ChatDisplay = ({ commonsId }) => {
     : 0;
   const showHistoryLink =
     (totalElements ?? messageCount) > initialMessagePageSize;
-  const historyLink = `/chat/${commonsId}`;
+  const historyLink = `/chat/${gameId}`;
 
   return (
     <>

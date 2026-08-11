@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 
@@ -19,7 +19,7 @@ import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 public class SetCowHealthJobFactoryTests extends JobTestCase {
 
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @MockBean
     FarmerRepository farmerRepository;
@@ -37,7 +37,7 @@ public class SetCowHealthJobFactoryTests extends JobTestCase {
         SetCowHealthJob setCowHealthJob = (SetCowHealthJob) setCowHealthJobFactory.create(117L,2.0);
 
         // Assert
-        assertEquals(commonsRepository,setCowHealthJob.getCommonsRepository());
+        assertEquals(gameRepository,setCowHealthJob.getGameRepository());
         assertEquals(farmerRepository,setCowHealthJob.getFarmerRepository());
         assertEquals(userRepository,setCowHealthJob.getUserRepository());
 

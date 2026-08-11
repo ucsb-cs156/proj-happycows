@@ -2,12 +2,12 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 import java.util.Optional;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.AllArgsConstructor;
@@ -17,33 +17,33 @@ import lombok.Getter;
 public class UpdateCowHealthJobInd implements JobContextConsumer {
 
     @Getter
-    private CommonsRepository commonsRepository;
+    private GameRepository gameRepository;
     @Getter
     private FarmerRepository farmerRepository;
     @Getter
     private UserRepository userRepository;
     @Getter
-    private CommonsPlusBuilderService commonsPlusBuilderService;
+    private GamePlusBuilderService gamePlusBuilderService;
     @Getter
-    private Long commonsID;
+    private Long gameID;
 
     @Override
     public void accept(JobContext ctx) throws Exception {
         ctx.log("Updating cow health...");
 
-       Optional<Commons> commonUpdatedOpt = commonsRepository.findById(commonsID);
+       Optional<Game> commonUpdatedOpt = gameRepository.findById(gameID);
 
 
         if(commonUpdatedOpt.isPresent()){
-            Commons commonsUpdated = commonUpdatedOpt.get();
-            if (!CommonsGate.shouldProcess(commonsUpdated, commonsRepository, ctx)) {
+            Game gameUpdated = commonUpdatedOpt.get();
+            if (!GameGate.shouldProcess(gameUpdated, gameRepository, ctx)) {
                 return;
             }
-            CommonsPlus commonsPlus = commonsPlusBuilderService.toCommonsPlus(commonsUpdated);
-            UpdateCowHealthJob.runUpdateJobInCommons(commonsUpdated, commonsPlus, commonsPlusBuilderService, commonsRepository, farmerRepository, ctx); 
+            GamePlus gamePlus = gamePlusBuilderService.toGamePlus(gameUpdated);
+            UpdateCowHealthJob.runUpdateJobInGame(gameUpdated, gamePlus, gamePlusBuilderService, gameRepository, farmerRepository, ctx); 
             ctx.log("Cow health has been updated!");
         } else {
-            ctx.log(String.format("No commons found for id %d", commonsID));
+            ctx.log(String.format("No game found for id %d", gameID));
         }
     }
     

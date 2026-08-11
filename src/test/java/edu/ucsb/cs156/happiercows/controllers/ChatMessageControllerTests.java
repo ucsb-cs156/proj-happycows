@@ -39,7 +39,7 @@ import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,33 +63,33 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     //* */ get tests
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userInCommonsCanGetChatMessages() throws Exception {
+    public void userInGameCanGetChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).userId(userId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).userId(userId).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().showChat(true).build())
+                .game(Game.builder().showChat(true).build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
         log.info("Got back from API: {}",responseString);
@@ -101,24 +101,24 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void adminCanGetChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).userId(userId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).userId(userId).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
         log.info("Got back from API: {}",responseString);
@@ -127,29 +127,29 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userNotInCommonsCannotGetChatMessages() throws Exception {
+    public void userNotInGameCannotGetChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).userId(userId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).userId(userId).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         // act
-        mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isForbidden()).andReturn();
         
         // assert
-        verify(chatMessageRepository, times(0)).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
 
     }
     
@@ -159,23 +159,23 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void adminCanGetAllChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findAllByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/admin/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findAllByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
         log.info("Got back from API: {}",responseString);
@@ -187,23 +187,23 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void userCannotUseAdminGetAPIEndpoint() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findAllByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
 
         // act
-        mockMvc.perform(get("/api/chat/admin/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/admin/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
-        verify(chatMessageRepository, times(0)).findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findAllByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
     }
 
     //* */ admin/hidden tests
@@ -212,23 +212,23 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void adminCanGetHiddenChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).hidden(true).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).hidden(true).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).hidden(true).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).hidden(true).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByGameIdAndHidden(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
 
         // act
-        MvcResult response = mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        MvcResult response = mockMvc.perform(get("/api/chat/admin/hidden?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(chatMessageRepository, atLeastOnce()).findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, atLeastOnce()).findByGameIdAndHidden(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(pageOfChatMessages);
         log.info("Got back from API: {}",responseString);
@@ -240,46 +240,46 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void userCannotGetHiddenChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         int page = 0;
         int size = 10;
 
-        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).hidden(true).build();
-        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).hidden(true).build();
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).gameId(gameId).hidden(true).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).gameId(gameId).hidden(true).build();
 
         Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
 
-        when(chatMessageRepository.findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        when(chatMessageRepository.findByGameIdAndHidden(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
 
         // act
-        mockMvc.perform(get("/api/chat/admin/hidden?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/admin/hidden?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
-        verify(chatMessageRepository, times(0)).findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        verify(chatMessageRepository, times(0)).findByGameIdAndHidden(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
     }
 
     //* */ post tests
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userInCommonsCanPostChatMessages() throws Exception {
+    public void userInGameCanPostChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String content = "Hello world!";
 
-        ChatMessage chatMessage = ChatMessage.builder().id(0L).commonsId(commonsId).userId(userId).message(content).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(0L).gameId(gameId).userId(userId).message(content).build();
 
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().showChat(true).build())
+                .game(Game.builder().showChat(true).build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
-        MvcResult response = mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/chat/post?gameId={gameId}&content={content}", gameId, content).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -292,21 +292,21 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"USER"})
     @Test
-    public void userNotInCommonsCannotPostChatMessages() throws Exception {
+    public void userNotInGameCannotPostChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String content = "Hello world!";
 
-        ChatMessage chatMessage = ChatMessage.builder().id(0L).commonsId(commonsId).userId(userId).message(content).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(0L).gameId(gameId).userId(userId).message(content).build();
 
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.empty());
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.empty());
 
         //act 
-        mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+        mockMvc.perform(post("/api/chat/post?gameId={gameId}&content={content}", gameId, content).with(csrf()))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
@@ -318,16 +318,16 @@ public class ChatMessageControllerTests extends ControllerTestCase {
     public void adminCanPostChatMessages() throws Exception {
         
         // arrange
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         String content = "Hello world!";
 
-        ChatMessage chatMessage = ChatMessage.builder().id(0L).commonsId(commonsId).userId(userId).message(content).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(0L).gameId(gameId).userId(userId).message(content).build();
 
         when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
         
         //act 
-        MvcResult response = mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+        MvcResult response = mockMvc.perform(post("/api/chat/post?gameId={gameId}&content={content}", gameId, content).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert
@@ -363,16 +363,16 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         
         // arrange
         Long messageId = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).gameId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         Farmer farmer = Farmer.builder()
-            .commons(Commons.builder().build())
+            .game(Game.builder().build())
             .build();
-when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -395,16 +395,16 @@ when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Op
         
         // arrange
         Long messageId = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).gameId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().showChat(true).build())
+                .game(Game.builder().showChat(true).build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -447,16 +447,16 @@ when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Op
         
         // arrange
         Long messageId = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(2L).commonsId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(2L).gameId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().build())
+                .game(Game.builder().build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -479,26 +479,26 @@ when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Op
         
         // arrange
         Long messageId = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         int page = 0;
         int size = 10;
         String content = "Hello world!";
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).gameId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().showChat(false).build())
+                .game(Game.builder().showChat(false).build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
             .andExpect(status().isForbidden()).andReturn();
-        mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isForbidden()).andReturn();
-        mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+        mockMvc.perform(post("/api/chat/post?gameId={gameId}&content={content}", gameId, content).with(csrf()))
             .andExpect(status().isForbidden()).andReturn();
 
         // assert
@@ -512,26 +512,26 @@ when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Op
         
         // arrange
         Long messageId = 0L;
-        Long commonsId = 1L;
+        Long gameId = 1L;
         Long userId = 1L;
         int page = 0;
         int size = 10;
         String content = "Hello world!";
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).gameId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
 
         Farmer farmer = Farmer.builder()
-                .commons(Commons.builder().showChat(false).build())
+                .game(Game.builder().showChat(false).build())
                 .build();
-        when(farmerRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(farmer));
+        when(farmerRepository.findByGameIdAndUserId(gameId, userId)).thenReturn(Optional.of(farmer));
 
         //act 
         mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
             .andExpect(status().isOk()).andReturn();
-        mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+        mockMvc.perform(get("/api/chat/get?gameId={gameId}&page={page}&size={size}", gameId, page, size))
             .andExpect(status().isOk()).andReturn();
-        mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+        mockMvc.perform(post("/api/chat/post?gameId={gameId}&content={content}", gameId, content).with(csrf()))
             .andExpect(status().isOk()).andReturn();
 
         // assert

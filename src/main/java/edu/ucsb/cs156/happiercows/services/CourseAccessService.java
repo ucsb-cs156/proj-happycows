@@ -1,6 +1,6 @@
 package edu.ucsb.cs156.happiercows.services;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Staff;
 import edu.ucsb.cs156.happiercows.entities.Student;
 import edu.ucsb.cs156.happiercows.entities.User;
@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Determines whether a user has access to a course-linked Commons, based on
+ * Determines whether a user has access to a course-linked Game, based on
  * whether their email appears on the roster (as a Student or Staff member)
- * of the course the Commons is linked to. See issue #251.
+ * of the course the Game is linked to. See issue #251.
  */
 @Service
 public class CourseAccessService {
@@ -27,18 +27,18 @@ public class CourseAccessService {
     private StaffRepository staffRepository;
 
     /**
-     * A user is eligible for a course-linked commons if they are an admin, or
+     * A user is eligible for a course-linked game if they are an admin, or
      * if their email appears on the course's roster of students or staff.
-     * A commons with no course (courseId == null) is open to everyone.
+     * A game with no course (courseId == null) is open to everyone.
      */
-    public boolean isEligibleForCommons(User user, Commons commons) {
-        if (commons.getCourseId() == null) {
+    public boolean isEligibleForGame(User user, Game game) {
+        if (game.getCourseId() == null) {
             return true;
         }
         if (user.isAdmin()) {
             return true;
         }
-        return getCourseIdsForUser(user).contains(commons.getCourseId());
+        return getCourseIdsForUser(user).contains(game.getCourseId());
     }
 
     /**

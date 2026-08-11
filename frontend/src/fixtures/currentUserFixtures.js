@@ -14,7 +14,7 @@ const apiCurrentUserFixtures = {
       hostedDomain: "ucsb.edu",
       admin: true,
       lastOnline: "2023-06-04T18:45:16.014490Z",
-      commons: [
+      game: [
         {
           id: 1,
           name: "MyCommon",
@@ -71,7 +71,7 @@ const apiCurrentUserFixtures = {
       hostedDomain: null,
       admin: false,
       lastOnline: "2023-06-04T18:45:16.014490Z",
-      commons: [
+      game: [
         {
           id: 1,
           name: "MyCommon",

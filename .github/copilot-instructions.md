@@ -73,7 +73,7 @@ INTEGRATION=true HEADLESS=false mvn failsafe:integration-test
 
 **NEVER CANCEL - Mutation testing takes significant time:**
 
-- **Single class**: `mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.happiercows.entities.Commons` - takes ~72 seconds
+- **Single class**: `mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.happiercows.entities.Game` - takes ~72 seconds
 - **Single package**: `mvn pitest:mutationCoverage -DtargetClasses=edu.ucsb.cs156.happiercows.controllers.\*` - takes 5-15+ minutes
 - **Full mutation coverage**: `mvn pitest:mutationCoverage` - takes 30-60+ minutes. NEVER CANCEL. Set timeout to 90+ minutes.
 

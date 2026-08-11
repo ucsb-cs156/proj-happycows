@@ -12,7 +12,7 @@ const mockNavigate = vi.fn();
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
-    commonsId: 1,
+    gameId: 1,
   }),
   useNavigate: () => mockNavigate,
 }));
@@ -34,7 +34,7 @@ describe("LoadingPage tests", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.userOnly);
-    axiosMock.onGet("/api/commons/all").reply(200, []);
+    axiosMock.onGet("/api/game/all").reply(200, []);
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>

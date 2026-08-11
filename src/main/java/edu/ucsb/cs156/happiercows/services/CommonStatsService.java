@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
@@ -15,7 +15,7 @@ public class CommonStatsService {
     CommonStatsRepository commonStatsRepository;
 
     @Autowired
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Autowired
     FarmerRepository farmerRepository;
@@ -23,16 +23,16 @@ public class CommonStatsService {
     @Autowired
     private AverageCowHealthService averageCowHealthService;
 
-    public CommonStats createCommonStats(Long commonsId) {
+    public CommonStats createCommonStats(Long gameId) {
 
-        commonsRepository.findById(commonsId)
-            .orElseThrow(() -> new IllegalArgumentException(String.format("Commons with id %d not found", commonsId)));
+        gameRepository.findById(gameId)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("Game with id %d not found", gameId)));
         
-        double avgHealth = averageCowHealthService.getAverageCowHealth(commonsId);
-        int totalNumCows = averageCowHealthService.getTotalNumCows(commonsId);
+        double avgHealth = averageCowHealthService.getAverageCowHealth(gameId);
+        int totalNumCows = averageCowHealthService.getTotalNumCows(gameId);
 
         CommonStats stats = CommonStats.builder()
-                .commonsId(commonsId)
+                .gameId(gameId)
                 .numCows(totalNumCows)
                 .avgHealth(avgHealth)
                 .build();
@@ -40,9 +40,9 @@ public class CommonStatsService {
         return stats;
     }
 
-    public CommonStats createAndSaveCommonStats(Long commonsId) {
+    public CommonStats createAndSaveCommonStats(Long gameId) {
         
-        CommonStats stats = createCommonStats(commonsId);
+        CommonStats stats = createCommonStats(gameId);
         commonStatsRepository.save(stats);
 
         return stats;

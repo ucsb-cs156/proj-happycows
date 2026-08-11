@@ -23,7 +23,7 @@ public class Profit {
     @ManyToOne
     @JoinColumns({
         @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
-        @JoinColumn(name = "commons_id", referencedColumnName = "commons_id")
+        @JoinColumn(name = "game_id", referencedColumnName = "game_id")
     })
     private Farmer farmer;
     private double amount;

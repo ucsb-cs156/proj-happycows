@@ -14,7 +14,7 @@ const Template = (args) => {
 export const Message = Template.bind({});
 
 Message.args = {
-  commonsId: 1,
+  gameId: 1,
 };
 
 Message.parameters = {

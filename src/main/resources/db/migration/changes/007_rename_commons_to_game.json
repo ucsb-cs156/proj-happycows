@@ -1,0 +1,243 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "007-rename-commons-table-to-game",
+        "author": "pc",
+        "comment": "Rename the commons table to game (see issue #276): a row in this table represents one game instance.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "tableExists": {
+              "tableName": "commons"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameTable": {
+              "oldTableName": "commons",
+              "newTableName": "game"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-farmer-commons_id-column-and-fk",
+        "author": "pc",
+        "comment": "Rename farmer.commons_id to farmer.game_id, and the FK_FARMER_COMMONS constraint to FK_FARMER_GAME.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "farmer",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "farmer",
+              "constraintName": "FK_FARMER_COMMONS"
+            }
+          },
+          {
+            "renameColumn": {
+              "tableName": "farmer",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "game_id",
+              "baseTableName": "farmer",
+              "constraintName": "FK_FARMER_GAME",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "ID",
+              "referencedTableName": "game"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-profits-commons_id-column-and-fk",
+        "author": "pc",
+        "comment": "Rename profits.commons_id to profits.game_id, and the FK_PROFITS_USER_COMMONS constraint to FK_PROFITS_FARMER.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "profits",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "profits",
+              "constraintName": "FK_PROFITS_USER_COMMONS"
+            }
+          },
+          {
+            "renameColumn": {
+              "tableName": "profits",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "game_id,user_id",
+              "baseTableName": "profits",
+              "constraintName": "FK_PROFITS_FARMER",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "game_id,user_id",
+              "referencedTableName": "farmer"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-announcement-commons_id-column",
+        "author": "pc",
+        "comment": "Rename announcement.commons_id to announcement.game_id.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "announcement",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "announcement",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-chat_message-commons_id-column",
+        "author": "pc",
+        "comment": "Rename chat_message.commons_id to chat_message.game_id.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "chat_message",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "chat_message",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-commonstats-commons_id-column",
+        "author": "pc",
+        "comment": "Rename commonstats.commons_id to commonstats.game_id.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "commonstats",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "commonstats",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-cowdeath-commons_id-column",
+        "author": "pc",
+        "comment": "Rename cowdeath.commons_id to cowdeath.game_id.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "cowdeath",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "cowdeath",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-reports-commons_id-column",
+        "author": "pc",
+        "comment": "Rename reports.commons_id to reports.game_id.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "reports",
+              "columnName": "commons_id"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameColumn": {
+              "tableName": "reports",
+              "oldColumnName": "commons_id",
+              "newColumnName": "game_id",
+              "columnDataType": "BIGINT"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

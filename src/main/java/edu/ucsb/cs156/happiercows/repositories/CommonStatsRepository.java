@@ -8,6 +8,6 @@ import org.springframework.data.domain.Sort;
 
 @Repository
 public interface CommonStatsRepository extends CrudRepository<CommonStats, Long> {
-    Iterable<CommonStats> findAllByCommonsId(Long commonsId);
+    Iterable<CommonStats> findAllByGameId(Long gameId);
     Iterable<CommonStats> findAll(Sort sort);
 }

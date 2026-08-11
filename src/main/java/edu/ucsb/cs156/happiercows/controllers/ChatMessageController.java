@@ -42,90 +42,90 @@ public class ChatMessageController extends ApiController{
     @Autowired
     ObjectMapper mapper;
 
-    @Operation(summary = "Get all chat messages", description = "Get all chat messages associated with a specific commons.")
+    @Operation(summary = "Get all chat messages", description = "Get all chat messages associated with a specific game.")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/get")
-    public ResponseEntity<Object> getChatMessages(@Parameter(description = "The id of the common") @RequestParam Long commonsId,
+    public ResponseEntity<Object> getChatMessages(@Parameter(description = "The id of the common") @RequestParam Long gameId,
                                             @Parameter(name="page") @RequestParam int page,
                                             @Parameter(name="size") @RequestParam int size) {
         
-        // Make sure the user is part of the commons and showChat is true, or user is an admin
+        // Make sure the user is part of the game and showChat is true, or user is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
-            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
             Farmer farmer = farmerLookup.get();
-            if(!farmer.getCommons().isShowChat()){
+            if(!farmer.getGame().isShowChat()){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
 
         // Return the list of non-hidden chat messages
-        Page<ChatMessage> messages = chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        Page<ChatMessage> messages = chatMessageRepository.findByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         return ResponseEntity.ok(messages);
     }
 
-    @Operation(summary = "Get all chat messages (Admins)", description = "Get all chat messages associated with a specific commons, even the hidden ones. Used only by admins")
+    @Operation(summary = "Get all chat messages (Admins)", description = "Get all chat messages associated with a specific game, even the hidden ones. Used only by admins")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/get")
-    public ResponseEntity<Object> getAllChatMessages(@Parameter(description = "The id of the common") @RequestParam Long commonsId,
+    public ResponseEntity<Object> getAllChatMessages(@Parameter(description = "The id of the common") @RequestParam Long gameId,
                                                     @Parameter(name="page") @RequestParam int page,
                                                     @Parameter(name="size") @RequestParam int size) {
         
         // Return the list of chat messages
-        Page<ChatMessage> messages = chatMessageRepository.findAllByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        Page<ChatMessage> messages = chatMessageRepository.findAllByGameId(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         return ResponseEntity.ok(messages);
     }
 
     
-    @Operation(summary = "Get hidden chat messages", description = "Get all hidden chat messages associated with a specific commons. Used only by admins")
+    @Operation(summary = "Get hidden chat messages", description = "Get all hidden chat messages associated with a specific game. Used only by admins")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/hidden")
-    public ResponseEntity<Object> getHiddenChatMessages(@Parameter(description = "The id of the common") @RequestParam Long commonsId,
+    public ResponseEntity<Object> getHiddenChatMessages(@Parameter(description = "The id of the common") @RequestParam Long gameId,
                                                     @Parameter(name="page") @RequestParam int page,
                                                     @Parameter(name="size") @RequestParam int size) {
         
         // Return the list of hidden chat messages
-        Page<ChatMessage> messages = chatMessageRepository.findByCommonsIdAndHidden(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+        Page<ChatMessage> messages = chatMessageRepository.findByGameIdAndHidden(gameId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
         return ResponseEntity.ok(messages);
     }
     
     
-    @Operation(summary = "Create a chat message", description = "Create a chat message associated with a specific commons")
+    @Operation(summary = "Create a chat message", description = "Create a chat message associated with a specific game")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PostMapping("/post")
-    public ResponseEntity<Object> createChatMessage(@Parameter(description = "The id of the common") @RequestParam Long commonsId,
+    public ResponseEntity<Object> createChatMessage(@Parameter(description = "The id of the common") @RequestParam Long gameId,
                                                     @Parameter(description = "The message to be sent") @RequestParam String content) {
         
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
-        // Make sure the user is part of the commons and showChat is true, or user is an admin
+        // Make sure the user is part of the game and showChat is true, or user is an admin
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
-            Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(commonsId, userId);
+            Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(gameId, userId);
 
             if (!farmerLookup.isPresent()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
 
             Farmer farmer = farmerLookup.get();
-            if(!farmer.getCommons().isShowChat()){
+            if(!farmer.getGame().isShowChat()){
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
 
         // Create the chat message
         ChatMessage chatMessage = ChatMessage.builder()
-        .commonsId(commonsId)
+        .gameId(gameId)
         .userId(userId)
         .message(content)
         .hidden(false)
@@ -139,7 +139,7 @@ public class ChatMessageController extends ApiController{
         return ResponseEntity.ok(chatMessage);
     }
 
-    @Operation(summary = "Delete a chat message", description = "Delete a chat message associated with a specific commons")
+    @Operation(summary = "Delete a chat message", description = "Delete a chat message associated with a specific game")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PutMapping("/hide")
     public ResponseEntity<Object> hideChatMessage(@Parameter(description = "The id of the chat message") @RequestParam Long chatMessageId) {
@@ -164,9 +164,9 @@ public class ChatMessageController extends ApiController{
         }
 
         // Check if showChat is true
-        Optional<Farmer> farmerLookup = farmerRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);
+        Optional<Farmer> farmerLookup = farmerRepository.findByGameIdAndUserId(chatMessage.getGameId(), userId);
         Farmer farmer = farmerLookup.get();
-        if (!farmer.getCommons().isShowChat()){
+        if (!farmer.getGame().isShowChat()){
             // Check if the user is an admin
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){

@@ -22,9 +22,9 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    // The user that created this message and the commons that it belongs in
+    // The user that created this message and the game that it belongs in
     private long userId;
-    private long commonsId;
+    private long gameId;
 
     // Message timestamp and payload
     @CreationTimestamp

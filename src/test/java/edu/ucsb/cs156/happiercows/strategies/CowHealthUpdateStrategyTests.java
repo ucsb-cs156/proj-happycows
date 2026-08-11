@@ -1,9 +1,9 @@
 package edu.ucsb.cs156.happiercows.strategies;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
-import edu.ucsb.cs156.happiercows.entities.CommonsPlus;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
+import edu.ucsb.cs156.happiercows.services.GamePlusBuilderService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,41 +17,41 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration
 class CowHealthUpdateStrategyTests {
 
-    Commons commons = Commons.builder()
+    Game game = Game.builder()
             .degradationRate(0.01)
             .capacityPerUser(20)
             .carryingCapacity(100)
             .build();
     Farmer uc = Farmer.builder().cowHealth(50).build();
 
-    CommonsPlus commonsPlus = CommonsPlus.builder().commons(commons).totalUsers(1).build();
+    GamePlus gamePlus = GamePlus.builder().game(game).totalUsers(1).build();
 
-    Commons commons1 = Commons.builder()
+    Game game1 = Game.builder()
             .degradationRate(1.0)
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
     Farmer uc1 = Farmer.builder().cowHealth(50).build();
 
-    CommonsPlus commonsPlus1 = CommonsPlus.builder().commons(commons1).totalUsers(1).build();
+    GamePlus gamePlus1 = GamePlus.builder().game(game1).totalUsers(1).build();
 
-    Commons commons2 = Commons.builder()
+    Game game2 = Game.builder()
             .degradationRate(2.0)
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
     Farmer uc2 = Farmer.builder().cowHealth(50).build();
 
-    CommonsPlus commonsPlus2 = CommonsPlus.builder().commons(commons2).totalUsers(1).build();
+    GamePlus gamePlus2 = GamePlus.builder().game(game2).totalUsers(1).build();
 
-    Commons commons0_5 = Commons.builder()
+    Game game0_5 = Game.builder()
             .degradationRate(0.5)
             .capacityPerUser(1)
             .carryingCapacity(1000)
             .build();
     Farmer uc0_5 = Farmer.builder().cowHealth(50).build();
 
-    CommonsPlus commonsPlus0_5 = CommonsPlus.builder().commons(commons0_5).totalUsers(1).build();
+    GamePlus gamePlus0_5 = GamePlus.builder().game(game0_5).totalUsers(1).build();
 
     @Test
     void get_name_and_description() {
@@ -66,37 +66,37 @@ class CowHealthUpdateStrategyTests {
     void linear_updates_health_proportional_to_num_cows_over_capacity() {
         var formula = CowHealthUpdateStrategies.Linear;
 
-        assertEquals(49.9, formula.calculateNewCowHealth(commonsPlus, uc, 110));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus, uc, 100));
-        assertEquals(50.1, formula.calculateNewCowHealth(commonsPlus, uc, 90));
+        assertEquals(49.9, formula.calculateNewCowHealth(gamePlus, uc, 110));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus, uc, 100));
+        assertEquals(50.1, formula.calculateNewCowHealth(gamePlus, uc, 90));
     }
 
     @Test
     void constant_changes_by_constant_amount() {
         var formula = CowHealthUpdateStrategies.Constant;
 
-        assertEquals(49.99, formula.calculateNewCowHealth(commonsPlus, uc, 120));
-        assertEquals(49.99, formula.calculateNewCowHealth(commonsPlus, uc, 110));
-        assertEquals(50.01, formula.calculateNewCowHealth(commonsPlus, uc, 100));
-        assertEquals(50.01, formula.calculateNewCowHealth(commonsPlus, uc, 90));
+        assertEquals(49.99, formula.calculateNewCowHealth(gamePlus, uc, 120));
+        assertEquals(49.99, formula.calculateNewCowHealth(gamePlus, uc, 110));
+        assertEquals(50.01, formula.calculateNewCowHealth(gamePlus, uc, 100));
+        assertEquals(50.01, formula.calculateNewCowHealth(gamePlus, uc, 90));
     }
 
     @Test
     void noop_does_nothing() {
         var formula = CowHealthUpdateStrategies.Noop;
 
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus, uc, 110));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus, uc, 100));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus, uc, 90));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus, uc, 110));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus, uc, 100));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus, uc, 90));
     }
 
     @Test
     void milan_calculates_correctly() {
         var formula = CowHealthUpdateStrategies.Milan;
-        assertEquals(62.5, formula.calculateNewCowHealth(commonsPlus1, uc1, 500));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 1000));
-        assertEquals(37.5, formula.calculateNewCowHealth(commonsPlus1, uc1, 1500));
-        assertEquals(0.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 2000));
+        assertEquals(62.5, formula.calculateNewCowHealth(gamePlus1, uc1, 500));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus1, uc1, 1000));
+        assertEquals(37.5, formula.calculateNewCowHealth(gamePlus1, uc1, 1500));
+        assertEquals(0.0, formula.calculateNewCowHealth(gamePlus1, uc1, 2000));
     }
 
     @Test
@@ -104,21 +104,21 @@ class CowHealthUpdateStrategyTests {
         var formula = CowHealthUpdateStrategies.Mattanjah;
         double tolerance = 1E-12;
 
-        assertEquals(62.5, formula.calculateNewCowHealth(commonsPlus1, uc1, 500));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 1000));
-        assertEquals(0.0, formula.calculateNewCowHealth(commonsPlus1, uc1, 2000));
+        assertEquals(62.5, formula.calculateNewCowHealth(gamePlus1, uc1, 500));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus1, uc1, 1000));
+        assertEquals(0.0, formula.calculateNewCowHealth(gamePlus1, uc1, 2000));
 
-        assertEquals(100.0, formula.calculateNewCowHealth(commonsPlus2, uc2, 500));
-        assertEquals(62.5, formula.calculateNewCowHealth(commonsPlus2, uc2, 750));
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus2, uc2, 1000));
-        assertEquals(37.5, formula.calculateNewCowHealth(commonsPlus2, uc2, 1250));
-        assertEquals(0.0, formula.calculateNewCowHealth(commonsPlus2, uc2, 1500));
+        assertEquals(100.0, formula.calculateNewCowHealth(gamePlus2, uc2, 500));
+        assertEquals(62.5, formula.calculateNewCowHealth(gamePlus2, uc2, 750));
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus2, uc2, 1000));
+        assertEquals(37.5, formula.calculateNewCowHealth(gamePlus2, uc2, 1250));
+        assertEquals(0.0, formula.calculateNewCowHealth(gamePlus2, uc2, 1500));
 
-        assertEquals(60.125, formula.calculateNewCowHealth(commonsPlus0_5, uc0_5, 100), tolerance);
-        assertEquals(53.125, formula.calculateNewCowHealth(commonsPlus0_5, uc0_5, 500), tolerance);
-        assertEquals(50.0, formula.calculateNewCowHealth(commonsPlus0_5, uc0_5, 1000), tolerance);
-        assertEquals(37.5, formula.calculateNewCowHealth(commonsPlus0_5, uc0_5, 2000), tolerance);
-        assertEquals(0.0, formula.calculateNewCowHealth(commonsPlus0_5, uc0_5, 3000), tolerance);
+        assertEquals(60.125, formula.calculateNewCowHealth(gamePlus0_5, uc0_5, 100), tolerance);
+        assertEquals(53.125, formula.calculateNewCowHealth(gamePlus0_5, uc0_5, 500), tolerance);
+        assertEquals(50.0, formula.calculateNewCowHealth(gamePlus0_5, uc0_5, 1000), tolerance);
+        assertEquals(37.5, formula.calculateNewCowHealth(gamePlus0_5, uc0_5, 2000), tolerance);
+        assertEquals(0.0, formula.calculateNewCowHealth(gamePlus0_5, uc0_5, 3000), tolerance);
 
     }
 }

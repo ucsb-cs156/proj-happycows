@@ -2,31 +2,31 @@
 
 import { timestampToDate, daysSinceTimestamp } from "main/utils/dateUtils";
 
-const fieldOrBlank = (commonsPlus, field) => {
-  return commonsPlus?.[field] ?? "--";
+const fieldOrBlank = (gamePlus, field) => {
+  return gamePlus?.[field] ?? "--";
 };
 
-const getCommonsName = (commonsPlus) => {
-  return commonsPlus?.commons?.name ?? "--";
+const getGameName = (gamePlus) => {
+  return gamePlus?.game?.name ?? "--";
 };
 
-const getIsHidden = (commonsPlus) => {
-  return commonsPlus?.commons?.hidden === true;
+const getIsHidden = (gamePlus) => {
+  return gamePlus?.game?.hidden === true;
 };
 
-const getCommonsId = (commonsPlus, id) => {
-  return commonsPlus?.commons?.id ?? id ?? "--";
+const getGameId = (gamePlus, id) => {
+  return gamePlus?.game?.id ?? id ?? "--";
 };
 
-const getStartingDate = (commonsPlus) => {
-  return commonsPlus?.commons?.startingDate
-    ? timestampToDate(commonsPlus.commons.startingDate)
+const getStartingDate = (gamePlus) => {
+  return gamePlus?.game?.startingDate
+    ? timestampToDate(gamePlus.game.startingDate)
     : "--";
 };
 
-const getDaysActive = (commonsPlus) => {
-  return commonsPlus?.commons?.startingDate
-    ? daysSinceTimestamp(commonsPlus.commons.startingDate)
+const getDaysActive = (gamePlus) => {
+  return gamePlus?.game?.startingDate
+    ? daysSinceTimestamp(gamePlus.game.startingDate)
     : "--";
 };
 
@@ -36,15 +36,15 @@ const formatOneDecimal = (value) => {
   return Number.isNaN(numericValue) ? "--" : numericValue.toFixed(1);
 };
 
-const numericFieldOrBlank = (commonsPlus, field) => {
-  return formatOneDecimal(commonsPlus?.[field]);
+const numericFieldOrBlank = (gamePlus, field) => {
+  return formatOneDecimal(gamePlus?.[field]);
 };
 
 export {
   fieldOrBlank,
-  getCommonsName,
+  getGameName,
   getIsHidden,
-  getCommonsId,
+  getGameId,
   getStartingDate,
   getDaysActive,
   formatOneDecimal,

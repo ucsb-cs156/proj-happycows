@@ -28,12 +28,12 @@ AdminView.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/commons/plus", () => {
+    http.get("/api/game/plus", () => {
       return HttpResponse.json(
         {
-          commons: {
+          game: {
             id: 1,
-            name: "Sample Commons",
+            name: "Sample Game",
             showLeaderboard: true,
             showOverviewSection: true,
             showCowsPerFarmerSection: true,
@@ -54,20 +54,20 @@ AdminView.parameters = {
         { status: 200 },
       );
     }),
-    http.get("/api/commons/numcows", () => {
+    http.get("/api/game/numcows", () => {
       return HttpResponse.json([1, 2, 3, 5, 10, 15, 20], {
         status: 200,
       });
     }),
-    http.get("/api/commons/timeseries", () => {
+    http.get("/api/game/timeseries", () => {
       return HttpResponse.json(timeSeriesFixtures.timeSeriesBigExample, {
         status: 200,
       });
     }),
-    http.get("/api/farmer/commons/all", () => {
+    http.get("/api/farmer/game/all", () => {
       return HttpResponse.json([], { status: 200 });
     }),
-    http.put("/api/commons/dashboardSettings", () => {
+    http.put("/api/game/dashboardSettings", () => {
       return HttpResponse.json({}, { status: 200 });
     }),
   ],
@@ -87,12 +87,12 @@ StudentView.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/commons/plus", () => {
+    http.get("/api/game/plus", () => {
       return HttpResponse.json(
         {
-          commons: {
+          game: {
             id: 1,
-            name: "Sample Commons",
+            name: "Sample Game",
             showLeaderboard: true,
             showOverviewSection: true,
             showCowsPerFarmerSection: true,
@@ -113,17 +113,17 @@ StudentView.parameters = {
         { status: 200 },
       );
     }),
-    http.get("/api/commons/numcows", () => {
+    http.get("/api/game/numcows", () => {
       return HttpResponse.json([1, 2, 3, 5, 10, 15, 20], {
         status: 200,
       });
     }),
-    http.get("/api/commons/timeseries", () => {
+    http.get("/api/game/timeseries", () => {
       return HttpResponse.json(timeSeriesFixtures.timeSeriesBigExample, {
         status: 200,
       });
     }),
-    http.get("/api/farmer/commons/all", () => {
+    http.get("/api/farmer/game/all", () => {
       return HttpResponse.json([], { status: 200 });
     }),
   ],
@@ -143,12 +143,12 @@ StudentViewNotAuthorized.parameters = {
         status: 200,
       });
     }),
-    http.get("/api/commons/plus", () => {
+    http.get("/api/game/plus", () => {
       return HttpResponse.json(
         {
-          commons: {
+          game: {
             id: 1,
-            name: "Sample Commons",
+            name: "Sample Game",
             showLeaderboard: false,
           },
           totalUsers: 7,

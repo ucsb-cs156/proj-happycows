@@ -1,11 +1,11 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration
 public class MilkTheCowsJobTests extends JobTestCase {
     @Mock
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Mock
     FarmerRepository farmerRepository;
@@ -46,9 +46,9 @@ public class MilkTheCowsJobTests extends JobTestCase {
             .email("cgaucho@example.org")
             .build();
 
-    private Commons testCommons = Commons
+    private Game testGame = Game
             .builder()
-            .name("test commons")
+            .name("test game")
             .cowPrice(10)
             .milkPrice(2)
             .startingBalance(300)
@@ -60,7 +60,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
 
 
     @Test
-    void test_log_output_no_commons() throws Exception {
+    void test_log_output_no_game() throws Exception {
 
         // Arrange
 
@@ -68,7 +68,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
         JobContext ctx = new JobContext(null, jobStarted);
 
         // Act
-        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
+        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(gameRepository, farmerRepository,
                 userRepository, profitRepository);
 
         milkTheCowsJob.accept(ctx);
@@ -83,7 +83,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
     }
 
     @Test
-    void test_log_output_with_commons_and_farmer() throws Exception {
+    void test_log_output_with_game_and_farmer() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
@@ -92,20 +92,20 @@ public class MilkTheCowsJobTests extends JobTestCase {
         Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
+                .game(testGame)
                 .totalWealth(300)
                 .numOfCows(1)
                 .cowHealth(10)
                 .build();
 
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(testCommons));
-        when(farmerRepository.findByCommonsId(testCommons.getId()))
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(testGame));
+        when(farmerRepository.findByGameId(testGame.getId()))
                 .thenReturn(Arrays.asList(origFarmer));
-        when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(testGame.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act
-        MilkTheCowsJob MilkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
+        MilkTheCowsJob MilkTheCowsJob = new MilkTheCowsJob(gameRepository, farmerRepository,
                 userRepository, profitRepository);
         MilkTheCowsJob.accept(ctx);
 
@@ -113,7 +113,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
 
         String expected = """
                 Starting to milk the cows
-                Milking cows for Commons: test commons, Milk Price: $2.00
+                Milking cows for Game: test game, Milk Price: $2.00
                 User: Chris Gaucho, numCows: 1, cowHealth: 10.0, totalWealth: $300.00
                 Profit for user: Chris Gaucho is: $0.20, newWealth: $300.20
                 Cows have been milked!""";
@@ -122,15 +122,15 @@ public class MilkTheCowsJobTests extends JobTestCase {
     }
 
     @Test
-    void test_skips_commons_when_game_not_in_progress() throws Exception {
+    void test_skips_game_when_game_not_in_progress() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        Commons futureCommons = Commons
+        Game futureGame = Game
                 .builder()
-                .name("future commons")
+                .name("future game")
                 .cowPrice(10)
                 .milkPrice(2)
                 .startingBalance(300)
@@ -140,17 +140,17 @@ public class MilkTheCowsJobTests extends JobTestCase {
                 .degradationRate(0.01)
                 .build();
 
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(futureCommons));
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(futureGame));
 
         // Act
-        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(commonsRepository, farmerRepository,
+        MilkTheCowsJob milkTheCowsJob = new MilkTheCowsJob(gameRepository, farmerRepository,
                 userRepository, profitRepository);
         milkTheCowsJob.accept(ctx);
 
         // Assert
         String expected = """
                 Starting to milk the cows
-                Skipping Commons id=0 (future commons) because the game is not in progress
+                Skipping Game id=0 (future game) because the game is not in progress
                 Cows have been milked!""";
 
         assertEquals(expected, jobStarted.getLog());
@@ -166,7 +166,7 @@ public class MilkTheCowsJobTests extends JobTestCase {
         Farmer origFarmer = Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
+                .game(testGame)
                 .totalWealth(300)
                 .numOfCows(1)
                 .cowHealth(10)
@@ -175,24 +175,24 @@ public class MilkTheCowsJobTests extends JobTestCase {
         Farmer updatedFarmer = Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
+                .game(testGame)
                 .totalWealth(300.20)
                 .numOfCows(1)
                 .cowHealth(10)
                 .build();
 
-        Commons commonsTemp[] = {testCommons};
+        Game gameTemp[] = {testGame};
         Farmer farmerTemp[] = {origFarmer};
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commonsTemp));
-        when(farmerRepository.findByCommonsId(testCommons.getId()))
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(gameTemp));
+        when(farmerRepository.findByGameId(testGame.getId()))
                 .thenReturn(Arrays.asList(farmerTemp));
-        when(commonsRepository.getNumCows(testCommons.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
+        when(gameRepository.getNumCows(testGame.getId())).thenReturn(Optional.of(Integer.valueOf(1)));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(farmerRepository.save(updatedFarmer)).thenReturn(updatedFarmer);
 
 
         // Act
-        MilkTheCowsJob.milkCows(ctx, testCommons, origFarmer, profitRepository, farmerRepository);
+        MilkTheCowsJob.milkCows(ctx, testGame, origFarmer, profitRepository, farmerRepository);
 
         // Assert
 

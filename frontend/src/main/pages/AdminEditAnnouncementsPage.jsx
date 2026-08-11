@@ -8,19 +8,16 @@ import { datetimeLocalToIsoDateTime } from "main/utils/announcementUtils";
 import { useParams } from "react-router";
 
 const AdminEditAnnouncementsPage = () => {
-  const { commonsId, announcementId } = useParams();
+  const { gameId, announcementId } = useParams();
 
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
   const { data: announcement } = useBackend(
     [`/api/announcements/getbyid?id=${announcementId}`],
     {
@@ -33,14 +30,14 @@ const AdminEditAnnouncementsPage = () => {
   );
   // Stryker restore all
 
-  const commonsName = commonsPlus?.commons.name;
+  const gameName = gamePlus?.game.name;
 
   const objectToAxiosParams = (editedAnnouncement) => {
     const idToUse = editedAnnouncement?.id ?? announcementId;
     const endDate = editedAnnouncement?.endDate;
     const params = {
       id: idToUse,
-      commonsId,
+      gameId,
       startDate: datetimeLocalToIsoDateTime(editedAnnouncement?.startDate),
       announcementText: editedAnnouncement?.announcementText,
     };
@@ -59,7 +56,7 @@ const AdminEditAnnouncementsPage = () => {
       <div>
         Announcement successfully edited!
         <br />
-        {`commonsId: ${editedAnnouncement.id}`}
+        {`gameId: ${editedAnnouncement.id}`}
         <br />
         {`startDate: ${editedAnnouncement.startDate}`}
         <br />
@@ -84,12 +81,12 @@ const AdminEditAnnouncementsPage = () => {
   };
 
   if (mutation.isSuccess) {
-    return <Navigate to={`/admin/announcements/${commonsId}`} />;
+    return <Navigate to={`/admin/announcements/${gameId}`} />;
   }
 
   return (
     <BasicLayout>
-      <h2>Edit Announcement for Game {commonsName}</h2>
+      <h2>Edit Announcement for Game {gameName}</h2>
       <AnnouncementForm
         initialContents={announcement}
         submitAction={submitAction}

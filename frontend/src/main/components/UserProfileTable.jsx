@@ -19,7 +19,7 @@ export default function UserProfileTable({ user }) {
         </tr>
         <tr>
           <th>Joined Games</th>
-          <td>{commonsString(user.commons)}</td>
+          <td>{gameString(user.game)}</td>
         </tr>
         <tr>
           <th>User ID</th>
@@ -42,12 +42,12 @@ export default function UserProfileTable({ user }) {
   );
 }
 
-function commonsString(commons) {
+function gameString(game) {
   var result = "";
 
-  if (commons !== undefined) {
-    for (var i = 0; i < commons.length; i++) {
-      result += commons[i].name + ", ";
+  if (game !== undefined) {
+    for (var i = 0; i < game.length; i++) {
+      result += game[i].name + ", ";
     }
     result = result.substring(0, result.length - 2);
   }

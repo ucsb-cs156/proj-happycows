@@ -74,7 +74,7 @@ describe("PagedJobsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Log`),
     ).toHaveTextContent(
-      `Updating cow health...Commons Blue, degradationRate: 0.1, carryingCapacity: 10User: Phill Conrad, numCows: 3, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0User: Phillip Conrad, numCows: 7, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0Commons Red, degradationRate: 0.1, carryingCapacity: 2User: Phill Conrad, numCows: 10, cowHealth: 54.40000000000016 old cow health: 54.40000000000016, new cow health: 53.600000000000165Cow health has been updated!`,
+      `Updating cow health...Game Blue, degradationRate: 0.1, carryingCapacity: 10User: Phill Conrad, numCows: 3, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0User: Phillip Conrad, numCows: 7, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0Game Red, degradationRate: 0.1, carryingCapacity: 2User: Phill Conrad, numCows: 10, cowHealth: 54.40000000000016 old cow health: 54.40000000000016, new cow health: 53.600000000000165Cow health has been updated!`,
     );
 
     expect(

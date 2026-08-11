@@ -2,7 +2,7 @@ const reportFixtures = {
   threeReports: [
     {
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -20,7 +20,7 @@ const reportFixtures = {
     },
     {
       id: 3,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -38,7 +38,7 @@ const reportFixtures = {
     },
     {
       id: 5,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -58,7 +58,7 @@ const reportFixtures = {
   sixReports: [
     {
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -76,7 +76,7 @@ const reportFixtures = {
     },
     {
       id: 3,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -94,7 +94,7 @@ const reportFixtures = {
     },
     {
       id: 5,
-      commonsId: 1,
+      gameId: 1,
       name: "Blue",
       cowPrice: 100,
       milkPrice: 5,
@@ -112,7 +112,7 @@ const reportFixtures = {
     },
     {
       id: 2,
-      commonsId: 2,
+      gameId: 2,
       name: "Red",
       cowPrice: 100,
       milkPrice: 10,
@@ -130,7 +130,7 @@ const reportFixtures = {
     },
     {
       id: 4,
-      commonsId: 2,
+      gameId: 2,
       name: "Red",
       cowPrice: 100,
       milkPrice: 10,
@@ -148,7 +148,7 @@ const reportFixtures = {
     },
     {
       id: 6,
-      commonsId: 2,
+      gameId: 2,
       name: "Red",
       cowPrice: 100,
       milkPrice: 10,

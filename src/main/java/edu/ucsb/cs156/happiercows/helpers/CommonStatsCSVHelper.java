@@ -42,7 +42,7 @@ public class CommonStatsCSVHelper {
 
     List<String> headers = Arrays.asList(
         "id",
-        "commonsId",
+        "gameId",
         "numCows",
         "avgHealth",
         "createDate");
@@ -56,7 +56,7 @@ public class CommonStatsCSVHelper {
     for (CommonStats line : stats) {
       List<String> data = Arrays.asList(
           String.valueOf(line.getId()),
-          String.valueOf(line.getCommonsId()),
+          String.valueOf(line.getGameId()),
           String.valueOf(line.getNumCows()),
           String.valueOf(line.getAvgHealth()),
           formatter.format(line.getCreateDate()));

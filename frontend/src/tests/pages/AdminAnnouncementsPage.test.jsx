@@ -26,7 +26,7 @@ vi.mock("react-toastify", async () => {
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
-    commonsId: 1,
+    gameId: 1,
   }),
   useNavigate: () => mockedNavigate,
 }));
@@ -47,15 +47,15 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
     });
-    axiosMock.onGet("/api/announcements/getbycommonsid").reply(200, {
+    axiosMock.onGet("/api/announcements/getbygameid").reply(200, {
       content: announcementFixtures.threeAnnouncements,
       pageable: {
         pageNumber: 0,
@@ -76,7 +76,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Game: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Game"),
     ).toBeInTheDocument();
 
     const headerRow = container.querySelector(".row.pt-5.pb-3");
@@ -93,7 +93,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Game: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Game"),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(firstAnnouncement.announcementText),
@@ -110,7 +110,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Game: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Game"),
     ).toBeInTheDocument();
     const createButton = screen.getByText("Create Announcement");
     expect(createButton).toHaveAttribute(
@@ -128,15 +128,15 @@ describe("AdminAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
     });
-    axiosMock.onGet("/api/announcements/getbycommonsid").reply(200, {
+    axiosMock.onGet("/api/announcements/getbygameid").reply(200, {
       content: [],
       pageable: {
         pageNumber: 0,
@@ -155,7 +155,7 @@ describe("AdminAnnouncementsPage tests", () => {
     );
 
     expect(
-      await screen.findByText("Announcements for Game: Sample Commons"),
+      await screen.findByText("Announcements for Game: Sample Game"),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-id`),

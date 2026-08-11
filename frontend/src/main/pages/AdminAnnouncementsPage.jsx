@@ -8,27 +8,24 @@ import { useCurrentUser } from "main/utils/currentUser";
 import AnnouncementTable from "main/components/Announcement/AnnouncementTable";
 
 export default function AdminAnnouncementsPage() {
-  const { commonsId } = useParams();
+  const { gameId } = useParams();
 
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
 
   const { data: announcementsResponse } = useBackend(
-    [`/api/announcements/getbycommonsid?commonsId=${commonsId}`],
+    [`/api/announcements/getbygameid?gameId=${gameId}`],
     {
       method: "GET",
-      url: "/api/announcements/getbycommonsid",
+      url: "/api/announcements/getbygameid",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
   );
@@ -36,7 +33,7 @@ export default function AdminAnnouncementsPage() {
   const { data: currentUser } = useCurrentUser();
   const announcements = announcementsResponse?.content ?? [];
 
-  const commonsName = commonsPlus?.commons.name;
+  const gameName = gamePlus?.game.name;
 
   // Stryker disable all - styles that don't need to be mut tested
   const buttonStyle = {
@@ -50,12 +47,12 @@ export default function AdminAnnouncementsPage() {
       <div className="pt-2">
         <Row className="pt-5 pb-3" style={{ gap: "30px" }}>
           <Col md="auto">
-            <h2>Announcements for Game: {commonsName}</h2>
+            <h2>Announcements for Game: {gameName}</h2>
           </Col>
           <Col style={buttonStyle}>
             <Button
               variant="primary"
-              href={`/admin/announcements/${commonsId}/create`}
+              href={`/admin/announcements/${gameId}/create`}
             >
               Create Announcement
             </Button>
@@ -64,7 +61,7 @@ export default function AdminAnnouncementsPage() {
         <AnnouncementTable
           announcements={announcements}
           currentUser={currentUser}
-          commonsId={commonsId}
+          gameId={gameId}
         />
       </div>
     </BasicLayout>

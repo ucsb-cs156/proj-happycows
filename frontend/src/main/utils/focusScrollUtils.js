@@ -1,4 +1,4 @@
-// Scrolls the commons card named by the ?focus={commonsId} query parameter
+// Scrolls the game card named by the ?focus={gameId} query parameter
 // into view, leaving room for the sticky navbar so the whole card is visible.
 
 const FOCUS_SCROLL_MARGIN = 16;

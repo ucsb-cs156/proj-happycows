@@ -3,20 +3,20 @@ import { Container, CardGroup, Button } from "react-bootstrap";
 import { useParams } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import CommonsOverview from "main/components/Commons/CommonsOverview";
-import CommonsPlay from "main/components/Commons/CommonsPlay";
-import FarmStats from "main/components/Commons/FarmStats";
-import ManageCows from "main/components/Commons/ManageCows";
-import Profits from "main/components/Commons/Profits";
+import GameOverview from "main/components/Game/GameOverview";
+import GamePlay from "main/components/Game/GamePlay";
+import FarmStats from "main/components/Game/FarmStats";
+import ManageCows from "main/components/Game/ManageCows";
+import Profits from "main/components/Game/Profits";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { hasRole } from "main/utils/currentUser";
 import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.jpg";
 import ChatPanel from "main/components/Chat/ChatPanel";
-import ManageCowsModal from "main/components/Commons/ManageCowsModal";
+import ManageCowsModal from "main/components/Game/ManageCowsModal";
 
 export default function PlayPage() {
-  const { commonsId } = useParams();
+  const { gameId } = useParams();
   const { data: currentUser } = useCurrentUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState();
@@ -32,74 +32,67 @@ export default function PlayPage() {
 
   // Stryker disable all
   const { data: farmer, error: farmerError } = useBackend(
-    [`/api/farmer/forcurrentuser?commonsId=${commonsId}`],
+    [`/api/farmer/forcurrentuser?gameId=${gameId}`],
     {
       method: "GET",
       url: "/api/farmer/forcurrentuser",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
   );
   // Stryker restore all
 
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
   // Stryker restore all
 
   // Stryker disable all
   const { data: currentAnnouncements } = useBackend(
-    [`/api/announcements/current?commonsId=${commonsId}`],
+    [`/api/announcements/current?gameId=${gameId}`],
     {
       method: "GET",
       url: "/api/announcements/current",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
   );
   // Stryker restore all
 
-  const commonsPlusExists = !(typeof commonsPlus == "undefined");
-  let commonsforuser;
+  const gamePlusExists = !(typeof gamePlus == "undefined");
+  let gameforuser;
   let matched;
 
-  if (commonsPlusExists) {
-    commonsforuser = currentUser.root.user.commons;
-    matched = commonsforuser.some((com) => com.id === commonsPlus.commons.id);
+  if (gamePlusExists) {
+    gameforuser = currentUser.root.user.game;
+    matched = gameforuser.some((com) => com.id === gamePlus.game.id);
   }
 
   const farmerErrorResponse = farmerError?.response ?? {};
   const farmerErrorData = farmerErrorResponse.data ?? {};
   const deniedAccess =
     farmerErrorResponse.status === 403 &&
-    farmerErrorData.type ===
-      "NotEnrolledInCourseAssociatedWithCommonsException";
+    farmerErrorData.type === "NotEnrolledInCourseAssociatedWithGameException";
   const allowed =
-    commonsPlusExists &&
-    matched &&
-    !commonsPlus.commons.hidden &&
-    !deniedAccess;
-  const notallowed = commonsPlusExists && !matched && !deniedAccess;
-  const hidden = commonsPlusExists && commonsPlus.commons.hidden;
+    gamePlusExists && matched && !gamePlus.game.hidden && !deniedAccess;
+  const notallowed = gamePlusExists && !matched && !deniedAccess;
+  const hidden = gamePlusExists && gamePlus.game.hidden;
 
   // Stryker disable all
   const { data: farmerProfits } = useBackend(
-    [`/api/profits/all/commonsid?commonsId=${commonsId}`],
+    [`/api/profits/all/gameid?gameId=${gameId}`],
     {
       method: "GET",
-      url: "/api/profits/all/commonsid",
+      url: "/api/profits/all/gameid",
       params: {
-        commonsId: commonsId,
+        gameId: gameId,
       },
     },
   );
@@ -111,7 +104,7 @@ export default function PlayPage() {
     method: "PUT",
     data: newFarmer,
     params: {
-      commonsId: commonsId,
+      gameId: gameId,
       numCows: numCows,
     },
   });
@@ -119,7 +112,7 @@ export default function PlayPage() {
 
   // Stryker disable all
   const mutationbuy = useBackendMutation(objectToAxiosParamsBuy, null, [
-    `/api/farmer/forcurrentuser?commonsId=${commonsId}`,
+    `/api/farmer/forcurrentuser?gameId=${gameId}`,
   ]);
   // Stryker restore all
 
@@ -135,7 +128,7 @@ export default function PlayPage() {
     method: "PUT",
     data: newFarmer,
     params: {
-      commonsId: commonsId,
+      gameId: gameId,
       numCows: numCows,
     },
   });
@@ -145,7 +138,7 @@ export default function PlayPage() {
   const mutationsell = useBackendMutation(
     objectToAxiosParamsSell,
     { onSuccess: onSuccessSell },
-    [`/api/farmer/forcurrentuser?commonsId=${commonsId}`],
+    [`/api/farmer/forcurrentuser?gameId=${gameId}`],
   );
   // Stryker restore all
 
@@ -192,7 +185,7 @@ export default function PlayPage() {
     >
       <BasicLayout>
         <Container>
-          {!commonsPlus && <h1>This game does not exist!</h1>}
+          {!gamePlus && <h1>This game does not exist!</h1>}
           {deniedAccess && (
             <h1>
               You do not currently have access to this Game. Please contact your
@@ -204,13 +197,11 @@ export default function PlayPage() {
             <h1>This game has been hidden by the site administrator.</h1>
           )}
 
-          {allowed && !!currentUser && (
-            <CommonsPlay currentUser={currentUser} />
-          )}
+          {allowed && !!currentUser && <GamePlay currentUser={currentUser} />}
 
-          {allowed && !!commonsPlus && (
-            <CommonsOverview
-              commonsPlus={commonsPlus}
+          {allowed && !!gamePlus && (
+            <GameOverview
+              gamePlus={gamePlus}
               currentUser={currentUser}
               currentAnnouncements={currentAnnouncements}
             />
@@ -218,11 +209,11 @@ export default function PlayPage() {
 
           <br />
 
-          {allowed && !!farmer && !!commonsPlus && (
+          {allowed && !!farmer && !!gamePlus && (
             <CardGroup>
               <ManageCows
                 farmer={farmer}
-                commons={commonsPlus.commons}
+                game={gamePlus.game}
                 setMessage={setMessage}
                 openModal={openModal}
               />
@@ -244,9 +235,9 @@ export default function PlayPage() {
       </BasicLayout>
 
       {(hasRole(currentUser, "ROLE_ADMIN") ||
-        (allowed && !!commonsPlus && commonsPlus.commons.showChat)) && (
+        (allowed && !!gamePlus && gamePlus.game.showChat)) && (
         <div style={chatContainerStyle} data-testid="playpage-chat-div">
-          {!!isChatOpen && <ChatPanel commonsId={commonsId} />}
+          {!!isChatOpen && <ChatPanel gameId={gameId} />}
           <Button
             style={chatButtonStyle}
             onClick={toggleChatWindow}

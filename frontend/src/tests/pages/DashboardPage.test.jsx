@@ -38,7 +38,7 @@ const createTestQueryClient = () =>
     },
   });
 
-function renderWithRoute(initialEntry, routePath = "/dashboard/:commonsId") {
+function renderWithRoute(initialEntry, routePath = "/dashboard/:gameId") {
   const queryClient = createTestQueryClient();
 
   return render(
@@ -52,10 +52,10 @@ function renderWithRoute(initialEntry, routePath = "/dashboard/:commonsId") {
   );
 }
 
-const baseCommonsPlus = {
-  commons: {
+const baseGamePlus = {
+  game: {
     id: 7,
-    name: "Test Commons 7",
+    name: "Test Game 7",
     hidden: false,
     startingDate: "2025-01-01T00:00:00",
     showLeaderboard: true,
@@ -82,11 +82,11 @@ beforeEach(() => {
   axiosMock
     .onGet("/api/systemInfo")
     .reply(200, systemInfoFixtures.showingNeither);
-  axiosMock.onGet("/api/commons/numcows").reply(200, [1, 2, 3, 5, 10, 15]);
-  axiosMock.onGet("/api/commons/timeseries").reply(200, []);
-  axiosMock.onGet("/api/farmer/commons/all").reply(200, []);
-  axiosMock.onPut("/api/commons/dashboardSettings").reply(200, {
-    ...baseCommonsPlus.commons,
+  axiosMock.onGet("/api/game/numcows").reply(200, [1, 2, 3, 5, 10, 15]);
+  axiosMock.onGet("/api/game/timeseries").reply(200, []);
+  axiosMock.onGet("/api/farmer/game/all").reply(200, []);
+  axiosMock.onPut("/api/game/dashboardSettings").reply(200, {
+    ...baseGamePlus.game,
   });
 });
 
@@ -95,14 +95,14 @@ describe("DashboardPage as admin", () => {
     axiosMock
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
-    axiosMock.onGet("/api/commons/plus").reply(200, baseCommonsPlus);
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
   });
 
   test("renders dashboard with overview, admin controls, and all sections", async () => {
     renderWithRoute("/dashboard/7");
 
     const mainHeading = await screen.findByRole("heading", {
-      name: /test commons 7/i,
+      name: /test game 7/i,
     });
     expect(mainHeading).toBeInTheDocument();
 
@@ -157,14 +157,14 @@ describe("DashboardPage as admin", () => {
     expect(within(stdDevCard).getByText("1.5")).toBeInTheDocument();
   });
 
-  test("shows a loading message before the commons data has loaded", async () => {
+  test("shows a loading message before the game data has loaded", async () => {
     let resolvePlus;
     const plusPromise = new Promise((resolve) => {
       resolvePlus = resolve;
     });
     axiosMock
-      .onGet("/api/commons/plus")
-      .reply(() => plusPromise.then(() => [200, baseCommonsPlus]));
+      .onGet("/api/game/plus")
+      .reply(() => plusPromise.then(() => [200, baseGamePlus]));
 
     renderWithRoute("/dashboard/7");
 
@@ -172,15 +172,15 @@ describe("DashboardPage as admin", () => {
 
     resolvePlus();
 
-    await screen.findByRole("heading", { name: /test commons 7/i });
+    await screen.findByRole("heading", { name: /test game 7/i });
     expect(screen.queryByText(/loading\.\.\./i)).not.toBeInTheDocument();
   });
 
-  test("shows the eye-slash icon when the commons is hidden", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+  test("shows the eye-slash icon when the game is hidden", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         hidden: true,
       },
     });
@@ -188,16 +188,16 @@ describe("DashboardPage as admin", () => {
     renderWithRoute("/dashboard/7");
 
     const mainHeading = await screen.findByRole("heading", {
-      name: /test commons 7/i,
+      name: /test game 7/i,
     });
     expect(mainHeading.querySelector(".fa-eye-slash")).toBeInTheDocument();
   });
 
-  test("does not show the eye-slash icon when the commons is not hidden", async () => {
+  test("does not show the eye-slash icon when the game is not hidden", async () => {
     renderWithRoute("/dashboard/7");
 
     const mainHeading = await screen.findByRole("heading", {
-      name: /test commons 7/i,
+      name: /test game 7/i,
     });
     expect(mainHeading.querySelector(".fa-eye-slash")).not.toBeInTheDocument();
   });
@@ -216,14 +216,14 @@ describe("DashboardPage as admin", () => {
     // reflects the values most recently saved via PUT. This ensures the
     // toggle isn't just sent to the backend, but also actually reflected
     // back in the UI after the query cache is invalidated and refetched.
-    let commons = { ...baseCommonsPlus.commons };
+    let game = { ...baseGamePlus.game };
     axiosMock
-      .onGet("/api/commons/plus")
-      .reply(() => [200, { ...baseCommonsPlus, commons }]);
-    axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+      .onGet("/api/game/plus")
+      .reply(() => [200, { ...baseGamePlus, game }]);
+    axiosMock.onPut("/api/game/dashboardSettings").reply((config) => {
       const body = JSON.parse(config.data);
-      commons = { ...commons, ...body };
-      return [200, commons];
+      game = { ...game, ...body };
+      return [200, game];
     });
 
     renderWithRoute("/dashboard/7");
@@ -237,7 +237,7 @@ describe("DashboardPage as admin", () => {
     await waitFor(() => {
       expect(
         axiosMock.history.put.filter(
-          (call) => call.url === "/api/commons/dashboardSettings",
+          (call) => call.url === "/api/game/dashboardSettings",
         ),
       ).toHaveLength(1);
     });
@@ -253,14 +253,14 @@ describe("DashboardPage as admin", () => {
 
   test("toggling a section's visibility switch calls the dashboardSettings endpoint and updates the switch", async () => {
     // Stateful mock, see comment in the test above for rationale.
-    let commons = { ...baseCommonsPlus.commons };
+    let game = { ...baseGamePlus.game };
     axiosMock
-      .onGet("/api/commons/plus")
-      .reply(() => [200, { ...baseCommonsPlus, commons }]);
-    axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+      .onGet("/api/game/plus")
+      .reply(() => [200, { ...baseGamePlus, game }]);
+    axiosMock.onPut("/api/game/dashboardSettings").reply((config) => {
       const body = JSON.parse(config.data);
-      commons = { ...commons, ...body };
-      return [200, commons];
+      game = { ...game, ...body };
+      return [200, game];
     });
 
     renderWithRoute("/dashboard/7");
@@ -283,7 +283,7 @@ describe("DashboardPage as admin", () => {
     await waitFor(() => {
       expect(
         axiosMock.history.put.filter(
-          (call) => call.url === "/api/commons/dashboardSettings",
+          (call) => call.url === "/api/game/dashboardSettings",
         ),
       ).toHaveLength(1);
     });
@@ -301,10 +301,10 @@ describe("DashboardPage as admin", () => {
   });
 
   test("shows 'Hidden from Students' label for a section marked not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showOverviewSection: false,
       },
     });
@@ -331,14 +331,14 @@ describe("DashboardPage as admin", () => {
     "toggling the %s visibility switch calls the dashboardSettings endpoint and updates the switch",
     async (sectionName, fieldName) => {
       // Stateful mock, see comment in the "Overview" toggle test above.
-      let commons = { ...baseCommonsPlus.commons };
+      let game = { ...baseGamePlus.game };
       axiosMock
-        .onGet("/api/commons/plus")
-        .reply(() => [200, { ...baseCommonsPlus, commons }]);
-      axiosMock.onPut("/api/commons/dashboardSettings").reply((config) => {
+        .onGet("/api/game/plus")
+        .reply(() => [200, { ...baseGamePlus, game }]);
+      axiosMock.onPut("/api/game/dashboardSettings").reply((config) => {
         const body = JSON.parse(config.data);
-        commons = { ...commons, ...body };
-        return [200, commons];
+        game = { ...game, ...body };
+        return [200, game];
       });
 
       renderWithRoute("/dashboard/7");
@@ -352,7 +352,7 @@ describe("DashboardPage as admin", () => {
       await waitFor(() => {
         expect(
           axiosMock.history.put.filter(
-            (call) => call.url === "/api/commons/dashboardSettings",
+            (call) => call.url === "/api/game/dashboardSettings",
           ),
         ).toHaveLength(1);
       });
@@ -368,10 +368,10 @@ describe("DashboardPage as admin", () => {
   );
 
   test("'View as Student' hides sections marked not visible and admin controls remain", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showHistogramSection: false,
       },
     });
@@ -400,10 +400,10 @@ describe("DashboardPage as admin", () => {
   });
 
   test("shows 'not authorized' message when viewing as student and dashboard hidden", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showLeaderboard: false,
       },
     });
@@ -423,9 +423,7 @@ describe("DashboardPage as admin", () => {
 
     await waitFor(() => {
       expect(
-        axiosMock.history.get.filter(
-          (call) => call.url === "/api/commons/plus",
-        ),
+        axiosMock.history.get.filter((call) => call.url === "/api/game/plus"),
       ).toHaveLength(0);
     });
   });
@@ -439,7 +437,7 @@ describe("DashboardPage as student", () => {
   });
 
   test("renders dashboard sections marked visible when showLeaderboard is true", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, baseCommonsPlus);
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
 
     renderWithRoute("/dashboard/7");
 
@@ -455,10 +453,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides sections that the instructor has marked not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showTrendsSection: false,
       },
     });
@@ -472,10 +470,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the health section when the instructor has marked it not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showHealthSection: false,
       },
     });
@@ -489,10 +487,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the trends and health sections but still shows the total cows section", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showTrendsSection: false,
         showHealthSection: false,
       },
@@ -513,10 +511,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the total cows section when the instructor has marked it not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showTotalCowsSection: false,
       },
     });
@@ -530,10 +528,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the overview section when the instructor has marked it not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showOverviewSection: false,
       },
     });
@@ -547,10 +545,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the cows-per-farmer section when the instructor has marked it not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showCowsPerFarmerSection: false,
       },
     });
@@ -564,10 +562,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("hides the leaderboard section when the instructor has marked it not visible", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showFarmerLeaderboardSection: false,
       },
     });
@@ -581,10 +579,10 @@ describe("DashboardPage as student", () => {
   });
 
   test("shows 'not authorized' message when showLeaderboard is false", async () => {
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      ...baseCommonsPlus,
-      commons: {
-        ...baseCommonsPlus.commons,
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
         showLeaderboard: false,
       },
     });

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Staff;
 import edu.ucsb.cs156.happiercows.entities.Student;
 import edu.ucsb.cs156.happiercows.entities.User;
@@ -38,28 +38,28 @@ public class CourseAccessServiceTests {
     CourseAccessService courseAccessService;
 
     @Test
-    public void commons_with_no_course_is_open_to_everyone() {
+    public void game_with_no_course_is_open_to_everyone() {
         User user = User.builder().email("regular@ucsb.edu").admin(false).build();
-        Commons commons = Commons.builder().id(1L).courseId(null).build();
+        Game game = Game.builder().id(1L).courseId(null).build();
 
-        assertTrue(courseAccessService.isEligibleForCommons(user, commons));
+        assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test
-    public void admin_is_always_eligible_for_a_course_linked_commons() {
+    public void admin_is_always_eligible_for_a_course_linked_game() {
         User admin = User.builder().email("admin@ucsb.edu").admin(true).build();
-        Commons commons = Commons.builder().id(1L).courseId(5L).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
 
         when(studentRepository.findByEmail("admin@ucsb.edu")).thenReturn(new ArrayList<>());
         when(staffRepository.findByEmail("admin@ucsb.edu")).thenReturn(new ArrayList<>());
 
-        assertTrue(courseAccessService.isEligibleForCommons(admin, commons));
+        assertTrue(courseAccessService.isEligibleForGame(admin, game));
     }
 
     @Test
     public void student_on_roster_is_eligible() {
         User user = User.builder().email("student@ucsb.edu").admin(false).build();
-        Commons commons = Commons.builder().id(1L).courseId(5L).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
 
         Student student = Student.builder().email("student@ucsb.edu").courseId(5L).build();
         List<Student> students = new ArrayList<>();
@@ -68,13 +68,13 @@ public class CourseAccessServiceTests {
         when(studentRepository.findByEmail("student@ucsb.edu")).thenReturn(students);
         when(staffRepository.findByEmail("student@ucsb.edu")).thenReturn(new ArrayList<>());
 
-        assertTrue(courseAccessService.isEligibleForCommons(user, commons));
+        assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test
     public void staff_on_roster_is_eligible() {
         User user = User.builder().email("staff@ucsb.edu").admin(false).build();
-        Commons commons = Commons.builder().id(1L).courseId(5L).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
 
         Staff staff = Staff.builder().email("staff@ucsb.edu").courseId(5L).build();
         List<Staff> staffList = new ArrayList<>();
@@ -83,24 +83,24 @@ public class CourseAccessServiceTests {
         when(studentRepository.findByEmail("staff@ucsb.edu")).thenReturn(new ArrayList<>());
         when(staffRepository.findByEmail("staff@ucsb.edu")).thenReturn(staffList);
 
-        assertTrue(courseAccessService.isEligibleForCommons(user, commons));
+        assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test
     public void user_not_on_roster_is_not_eligible() {
         User user = User.builder().email("outsider@ucsb.edu").admin(false).build();
-        Commons commons = Commons.builder().id(1L).courseId(5L).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
 
         when(studentRepository.findByEmail("outsider@ucsb.edu")).thenReturn(new ArrayList<>());
         when(staffRepository.findByEmail("outsider@ucsb.edu")).thenReturn(new ArrayList<>());
 
-        assertFalse(courseAccessService.isEligibleForCommons(user, commons));
+        assertFalse(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test
     public void student_on_roster_for_a_different_course_is_not_eligible() {
         User user = User.builder().email("student@ucsb.edu").admin(false).build();
-        Commons commons = Commons.builder().id(1L).courseId(5L).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
 
         Student student = Student.builder().email("student@ucsb.edu").courseId(99L).build();
         List<Student> students = new ArrayList<>();
@@ -109,7 +109,7 @@ public class CourseAccessServiceTests {
         when(studentRepository.findByEmail("student@ucsb.edu")).thenReturn(students);
         when(staffRepository.findByEmail("student@ucsb.edu")).thenReturn(new ArrayList<>());
 
-        assertFalse(courseAccessService.isEligibleForCommons(user, commons));
+        assertFalse(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test

@@ -3,43 +3,43 @@ import { Card, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import CommonsList from "main/components/Commons/CommonsList";
+import GameList from "main/components/Game/GameList";
 import { useBackend, useBackendMutation } from "main/utils/useBackend";
 import { useCurrentUser, hasRole } from "main/utils/currentUser";
 import {
-  filterCommonsJoinedAndNotHidden,
-  filterCommonsNotJoinedAndNotHidden,
-} from "main/utils/commonsUtils";
+  filterGameJoinedAndNotHidden,
+  filterGameNotJoinedAndNotHidden,
+} from "main/utils/gameUtils";
 import getBackgroundImage from "main/components/Utils/HomePageBackground";
 
 import "./HomePage.css";
 
 export default function HomePage({ hour = null }) {
   // Stryker disable next-line all: it is acceptable to exclude useState calls from mutation testing
-  const [commonsJoined, setCommonsJoined] = useState([]);
+  const [gameJoined, setGameJoined] = useState([]);
   const { data: currentUser } = useCurrentUser();
 
   // Stryker disable all : it is acceptable to exclude useBackend calls from mutation testing
-  const { data: commons } = useBackend(
-    ["/api/commons/all"],
-    { url: "/api/commons/all" },
+  const { data: game } = useBackend(
+    ["/api/game/all"],
+    { url: "/api/game/all" },
     [],
   );
 
   const { data: myCourseIds } = useBackend(
-    ["/api/commons/mycourses"],
-    { url: "/api/commons/mycourses" },
+    ["/api/game/mycourses"],
+    { url: "/api/game/mycourses" },
     [],
   );
   // Stryker restore all
 
   const isAdmin = hasRole(currentUser, "ROLE_ADMIN");
 
-  const objectToAxiosParams = (newCommonsId) => ({
-    url: "/api/commons/join",
+  const objectToAxiosParams = (newGameId) => ({
+    url: "/api/game/join",
     method: "POST",
     params: {
-      commonsId: newCommonsId,
+      gameId: newGameId,
     },
   });
 
@@ -51,17 +51,17 @@ export default function HomePage({ hour = null }) {
 
   // Stryker disable all : TODO: restructure this code to avoid the need for this disable
   useEffect(() => {
-    if (currentUser?.root?.user?.commons) {
-      setCommonsJoined(
-        filterCommonsJoinedAndNotHidden(
-          commons,
-          currentUser.root.user.commons,
+    if (currentUser?.root?.user?.game) {
+      setGameJoined(
+        filterGameJoinedAndNotHidden(
+          game,
+          currentUser.root.user.game,
           myCourseIds,
           isAdmin,
         ),
       );
     }
-  }, [commons, currentUser, myCourseIds, isAdmin]);
+  }, [game, currentUser, myCourseIds, isAdmin]);
 
   const firstName = currentUser?.root?.user?.givenName || "";
   const time = hour === null ? new Date().getHours() : hour;
@@ -74,10 +74,10 @@ export default function HomePage({ hour = null }) {
     navigate("/play/" + id);
   };
 
-  //create a list of commons that the user hasn't joined for use in the "Join A New Game" list.
-  const commonsNotJoinedList = filterCommonsNotJoinedAndNotHidden(
-    commons,
-    commonsJoined,
+  //create a list of game that the user hasn't joined for use in the "Join A New Game" list.
+  const gameNotJoinedList = filterGameNotJoinedAndNotHidden(
+    game,
+    gameJoined,
     myCourseIds,
     isAdmin,
   );
@@ -98,8 +98,8 @@ export default function HomePage({ hour = null }) {
         <Container>
           <Row>
             <Col sm>
-              <CommonsList
-                commonList={commonsNotJoinedList}
+              <GameList
+                commonList={gameNotJoinedList}
                 title="Join A New Game"
                 buttonText={"Join"}
                 buttonLink={mutation.mutate}
@@ -107,8 +107,8 @@ export default function HomePage({ hour = null }) {
             </Col>
 
             <Col sm>
-              <CommonsList
-                commonList={commonsJoined}
+              <GameList
+                commonList={gameJoined}
                 title="Visit A Game"
                 buttonText={"Visit"}
                 buttonLink={visitButtonClick}

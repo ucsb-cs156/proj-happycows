@@ -17,7 +17,7 @@ vi.mock("react-router", async () => {
     __esModule: true,
     ...originalModule,
     useParams: () => ({
-      commonsId: 1,
+      gameId: 1,
       announcementId: 1,
     }),
     Navigate: (x) => {
@@ -54,10 +54,10 @@ describe("AdminEditAnnouncementsPage tests", () => {
     axiosMock
       .onGet("/api/systemInfo")
       .reply(200, systemInfoFixtures.showingNeither);
-    axiosMock.onGet("/api/commons/plus").reply(200, {
-      commons: {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      game: {
         id: 1,
-        name: "Sample Commons",
+        name: "Sample Game",
       },
       totalPlayers: 5,
       totalCows: 5,
@@ -82,9 +82,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     );
 
     const heading = await screen.findByRole("heading", { level: 2 });
-    expect(heading).toHaveTextContent(
-      "Edit Announcement for Game Sample Commons",
-    );
+    expect(heading).toHaveTextContent("Edit Announcement for Game Sample Game");
   });
 
   test("form is pre-populated with announcement data", async () => {
@@ -119,8 +117,8 @@ describe("AdminEditAnnouncementsPage tests", () => {
   test("handles missing announcement data gracefully", () => {
     const queryClient = new QueryClient();
     axiosMock
-      .onGet("/api/commons/plus?id=1")
-      .reply(200, announcementFixtures.oneCommons);
+      .onGet("/api/game/plus?id=1")
+      .reply(200, announcementFixtures.oneGame);
     axiosMock.onGet("/api/announcements/getbyid?id=1").reply(200, null);
 
     render(
@@ -166,7 +164,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         method: "PUT",
         params: {
           id: 1,
-          commonsId: 1,
+          gameId: 1,
           startDate: "2024-12-12T00:00:00",
           endDate: "2025-12-12T00:00:00",
           announcementText: "Updated announcement",
@@ -202,7 +200,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         method: "PUT",
         params: {
           id: 1,
-          commonsId: 1,
+          gameId: 1,
           startDate: "2024-12-12T00:00:00",
           announcementText: "Updated announcement",
         },
@@ -238,7 +236,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         <div>
           Announcement successfully edited!
           <br />
-          {`commonsId: 1`}
+          {`gameId: 1`}
           <br />
           {`startDate: 2024-12-12T00:00:00`}
           <br />
@@ -256,7 +254,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     const queryClient = new QueryClient();
     axiosMock.onPut("/api/announcements/put").reply(200, {
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       startDate: "2026-05-17T14:00:00",
       endDate: "2026-12-17T14:00:00",
       announcementText: "My Updated Announcement",
@@ -271,9 +269,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     );
 
     const heading = await screen.findByRole("heading", { level: 2 });
-    expect(heading).toHaveTextContent(
-      "Edit Announcement for Game Sample Commons",
-    );
+    expect(heading).toHaveTextContent("Edit Announcement for Game Sample Game");
 
     const startDateField = await screen.findByTestId(
       "AnnouncementForm-startDate",
@@ -300,7 +296,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
 
     expect(axiosMock.history.put[0].params).toEqual({
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       startDate: "2026-05-17T14:00:00",
       endDate: "2026-12-17T14:00:00",
       announcementText: "My Updated Announcement",
@@ -310,7 +306,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
       <div>
         Announcement successfully edited!
         <br />
-        {`commonsId: 1`}
+        {`gameId: 1`}
         <br />
         {`startDate: 2026-05-17T14:00:00`}
         <br />
@@ -329,7 +325,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
     const queryClient = new QueryClient();
     axiosMock.onPut("/api/announcements/put").reply(200, {
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       startDate: "2024-12-12T00:00:00",
       endDate: "2025-12-12T00:00:00",
       announcementText: "Just updated text",
@@ -357,7 +353,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
 
     expect(axiosMock.history.put[0].params).toEqual({
       id: 1,
-      commonsId: 1,
+      gameId: 1,
       startDate: "2024-12-12T00:00:00",
       endDate: "2025-12-12T00:00:00",
       announcementText: "Just updated text",
@@ -444,7 +440,7 @@ describe("AdminEditAnnouncementsPage tests", () => {
         method: "PUT",
         params: {
           id: 1,
-          commonsId: 1,
+          gameId: 1,
           startDate: undefined,
           announcementText: undefined,
         },

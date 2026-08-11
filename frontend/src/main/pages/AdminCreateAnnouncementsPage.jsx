@@ -8,26 +8,23 @@ import { datetimeLocalToIsoDateTime } from "main/utils/announcementUtils";
 import { useParams } from "react-router";
 
 const AdminCreateAnnouncementsPage = () => {
-  const { commonsId } = useParams();
+  const { gameId } = useParams();
 
   // Stryker disable all
-  const { data: commonsPlus } = useBackend(
-    [`/api/commons/plus?id=${commonsId}`],
-    {
-      method: "GET",
-      url: "/api/commons/plus",
-      params: {
-        id: commonsId,
-      },
+  const { data: gamePlus } = useBackend([`/api/game/plus?id=${gameId}`], {
+    method: "GET",
+    url: "/api/game/plus",
+    params: {
+      id: gameId,
     },
-  );
+  });
   // Stryker restore all
 
-  const commonsName = commonsPlus?.commons.name;
+  const gameName = gamePlus?.game.name;
 
   const objectToAxiosParams = (newAnnouncement) => {
     const params = {
-      commonsId,
+      gameId,
       startDate: datetimeLocalToIsoDateTime(newAnnouncement.startDate),
       announcementText: newAnnouncement.announcementText,
     };
@@ -46,7 +43,7 @@ const AdminCreateAnnouncementsPage = () => {
       <div>
         Announcement successfully created!
         <br />
-        {`commonsId: ${newAnnouncement.id}`}
+        {`gameId: ${newAnnouncement.id}`}
         <br />
         {`startDate: ${newAnnouncement.startDate}`}
         <br />
@@ -71,12 +68,12 @@ const AdminCreateAnnouncementsPage = () => {
   };
 
   if (mutation.isSuccess) {
-    return <Navigate to={`/admin/announcements/${commonsId}`} />;
+    return <Navigate to={`/admin/announcements/${gameId}`} />;
   }
 
   return (
     <BasicLayout>
-      <h2>Create Announcement for Game {commonsName}</h2>
+      <h2>Create Announcement for Game {gameName}</h2>
       <AnnouncementForm submitAction={submitAction} />
     </BasicLayout>
   );

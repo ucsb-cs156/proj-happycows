@@ -12,7 +12,7 @@ describe("UserProfileTable tests", () => {
       givenName: "Joe",
       familyName: "Biden",
       email: "joebiden@whitehouse.gov",
-      commons: [{ name: "Commons 1" }, { name: "Commons 2" }],
+      game: [{ name: "Game 1" }, { name: "Game 2" }],
       id: 1,
       admin: true,
       hostedDomain: "whitehouse.gov",
@@ -24,7 +24,7 @@ describe("UserProfileTable tests", () => {
     expect(screen.getByText("Joe")).toBeInTheDocument();
     expect(screen.getByText("Biden")).toBeInTheDocument();
     expect(screen.getByText("joebiden@whitehouse.gov")).toBeInTheDocument();
-    expect(screen.getByText("Commons 1, Commons 2")).toBeInTheDocument();
+    expect(screen.getByText("Game 1, Game 2")).toBeInTheDocument();
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText("true")).toBeInTheDocument();
     expect(screen.getByText("whitehouse.gov")).toBeInTheDocument();

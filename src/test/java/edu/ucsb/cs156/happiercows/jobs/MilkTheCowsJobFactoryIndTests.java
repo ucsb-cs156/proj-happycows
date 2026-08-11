@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -20,7 +20,7 @@ import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 public class MilkTheCowsJobFactoryIndTests extends JobTestCase {
 
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @MockBean
     FarmerRepository farmerRepository;
@@ -41,7 +41,7 @@ public class MilkTheCowsJobFactoryIndTests extends JobTestCase {
         MilkTheCowsJobInd milkTheCowsJobInd = (MilkTheCowsJobInd) MilkTheCowsJobFactoryInd.create(1L);
 
         // Assert
-        assertEquals(commonsRepository,milkTheCowsJobInd.getCommonsRepository());
+        assertEquals(gameRepository,milkTheCowsJobInd.getGameRepository());
         assertEquals(farmerRepository,milkTheCowsJobInd.getFarmerRepository());
         assertEquals(userRepository,milkTheCowsJobInd.getUserRepository());
         assertEquals(profitRepository,milkTheCowsJobInd.getProfitRepository());

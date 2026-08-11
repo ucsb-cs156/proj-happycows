@@ -32,7 +32,7 @@ vi.mock("react-toastify", async () => {
   };
 });
 
-describe("AdminCreateCommonsPage tests", () => {
+describe("AdminCreateGamePage tests", () => {
   const axiosMock = new AxiosMockAdapter(axios);
   const queryClient = new QueryClient();
 

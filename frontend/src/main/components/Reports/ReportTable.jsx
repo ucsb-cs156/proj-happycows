@@ -1,7 +1,7 @@
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import { useNavigate } from "react-router";
 
-// should take in a players list from a commons
+// should take in a players list from a game
 export default function ReportTable({
   reports,
   storybook = false,
@@ -27,7 +27,7 @@ export default function ReportTable({
     },
     {
       Header: "gameId",
-      accessor: "commonsId",
+      accessor: "gameId",
       Cell: (props) => {
         return <div style={{ textAlign: "right" }}>{props.value}</div>;
       },

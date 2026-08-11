@@ -1,11 +1,11 @@
 package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration
 public class SetCowHealthJobTests extends JobTestCase {
     @Mock
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Mock
     FarmerRepository farmerRepository;
@@ -42,10 +42,10 @@ public class SetCowHealthJobTests extends JobTestCase {
             .email("cgaucho@example.org")
             .build();
 
-    private Commons testCommons = Commons
+    private Game testGame = Game
             .builder()
             .id(117L)
-            .name("test commons")
+            .name("test game")
             .cowPrice(10)
             .milkPrice(2)
             .startingBalance(300)
@@ -57,24 +57,24 @@ public class SetCowHealthJobTests extends JobTestCase {
 
 
     @Test
-    void error_msg_when_no_commons_found() throws Exception {
+    void error_msg_when_no_game_found() throws Exception {
 
         // Arrange
 
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        when(commonsRepository.findById(any())).thenReturn(Optional.empty());
+        when(gameRepository.findById(any())).thenReturn(Optional.empty());
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, farmerRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, gameRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
         // Assert
         String expected = """
                 Setting cow health...
-                No commons found for id 117""";
+                No game found for id 117""";
 
         assertEquals(expected, jobStarted.getLog());
 
@@ -82,16 +82,16 @@ public class SetCowHealthJobTests extends JobTestCase {
 
 
     @Test
-    void test_skips_commons_when_game_not_in_progress() throws Exception {
+    void test_skips_game_when_game_not_in_progress() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        Commons futureCommons = Commons
+        Game futureGame = Game
                 .builder()
                 .id(117L)
-                .name("future commons")
+                .name("future game")
                 .cowPrice(10)
                 .milkPrice(2)
                 .startingBalance(300)
@@ -101,17 +101,17 @@ public class SetCowHealthJobTests extends JobTestCase {
                 .degradationRate(0.01)
                 .build();
 
-        when(commonsRepository.findById(117L)).thenReturn(Optional.of(futureCommons));
+        when(gameRepository.findById(117L)).thenReturn(Optional.of(futureGame));
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, commonsRepository, farmerRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117L, 2.0, gameRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
         // Assert
         String expected = """
                 Setting cow health...
-                Skipping Commons id=117 (future commons) because the game is not in progress""";
+                Skipping Game id=117 (future game) because the game is not in progress""";
 
         assertEquals(expected, jobStarted.getLog());
     }
@@ -120,7 +120,7 @@ public class SetCowHealthJobTests extends JobTestCase {
         return Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
+                .game(testGame)
                 .totalWealth(300)
                 .numOfCows(5)
                 .cowHealth(50)
@@ -143,19 +143,19 @@ public class SetCowHealthJobTests extends JobTestCase {
         Farmer newFarmer = Farmer
                 .builder()
                 .user(user)
-                .commons(testCommons)
-                .totalWealth(300 - testCommons.getCowPrice())
+                .game(testGame)
+                .totalWealth(300 - testGame.getCowPrice())
                 .numOfCows(5)
                 .cowHealth(2.0)
                 .build();
 
-        when(commonsRepository.findById(117L)).thenReturn(Optional.of(testCommons));
-        when(farmerRepository.findByCommonsId(testCommons.getId()))
+        when(gameRepository.findById(117L)).thenReturn(Optional.of(testGame));
+        when(farmerRepository.findByGameId(testGame.getId()))
                 .thenReturn(farmerList);
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         // Act
-        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117, 2, commonsRepository, farmerRepository,
+        SetCowHealthJob setCowHealthJob = new SetCowHealthJob(117, 2, gameRepository, farmerRepository,
                 userRepository);
         setCowHealthJob.accept(ctx);
 
@@ -163,7 +163,7 @@ public class SetCowHealthJobTests extends JobTestCase {
 
         String expected = """
                 Setting cow health...
-                Commons test commons
+                Game test game
                 User: Chris Gaucho, numCows: 5, cowHealth: 50.0
                  old cow health: 50.0, new cow health: 2.0
                 User: Chris Gaucho, numCows: 5, cowHealth: 50.0

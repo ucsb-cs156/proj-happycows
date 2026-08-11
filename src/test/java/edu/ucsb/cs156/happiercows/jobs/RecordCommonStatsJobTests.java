@@ -16,11 +16,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.CommonStats;
 import edu.ucsb.cs156.jobs.entities.Job;
-import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
 import edu.ucsb.cs156.happiercows.services.CommonStatsService;
 import edu.ucsb.cs156.jobs.services.JobContext;
@@ -36,14 +36,14 @@ public class RecordCommonStatsJobTests extends JobTestCase {
     CommonStatsService commonStatsService;
 
     @MockBean
-    CommonsRepository commonsRepository;
+    GameRepository gameRepository;
 
     @Test
     void test_log_output() throws Exception {
 
         // Arrange
 
-        Commons commons= Commons.builder().id(17L).name("CS156")
+        Game game= Game.builder().id(17L).name("CS156")
                 .startingDate(LocalDateTime.now().minusDays(5))
                 .lastDate(LocalDateTime.now().plusDays(5))
                 .build();
@@ -52,32 +52,32 @@ public class RecordCommonStatsJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
       
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commons));      
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(game));      
         when(commonStatsService.createAndSaveCommonStats(17L)).thenReturn(commonStats);
 
         // Act
         RecordCommonStatsJob recordCommonStatsJob = 
-                new RecordCommonStatsJob(commonStatsService, commonsRepository);
+                new RecordCommonStatsJob(commonStatsService, gameRepository);
         recordCommonStatsJob.accept(ctx);
 
         // Assert
 
-        verify(commonsRepository).findAll();
+        verify(gameRepository).findAll();
         verify(commonStatsService).createAndSaveCommonStats(17L);
         
         String expected = """
             Starting record common stats job...
-            Starting Commons id=17 (CS156)...
-            CommonStats 17 for commons id=17 (CS156) finished.
+            Starting Game id=17 (CS156)...
+            CommonStats 17 for game id=17 (CS156) finished.
             Record common stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }
 
     @Test
-    void test_skips_commons_when_game_not_in_progress() throws Exception {
+    void test_skips_game_when_game_not_in_progress() throws Exception {
 
         // Arrange
-        Commons commons = Commons.builder().id(17L).name("CS156")
+        Game game = Game.builder().id(17L).name("CS156")
                 .startingDate(LocalDateTime.now().plusDays(5))
                 .lastDate(LocalDateTime.now().plusDays(10))
                 .build();
@@ -85,11 +85,11 @@ public class RecordCommonStatsJobTests extends JobTestCase {
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
 
-        when(commonsRepository.findAll()).thenReturn(Arrays.asList(commons));
+        when(gameRepository.findAll()).thenReturn(Arrays.asList(game));
 
         // Act
         RecordCommonStatsJob recordCommonStatsJob =
-                new RecordCommonStatsJob(commonStatsService, commonsRepository);
+                new RecordCommonStatsJob(commonStatsService, gameRepository);
         recordCommonStatsJob.accept(ctx);
 
         // Assert
@@ -97,27 +97,27 @@ public class RecordCommonStatsJobTests extends JobTestCase {
 
         String expected = """
             Starting record common stats job...
-            Skipping Commons id=17 (CS156) because the game is not in progress
+            Skipping Game id=17 (CS156) because the game is not in progress
             Record common stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }
 
     @Test
-    void test_no_commons() throws Exception {
+    void test_no_game() throws Exception {
 
         // Arrange
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
-        when(commonsRepository.findAll()).thenReturn(new ArrayList<>());
+        when(gameRepository.findAll()).thenReturn(new ArrayList<>());
 
         // Act
         RecordCommonStatsJob recordCommonStatsJob = 
-                new RecordCommonStatsJob(commonStatsService, commonsRepository);
+                new RecordCommonStatsJob(commonStatsService, gameRepository);
         recordCommonStatsJob.accept(ctx);
 
         // Assert
 
-        verify(commonsRepository).findAll();
+        verify(gameRepository).findAll();
         
         String expected = """
             Starting record common stats job...

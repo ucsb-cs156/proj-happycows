@@ -9,7 +9,7 @@ const mockNavigate = vi.fn();
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
   useParams: () => ({
-    commonsId: 1,
+    gameId: 1,
   }),
   useNavigate: () => mockNavigate,
 }));
@@ -34,7 +34,7 @@ describe("ReportTable tests", () => {
 
     const expectedFields = [
       "id",
-      "commonsId",
+      "gameId",
       "name",
       "numUsers",
       "numCows",
@@ -63,7 +63,7 @@ describe("ReportTable tests", () => {
       "3",
     );
     expect(
-      screen.getByTestId(`${testId}-cell-row-1-col-commonsId`),
+      screen.getByTestId(`${testId}-cell-row-1-col-gameId`),
     ).toHaveTextContent("1");
     expect(
       screen.getByTestId(`${testId}-cell-row-1-col-name`),

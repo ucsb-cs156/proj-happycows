@@ -2,7 +2,7 @@ import { Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useBackend } from "main/utils/useBackend";
-import CommonsSelect from "main/components/Commons/CommonsSelect";
+import GameSelect from "main/components/Game/GameSelect";
 
 function SetCowHealthForm({
   submitAction = () => {},
@@ -11,14 +11,14 @@ function SetCowHealthForm({
   const localHealthValue = localStorage.getItem(`${testid}-health`);
   const [healthValue, setHealthValue] = useState(localHealthValue || 100);
 
-  const { data: commons } = useBackend(
-    ["/api/commons/all"],
-    { url: "/api/commons/all" },
+  const { data: game } = useBackend(
+    ["/api/game/all"],
+    { url: "/api/game/all" },
     [],
   );
 
-  const [selectedCommons, setSelectedCommons] = useState(null);
-  const [selectedCommonsName, setSelectedCommonsName] = useState(null);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [selectedGameName, setSelectedGameName] = useState(null);
 
   const {
     handleSubmit,
@@ -32,23 +32,23 @@ function SetCowHealthForm({
     localStorage.setItem(`${testid}-health`, newValue);
   };
 
-  const handleCommonsSelection = (id, name) => {
-    setSelectedCommons(id);
-    setSelectedCommonsName(name);
+  const handleGameSelection = (id, name) => {
+    setSelectedGame(id);
+    setSelectedGameName(name);
   };
 
   const onSubmit = () => {
-    const params = { selectedCommons, healthValue, selectedCommonsName };
+    const params = { selectedGame, healthValue, selectedGameName };
     submitAction(params);
   };
 
-  if (!commons || commons.length === 0) {
+  if (!game || game.length === 0) {
     return <div>There are no games on which to run this job.</div>;
   }
 
-  if (selectedCommons === null) {
-    setSelectedCommons(commons[0].id);
-    setSelectedCommonsName(commons[0].name);
+  if (selectedGame === null) {
+    setSelectedGame(game[0].id);
+    setSelectedGameName(game[0].name);
   }
 
   return (
@@ -59,10 +59,10 @@ function SetCowHealthForm({
         </Form.Text>
       </Form.Group>
 
-      <CommonsSelect
-        commons={commons}
-        selectedCommons={selectedCommons}
-        handleCommonsSelection={handleCommonsSelection}
+      <GameSelect
+        game={game}
+        selectedGame={selectedGame}
+        handleGameSelection={handleGameSelection}
         testid={testid}
       />
 
