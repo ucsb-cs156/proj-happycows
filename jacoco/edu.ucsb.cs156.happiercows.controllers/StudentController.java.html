@@ -6,6 +6,7 @@ import edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat;
 import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StudentDTO;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,11 +27,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-<span class="fc" id="L29">@Slf4j</span>
+<span class="fc" id="L30">@Slf4j</span>
 @Tag(name = &quot;Student&quot;)
 @RequestMapping(&quot;/api/student&quot;)
 @RestController
-<span class="fc" id="L33">public class StudentController extends ApiController {</span>
+<span class="fc" id="L34">public class StudentController extends ApiController {</span>
     @Autowired
     private StudentRepository studentRepository;
 
@@ -38,7 +39,7 @@ import java.util.List;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Student&gt; allStudents() {
-<span class="fc" id="L41">        return studentRepository.findAll();</span>
+<span class="fc" id="L42">        return studentRepository.findAll();</span>
     }
 
     @Operation(summary = &quot;List the roster students for a single course&quot;)
@@ -46,7 +47,7 @@ import java.util.List;
     @GetMapping(&quot;/course/{courseId}&quot;)
     public Iterable&lt;Student&gt; studentsForCourse(
             @Parameter(name = &quot;courseId&quot;) @PathVariable Long courseId) {
-<span class="fc" id="L49">        return studentRepository.findByCourseId(courseId);</span>
+<span class="fc" id="L50">        return studentRepository.findByCourseId(courseId);</span>
     }
 
     @Operation(summary = &quot;Get a roster student by id&quot;)
@@ -54,8 +55,8 @@ import java.util.List;
     @GetMapping(&quot;/{id}&quot;)
     public Student getStudentById(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L57">        return studentRepository.findById(id)</span>
-<span class="fc" id="L58">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L58">        return studentRepository.findById(id)</span>
+<span class="fc" id="L59">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
     }
 
     @Operation(summary = &quot;Add a roster student to a course&quot;)
@@ -63,7 +64,7 @@ import java.util.List;
     @PostMapping(&quot;&quot;)
     public Student postStudent(
             @Parameter(name = &quot;student&quot;) @RequestBody StudentDTO studentDTO) {
-<span class="fc" id="L66">        return studentRepository.save(studentDTO.toStudent());</span>
+<span class="fc" id="L67">        return studentRepository.save(studentDTO.toStudent());</span>
     }
 
     @Operation(summary = &quot;Update a single roster student&quot;)
@@ -71,18 +72,18 @@ import java.util.List;
     @PutMapping(&quot;/{id}&quot;)
     public Student updateStudent(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody StudentDTO studentDTO) {
-<span class="fc" id="L74">        Student student = studentRepository.findById(id)</span>
-<span class="fc" id="L75">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L75">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L76">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
 
-<span class="fc" id="L77">        student.setLastName(studentDTO.getLastName());</span>
-<span class="fc" id="L78">        student.setFirstMiddleName(studentDTO.getFirstMiddleName());</span>
-<span class="fc" id="L79">        student.setEmail(studentDTO.getEmail());</span>
-<span class="fc" id="L80">        student.setPerm(studentDTO.getPerm());</span>
-<span class="fc" id="L81">        student.setCourseId(studentDTO.getCourseId());</span>
+<span class="fc" id="L78">        student.setLastName(studentDTO.getLastName());</span>
+<span class="fc" id="L79">        student.setFirstMiddleName(studentDTO.getFirstMiddleName());</span>
+<span class="fc" id="L80">        student.setEmail(CanonicalFormConverter.convertToValidEmail(studentDTO.getEmail()));</span>
+<span class="fc" id="L81">        student.setPerm(studentDTO.getPerm());</span>
+<span class="fc" id="L82">        student.setCourseId(studentDTO.getCourseId());</span>
 
-<span class="fc" id="L83">        studentRepository.save(student);</span>
+<span class="fc" id="L84">        studentRepository.save(student);</span>
 
-<span class="fc" id="L85">        return student;</span>
+<span class="fc" id="L86">        return student;</span>
     }
 
     @Operation(summary = &quot;Remove a roster student from a course&quot;)
@@ -90,11 +91,11 @@ import java.util.List;
     @DeleteMapping(&quot;/{id}&quot;)
     public Object deleteStudent(
             @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
-<span class="fc" id="L93">        Student student = studentRepository.findById(id)</span>
-<span class="fc" id="L94">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+<span class="fc" id="L94">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L95">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
 
-<span class="fc" id="L96">        studentRepository.delete(student);</span>
-<span class="fc" id="L97">        return genericMessage(&quot;Student with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L97">        studentRepository.delete(student);</span>
+<span class="fc" id="L98">        return genericMessage(&quot;Student with id %s deleted&quot;.formatted(id));</span>
     }
 
     /**
@@ -116,52 +117,52 @@ import java.util.List;
             @Parameter(name = &quot;file&quot;) @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
 
         List&lt;CSVRecord&gt; records;
-<span class="fc" id="L119">        try (CSVParser parser = CSVFormat.DEFAULT.parse(</span>
-<span class="fc" id="L120">                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {</span>
-<span class="fc" id="L121">            records = parser.getRecords();</span>
+<span class="fc" id="L120">        try (CSVParser parser = CSVFormat.DEFAULT.parse(</span>
+<span class="fc" id="L121">                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {</span>
+<span class="fc" id="L122">            records = parser.getRecords();</span>
         }
 
-<span class="fc bfc" id="L124" title="All 2 branches covered.">        if (records.isEmpty()) {</span>
-<span class="fc" id="L125">            throw new IllegalArgumentException(&quot;CSV file is empty&quot;);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (records.isEmpty()) {</span>
+<span class="fc" id="L126">            throw new IllegalArgumentException(&quot;CSV file is empty&quot;);</span>
         }
 
-<span class="fc" id="L128">        Iterator&lt;CSVRecord&gt; rows = records.iterator();</span>
+<span class="fc" id="L129">        Iterator&lt;CSVRecord&gt; rows = records.iterator();</span>
 
-<span class="fc" id="L130">        List&lt;String&gt; headerValues = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">        for (String value : rows.next()) {</span>
-<span class="fc" id="L132">            headerValues.add(value);</span>
-<span class="fc" id="L133">        }</span>
+<span class="fc" id="L131">        List&lt;String&gt; headerValues = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (String value : rows.next()) {</span>
+<span class="fc" id="L133">            headerValues.add(value);</span>
+<span class="fc" id="L134">        }</span>
 
-<span class="fc" id="L135">        StudentCsvFormat format = StudentCsvFormat.detect(headerValues);</span>
-<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (format == null) {</span>
-<span class="fc" id="L137">            throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
+<span class="fc" id="L136">        StudentCsvFormat format = StudentCsvFormat.detect(headerValues);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (format == null) {</span>
+<span class="fc" id="L138">            throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
         }
 
-<span class="fc" id="L140">        int created = 0;</span>
-<span class="fc" id="L141">        List&lt;String&gt; skippedEmails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L141">        int created = 0;</span>
+<span class="fc" id="L142">        List&lt;String&gt; skippedEmails = new ArrayList&lt;&gt;();</span>
 
-<span class="fc bfc" id="L143" title="All 2 branches covered.">        while (rows.hasNext()) {</span>
-<span class="fc" id="L144">            CSVRecord row = rows.next();</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">            if (row.size() != format.getHeaders().size()) {</span>
-<span class="fc" id="L146">                throw new IllegalArgumentException(</span>
-<span class="fc" id="L147">                        &quot;Row %d does not have the expected number of columns&quot;.formatted(row.getRecordNumber()));</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        while (rows.hasNext()) {</span>
+<span class="fc" id="L145">            CSVRecord row = rows.next();</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">            if (row.size() != format.getHeaders().size()) {</span>
+<span class="fc" id="L147">                throw new IllegalArgumentException(</span>
+<span class="fc" id="L148">                        &quot;Row %d does not have the expected number of columns&quot;.formatted(row.getRecordNumber()));</span>
             }
 
-<span class="fc" id="L150">            Student student = format.toStudent(row, courseId);</span>
+<span class="fc" id="L151">            Student student = format.toStudent(row, courseId);</span>
 
-<span class="fc bfc" id="L152" title="All 2 branches covered.">            if (studentRepository.findByCourseIdAndEmail(courseId, student.getEmail()).iterator().hasNext()) {</span>
-<span class="fc" id="L153">                skippedEmails.add(student.getEmail());</span>
-<span class="fc" id="L154">                continue;</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (studentRepository.findByCourseIdAndEmail(courseId, student.getEmail()).iterator().hasNext()) {</span>
+<span class="fc" id="L154">                skippedEmails.add(student.getEmail());</span>
+<span class="fc" id="L155">                continue;</span>
             }
 
-<span class="fc" id="L157">            studentRepository.save(student);</span>
-<span class="fc" id="L158">            created++;</span>
-<span class="fc" id="L159">        }</span>
+<span class="fc" id="L158">            studentRepository.save(student);</span>
+<span class="fc" id="L159">            created++;</span>
+<span class="fc" id="L160">        }</span>
 
-<span class="fc" id="L161">        return CsvUploadResult.builder()</span>
-<span class="fc" id="L162">                .created(created)</span>
-<span class="fc" id="L163">                .skippedEmails(skippedEmails)</span>
-<span class="fc" id="L164">                .build();</span>
+<span class="fc" id="L162">        return CsvUploadResult.builder()</span>
+<span class="fc" id="L163">                .created(created)</span>
+<span class="fc" id="L164">                .skippedEmails(skippedEmails)</span>
+<span class="fc" id="L165">                .build();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
