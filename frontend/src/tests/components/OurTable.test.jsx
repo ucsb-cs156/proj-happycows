@@ -1,3 +1,4 @@
+import React from "react";
 import {
   fireEvent,
   render,
@@ -471,5 +472,38 @@ describe("OurTable tests", () => {
     ).toContainHTML("4");
     expect(screen.queryByTestId("testid-forward-three-page-button")).toBe(null);
     expect(screen.queryByTestId("testid-back-three-page-button")).toBe(null);
+  });
+
+  test("changing pageSize while on a later page resets to the first page", async () => {
+    const Wrapper = () => {
+      const [pageSize, setPageSize] = React.useState(10);
+      return (
+        <>
+          <button data-testid="grow-page-size" onClick={() => setPageSize(50)}>
+            Grow page size
+          </button>
+          <OurTable columns={columns} data={elevenRows} pageSize={pageSize} />
+        </>
+      );
+    };
+
+    render(<Wrapper />);
+
+    const nextButton = await screen.findByTestId("testid-next-page-button");
+    fireEvent.click(nextButton);
+    expect(
+      await screen.findByTestId("testid-current-page-button"),
+    ).toContainHTML("2");
+    expect(await screen.findByText(`Hello 11`)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("grow-page-size"));
+
+    // With pageSize now 50, all 11 rows fit on one page: pagination
+    // disappears rather than showing an empty page 2.
+    await waitFor(() => {
+      expect(screen.queryByTestId("testid-current-page-button")).toBe(null);
+    });
+    expect(await screen.findByText(`Hello 1`)).toBeInTheDocument();
+    expect(await screen.findByText(`Hello 11`)).toBeInTheDocument();
   });
 });

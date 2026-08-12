@@ -372,4 +372,52 @@ describe("StudentsTable tests", () => {
       expectedHeaders.length,
     );
   });
+
+  const manyStudents = Array.from({ length: 25 }, (_, i) => ({
+    id: i + 1,
+    lastName: `Last${i + 1}`,
+    firstMiddleName: `First${i + 1}`,
+    email: `student${i + 1}@ucsb.edu`,
+    perm: `100000${i}`,
+    courseId: 1,
+    lastLoginDateTime: null,
+  }));
+
+  test("renders a Page Size selector defaulting to 20", () => {
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toBeInTheDocument();
+    expect(selector).toHaveValue("20");
+  });
+
+  test("with more students than the page size, pagination is shown and only a page's worth of rows render", () => {
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    expect(
+      screen.getByTestId(`${testId}-current-page-button`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-id`),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testId}-cell-row-20-col-id`),
+    ).not.toBeInTheDocument();
+  });
+
+  test("selecting a larger page size shows all rows and hides pagination", async () => {
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId(`${testId}-current-page-button`),
+      ).not.toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId(`${testId}-cell-row-24-col-id`),
+    ).toBeInTheDocument();
+  });
 });
