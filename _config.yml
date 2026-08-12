@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-hotfix-umail","number":279,"title":"Canonicalize umail.ucsb.edu emails on write, matching, and existing data","url":"https://github.com/ucsb-cs156/proj-happycows/pull/279"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-Claude-hotfix-db","number":280,"title":"Guard FK constraint drops/renames in migration 007 with existence checks","url":"https://github.com/ucsb-cs156/proj-happycows/pull/280"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-hotfix-umail","number":279,"title":"Canonicalize umail.ucsb.edu emails on write, matching, and existing data","url":"https://github.com/ucsb-cs156/proj-happycows/pull/279"}]
