@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.helpers;
 
 import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import org.apache.commons.csv.CSVRecord;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public enum StudentCsvFormat {
                     .perm(row.get(1).trim())
                     .lastName(row.get(4).trim())
                     .firstMiddleName(row.get(5).trim())
-                    .email(row.get(10).trim())
+                    .email(CanonicalFormConverter.convertToValidEmail(row.get(10).trim()))
                     .courseId(courseId)
                     .build()),
 
@@ -42,7 +43,7 @@ public enum StudentCsvFormat {
                         .perm(row.get(2).trim())
                         .lastName(lastNameFromFullName(fullName))
                         .firstMiddleName(firstNameFromFullName(fullName))
-                        .email(row.get(3).trim())
+                        .email(CanonicalFormConverter.convertToValidEmail(row.get(3).trim()))
                         .courseId(courseId)
                         .build();
             }),
@@ -52,7 +53,7 @@ public enum StudentCsvFormat {
             (row, courseId) -> Student.builder()
                     .lastName(row.get(0).trim())
                     .firstMiddleName(row.get(1).trim())
-                    .email(row.get(2).trim())
+                    .email(CanonicalFormConverter.convertToValidEmail(row.get(2).trim()))
                     .perm(row.get(3).trim())
                     .courseId(courseId)
                     .build());

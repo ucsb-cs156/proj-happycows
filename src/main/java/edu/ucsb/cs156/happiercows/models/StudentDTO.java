@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.models;
 
 import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import lombok.*;
 
 @Data
@@ -18,7 +19,7 @@ public class StudentDTO {
         return Student.builder()
                 .lastName(lastName)
                 .firstMiddleName(firstMiddleName)
-                .email(email)
+                .email(CanonicalFormConverter.convertToValidEmail(email))
                 .perm(perm)
                 .courseId(courseId)
                 .build();

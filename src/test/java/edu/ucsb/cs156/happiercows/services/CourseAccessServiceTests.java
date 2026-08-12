@@ -50,8 +50,8 @@ public class CourseAccessServiceTests {
         User admin = User.builder().email("admin@ucsb.edu").admin(true).build();
         Game game = Game.builder().id(1L).courseId(5L).build();
 
-        when(studentRepository.findByEmail("admin@ucsb.edu")).thenReturn(new ArrayList<>());
-        when(staffRepository.findByEmail("admin@ucsb.edu")).thenReturn(new ArrayList<>());
+        when(studentRepository.findAll()).thenReturn(new ArrayList<>());
+        when(staffRepository.findAll()).thenReturn(new ArrayList<>());
 
         assertTrue(courseAccessService.isEligibleForGame(admin, game));
     }
@@ -65,8 +65,8 @@ public class CourseAccessServiceTests {
         List<Student> students = new ArrayList<>();
         students.add(student);
 
-        when(studentRepository.findByEmail("student@ucsb.edu")).thenReturn(students);
-        when(staffRepository.findByEmail("student@ucsb.edu")).thenReturn(new ArrayList<>());
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(new ArrayList<>());
 
         assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
@@ -80,8 +80,8 @@ public class CourseAccessServiceTests {
         List<Staff> staffList = new ArrayList<>();
         staffList.add(staff);
 
-        when(studentRepository.findByEmail("staff@ucsb.edu")).thenReturn(new ArrayList<>());
-        when(staffRepository.findByEmail("staff@ucsb.edu")).thenReturn(staffList);
+        when(studentRepository.findAll()).thenReturn(new ArrayList<>());
+        when(staffRepository.findAll()).thenReturn(staffList);
 
         assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
@@ -91,8 +91,8 @@ public class CourseAccessServiceTests {
         User user = User.builder().email("outsider@ucsb.edu").admin(false).build();
         Game game = Game.builder().id(1L).courseId(5L).build();
 
-        when(studentRepository.findByEmail("outsider@ucsb.edu")).thenReturn(new ArrayList<>());
-        when(staffRepository.findByEmail("outsider@ucsb.edu")).thenReturn(new ArrayList<>());
+        when(studentRepository.findAll()).thenReturn(new ArrayList<>());
+        when(staffRepository.findAll()).thenReturn(new ArrayList<>());
 
         assertFalse(courseAccessService.isEligibleForGame(user, game));
     }
@@ -106,10 +106,43 @@ public class CourseAccessServiceTests {
         List<Student> students = new ArrayList<>();
         students.add(student);
 
-        when(studentRepository.findByEmail("student@ucsb.edu")).thenReturn(students);
-        when(staffRepository.findByEmail("student@ucsb.edu")).thenReturn(new ArrayList<>());
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(new ArrayList<>());
 
         assertFalse(courseAccessService.isEligibleForGame(user, game));
+    }
+
+    @Test
+    public void student_on_roster_with_umail_domain_matches_user_logging_in_with_ucsb_domain() {
+        // See issue #278: a roster row uploaded (or left over from before the
+        // CanonicalFormConverter fix) with the @umail.ucsb.edu form must
+        // still match a student whose Google login email is @ucsb.edu.
+        User user = User.builder().email("student@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
+
+        Student student = Student.builder().email("student@umail.ucsb.edu").courseId(5L).build();
+        List<Student> students = new ArrayList<>();
+        students.add(student);
+
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(new ArrayList<>());
+
+        assertTrue(courseAccessService.isEligibleForGame(user, game));
+    }
+
+    @Test
+    public void staff_on_roster_with_umail_domain_matches_user_logging_in_with_ucsb_domain() {
+        User user = User.builder().email("staff@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
+
+        Staff staff = Staff.builder().email("staff@umail.ucsb.edu").courseId(5L).build();
+        List<Staff> staffList = new ArrayList<>();
+        staffList.add(staff);
+
+        when(studentRepository.findAll()).thenReturn(new ArrayList<>());
+        when(staffRepository.findAll()).thenReturn(staffList);
+
+        assertTrue(courseAccessService.isEligibleForGame(user, game));
     }
 
     @Test
@@ -126,8 +159,8 @@ public class CourseAccessServiceTests {
         List<Staff> staffList = new ArrayList<>();
         staffList.add(staff);
 
-        when(studentRepository.findByEmail("both@ucsb.edu")).thenReturn(students);
-        when(staffRepository.findByEmail("both@ucsb.edu")).thenReturn(staffList);
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(staffList);
 
         List<Long> courseIds = courseAccessService.getCourseIdsForUser(user);
 
@@ -156,13 +189,33 @@ public class CourseAccessServiceTests {
         staffList.add(staffNew);
         staffList.add(staffDuplicate);
 
-        when(studentRepository.findByEmail("many@ucsb.edu")).thenReturn(students);
-        when(staffRepository.findByEmail("many@ucsb.edu")).thenReturn(staffList);
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(staffList);
 
         List<Long> courseIds = courseAccessService.getCourseIdsForUser(user);
 
         assertEquals(2, courseIds.size());
         assertTrue(courseIds.contains(5L));
         assertTrue(courseIds.contains(7L));
+    }
+
+    @Test
+    public void getCourseIdsForUser_does_not_match_unrelated_emails() {
+        User user = User.builder().email("someone@ucsb.edu").admin(false).build();
+
+        Student student = Student.builder().email("someone-else@ucsb.edu").courseId(5L).build();
+        List<Student> students = new ArrayList<>();
+        students.add(student);
+
+        Staff staff = Staff.builder().email("yet-another@ucsb.edu").courseId(6L).build();
+        List<Staff> staffList = new ArrayList<>();
+        staffList.add(staff);
+
+        when(studentRepository.findAll()).thenReturn(students);
+        when(staffRepository.findAll()).thenReturn(staffList);
+
+        List<Long> courseIds = courseAccessService.getCourseIdsForUser(user);
+
+        assertEquals(0, courseIds.size());
     }
 }

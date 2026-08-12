@@ -6,6 +6,7 @@ import edu.ucsb.cs156.happiercows.models.StaffDTO;
 import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
@@ -232,6 +233,34 @@ public class StaffControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
+    public void admin_posting_a_new_staff_member_with_umail_email_has_it_canonicalized() throws Exception {
+        StaffDTO staffDTO = StaffDTO.builder()
+                .lastName("Smith")
+                .firstMiddleName("Jordan")
+                .email("jordansmith@umail.ucsb.edu")
+                .courseId(1L)
+                .build();
+
+        Staff expectedToBeSaved = Staff.builder()
+                .lastName("Smith")
+                .firstMiddleName("Jordan")
+                .email("jordansmith@ucsb.edu")
+                .courseId(1L)
+                .build();
+
+        when(staffRepository.save(expectedToBeSaved)).thenReturn(expectedToBeSaved);
+
+        mockMvc.perform(post("/api/staff")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(staffDTO)))
+                .andExpect(status().isOk());
+
+        verify(staffRepository, times(1)).save(expectedToBeSaved);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
     public void admin_can_delete_a_staff_member() throws Exception {
         Staff staff1 = Staff.builder()
                 .lastName("Smith")
@@ -316,6 +345,43 @@ public class StaffControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
+    public void admin_editing_a_staff_member_with_umail_email_has_it_canonicalized() throws Exception {
+        Staff staffOrig = Staff.builder()
+                .lastName("Smith")
+                .firstMiddleName("Jordan")
+                .email("jordansmith@ucsb.edu")
+                .courseId(1L)
+                .build();
+
+        StaffDTO staffEditedDTO = StaffDTO.builder()
+                .lastName("Smith")
+                .firstMiddleName("Jordan")
+                .email("jordansmith@umail.ucsb.edu")
+                .courseId(1L)
+                .build();
+
+        Staff staffEdited = Staff.builder()
+                .lastName("Smith")
+                .firstMiddleName("Jordan")
+                .email("jordansmith@ucsb.edu")
+                .courseId(1L)
+                .build();
+
+        when(staffRepository.findById(eq(67L))).thenReturn(Optional.of(staffOrig));
+
+        mockMvc.perform(
+                        put("/api/staff/67")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(mapper.writeValueAsString(staffEditedDTO))
+                                .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(staffRepository, times(1)).save(staffEdited);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
     public void admin_cannot_edit_staff_that_does_not_exist() throws Exception {
         StaffDTO staffEditedDTO = StaffDTO.builder()
                 .lastName("Smithson")
@@ -384,6 +450,27 @@ public class StaffControllerTests extends ControllerTestCase {
         Map<String, Object> json = responseToJson(response);
         assertEquals(2, json.get("created"));
         assertEquals(List.of(), json.get("skippedEmails"));
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
+    public void admin_can_upload_staff_csv_with_umail_emails_and_they_are_canonicalized() throws Exception {
+        String csv = "lastName,firstMiddleName,email\n"
+                + "Smith,Jordan,jordansmith@umail.ucsb.edu\n"
+                + "Lee,Alex,alexlee@umail.ucsb.edu\n";
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "staff.csv", "text/csv", csv.getBytes(StandardCharsets.UTF_8));
+
+        when(staffRepository.findByCourseIdAndEmail(eq(1L), any())).thenReturn(new ArrayList<>());
+
+        mockMvc.perform(multipart("/api/staff/upload/csv").file(file).param("courseId", "1").with(csrf()))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<Staff> captor = ArgumentCaptor.forClass(Staff.class);
+        verify(staffRepository, times(2)).save(captor.capture());
+        assertEquals(
+                List.of("jordansmith@ucsb.edu", "alexlee@ucsb.edu"),
+                captor.getAllValues().stream().map(Staff::getEmail).toList());
     }
 
     @WithMockUser(roles = { "ADMIN" })

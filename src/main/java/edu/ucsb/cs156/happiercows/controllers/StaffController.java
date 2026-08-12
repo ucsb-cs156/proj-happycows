@@ -5,6 +5,7 @@ import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StaffDTO;
 import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -75,7 +76,7 @@ public class StaffController extends ApiController {
 
         staff.setLastName(staffDTO.getLastName());
         staff.setFirstMiddleName(staffDTO.getFirstMiddleName());
-        staff.setEmail(staffDTO.getEmail());
+        staff.setEmail(CanonicalFormConverter.convertToValidEmail(staffDTO.getEmail()));
         staff.setCourseId(staffDTO.getCourseId());
 
         staffRepository.save(staff);
@@ -154,7 +155,7 @@ public class StaffController extends ApiController {
             Staff staff = Staff.builder()
                     .lastName(row.get(0).trim())
                     .firstMiddleName(row.get(1).trim())
-                    .email(row.get(2).trim())
+                    .email(CanonicalFormConverter.convertToValidEmail(row.get(2).trim()))
                     .courseId(courseId)
                     .build();
 
