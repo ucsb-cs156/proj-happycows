@@ -36,7 +36,13 @@ export default function LeaderboardTable({ leaderboardUsers }) {
       Header: "Cow Health",
       accessor: "cowHealth",
       Cell: (props) => {
-        return <div style={{ textAlign: "right" }}>{props.value}</div>;
+        return (
+          <div style={{ textAlign: "right" }}>
+            {typeof props.value === "number"
+              ? props.value.toFixed(2)
+              : props.value}
+          </div>
+        );
       },
     },
     {
