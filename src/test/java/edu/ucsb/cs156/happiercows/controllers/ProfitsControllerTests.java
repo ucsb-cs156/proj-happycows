@@ -213,4 +213,77 @@ public class ProfitsControllerTests extends ControllerTestCase {
         assertEquals(2, jsonResponse.get("totalPages").asInt());
         assertEquals(p3.getAmount(), jsonResponse.get("content").get(0).get("amount").asDouble(), 0.01);
     }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_get_profits_all_game_nonexistent_using_game_id_with_pagination() throws Exception {
+        MvcResult response = mockMvc.perform(get("/api/profits/paged?userId=1&gameId=2").contentType("application/json"))
+                .andExpect(status().isNotFound()).andReturn();
+
+        verify(farmerRepository, times(1)).findByGameIdAndUserId(2L, 1L);
+
+        Map<String, Object> json = responseToJson(response);
+        assertEquals("EntityNotFoundException", json.get("type"));
+        assertEquals("Farmer with gameId 2 and userId 1 not found",
+                json.get("message"));
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void non_admin_cannot_get_profits_paged_with_explicit_userId() throws Exception {
+        mockMvc.perform(get("/api/profits/paged?userId=1&gameId=2").contentType("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_get_profits_all_game_using_game_id_with_pagination() throws Exception {
+        Farmer expectedFarmer = p1.getFarmer();
+
+        when(farmerRepository.findByGameIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
+
+        // Mocking the behavior for pagination
+        Page<Profit> profitPage = new PageImpl<>(profits);
+        when(profitRepository.findAllByFarmer(eq(uc1))).thenReturn(profitPage);
+
+        MvcResult response = mockMvc.perform(get("/api/profits/paged?userId=1&gameId=2&pageNumber=0&pageSize=7"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(profitPage.getTotalElements()))
+                .andExpect(jsonPath("$.content[0].amount").value(p1.getAmount()))
+                .andReturn();
+
+        String responseString = response.getResponse().getContentAsString();
+        JsonNode jsonResponse = objectMapper.readTree(responseString);
+
+        assertEquals(0, jsonResponse.get("number").asInt());
+        assertEquals(7, jsonResponse.get("size").asInt());
+        assertEquals(1, jsonResponse.get("totalPages").asInt());
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_get_profits_all_game_using_game_id_with_pagination_2() throws Exception {
+        Farmer expectedFarmer = p1.getFarmer();
+
+        when(farmerRepository.findByGameIdAndUserId(2L, 1L)).thenReturn(Optional.of(expectedFarmer));
+
+        // Mocking the behavior for pagination
+        Page<Profit> profitPage = new PageImpl<>(profits2);
+        when(profitRepository.findAllByFarmer(eq(uc1))).thenReturn(profitPage);
+
+        MvcResult response = mockMvc.perform(get("/api/profits/paged?userId=1&gameId=2&pageNumber=1&pageSize=2"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andReturn();
+
+        String responseString = response.getResponse().getContentAsString();
+        JsonNode jsonResponse = objectMapper.readTree(responseString);
+
+        assertEquals(3, jsonResponse.get("totalElements").asInt());
+        assertEquals(2, jsonResponse.get("totalPages").asInt());
+        assertEquals(p3.getAmount(), jsonResponse.get("content").get(0).get("amount").asDouble(), 0.01);
+    }
 }

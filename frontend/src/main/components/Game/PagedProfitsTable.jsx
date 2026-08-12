@@ -12,15 +12,24 @@ const PagedProfitsTable = () => {
   const [selectedPage, setSelectedPage] = React.useState(0);
 
   const PROFIT_PAGE_SIZE = 5;
-  const { gameId } = useParams();
+  const { gameId, userId } = useParams();
+
+  // A :userId route param means we're on the admin read-only view
+  // (/admin/play/:gameId/user/:userId) looking at another farmer's page, so
+  // we need the admin endpoint that takes an explicit userId instead of the
+  // current-user endpoint, which would otherwise return the logged-in
+  // admin's own profits (or 404, since the admin usually isn't a farmer in
+  // this game at all).
+  const isAdminView = userId !== undefined;
 
   // Stryker disable all
   const { data: page } = useBackend(
-    ["/api/profits/paged/gameid"],
+    [isAdminView ? "/api/profits/paged" : "/api/profits/paged/gameid"],
     {
       method: "GET",
-      url: "/api/profits/paged/gameid",
+      url: isAdminView ? "/api/profits/paged" : "/api/profits/paged/gameid",
       params: {
+        ...(isAdminView && { userId: userId }),
         gameId: gameId,
         pageNumber: selectedPage,
         pageSize: PROFIT_PAGE_SIZE,

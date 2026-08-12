@@ -49,6 +49,19 @@ const AdminViewPlayPage = () => {
   });
   // Stryker restore all
 
+  // Stryker disable all
+  const { data: currentAnnouncements } = useBackend(
+    [`/api/announcements/current?gameId=${gameId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/current",
+      params: {
+        gameId: gameId,
+      },
+    },
+  );
+  // Stryker restore all
+
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const toggleChatWindow = () => {
@@ -102,9 +115,14 @@ const AdminViewPlayPage = () => {
           </Card.Body>
         </Card>
         <Container>
-          {!!currentUser && <GamePlay currentUser={farmer} />}
+          {!!currentUser && <GamePlay currentUser={currentUser} />}
           {!!gamePlus && (
-            <GameOverview gamePlus={gamePlus} currentUser={currentUser} />
+            <GameOverview
+              gamePlus={gamePlus}
+              currentUser={currentUser}
+              currentAnnouncements={currentAnnouncements}
+              emulatingStudentView={true}
+            />
           )}
           <br />
           {!!farmer && !!gamePlus && (
@@ -117,7 +135,7 @@ const AdminViewPlayPage = () => {
         </Container>
       </BasicLayout>
       <div style={chatContainerStyle} data-testid="adminviewplaypage-chat-div">
-        {!!isChatOpen && <ChatPanel gameId={userId} />}
+        {!!isChatOpen && <ChatPanel gameId={gameId} />}
         <Button
           style={chatButtonStyle}
           onClick={toggleChatWindow}
