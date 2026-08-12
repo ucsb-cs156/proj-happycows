@@ -42,8 +42,16 @@ describe("StudentsTable tests", () => {
     "First/Middle Name",
     "Email",
     "Perm",
+    "Last Login",
   ];
-  const expectedFields = ["id", "lastName", "firstMiddleName", "email", "perm"];
+  const expectedFields = [
+    "id",
+    "lastName",
+    "firstMiddleName",
+    "email",
+    "perm",
+    "lastLoginDateTime",
+  ];
 
   beforeEach(() => {
     axiosMock.reset();
@@ -86,6 +94,68 @@ describe("StudentsTable tests", () => {
     expect(
       screen.queryByTestId(`${testId}-cell-row-0-col-Delete-button`),
     ).not.toBeInTheDocument();
+  });
+
+  test("displays formatted last login time, and 'Never' when null", async () => {
+    renderTable(studentsFixtures.threeStudents, currentUserFixtures.userOnly);
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-lastLoginDateTime`),
+    ).toHaveTextContent("Never");
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-lastLoginDateTime`),
+    ).not.toHaveTextContent("Never");
+  });
+
+  test("sorts Last Login column by underlying timestamp, not rendered text", async () => {
+    const now = new Date();
+    const minutesAgo = (minutes) =>
+      new Date(now.getTime() - minutes * 60 * 1000).toISOString();
+
+    // Rendered text for these would sort as "15 minutes ago", "2 minutes ago",
+    // "42 minutes ago" lexicographically, which is not chronological order.
+    const students = [
+      {
+        ...studentsFixtures.threeStudents[0],
+        id: 1,
+        lastLoginDateTime: minutesAgo(15),
+      },
+      {
+        ...studentsFixtures.threeStudents[1],
+        id: 2,
+        lastLoginDateTime: minutesAgo(2),
+      },
+      {
+        ...studentsFixtures.threeStudents[2],
+        id: 3,
+        lastLoginDateTime: minutesAgo(42),
+      },
+    ];
+
+    renderTable(students, currentUserFixtures.userOnly);
+
+    const header = screen.getByTestId(`${testId}-header-lastLoginDateTime`);
+
+    const getVisibleIdOrder = () =>
+      screen
+        .getAllByRole("row")
+        .slice(1) // skip header row
+        .map((row) => row.querySelector("td").textContent);
+
+    // Click once to sort ascending (oldest lastLoginDateTime first, i.e. most minutes ago).
+    fireEvent.click(header);
+
+    await waitFor(() => {
+      expect(getVisibleIdOrder()).toEqual(["3", "1", "2"]);
+    });
+
+    // Click again to sort descending (most recent lastLoginDateTime first).
+    fireEvent.click(header);
+
+    await waitFor(() => {
+      expect(getVisibleIdOrder()).toEqual(["2", "1", "3"]);
+    });
   });
 
   test("Has the expected column headers and content for admin user", () => {
@@ -191,6 +261,7 @@ describe("StudentsTable tests", () => {
       email: "sallyferber@ucsb.edu",
       perm: "1234567",
       courseId: 1,
+      lastLoginDateTime: "2024-01-15T10:15:30",
     });
 
     await waitFor(() =>
