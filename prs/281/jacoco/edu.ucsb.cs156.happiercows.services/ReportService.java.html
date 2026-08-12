@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReportService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">ReportService.java</span></div><h1>ReportService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.Report;
+import edu.ucsb.cs156.happiercows.entities.ReportLine;
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
+import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
+import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
+
+@Service(&quot;ReportService&quot;)
+<span class="fc" id="L16">public class ReportService {</span>
+
+    @Autowired
+    ReportRepository reportRepository;
+
+    @Autowired
+    ReportLineRepository reportLineRepository;
+
+    @Autowired
+    GameRepository gameRepository;
+
+    @Autowired
+    FarmerRepository farmerRepository;
+
+    public Report createReport(Long gameId) {
+<span class="fc" id="L31">        Report report = createAndSaveReportHeader(gameId);</span>
+        
+<span class="fc" id="L33">        Iterable&lt;Farmer&gt; allFarmer = farmerRepository.findByGameId(gameId);</span>
+
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (Farmer farmer : allFarmer) {</span>
+<span class="fc" id="L37">               createAndSaveReportLine(report, farmer);</span>
+<span class="fc" id="L38">        }</span>
+
+<span class="fc" id="L40">        return report;</span>
+    }
+
+    public Report createAndSaveReportHeader(Long gameId) {
+<span class="fc" id="L44">        Game game = gameRepository.findById(gameId)</span>
+<span class="fc" id="L45">                .orElseThrow(() -&gt; new RuntimeException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
+
+<span class="fc" id="L47">        Report report = Report.builder()</span>
+<span class="fc" id="L48">                .gameId(gameId)</span>
+
+<span class="fc" id="L50">                .name(game.getName())</span>
+<span class="fc" id="L51">                .cowPrice(game.getCowPrice())</span>
+<span class="fc" id="L52">                .milkPrice(game.getMilkPrice())</span>
+<span class="fc" id="L53">                .startingBalance(game.getStartingBalance())</span>
+<span class="fc" id="L54">                .startingDate(game.getStartingDate())</span>
+<span class="fc" id="L55">                .showLeaderboard(game.isShowLeaderboard())</span>
+<span class="fc" id="L56">                .carryingCapacity(game.getCarryingCapacity())</span>
+<span class="fc" id="L57">                .degradationRate(game.getDegradationRate())</span>
+<span class="fc" id="L58">                .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L59">                .aboveCapacityHealthUpdateStrategy(game.getAboveCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L60">                .numUsers(gameRepository.getNumUsers(gameId).orElse(0))</span>
+<span class="fc" id="L61">                .numCows(gameRepository.getNumCows(gameId).orElse(0))</span>
+
+<span class="fc" id="L63">                .build();</span>
+
+<span class="fc" id="L65">        reportRepository.save(report);</span>
+<span class="fc" id="L66">        return report;</span>
+    }
+
+    public ReportLine createAndSaveReportLine(Report report, Farmer farmer) {
+<span class="fc" id="L70">        ReportLine reportLine = ReportLine.builder()</span>
+<span class="fc" id="L71">                .reportId(report.getId())</span>
+<span class="fc" id="L72">                .userId(farmer.getUser().getId())</span>
+<span class="fc" id="L73">                .username(farmer.getUsername())</span>
+<span class="fc" id="L74">                .totalWealth(farmer.getTotalWealth())</span>
+<span class="fc" id="L75">                .numOfCows(farmer.getNumOfCows())</span>
+<span class="fc" id="L76">                .avgCowHealth(farmer.getCowHealth())</span>
+<span class="fc" id="L77">                .cowsBought(farmer.getCowsBought())</span>
+<span class="fc" id="L78">                .cowsSold(farmer.getCowsSold())</span>
+<span class="fc" id="L79">                .cowDeaths(farmer.getCowDeaths())</span>
+<span class="fc" id="L80">                .build();</span>
+
+<span class="fc" id="L82">        reportLineRepository.save(reportLine);</span>
+<span class="fc" id="L83">        return reportLine;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
