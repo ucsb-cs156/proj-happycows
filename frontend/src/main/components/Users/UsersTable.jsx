@@ -50,8 +50,8 @@ export default function UsersTable({ users }) {
     },
     {
       Header: "Last Online",
-      id: "lastOnline",
-      accessor: (row) => formatTime(row.lastOnline),
+      accessor: "lastOnline",
+      Cell: ({ value }) => formatTime(value),
     },
     {
       Header: "Admin",

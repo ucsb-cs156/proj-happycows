@@ -81,6 +81,45 @@ describe("UserTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-2-col-suspended`),
     ).toHaveTextContent("true");
   });
+
+  test("sorts Last Online column by underlying timestamp, not rendered text", async () => {
+    const now = new Date();
+    const minutesAgo = (minutes) =>
+      new Date(now.getTime() - minutes * 60 * 1000).toISOString();
+
+    // Rendered text for these would sort as "15 minutes ago", "2 minutes ago",
+    // "42 minutes ago" lexicographically, which is not chronological order.
+    const users = [
+      { ...usersFixtures.threeUsers[0], id: 1, lastOnline: minutesAgo(15) },
+      { ...usersFixtures.threeUsers[1], id: 2, lastOnline: minutesAgo(2) },
+      { ...usersFixtures.threeUsers[2], id: 3, lastOnline: minutesAgo(42) },
+    ];
+
+    render(<UsersTable users={users} />);
+
+    const testId = "UsersTable";
+    const header = screen.getByTestId(`${testId}-header-lastOnline`);
+
+    const getVisibleIdOrder = () =>
+      screen
+        .getAllByRole("row")
+        .slice(1) // skip header row
+        .map((row) => row.querySelector("td").textContent);
+
+    // Click once to sort ascending (oldest lastOnline first, i.e. most minutes ago).
+    fireEvent.click(header);
+
+    await waitFor(() => {
+      expect(getVisibleIdOrder()).toEqual(["3", "1", "2"]);
+    });
+
+    // Click again to sort descending (most recent lastOnline first).
+    fireEvent.click(header);
+
+    await waitFor(() => {
+      expect(getVisibleIdOrder()).toEqual(["2", "1", "3"]);
+    });
+  });
 });
 
 describe("Modal tests", () => {
