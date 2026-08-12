@@ -25,9 +25,57 @@
     },
     {
       "changeSet": {
-        "id": "007-rename-farmer-commons_id-column-and-fk",
+        "id": "007-drop-fk_farmer_commons",
         "author": "pc",
-        "comment": "Rename farmer.commons_id to farmer.game_id, and the FK_FARMER_COMMONS constraint to FK_FARMER_GAME.",
+        "comment": "Drop the FK_FARMER_COMMONS constraint on farmer.commons_id, if it exists under that name. Split out from the column rename below: some environments' constraint was never actually renamed to this name by migration 006 (e.g. because it was created outside of Liquibase originally, under a different name), so dropping it unconditionally as part of a combined changeset broke deploys with 'constraint does not exist' errors.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "farmer",
+              "foreignKeyName": "FK_FARMER_COMMONS"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "farmer",
+              "constraintName": "FK_FARMER_COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-drop-fk_user_commons_commons-on-farmer",
+        "author": "pc",
+        "comment": "Same as above, but for the original FK_USER_COMMONS_COMMONS name: covers environments where migration 006's rename of this constraint never took effect (its own precondition found no constraint under that exact name either), so the original name is still what's actually in the database.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "farmer",
+              "foreignKeyName": "FK_USER_COMMONS_COMMONS"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "farmer",
+              "constraintName": "FK_USER_COMMONS_COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-farmer-commons_id-column",
+        "author": "pc",
+        "comment": "Rename farmer.commons_id to farmer.game_id.",
         "preConditions": [
           { "onFail": "MARK_RAN" },
           {
@@ -39,19 +87,41 @@
         ],
         "changes": [
           {
-            "dropForeignKeyConstraint": {
-              "baseTableName": "farmer",
-              "constraintName": "FK_FARMER_COMMONS"
-            }
-          },
-          {
             "renameColumn": {
               "tableName": "farmer",
               "oldColumnName": "commons_id",
               "newColumnName": "game_id",
               "columnDataType": "BIGINT"
             }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-add-fk_farmer_game",
+        "author": "pc",
+        "comment": "Add the FK_FARMER_GAME constraint on farmer.game_id, once the column rename above has happened and only if it isn't already present (whatever the old constraint on this column was named, and whether or not the drops above found anything to do, this is the state we actually care about).",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "farmer",
+              "columnName": "game_id"
+            }
           },
+          {
+            "not": [
+              {
+                "foreignKeyConstraintExists": {
+                  "foreignKeyTableName": "farmer",
+                  "foreignKeyName": "FK_FARMER_GAME"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
           {
             "addForeignKeyConstraint": {
               "baseColumnNames": "game_id",
@@ -68,9 +138,33 @@
     },
     {
       "changeSet": {
-        "id": "007-rename-profits-commons_id-column-and-fk",
+        "id": "007-drop-fk_profits_user_commons",
         "author": "pc",
-        "comment": "Rename profits.commons_id to profits.game_id, and the FK_PROFITS_USER_COMMONS constraint to FK_PROFITS_FARMER.",
+        "comment": "Drop the FK_PROFITS_USER_COMMONS constraint on profits.commons_id, if it exists under that name. Split out from the column rename below, for the same reason as FK_FARMER_COMMONS above.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "foreignKeyConstraintExists": {
+              "foreignKeyTableName": "profits",
+              "foreignKeyName": "FK_PROFITS_USER_COMMONS"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "dropForeignKeyConstraint": {
+              "baseTableName": "profits",
+              "constraintName": "FK_PROFITS_USER_COMMONS"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-rename-profits-commons_id-column",
+        "author": "pc",
+        "comment": "Rename profits.commons_id to profits.game_id.",
         "preConditions": [
           { "onFail": "MARK_RAN" },
           {
@@ -82,19 +176,41 @@
         ],
         "changes": [
           {
-            "dropForeignKeyConstraint": {
-              "baseTableName": "profits",
-              "constraintName": "FK_PROFITS_USER_COMMONS"
-            }
-          },
-          {
             "renameColumn": {
               "tableName": "profits",
               "oldColumnName": "commons_id",
               "newColumnName": "game_id",
               "columnDataType": "BIGINT"
             }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "007-add-fk_profits_farmer",
+        "author": "pc",
+        "comment": "Add the FK_PROFITS_FARMER constraint on profits(game_id, user_id), once the column rename above has happened and only if it isn't already present.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "columnExists": {
+              "tableName": "profits",
+              "columnName": "game_id"
+            }
           },
+          {
+            "not": [
+              {
+                "foreignKeyConstraintExists": {
+                  "foreignKeyTableName": "profits",
+                  "foreignKeyName": "FK_PROFITS_FARMER"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
           {
             "addForeignKeyConstraint": {
               "baseColumnNames": "game_id,user_id",
