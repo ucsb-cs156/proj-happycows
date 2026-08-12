@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"is_bot":true,"login":"app/copilot-swe-agent"},"headRefName":"copilot/add-last-login-column-to-course-table","number":286,"title":"[WIP] Add last login column to courses admin page","url":"https://github.com/ucsb-cs156/proj-happycows/pull/286"}]
+pull_requests: []
