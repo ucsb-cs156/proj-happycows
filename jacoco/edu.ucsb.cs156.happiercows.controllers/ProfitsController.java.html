@@ -83,19 +83,37 @@ import java.util.List;
 <span class="fc" id="L83">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
 <span class="fc" id="L84">                .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L86">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByFarmer(farmer);</span>
+<span class="fc" id="L86">        return pagedProfitsForFarmer(farmer, pageNumber, pageSize);</span>
+    }
 
-<span class="fc" id="L88">        List&lt;Profit&gt; allProfits = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L89">        iterableProfits.forEach(allProfits::add);</span>
+    @Operation(summary = &quot;Get all profits belonging to a user game as an admin via GameID and UserId, with pagination&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/paged&quot;)
+    public Page&lt;Profit&gt; allProfitsByGameIdAndUserIdWithPagination(
+            @Parameter(name = &quot;userId&quot;) @RequestParam Long userId,
+            @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId,
+            @Parameter(name = &quot;pageNumber&quot;, description = &quot;Page number, 0 indexed&quot;) @RequestParam(defaultValue = &quot;0&quot;) int pageNumber,
+            @Parameter(name = &quot;pageSize&quot;, description = &quot;Number of records per page&quot;) @RequestParam(defaultValue = &quot;7&quot;) int pageSize
 
-<span class="fc" id="L91">        int start = pageNumber * pageSize;</span>
-<span class="fc" id="L92">        int end = Math.min((start + pageSize), allProfits.size());</span>
-<span class="fc" id="L93">        List&lt;Profit&gt; paginatedProfits = allProfits.subList(start, end);</span>
+    ) {
+<span class="fc" id="L99">        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)</span>
+<span class="fc" id="L100">                .orElseThrow(() -&gt; new EntityNotFoundException(Farmer.class, &quot;gameId&quot;, gameId, &quot;userId&quot;, userId));</span>
 
-<span class="fc" id="L95">        Pageable pageable = PageRequest.of(pageNumber, pageSize);</span>
-<span class="fc" id="L96">        Page&lt;Profit&gt; profitsPage = new PageImpl&lt;&gt;(paginatedProfits, pageable, allProfits.size());</span>
+<span class="fc" id="L102">        return pagedProfitsForFarmer(farmer, pageNumber, pageSize);</span>
+    }
 
-<span class="fc" id="L98">        return profitsPage;</span>
+    private Page&lt;Profit&gt; pagedProfitsForFarmer(Farmer farmer, int pageNumber, int pageSize) {
+<span class="fc" id="L106">        Iterable&lt;Profit&gt; iterableProfits = profitRepository.findAllByFarmer(farmer);</span>
+
+<span class="fc" id="L108">        List&lt;Profit&gt; allProfits = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L109">        iterableProfits.forEach(allProfits::add);</span>
+
+<span class="fc" id="L111">        int start = pageNumber * pageSize;</span>
+<span class="fc" id="L112">        int end = Math.min((start + pageSize), allProfits.size());</span>
+<span class="fc" id="L113">        List&lt;Profit&gt; paginatedProfits = allProfits.subList(start, end);</span>
+
+<span class="fc" id="L115">        Pageable pageable = PageRequest.of(pageNumber, pageSize);</span>
+<span class="fc" id="L116">        return new PageImpl&lt;&gt;(paginatedProfits, pageable, allProfits.size());</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

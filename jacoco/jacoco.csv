@@ -63,7 +63,7 @@ happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,0,282,0,2
 happycows,edu.ucsb.cs156.happiercows.controllers,FarmerController,0,316,0,12,0,58,0,20,0,14
 happycows,edu.ucsb.cs156.happiercows.controllers,GameController,0,840,0,48,0,194,0,50,0,26
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,123,0,8,0,26,0,14,0,10
-happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,136,0,0,0,22,0,7,0,7
+happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,166,0,0,0,25,0,10,0,10
 happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,24,0,0,0,7,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.controllers,ApiController,0,38,0,0,0,12,0,6,0,6
 happycows,edu.ucsb.cs156.happiercows.controllers,StaffController,0,272,0,16,0,58,0,20,0,12
