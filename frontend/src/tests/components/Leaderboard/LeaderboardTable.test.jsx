@@ -106,7 +106,7 @@ describe("LeaderboardTable tests", () => {
     ).toHaveTextContent("12");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-cowHealth`),
-    ).toHaveTextContent("94.00");
+    ).toHaveTextContent("93.50");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-cowsBought`),
     ).toHaveTextContent("11");
@@ -137,7 +137,7 @@ describe("LeaderboardTable tests", () => {
     );
     expect(screen.getAllByText("12")[0]).toHaveStyle("text-align: right;");
 
-    expect(screen.getAllByText("94.00")[0]).toHaveStyle("text-align: right;");
+    expect(screen.getAllByText("93.50")[0]).toHaveStyle("text-align: right;");
 
     expect(screen.getAllByText("11")[0]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("10")[0]).toHaveStyle("text-align: right;");

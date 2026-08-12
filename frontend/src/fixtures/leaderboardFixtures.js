@@ -54,7 +54,7 @@ const leaderboardFixtures = {
       username: "one",
       gameId: 1,
       totalWealth: 1000,
-      cowHealth: 93.99999962515619,
+      cowHealth: 93.49999962515619,
       numOfCows: 12,
       cowsBought: 11,
       cowsSold: 10,
