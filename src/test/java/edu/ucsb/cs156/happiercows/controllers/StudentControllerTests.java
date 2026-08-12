@@ -6,6 +6,7 @@ import edu.ucsb.cs156.happiercows.models.StudentDTO;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
@@ -243,6 +244,36 @@ public class StudentControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
+    public void admin_posting_a_new_student_with_umail_email_has_it_canonicalized() throws Exception {
+        StudentDTO studentDTO = StudentDTO.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@umail.ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .build();
+
+        Student expectedToBeSaved = Student.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .build();
+
+        when(studentRepository.save(expectedToBeSaved)).thenReturn(expectedToBeSaved);
+
+        mockMvc.perform(post("/api/student")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(studentDTO)))
+                .andExpect(status().isOk());
+
+        verify(studentRepository, times(1)).save(expectedToBeSaved);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
     public void admin_can_delete_a_student() throws Exception {
         Student student1 = Student.builder()
                 .lastName("Ferber")
@@ -331,6 +362,46 @@ public class StudentControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
+    public void admin_editing_a_student_with_umail_email_has_it_canonicalized() throws Exception {
+        Student studentOrig = Student.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .build();
+
+        StudentDTO studentEditedDTO = StudentDTO.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@umail.ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .build();
+
+        Student studentEdited = Student.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .build();
+
+        when(studentRepository.findById(eq(67L))).thenReturn(Optional.of(studentOrig));
+
+        mockMvc.perform(
+                        put("/api/student/67")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .characterEncoding("utf-8")
+                                .content(mapper.writeValueAsString(studentEditedDTO))
+                                .with(csrf()))
+                .andExpect(status().isOk());
+
+        verify(studentRepository, times(1)).save(studentEdited);
+    }
+
+    @WithMockUser(roles = { "ADMIN" })
+    @Test
     public void admin_cannot_edit_student_that_does_not_exist() throws Exception {
         StudentDTO studentEditedDTO = StudentDTO.builder()
                 .lastName("Ferberson")
@@ -403,7 +474,7 @@ public class StudentControllerTests extends ControllerTestCase {
     }
 
     // Header row + blank line, matching the real UCSB eGrades export format
-    // (see docs/examples/egrades.csv). game-csv's CSVFormat.DEFAULT
+    // (see docs/examples/egrades.csv). commons-csv's CSVFormat.DEFAULT
     // ignores blank lines automatically, so no special handling is needed
     // beyond detecting the real 16-column header.
     private static final String UCSB_EGRADES_HEADER =
@@ -431,7 +502,7 @@ public class StudentControllerTests extends ControllerTestCase {
                 .perm("A123456")
                 .lastName("GAUCHO")
                 .firstMiddleName("CHRIS FAKE")
-                .email("cgaucho@umail.ucsb.edu")
+                .email("cgaucho@ucsb.edu")
                 .courseId(1L)
                 .build();
         verify(studentRepository, times(1)).save(expected);
@@ -457,6 +528,16 @@ public class StudentControllerTests extends ControllerTestCase {
         Map<String, Object> json = responseToJson(response);
         assertEquals(3, json.get("created"));
         assertEquals(List.of(), json.get("skippedEmails"));
+
+        // The real egrades.csv sample data uses @umail.ucsb.edu for every
+        // student; verify each was canonicalized to @ucsb.edu before being
+        // saved (see issue #278).
+        ArgumentCaptor<Student> captor = ArgumentCaptor.forClass(Student.class);
+        verify(studentRepository, times(3)).save(captor.capture());
+        for (Student saved : captor.getAllValues()) {
+            assertEquals(true, saved.getEmail().endsWith("@ucsb.edu"));
+            assertEquals(false, saved.getEmail().contains("@umail.ucsb.edu"));
+        }
     }
 
     @WithMockUser(roles = { "ADMIN" })

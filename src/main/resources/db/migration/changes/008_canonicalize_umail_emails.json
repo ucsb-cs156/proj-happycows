@@ -1,0 +1,48 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "008-canonicalize-student-umail-emails",
+        "author": "pc",
+        "comment": "Fix issue #278: roster rows saved before the CanonicalFormConverter fix may still have @umail.ucsb.edu emails (in any case) instead of the canonical @ucsb.edu form. Rewrite them in place. The email is lowercased before REPLACE is applied (rather than after) so the match is deterministic regardless of a given database engine's default case-sensitivity for string comparisons - see CanonicalizeUmailEmailsMigrationTests. Idempotent since the WHERE clause only matches rows that would actually change.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "tableExists": {
+              "tableName": "student"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "sql": {
+              "sql": "UPDATE student SET email = REPLACE(LOWER(email), '@umail.ucsb.edu', '@ucsb.edu') WHERE email <> REPLACE(LOWER(email), '@umail.ucsb.edu', '@ucsb.edu');"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "008-canonicalize-staff-umail-emails",
+        "author": "pc",
+        "comment": "Fix issue #278: same canonicalization as above, applied to the staff table.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "tableExists": {
+              "tableName": "staff"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "sql": {
+              "sql": "UPDATE staff SET email = REPLACE(LOWER(email), '@umail.ucsb.edu', '@ucsb.edu') WHERE email <> REPLACE(LOWER(email), '@umail.ucsb.edu', '@ucsb.edu');"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat;
 import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StudentDTO;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,7 +77,7 @@ public class StudentController extends ApiController {
 
         student.setLastName(studentDTO.getLastName());
         student.setFirstMiddleName(studentDTO.getFirstMiddleName());
-        student.setEmail(studentDTO.getEmail());
+        student.setEmail(CanonicalFormConverter.convertToValidEmail(studentDTO.getEmail()));
         student.setPerm(studentDTO.getPerm());
         student.setCourseId(studentDTO.getCourseId());
 

@@ -84,7 +84,7 @@ public class StudentCsvFormatTests {
         assertEquals("A123456", student.getPerm());
         assertEquals("GAUCHO", student.getLastName());
         assertEquals("CHRIS FAKE", student.getFirstMiddleName());
-        assertEquals("cgaucho@umail.ucsb.edu", student.getEmail());
+        assertEquals("cgaucho@ucsb.edu", student.getEmail());
         assertEquals(5L, student.getCourseId());
     }
 
@@ -100,6 +100,16 @@ public class StudentCsvFormatTests {
         assertEquals("Marge", student.getFirstMiddleName());
         assertEquals("msimpson@csuchico.edu", student.getEmail());
         assertEquals(7L, student.getCourseId());
+    }
+
+    @Test
+    public void chico_state_roster_canonicalizes_umail_email() throws IOException {
+        CSVRecord row = parseOneRow(
+                "Marge Simpson,88200,013228559,marge@umail.ucsb.edu,CSED 500 - 362 Computational Thinking Summer 2025\n");
+
+        Student student = StudentCsvFormat.CHICO_STATE_ROSTER.toStudent(row, 7L);
+
+        assertEquals("marge@ucsb.edu", student.getEmail());
     }
 
     @Test
@@ -124,6 +134,15 @@ public class StudentCsvFormatTests {
         assertEquals("sallyferber@ucsb.edu", student.getEmail());
         assertEquals("1234567", student.getPerm());
         assertEquals(9L, student.getCourseId());
+    }
+
+    @Test
+    public void generic_canonicalizes_umail_email() throws IOException {
+        CSVRecord row = parseOneRow("Ferber,Sally,sallyferber@umail.ucsb.edu,1234567\n");
+
+        Student student = StudentCsvFormat.GENERIC.toStudent(row, 9L);
+
+        assertEquals("sallyferber@ucsb.edu", student.getEmail());
     }
 
     @Test

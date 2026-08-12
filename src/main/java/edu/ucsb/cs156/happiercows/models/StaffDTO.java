@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.models;
 
 import edu.ucsb.cs156.happiercows.entities.Staff;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import lombok.*;
 
 @Data
@@ -17,7 +18,7 @@ public class StaffDTO {
         return Staff.builder()
                 .lastName(lastName)
                 .firstMiddleName(firstMiddleName)
-                .email(email)
+                .email(CanonicalFormConverter.convertToValidEmail(email))
                 .courseId(courseId)
                 .build();
     }

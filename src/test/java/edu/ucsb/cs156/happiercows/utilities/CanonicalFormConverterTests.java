@@ -1,0 +1,53 @@
+package edu.ucsb.cs156.happiercows.utilities;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+public class CanonicalFormConverterTests {
+
+  @Test
+  public void testConvertToValidEmail_umail() {
+    String email = "foo@umail.ucsb.edu";
+    String expected = "foo@ucsb.edu";
+    String actual = CanonicalFormConverter.convertToValidEmail(email);
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testConvertToValidEmail_alreadyCanonical() {
+    String email = "foo@ucsb.edu";
+    String actual = CanonicalFormConverter.convertToValidEmail(email);
+    assertEquals(email, actual);
+  }
+
+  @Test
+  public void testConvertToValidEmail_mixedCase() {
+    String email = "Foo@UMAIL.UCSB.EDU";
+    String expected = "foo@umail.ucsb.edu";
+    String actual = CanonicalFormConverter.convertToValidEmail(email);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * For test coverage purposes, we want to ensure that the constructor of
+   * CanonicalFormConverter is called, even though it does not have any logic
+   * in it.
+   */
+  @Test
+  public void test_coverage_for_constructor() {
+    CanonicalFormConverter converter = new CanonicalFormConverter();
+    assertInstanceOf(CanonicalFormConverter.class, converter);
+  }
+
+  /** Test the areEquivalentEmails method */
+  @Test
+  public void testAreEquivalentEmails() {
+    assertTrue(CanonicalFormConverter.areEquivalentEmails("foo@umail.ucsb.edu", "foo@ucsb.edu"));
+    assertTrue(CanonicalFormConverter.areEquivalentEmails("foo@ucsb.edu", "foo@ucsb.edu"));
+    assertFalse(CanonicalFormConverter.areEquivalentEmails("bar@ucsb.edu", "foo@ucsb.edu"));
+  }
+}
