@@ -1,11 +1,14 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat;
 import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
 import edu.ucsb.cs156.happiercows.models.StudentDTO;
+import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,9 +26,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Tag(name = "Student")
@@ -35,6 +41,9 @@ public class StudentController extends ApiController {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Operation(summary = "List all roster students")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
@@ -42,12 +51,29 @@ public class StudentController extends ApiController {
         return studentRepository.findAll();
     }
 
-    @Operation(summary = "List the roster students for a single course")
+    @Operation(summary = "List the roster students for a single course, including each student's last login (null if the student has never logged in)")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/course/{courseId}")
-    public Iterable<Student> studentsForCourse(
+    public Iterable<StudentWithLastLogin> studentsForCourse(
             @Parameter(name = "courseId") @PathVariable Long courseId) {
-        return studentRepository.findByCourseId(courseId);
+        List<StudentWithLastLogin> result = new ArrayList<>();
+        for (Student student : studentRepository.findByCourseId(courseId)) {
+            Optional<User> user = userRepository.findByEmail(student.getEmail());
+            LocalDateTime lastLoginDateTime = user
+                    .map(u -> LocalDateTime.ofInstant(u.getLastOnline(), ZoneId.systemDefault()))
+                    .orElse(null);
+
+            result.add(StudentWithLastLogin.builder()
+                    .id(student.getId())
+                    .lastName(student.getLastName())
+                    .firstMiddleName(student.getFirstMiddleName())
+                    .email(student.getEmail())
+                    .perm(student.getPerm())
+                    .courseId(student.getCourseId())
+                    .lastLoginDateTime(lastLoginDateTime)
+                    .build());
+        }
+        return result;
     }
 
     @Operation(summary = "Get a roster student by id")

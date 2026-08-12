@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import StudentsForm from "main/components/Students/StudentsForm";
 import { useBackendMutation } from "main/utils/useBackend";
+import { formatTime } from "main/utils/dateUtils";
 import {
   cellToAxiosParamsDelete,
   onDeleteSuccess,
@@ -86,6 +87,11 @@ export default function StudentsTable({
     {
       Header: "Perm",
       accessor: "perm",
+    },
+    {
+      Header: "Last Login",
+      accessor: "lastLoginDateTime",
+      Cell: ({ value }) => (value ? formatTime(value) : "Never"),
     },
   ];
 

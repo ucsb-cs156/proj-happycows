@@ -2,7 +2,9 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.models.StudentDTO;
+import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,9 @@ import org.springframework.http.MediaType;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -152,15 +157,56 @@ public class StudentControllerTests extends ControllerTestCase {
                 .courseId(1L)
                 .build();
 
-        ArrayList<Student> expectedStudents = new ArrayList<>();
-        expectedStudents.add(s1);
+        Student s2 = Student.builder()
+                .lastName("Diaz")
+                .firstMiddleName("Cristina")
+                .email("cristinadiaz@ucsb.edu")
+                .perm("7654321")
+                .courseId(1L)
+                .build();
 
-        when(studentRepository.findByCourseId(1L)).thenReturn(expectedStudents);
+        ArrayList<Student> studentsInCourse = new ArrayList<>();
+        studentsInCourse.add(s1);
+        studentsInCourse.add(s2);
+
+        Instant lastOnline = Instant.parse("2024-01-15T10:15:30.00Z");
+        User u1 = User.builder()
+                .email("sallyferber@ucsb.edu")
+                .lastOnline(lastOnline)
+                .build();
+
+        when(studentRepository.findByCourseId(1L)).thenReturn(studentsInCourse);
+        when(userRepository.findByEmail("sallyferber@ucsb.edu")).thenReturn(Optional.of(u1));
+        when(userRepository.findByEmail("cristinadiaz@ucsb.edu")).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/student/course/1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(studentRepository, times(1)).findByCourseId(1L);
+        verify(userRepository, times(1)).findByEmail("sallyferber@ucsb.edu");
+        verify(userRepository, times(1)).findByEmail("cristinadiaz@ucsb.edu");
+
+        LocalDateTime expectedLastLogin = LocalDateTime.ofInstant(lastOnline, ZoneId.systemDefault());
+        StudentWithLastLogin expected1 = StudentWithLastLogin.builder()
+                .lastName("Ferber")
+                .firstMiddleName("Sally")
+                .email("sallyferber@ucsb.edu")
+                .perm("1234567")
+                .courseId(1L)
+                .lastLoginDateTime(expectedLastLogin)
+                .build();
+        StudentWithLastLogin expected2 = StudentWithLastLogin.builder()
+                .lastName("Diaz")
+                .firstMiddleName("Cristina")
+                .email("cristinadiaz@ucsb.edu")
+                .perm("7654321")
+                .courseId(1L)
+                .lastLoginDateTime(null)
+                .build();
+        List<StudentWithLastLogin> expectedStudents = new ArrayList<>();
+        expectedStudents.add(expected1);
+        expectedStudents.add(expected2);
+
         String expectedJson = mapper.writeValueAsString(expectedStudents);
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedJson, responseString);
