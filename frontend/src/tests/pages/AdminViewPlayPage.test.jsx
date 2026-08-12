@@ -75,6 +75,9 @@ describe("AdminViewPlayPage tests", () => {
         },
       })
       .reply(200, []);
+    axiosMock
+      .onGet("/api/announcements/current", { params: { gameId: 1 } })
+      .reply(200, []);
     axiosMock.onPut("/api/farmer/sell").reply(200, farmer);
     axiosMock.onPut("/api/farmer/buy").reply(200, farmer);
   });
@@ -296,6 +299,81 @@ describe("AdminViewPlayPage tests", () => {
     // Ensure that the component renders the CardGroup when conditions are met
     expect(
       await screen.findByTestId("adminviewplaypage-card-group"),
+    ).toBeInTheDocument();
+  });
+
+  test("Dashboard button is hidden when the game's showLeaderboard is false, even though the viewer is an admin", async () => {
+    // arrange: an admin viewer, so this only stays hidden if the admin
+    // bypass in GameOverview is correctly disabled via emulatingStudentView
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminViewPlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    await screen.findByText(/This is a Admin Feature for/);
+
+    expect(
+      screen.queryByTestId("user-leaderboard-button"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("Dashboard button is shown when the game's showLeaderboard is true, matching what a student would see", async () => {
+    axiosMock
+      .onGet("/api/currentUser")
+      .reply(200, apiCurrentUserFixtures.adminUser);
+    axiosMock.onGet("/api/game/plus", { params: { id: 1 } }).reply(200, {
+      game: {
+        id: 1,
+        name: "Sample Game",
+        showLeaderboard: true,
+      },
+      totalPlayers: 5,
+      totalCows: 5,
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminViewPlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("user-leaderboard-button"),
+    ).toBeInTheDocument();
+  });
+
+  test("shows current announcements for the game being viewed", async () => {
+    axiosMock
+      .onGet("/api/announcements/current", { params: { gameId: 1 } })
+      .reply(200, [
+        {
+          id: 1,
+          announcementText: "This is a current announcement.",
+        },
+      ]);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminViewPlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("CurrentAnnouncements"),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByText("This is a current announcement."),
     ).toBeInTheDocument();
   });
 

@@ -9,6 +9,7 @@ export default function GameOverview({
   gamePlus,
   currentUser,
   currentAnnouncements,
+  emulatingStudentView = false,
 }) {
   let navigate = useNavigate();
 
@@ -18,8 +19,13 @@ export default function GameOverview({
   };
   // Stryker restore all
 
+  // Admins always see the Dashboard button on their own play page,
+  // regardless of the game's showLeaderboard setting - but when an admin is
+  // emulating a student's read-only view, the button should only show up if
+  // a real student would actually see it.
   const showDashboard =
-    hasRole(currentUser, "ROLE_ADMIN") || gamePlus.game.showLeaderboard;
+    (!emulatingStudentView && hasRole(currentUser, "ROLE_ADMIN")) ||
+    gamePlus.game.showLeaderboard;
 
   return (
     <Card data-testid="GameOverview">

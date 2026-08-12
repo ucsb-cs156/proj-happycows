@@ -85,4 +85,42 @@ describe("GameOverview tests", () => {
       ).not.toBeInTheDocument(),
     );
   });
+
+  test("No DashboardPage for an admin emulating a student view when game has showLeaderboard = false", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GameOverview
+            gamePlus={gamePlusFixtures.oneGamePlus[0]}
+            currentUser={currentUserFixtures.adminUser}
+            emulatingStudentView={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId("user-leaderboard-button"),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
+  test("DashboardPage for an admin emulating a student view when game has showLeaderboard = true", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <GameOverview
+            gamePlus={gamePlusFixtures.gamePlusShowLeaderboardTrue}
+            currentUser={currentUserFixtures.adminUser}
+            emulatingStudentView={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId("user-leaderboard-button"),
+      ).toBeInTheDocument(),
+    );
+  });
 });

@@ -49,6 +49,19 @@ const AdminViewPlayPage = () => {
   });
   // Stryker restore all
 
+  // Stryker disable all
+  const { data: currentAnnouncements } = useBackend(
+    [`/api/announcements/current?gameId=${gameId}`],
+    {
+      method: "GET",
+      url: "/api/announcements/current",
+      params: {
+        gameId: gameId,
+      },
+    },
+  );
+  // Stryker restore all
+
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   const toggleChatWindow = () => {
@@ -104,7 +117,12 @@ const AdminViewPlayPage = () => {
         <Container>
           {!!currentUser && <GamePlay currentUser={currentUser} />}
           {!!gamePlus && (
-            <GameOverview gamePlus={gamePlus} currentUser={currentUser} />
+            <GameOverview
+              gamePlus={gamePlus}
+              currentUser={currentUser}
+              currentAnnouncements={currentAnnouncements}
+              emulatingStudentView={true}
+            />
           )}
           <br />
           {!!farmer && !!gamePlus && (
