@@ -1,10 +1,15 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, useParams } from "react-router";
 import PagedProfitsTable from "main/components/Game/PagedProfitsTable";
 import pagedProfitsFixtures from "fixtures/pagedProfitsFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+
+vi.mock("react-router", async () => ({
+  ...(await vi.importActual("react-router")),
+  useParams: vi.fn(),
+}));
 
 describe("PagedProfitsTable tests", () => {
   const queryClient = new QueryClient();
@@ -17,6 +22,7 @@ describe("PagedProfitsTable tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     queryClient.clear();
+    useParams.mockReturnValue({ gameId: undefined, userId: undefined });
   });
 
   test("renders correct content", async () => {
@@ -202,5 +208,33 @@ describe("PagedProfitsTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-amount`),
     ).toHaveTextContent("20");
+  });
+
+  test("uses the admin endpoint with an explicit userId when a :userId route param is present", async () => {
+    // arrange
+    useParams.mockReturnValue({ gameId: "7", userId: "42" });
+    axiosMock
+      .onGet("/api/profits/paged")
+      .reply(200, pagedProfitsFixtures.onePage);
+
+    // act
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PagedProfitsTable />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    // assert
+    await screen.findByTestId(`${testId}-cell-row-0-col-amount`);
+
+    expect(axiosMock.history.get[0].url).toBe("/api/profits/paged");
+    expect(axiosMock.history.get[0].params).toEqual({
+      userId: "42",
+      gameId: "7",
+      pageNumber: 0,
+      pageSize: 5,
+    });
   });
 });

@@ -83,6 +83,26 @@ public class ProfitsController extends ApiController {
         Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)
                 .orElseThrow(() -> new EntityNotFoundException(Farmer.class, "gameId", gameId, "userId", userId));
 
+        return pagedProfitsForFarmer(farmer, pageNumber, pageSize);
+    }
+
+    @Operation(summary = "Get all profits belonging to a user game as an admin via GameID and UserId, with pagination")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/paged")
+    public Page<Profit> allProfitsByGameIdAndUserIdWithPagination(
+            @Parameter(name = "userId") @RequestParam Long userId,
+            @Parameter(name = "gameId") @RequestParam Long gameId,
+            @Parameter(name = "pageNumber", description = "Page number, 0 indexed") @RequestParam(defaultValue = "0") int pageNumber,
+            @Parameter(name = "pageSize", description = "Number of records per page") @RequestParam(defaultValue = "7") int pageSize
+
+    ) {
+        Farmer farmer = farmerRepository.findByGameIdAndUserId(gameId, userId)
+                .orElseThrow(() -> new EntityNotFoundException(Farmer.class, "gameId", gameId, "userId", userId));
+
+        return pagedProfitsForFarmer(farmer, pageNumber, pageSize);
+    }
+
+    private Page<Profit> pagedProfitsForFarmer(Farmer farmer, int pageNumber, int pageSize) {
         Iterable<Profit> iterableProfits = profitRepository.findAllByFarmer(farmer);
 
         List<Profit> allProfits = new ArrayList<>();
@@ -93,8 +113,6 @@ public class ProfitsController extends ApiController {
         List<Profit> paginatedProfits = allProfits.subList(start, end);
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<Profit> profitsPage = new PageImpl<>(paginatedProfits, pageable, allProfits.size());
-
-        return profitsPage;
+        return new PageImpl<>(paginatedProfits, pageable, allProfits.size());
     }
 }

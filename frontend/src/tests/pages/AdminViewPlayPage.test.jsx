@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, useParams } from "react-router";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
@@ -10,10 +10,7 @@ import { vi } from "vitest";
 
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
-  useParams: () => ({
-    userId: 1,
-    gameId: 1,
-  }),
+  useParams: vi.fn(),
 }));
 
 const mockToast = vi.fn();
@@ -37,6 +34,7 @@ describe("AdminViewPlayPage tests", () => {
       totalWealth: 0,
       userId: 1,
     };
+    useParams.mockReturnValue({ userId: 1, gameId: 1 });
     axiosMock.reset();
     axiosMock.resetHistory();
     axiosMock
@@ -299,5 +297,57 @@ describe("AdminViewPlayPage tests", () => {
     expect(
       await screen.findByTestId("adminviewplaypage-card-group"),
     ).toBeInTheDocument();
+  });
+
+  test("ChatPanel is given the game's id, not the farmer's userId", async () => {
+    // arrange: use distinct gameId/userId so a swapped prop is detectable
+    useParams.mockReturnValue({ userId: 42, gameId: 1 });
+    const farmer = {
+      gameId: 1,
+      id: 1,
+      totalWealth: 0,
+      userId: 42,
+    };
+    axiosMock
+      .onGet("/api/farmer", { params: { userId: 42, gameId: 1 } })
+      .reply(200, farmer);
+    axiosMock
+      .onGet("/api/profits/all", { params: { userId: 42, gameId: 1 } })
+      .reply(200, []);
+    axiosMock
+      .onGet("/api/announcements/current", { params: { gameId: 1 } })
+      .reply(200, []);
+    axiosMock
+      .onGet("/api/chat/get")
+      .reply(200, { content: [], totalElements: 0 });
+    axiosMock.onGet("/api/farmer/game/all").reply(200, []);
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminViewPlayPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const chatToggleButton = await screen.findByTestId(
+      "adminviewplaypage-chat-toggle",
+    );
+    fireEvent.click(chatToggleButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("ChatDisplay")).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(
+        axiosMock.history.get.some((call) => call.url === "/api/chat/get"),
+      ).toBe(true);
+    });
+
+    const chatGetCall = axiosMock.history.get.find(
+      (call) => call.url === "/api/chat/get",
+    );
+    expect(chatGetCall.params.gameId).toBe(1);
   });
 });

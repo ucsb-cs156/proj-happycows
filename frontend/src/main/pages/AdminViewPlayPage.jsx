@@ -102,7 +102,7 @@ const AdminViewPlayPage = () => {
           </Card.Body>
         </Card>
         <Container>
-          {!!currentUser && <GamePlay currentUser={farmer} />}
+          {!!currentUser && <GamePlay currentUser={currentUser} />}
           {!!gamePlus && (
             <GameOverview gamePlus={gamePlus} currentUser={currentUser} />
           )}
@@ -117,7 +117,7 @@ const AdminViewPlayPage = () => {
         </Container>
       </BasicLayout>
       <div style={chatContainerStyle} data-testid="adminviewplaypage-chat-div">
-        {!!isChatOpen && <ChatPanel gameId={userId} />}
+        {!!isChatOpen && <ChatPanel gameId={gameId} />}
         <Button
           style={chatButtonStyle}
           onClick={toggleChatWindow}
