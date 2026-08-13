@@ -4,13 +4,13 @@
       "changeSet": {
         "id": "009-change-picture-url-to-text",
         "author": "copilot",
-        "comment": "Fix issue #295: Google OAuth profile picture URLs can exceed 255 characters, causing login to fail. Change the users.picture_url column from VARCHAR(255) to TEXT.",
+        "comment": "Fix issue #295: Google OAuth profile picture URLs can exceed 255 characters, causing login to fail. Change the users.picture_url column from VARCHAR(255) to VARCHAR(2048).",
         "changes": [
           {
             "modifyDataType": {
               "tableName": "users",
               "columnName": "picture_url",
-              "newDataType": "TEXT"
+              "newDataType": "VARCHAR(2048)"
             }
           }
         ]

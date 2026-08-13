@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import jakarta.persistence.*;
+import java.sql.Types;
 import java.time.Instant;
 import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +20,8 @@ public class User {
     private long id;
     private String email;
     private String googleSub;
-    @Lob
+    @Column(columnDefinition = "TEXT")
+    @JdbcTypeCode(Types.VARCHAR)
     private String pictureUrl;
     private String fullName;
     private String givenName;
