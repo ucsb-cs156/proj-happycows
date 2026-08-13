@@ -18,7 +18,7 @@ public class User {
     private long id;
     private String email;
     private String googleSub;
-    @Column(columnDefinition = "TEXT")
+    @Lob
     private String pictureUrl;
     private String fullName;
     private String givenName;
