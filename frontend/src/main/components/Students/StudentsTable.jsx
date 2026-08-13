@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import StudentsForm from "main/components/Students/StudentsForm";
+import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { useBackendMutation } from "main/utils/useBackend";
 import { formatTime } from "main/utils/dateUtils";
 import {
@@ -22,6 +23,7 @@ export default function StudentsTable({
   const [cellToDelete, setCellToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
+  const [pageSize, setPageSize] = useState(20);
 
   const queryKey = [`/api/student/course/${courseId}`];
 
@@ -156,11 +158,17 @@ export default function StudentsTable({
 
   return (
     <>
+      <PageSizeSelector
+        value={pageSize}
+        onChange={setPageSize}
+        testid={`${testid}-page-size-selector`}
+      />
       <OurTable
         data={students}
         columns={columnsToDisplay}
         testid={testid}
         centered={false}
+        pageSize={pageSize}
       />
       {hasRole(currentUser, "ROLE_ADMIN") && editModal}
       {hasRole(currentUser, "ROLE_ADMIN") && studentsModal}

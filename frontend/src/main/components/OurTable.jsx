@@ -26,6 +26,15 @@ export default function OurTable({
 }) {
   const [pageIndex, setPageIndex] = React.useState(0);
   const pageSize = rest.pageSize || 10;
+
+  // If pageSize changes (e.g. the caller offers a page-size selector) while
+  // we're on a page beyond what the new size would produce, staying put
+  // would silently render an empty table - go back to the first page
+  // instead.
+  React.useEffect(() => {
+    setPageIndex(0);
+  }, [pageSize]);
+
   const appliedTableStyle = centered
     ? tableStyle
     : { ...tableStyle, margin: "0" };
