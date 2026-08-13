@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Determines whether a user has access to a course-linked Game, based on
@@ -75,5 +76,30 @@ public class CourseAccessService {
         }
 
         return courseIds;
+    }
+
+    /**
+     * Returns the Student roster row that corresponds to this user, for the
+     * course linked to the given game - but only if the game is actually
+     * linked to a course. Used to decide whether a FarmerActivity row should
+     * be recorded for a play-page view or a buy/sell action: activity is
+     * only tracked for course-linked games, and only for users whose email
+     * matches a student on that course's roster (see issue #291), using the
+     * same canonical-email-matching rule as {@link #getCourseIdsForUser}.
+     */
+    public Optional<Student> findMatchingStudentForCourseLinkedGame(User user, Game game) {
+        if (game.getCourseId() == null) {
+            return Optional.empty();
+        }
+
+        String email = user.getEmail();
+
+        for (Student student : studentRepository.findByCourseId(game.getCourseId())) {
+            if (CanonicalFormConverter.areEquivalentEmails(student.getEmail(), email)) {
+                return Optional.of(student);
+            }
+        }
+
+        return Optional.empty();
     }
 }

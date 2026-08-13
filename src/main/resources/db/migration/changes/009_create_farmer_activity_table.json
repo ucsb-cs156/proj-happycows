@@ -1,0 +1,107 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "009-create-farmer-activity-table",
+        "author": "pc",
+        "comment": "Create the farmer_activity table (see issue #291): tracks play-page views and buy/sell actions for farmers whose game is linked to a course and whose email matches a student on that course's roster.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "not": [
+              {
+                "tableExists": {
+                  "tableName": "farmer_activity"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "tableName": "farmer_activity",
+              "columns": [
+                {
+                  "column": {
+                    "name": "id",
+                    "type": "BIGINT",
+                    "autoIncrement": true,
+                    "constraints": {
+                      "nullable": false,
+                      "primaryKey": true,
+                      "primaryKeyName": "FARMER_ACTIVITY_PK"
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "user_id",
+                    "type": "BIGINT",
+                    "constraints": { "nullable": false }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "game_id",
+                    "type": "BIGINT",
+                    "constraints": { "nullable": false }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "student_id",
+                    "type": "BIGINT",
+                    "constraints": { "nullable": false }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "timestamp",
+                    "type": "TIMESTAMP"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "activity_type",
+                    "type": "INT",
+                    "constraints": { "nullable": false }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "num_cows",
+                    "type": "INT",
+                    "constraints": { "nullable": false }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "game_id,user_id",
+              "baseTableName": "farmer_activity",
+              "constraintName": "FK_FARMER_ACTIVITY_FARMER",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "game_id,user_id",
+              "referencedTableName": "farmer"
+            }
+          },
+          {
+            "addForeignKeyConstraint": {
+              "baseColumnNames": "student_id",
+              "baseTableName": "farmer_activity",
+              "constraintName": "FK_FARMER_ACTIVITY_STUDENT",
+              "onDelete": "RESTRICT",
+              "onUpdate": "RESTRICT",
+              "referencedColumnNames": "id",
+              "referencedTableName": "student"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

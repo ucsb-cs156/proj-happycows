@@ -1,8 +1,11 @@
 import OurTable from "main/components/OurTable";
 import { Link } from "react-router";
+import { Button } from "react-bootstrap";
 
-// should take in a players list from a game
-export default function LeaderboardTable({ leaderboardUsers }) {
+// should take in a players list from a game. isAdminView (true only for an
+// admin NOT viewing the leaderboard in "Student View" - see DashboardPage)
+// controls whether the admin-only Activity column is shown, per issue #291.
+export default function LeaderboardTable({ leaderboardUsers, isAdminView }) {
   const USD = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -66,6 +69,27 @@ export default function LeaderboardTable({ leaderboardUsers }) {
         return <div style={{ textAlign: "right" }}>{props.value}</div>;
       },
     },
+    ...(isAdminView
+      ? [
+          {
+            Header: "Activity",
+            accessor: (row, _rowIndex) => {
+              const url = `/admin/farmeractivity/${row.gameId}/user/${row.userId}`;
+              return (
+                <Button
+                  as={Link}
+                  to={url}
+                  variant="outline-secondary"
+                  size="sm"
+                  data-testid={`LeaderboardTable-cell-row-${_rowIndex}-col-Activity-button`}
+                >
+                  Activity
+                </Button>
+              );
+            },
+          },
+        ]
+      : []),
   ];
 
   const testid = "LeaderboardTable";

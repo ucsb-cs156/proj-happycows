@@ -7,7 +7,10 @@ import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
+import edu.ucsb.cs156.happiercows.entities.Student;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
+import edu.ucsb.cs156.happiercows.services.FarmerActivityService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -42,6 +45,9 @@ public class FarmerControllerTests extends ControllerTestCase {
 
     @MockBean
     CourseAccessService courseAccessService;
+
+    @MockBean
+    FarmerActivityService farmerActivityService;
 
     Game testGame = Game
             .builder()
@@ -144,6 +150,8 @@ public class FarmerControllerTests extends ControllerTestCase {
 
         // arrange
 
+        User currentUser = currentUserService.getUser();
+
         Farmer origFarmer = getTestFarmer();
         origFarmer.setCowsBought(1);
 
@@ -165,6 +173,9 @@ public class FarmerControllerTests extends ControllerTestCase {
         // assert
         verify(farmerRepository, times(1)).findByGameIdAndUserId(eq(1L), eq(1L));
         verify(farmerRepository, times(1)).save(updateFarmer);
+        verify(farmerActivityService, times(1)).recordActivityIfStudentMatch(
+                eq(currentUser), eq(testGame), eq(updateFarmer),
+                eq(FarmerActivity.ACTIVITY_TYPE_BUY), eq(2));
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }
@@ -271,6 +282,8 @@ public class FarmerControllerTests extends ControllerTestCase {
 
         // arrange
 
+        User currentUser = currentUserService.getUser();
+
         Farmer origFarmer = getTestFarmer();
         origFarmer.setCowsSold(1);
         origFarmer.setCowHealth(50);
@@ -295,6 +308,9 @@ public class FarmerControllerTests extends ControllerTestCase {
         // assert
         verify(farmerRepository, times(1)).findByGameIdAndUserId(eq(1L), eq(1L));
         verify(farmerRepository, times(1)).save(updatedFarmer);
+        verify(farmerActivityService, times(1)).recordActivityIfStudentMatch(
+                eq(currentUser), eq(testGame), eq(updatedFarmer),
+                eq(FarmerActivity.ACTIVITY_TYPE_SELL), eq(2));
         String responseString = response.getResponse().getContentAsString();
         assertEquals(expectedReturn, responseString);
     }

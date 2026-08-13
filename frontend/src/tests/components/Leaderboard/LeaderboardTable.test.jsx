@@ -237,4 +237,44 @@ describe("LeaderboardTable tests", () => {
 
     fireEvent.click(link);
   });
+
+  test("Activity column is hidden when isAdminView is false", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+            isAdminView={false}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.queryByText("Activity")).not.toBeInTheDocument();
+  });
+
+  test("Activity column is shown and links to the correct URL when isAdminView is true", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+            isAdminView={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByTestId("LeaderboardTable-header-Activity"),
+    ).toHaveTextContent("Activity");
+
+    const activityLink = screen.getByTestId(
+      "LeaderboardTable-cell-row-0-col-Activity-button",
+    );
+    expect(activityLink).toHaveAttribute(
+      "href",
+      "/admin/farmeractivity/1/user/1",
+    );
+  });
 });

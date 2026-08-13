@@ -418,6 +418,7 @@ export default function DashboardPage() {
             <LeaderboardTable
               leaderboardUsers={farmer}
               currentUser={currentUser}
+              isAdminView={isAdminView}
             />
           </DashboardSectionCard>
         </>

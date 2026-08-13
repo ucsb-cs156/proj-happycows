@@ -15,6 +15,7 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
@@ -22,6 +23,7 @@ import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
 import edu.ucsb.cs156.happiercows.errors.GameHiddenException;
 import edu.ucsb.cs156.happiercows.errors.NotEnrolledInCourseAssociatedWithGameException;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
+import edu.ucsb.cs156.happiercows.services.FarmerActivityService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +48,9 @@ public class FarmerController extends ApiController {
 
   @Autowired
   private CourseAccessService courseAccessService;
+
+  @Autowired
+  private FarmerActivityService farmerActivityService;
 
   @Operation(summary = "Get a specific user game (admin only)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -110,6 +115,9 @@ public class FarmerController extends ApiController {
         }
         farmerRepository.save(farmer);
 
+        farmerActivityService.recordActivityIfStudentMatch(
+            u, game, farmer, FarmerActivity.ACTIVITY_TYPE_BUY, numCows);
+
         String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
     }
@@ -147,6 +155,9 @@ public class FarmerController extends ApiController {
           throw new NoCowsException("You do not have enough cows to sell!");
         }
         farmerRepository.save(farmer);
+
+        farmerActivityService.recordActivityIfStudentMatch(
+            u, game, farmer, FarmerActivity.ACTIVITY_TYPE_SELL, numCows);
 
         String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
