@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FarmerActivityService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">FarmerActivityService.java</span></div><h1>FarmerActivityService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.repositories.FarmerActivityRepository;
+
+/**
+ * Records FarmerActivity rows (play-page views, buy/sell actions) for
+ * course-linked games whose farmer's email matches a student on that
+ * course's roster. See issue #291.
+ */
+@Service
+<span class="fc" id="L23">public class FarmerActivityService {</span>
+
+    // The server's JVM default timezone isn't guaranteed to be Pacific (it's
+    // commonly UTC in a deployed container), and FarmerActivity.timestamp is
+    // a LocalDateTime with no zone of its own, so the wall-clock value has
+    // to be computed in the right zone explicitly - matching the convention
+    // already used for announcements/CSV exports elsewhere in this app.
+<span class="fc" id="L30">    private static final ZoneId LOCAL_TIME_ZONE = ZoneId.of(&quot;America/Los_Angeles&quot;);</span>
+
+    @Autowired
+    private CourseAccessService courseAccessService;
+
+    @Autowired
+    private FarmerActivityRepository farmerActivityRepository;
+
+    /**
+     * Records a FarmerActivity row for the given user/game/farmer/activityType,
+     * but only if the game is linked to a course and the user's email matches
+     * a student on that course's roster. Silently does nothing otherwise:
+     * tracking is opt-in-by-roster-membership, not an error condition when
+     * it doesn't apply (e.g. a standalone game with no course, or a course
+     * staff member rather than a student).
+     */
+    public void recordActivityIfStudentMatch(
+            User user, Game game, Farmer farmer, int activityType, int numCows) {
+<span class="fc" id="L48">        Optional&lt;Student&gt; matchingStudent =</span>
+<span class="fc" id="L49">                courseAccessService.findMatchingStudentForCourseLinkedGame(user, game);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (matchingStudent.isEmpty()) {</span>
+<span class="fc" id="L51">            return;</span>
+        }
+
+<span class="fc" id="L54">        FarmerActivity activity = FarmerActivity.builder()</span>
+<span class="fc" id="L55">                .farmer(farmer)</span>
+<span class="fc" id="L56">                .studentId(matchingStudent.get().getId())</span>
+<span class="fc" id="L57">                .timestamp(LocalDateTime.now(LOCAL_TIME_ZONE))</span>
+<span class="fc" id="L58">                .activityType(activityType)</span>
+<span class="fc" id="L59">                .numCows(numCows)</span>
+<span class="fc" id="L60">                .build();</span>
+
+<span class="fc" id="L62">        farmerActivityRepository.save(activity);</span>
+<span class="fc" id="L63">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
