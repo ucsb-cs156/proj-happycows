@@ -19,6 +19,27 @@ export default function LeaderboardTable({ leaderboardUsers, isAdminView }) {
         return <Link to={url}>{row.username}</Link>;
       },
     },
+    ...(isAdminView
+      ? [
+          {
+            Header: "Activity",
+            accessor: (row, _rowIndex) => {
+              const url = `/admin/farmeractivity/${row.gameId}/user/${row.userId}`;
+              return (
+                <Button
+                  as={Link}
+                  to={url}
+                  variant="outline-secondary"
+                  size="sm"
+                  data-testid={`LeaderboardTable-cell-row-${_rowIndex}-col-Activity-button`}
+                >
+                  Activity
+                </Button>
+              );
+            },
+          },
+        ]
+      : []),
     {
       Header: "Total Wealth",
       accessor: "totalWealth",
@@ -69,27 +90,6 @@ export default function LeaderboardTable({ leaderboardUsers, isAdminView }) {
         return <div style={{ textAlign: "right" }}>{props.value}</div>;
       },
     },
-    ...(isAdminView
-      ? [
-          {
-            Header: "Activity",
-            accessor: (row, _rowIndex) => {
-              const url = `/admin/farmeractivity/${row.gameId}/user/${row.userId}`;
-              return (
-                <Button
-                  as={Link}
-                  to={url}
-                  variant="outline-secondary"
-                  size="sm"
-                  data-testid={`LeaderboardTable-cell-row-${_rowIndex}-col-Activity-button`}
-                >
-                  Activity
-                </Button>
-              );
-            },
-          },
-        ]
-      : []),
   ];
 
   const testid = "LeaderboardTable";
