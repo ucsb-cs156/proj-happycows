@@ -9,10 +9,7 @@ const DEFAULT_PAGE_SIZE = 20;
 const PAGE_SIZE_STORAGE_KEY = "leaderboard-page-size";
 
 const getInitialPageSize = () => {
-  const storedValue = parseInt(
-    localStorage.getItem(PAGE_SIZE_STORAGE_KEY),
-    10,
-  );
+  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
   if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
     return storedValue;
   }
