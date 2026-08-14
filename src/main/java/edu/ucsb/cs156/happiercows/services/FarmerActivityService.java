@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.happiercows.services;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,13 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerActivityRepository;
  */
 @Service
 public class FarmerActivityService {
+
+    // The server's JVM default timezone isn't guaranteed to be Pacific (it's
+    // commonly UTC in a deployed container), and FarmerActivity.timestamp is
+    // a LocalDateTime with no zone of its own, so the wall-clock value has
+    // to be computed in the right zone explicitly - matching the convention
+    // already used for announcements/CSV exports elsewhere in this app.
+    private static final ZoneId LOCAL_TIME_ZONE = ZoneId.of("America/Los_Angeles");
 
     @Autowired
     private CourseAccessService courseAccessService;
@@ -46,7 +54,7 @@ public class FarmerActivityService {
         FarmerActivity activity = FarmerActivity.builder()
                 .farmer(farmer)
                 .studentId(matchingStudent.get().getId())
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now(LOCAL_TIME_ZONE))
                 .activityType(activityType)
                 .numCows(numCows)
                 .build();

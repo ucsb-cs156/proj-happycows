@@ -9,6 +9,7 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
 import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.models.FarmerWithStudentStatus;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
 import edu.ucsb.cs156.happiercows.services.FarmerActivityService;
 import org.junit.jupiter.api.Test;
@@ -571,17 +572,32 @@ public class FarmerControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void test_getAllFarmerById_exists() throws Exception {
-        List<Farmer> expectedFarmer = new ArrayList<>();
         Farmer testexpectedFarmer = getTestFarmer();
+        List<Farmer> expectedFarmer = new ArrayList<>();
         expectedFarmer.add(testexpectedFarmer);
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(testGame));
         when(farmerRepository.findByGameId(eq(1L))).thenReturn(expectedFarmer);
+        when(courseAccessService.findMatchingStudentForCourseLinkedGame(
+                testexpectedFarmer.getUser(), testGame)).thenReturn(Optional.empty());
 
         MvcResult response = mockMvc.perform(get("/api/farmer/game/all?gameId=1"))
                 .andExpect(status().isOk()).andReturn();
 
         verify(farmerRepository, times(1)).findByGameId(eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedFarmer);
+        FarmerWithStudentStatus expected = FarmerWithStudentStatus.builder()
+                .userId(testexpectedFarmer.getUserId())
+                .gameId(testexpectedFarmer.getGameId())
+                .username(testexpectedFarmer.getUsername())
+                .totalWealth(testexpectedFarmer.getTotalWealth())
+                .numOfCows(testexpectedFarmer.getNumOfCows())
+                .cowHealth(testexpectedFarmer.getCowHealth())
+                .cowsBought(testexpectedFarmer.getCowsBought())
+                .cowsSold(testexpectedFarmer.getCowsSold())
+                .cowDeaths(testexpectedFarmer.getCowDeaths())
+                .student(false)
+                .build();
+        String expectedJson = mapper.writeValueAsString(List.of(expected));
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
@@ -590,20 +606,52 @@ public class FarmerControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"ADMIN"})
     @Test
     public void test_Admin_getAllFarmerById_exists() throws Exception {
-        List<Farmer> expectedFarmer = new ArrayList<>();
         Farmer testexpectedFarmer = getTestFarmer();
+        List<Farmer> expectedFarmer = new ArrayList<>();
         expectedFarmer.add(testexpectedFarmer);
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(testGame));
         when(farmerRepository.findByGameId(eq(1L))).thenReturn(expectedFarmer);
+        when(courseAccessService.findMatchingStudentForCourseLinkedGame(
+                testexpectedFarmer.getUser(), testGame)).thenReturn(Optional.of(
+                        Student.builder().id(42L).build()));
 
         MvcResult response = mockMvc.perform(get("/api/farmer/game/all?gameId=1").with(csrf()))
                 .andExpect(status().isOk()).andReturn();
 
         verify(farmerRepository, times(1)).findByGameId(eq(1L));
 
-        String expectedJson = mapper.writeValueAsString(expectedFarmer);
+        FarmerWithStudentStatus expected = FarmerWithStudentStatus.builder()
+                .userId(testexpectedFarmer.getUserId())
+                .gameId(testexpectedFarmer.getGameId())
+                .username(testexpectedFarmer.getUsername())
+                .totalWealth(testexpectedFarmer.getTotalWealth())
+                .numOfCows(testexpectedFarmer.getNumOfCows())
+                .cowHealth(testexpectedFarmer.getCowHealth())
+                .cowsBought(testexpectedFarmer.getCowsBought())
+                .cowsSold(testexpectedFarmer.getCowsSold())
+                .cowDeaths(testexpectedFarmer.getCowDeaths())
+                .student(true)
+                .build();
+        String expectedJson = mapper.writeValueAsString(List.of(expected));
         String responseString = response.getResponse().getContentAsString();
 
         assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_getAllFarmerById_game_does_not_exist() throws Exception {
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/farmer/game/all?gameId=1"))
+                .andExpect(status().is(404)).andReturn();
+
+        verify(farmerRepository, times(0)).findByGameId(anyLong());
+
+        String expectedString = "{\"message\":\"Game with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
     }
 
     @WithMockUser(roles = {"USER"})

@@ -48,6 +48,11 @@ export default function DashboardPage() {
   // its normal (non-"View as Student") mode.
   const isAdminView = isAdmin && !viewAsStudent;
 
+  // Activity is never tracked for games that aren't linked to a course (see
+  // issue #291), so the leaderboard's Activity column doesn't make sense
+  // there either.
+  const isCourseLinkedGame = game?.courseId != null;
+
   const showDashboardToStudents = game?.showLeaderboard === true;
   const showOverviewSection = game?.showOverviewSection !== false;
   const showCowsPerFarmerSection = game?.showCowsPerFarmerSection !== false;
@@ -419,6 +424,7 @@ export default function DashboardPage() {
               leaderboardUsers={farmer}
               currentUser={currentUser}
               isAdminView={isAdminView}
+              isCourseLinkedGame={isCourseLinkedGame}
             />
           </DashboardSectionCard>
         </>

@@ -59,6 +59,7 @@ public class FarmerActivityControllerTests extends ControllerTestCase {
         return Farmer.builder()
                 .user(currentUserService.getUser())
                 .game(testGame)
+                .numOfCows(5)
                 .build();
     }
 
@@ -66,6 +67,8 @@ public class FarmerActivityControllerTests extends ControllerTestCase {
     @Test
     public void pageview_records_activity_when_farmer_exists() throws Exception {
         User currentUser = currentUserService.getUser();
+        // numOfCows=5 (see getTestFarmer): the play-page-view record should
+        // capture this as a numCows snapshot, not leave it at zero.
         Farmer farmer = getTestFarmer();
 
         when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(testGame));
@@ -76,7 +79,7 @@ public class FarmerActivityControllerTests extends ControllerTestCase {
 
         verify(farmerActivityService, times(1)).recordActivityIfStudentMatch(
                 eq(currentUser), eq(testGame), eq(farmer),
-                eq(FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW), eq(0));
+                eq(FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW), eq(5));
     }
 
     @WithMockUser(roles = {"USER"})

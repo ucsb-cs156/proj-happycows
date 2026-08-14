@@ -6,6 +6,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -66,6 +69,16 @@ public class FarmerActivityServiceTests {
         assertEquals(expected.getStudentId(), saved.getStudentId());
         assertEquals(expected.getActivityType(), saved.getActivityType());
         assertEquals(expected.getNumCows(), saved.getNumCows());
+
+        // The timestamp must be computed in Pacific time, not whatever the
+        // JVM's own default timezone happens to be (commonly UTC on a
+        // deployed server) - see issue #291.
+        LocalDateTime expectedPacificNow =
+                LocalDateTime.now(ZoneId.of("America/Los_Angeles"));
+        assertEquals(
+                true,
+                Duration.between(expectedPacificNow, saved.getTimestamp()).abs()
+                        .compareTo(Duration.ofSeconds(10)) < 0);
     }
 
     @Test

@@ -4,8 +4,16 @@ import { Button } from "react-bootstrap";
 
 // should take in a players list from a game. isAdminView (true only for an
 // admin NOT viewing the leaderboard in "Student View" - see DashboardPage)
-// controls whether the admin-only Activity column is shown, per issue #291.
-export default function LeaderboardTable({ leaderboardUsers, isAdminView }) {
+// and isCourseLinkedGame (activity is never tracked for a game with no
+// course) together control whether the admin-only Activity column is shown
+// at all; within that column, a farmer who isn't a student on the course's
+// roster (row.student === false) gets "Not a student" instead of a button,
+// since no activity is tracked for them either. See issue #291.
+export default function LeaderboardTable({
+  leaderboardUsers,
+  isAdminView,
+  isCourseLinkedGame,
+}) {
   const USD = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -19,11 +27,20 @@ export default function LeaderboardTable({ leaderboardUsers, isAdminView }) {
         return <Link to={url}>{row.username}</Link>;
       },
     },
-    ...(isAdminView
+    ...(isAdminView && isCourseLinkedGame
       ? [
           {
             Header: "Activity",
             accessor: (row, _rowIndex) => {
+              if (!row.student) {
+                return (
+                  <span
+                    data-testid={`LeaderboardTable-cell-row-${_rowIndex}-col-Activity-not-a-student`}
+                  >
+                    Not a student
+                  </span>
+                );
+              }
               const url = `/admin/farmeractivity/${row.gameId}/user/${row.userId}`;
               return (
                 <Button

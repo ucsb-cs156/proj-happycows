@@ -92,7 +92,7 @@ describe("FarmerActivityTable tests", () => {
     expect(axiosMock.history.get[0].params).toEqual({ userId: 2, gameId: 1 });
   });
 
-  test("formats the timestamp column", async () => {
+  test("formats the timestamp column from its own digits, in AM", async () => {
     axiosMock
       .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
       .reply(200, [activity[0]]);
@@ -105,11 +105,83 @@ describe("FarmerActivityTable tests", () => {
       ).toBeInTheDocument();
     });
 
-    // formatDateTime renders e.g. "01/15/2024, 10:20 AM" - just assert it's
-    // not the raw ISO string, and contains the date.
+    // activity[0].timestamp is "2024-01-15T10:20:00" - a naive Pacific
+    // LocalDateTime string with no timezone offset. This must be formatted
+    // from its own digits, not via `new Date(...)`, which would otherwise
+    // reinterpret it using the *test runner's* local timezone rather than
+    // Pacific (see issue #291) - so this assertion would fail if the
+    // component ever regressed to doing that in a non-Pacific CI runner.
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
-    ).toHaveTextContent("01/15/2024");
+    ).toHaveTextContent("01/15/2024, 10:20 AM");
+  });
+
+  test("formats an afternoon (PM) timestamp correctly", async () => {
+    axiosMock
+      .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
+      .reply(200, [{ ...activity[0], timestamp: "2024-01-15T14:05:00" }]);
+
+    renderTable();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
+      ).toHaveTextContent("01/15/2024, 2:05 PM");
+    });
+  });
+
+  test("formats midnight and noon correctly (12-hour edge cases)", async () => {
+    axiosMock
+      .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
+      .reply(200, [
+        { ...activity[0], id: 1, timestamp: "2024-01-15T00:00:00" },
+        { ...activity[0], id: 2, timestamp: "2024-01-15T12:00:00" },
+      ]);
+
+    renderTable();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
+      ).toHaveTextContent("01/15/2024, 12:00 AM");
+    });
+    expect(
+      screen.getByTestId(`${testId}-cell-row-1-col-timestamp`),
+    ).toHaveTextContent("01/15/2024, 12:00 PM");
+  });
+
+  test("renders an empty timestamp cell for a null value", async () => {
+    axiosMock
+      .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
+      .reply(200, [{ ...activity[0], timestamp: null }]);
+
+    renderTable();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-activityType`),
+      ).toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
+    ).toHaveTextContent("");
+  });
+
+  test("renders an empty timestamp cell for a non-null value that doesn't match the expected format", async () => {
+    axiosMock
+      .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
+      .reply(200, [{ ...activity[0], timestamp: "not-a-date" }]);
+
+    renderTable();
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-activityType`),
+      ).toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-timestamp`),
+    ).toHaveTextContent("");
   });
 
   test("falls back to the raw activityType value for an unrecognized type", async () => {

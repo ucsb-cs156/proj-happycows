@@ -57,7 +57,7 @@ public class FarmerActivityController extends ApiController {
 
     Optional<Farmer> farmer = farmerRepository.findByGameIdAndUserId(gameId, user.getId());
     farmer.ifPresent(f -> farmerActivityService.recordActivityIfStudentMatch(
-        user, game, f, FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW, 0));
+        user, game, f, FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW, f.getNumOfCows()));
   }
 
   @Operation(summary = "Get a farmer's activity history (admin only), reverse chronological")
