@@ -61,6 +61,7 @@ const baseGamePlus = {
     showLeaderboard: true,
     showOverviewSection: true,
     showCowsPerFarmerSection: true,
+    showCapacitySection: true,
     showHistogramSection: true,
     showTrendsSection: true,
     showHealthSection: true,
@@ -69,11 +70,13 @@ const baseGamePlus = {
   },
   totalUsers: 4,
   totalCows: 11,
+  effectiveCapacity: 20,
   averageCowsPerFarmer: 2.75,
   medianCowsPerFarmer: 2.5,
   minimumCowsPerFarmer: 1,
   maximumCowsPerFarmer: 5,
   standardDeviationCowsPerFarmer: 1.479,
+  averageCowHealth: 87.654,
 };
 
 beforeEach(() => {
@@ -116,6 +119,9 @@ describe("DashboardPage as admin", () => {
       screen.getByTestId("DashboardPage-CowsPerFarmerSection"),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId("DashboardPage-CapacitySection"),
+    ).toBeInTheDocument();
+    expect(
       screen.getByTestId("DashboardPage-HistogramSection"),
     ).toBeInTheDocument();
     expect(
@@ -136,7 +142,8 @@ describe("DashboardPage as admin", () => {
     ).closest(".card");
     expect(within(totalFarmersCard).getByText("4")).toBeInTheDocument();
 
-    const totalCowsCard = screen
+    const overviewSection = screen.getByTestId("DashboardPage-OverviewSection");
+    const totalCowsCard = within(overviewSection)
       .getByText("Total Cows", { selector: ".card-title" })
       .closest(".card");
     expect(within(totalCowsCard).getByText("11")).toBeInTheDocument();
@@ -155,6 +162,30 @@ describe("DashboardPage as admin", () => {
 
     const stdDevCard = screen.getByText("StdDev").closest(".card");
     expect(within(stdDevCard).getByText("1.5")).toBeInTheDocument();
+
+    const capacitySection = screen.getByTestId("DashboardPage-CapacitySection");
+    const capacityTotalCowsCard = within(capacitySection)
+      .getByText("Total Cows", { selector: ".card-title" })
+      .closest(".card");
+    expect(within(capacityTotalCowsCard).getByText("11")).toBeInTheDocument();
+
+    const effCapCard = screen.getByText("Eff Cap").closest(".card");
+    expect(within(effCapCard).getByText("20")).toBeInTheDocument();
+
+    const percentageCard = screen
+      .getByText("Percentage of Carrying Capacity")
+      .closest(".card");
+    expect(within(percentageCard).getByText("55.00%")).toBeInTheDocument();
+
+    const avgCowHealthCard = screen
+      .getByText("Avg Cow Health")
+      .closest(".card");
+    expect(within(avgCowHealthCard).getByText("87.7")).toBeInTheDocument();
+
+    const avgCowsPerFarmerCard = screen
+      .getByText("Avg Cows/Farmer")
+      .closest(".card");
+    expect(within(avgCowsPerFarmerCard).getByText("2.8")).toBeInTheDocument();
   });
 
   test("hides the leaderboard's Activity column when the game is not linked to a course", async () => {
@@ -360,6 +391,7 @@ describe("DashboardPage as admin", () => {
 
   test.each([
     ["CowsPerFarmerSection", "showCowsPerFarmerSection"],
+    ["CapacitySection", "showCapacitySection"],
     ["HistogramSection", "showHistogramSection"],
     ["TrendsSection", "showTrendsSection"],
     ["HealthSection", "showHealthSection"],
@@ -596,6 +628,23 @@ describe("DashboardPage as student", () => {
     await screen.findByTestId("DashboardPage-OverviewSection");
     expect(
       screen.queryByTestId("DashboardPage-CowsPerFarmerSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the capacity section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
+        showCapacitySection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-CapacitySection"),
     ).not.toBeInTheDocument();
   });
 

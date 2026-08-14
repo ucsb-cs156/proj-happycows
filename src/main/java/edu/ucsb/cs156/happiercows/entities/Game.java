@@ -38,6 +38,7 @@ public class Game {
 
     private boolean showOverviewSection;
     private boolean showCowsPerFarmerSection;
+    private boolean showCapacitySection;
     private boolean showHistogramSection;
     private boolean showTrendsSection;
     private boolean showHealthSection;

@@ -7,6 +7,7 @@ import {
   getDaysActive,
   formatOneDecimal,
   numericFieldOrBlank,
+  getPercentageOfCarryingCapacity,
 } from "main/utils/dashboardUtils";
 
 describe("dashboardUtils tests", () => {
@@ -234,6 +235,28 @@ describe("dashboardUtils tests", () => {
         averageCowsPerFarmer: "not-a-number",
       };
       expect(numericFieldOrBlank(gamePlus, "averageCowsPerFarmer")).toBe("--");
+    });
+  });
+
+  describe("getPercentageOfCarryingCapacity tests", () => {
+    it("returns the percentage formatted with two decimal places", () => {
+      expect(getPercentageOfCarryingCapacity(11, 20)).toBe("55.00%");
+    });
+
+    it("returns `--` when effective capacity is zero", () => {
+      expect(getPercentageOfCarryingCapacity(11, 0)).toBe("--");
+    });
+
+    it("returns `--` when total cows is non-numeric", () => {
+      expect(getPercentageOfCarryingCapacity("not-a-number", 20)).toBe("--");
+    });
+
+    it("returns `--` when effective capacity is non-numeric", () => {
+      expect(getPercentageOfCarryingCapacity(11, "not-a-number")).toBe("--");
+    });
+
+    it("returns `--` when either value is missing", () => {
+      expect(getPercentageOfCarryingCapacity(undefined, undefined)).toBe("--");
     });
   });
 });

@@ -23,6 +23,7 @@ public class GamePlus {
     private Integer minimumCowsPerFarmer;
     private Integer maximumCowsPerFarmer;
     private Double standardDeviationCowsPerFarmer;
+    private Double averageCowHealth;
 
 
     @JsonGetter("effectiveCapacity")
