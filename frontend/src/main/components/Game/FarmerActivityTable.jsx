@@ -68,6 +68,9 @@ export default function FarmerActivityTable({
             accessor: (row) => row.farmer?.username,
             Cell: ({ row }) => {
               const farmer = row.original.farmer;
+              if (!farmer) {
+                return "";
+              }
               const farmerUrl = `/admin/farmeractivity/${farmer.gameId}/user/${farmer.userId}`;
               return <Link to={farmerUrl}>{farmer.username}</Link>;
             },

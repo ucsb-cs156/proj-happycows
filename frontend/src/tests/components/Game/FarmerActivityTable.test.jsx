@@ -311,6 +311,24 @@ describe("FarmerActivityTable tests", () => {
       );
     });
 
+    test("renders an empty Farmer Name cell when a record has no farmer", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, [{ ...gameActivity[0], farmer: null }]);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+      ).toHaveTextContent("");
+    });
+
     test("does not show a Farmer Name column when userId is given", async () => {
       axiosMock
         .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
