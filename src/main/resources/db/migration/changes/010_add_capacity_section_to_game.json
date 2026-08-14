@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "010-Add-Capacity-Section-To-Game",
+        "author": "copilot",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "game",
+                  "columnName": "show_capacity_section"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "game",
+              "columns": [
+                {
+                  "column": {
+                    "name": "show_capacity_section",
+                    "type": "BOOLEAN",
+                    "defaultValue": "true"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
