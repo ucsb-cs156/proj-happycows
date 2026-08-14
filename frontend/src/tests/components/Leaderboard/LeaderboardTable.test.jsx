@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import LeaderboardTable from "main/components/Leaderboard/LeaderboardTable";
@@ -15,6 +15,10 @@ vi.mock("react-router", async () => ({
 
 describe("LeaderboardTable tests", () => {
   const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   test("renders without crashing for empty table with user not logged in", () => {
     const currentUser = null;
@@ -325,5 +329,75 @@ describe("LeaderboardTable tests", () => {
     expect(
       screen.queryByTestId("LeaderboardTable-cell-row-0-col-Activity-button"),
     ).not.toBeInTheDocument();
+  });
+
+  test("defaults to a page size of 20 when nothing is stored in localStorage", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("LeaderboardTable-page-size-selector");
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("leaderboard-page-size")).toBe("20");
+  });
+
+  test("selecting a page size stores it in localStorage under 'leaderboard-page-size'", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("LeaderboardTable-page-size-selector");
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("leaderboard-page-size")).toBe("50");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("leaderboard-page-size", "100");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("LeaderboardTable-page-size-selector");
+    expect(selector).toHaveValue("100");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("leaderboard-page-size", "37");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("LeaderboardTable-page-size-selector");
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("leaderboard-page-size")).toBe("20");
   });
 });
