@@ -13,3 +13,4 @@ edu.ucsb.cs156.happiercows.repositories
 edu.ucsb.cs156.happiercows.services
 edu.ucsb.cs156.happiercows.services.wiremock
 edu.ucsb.cs156.happiercows.strategies
+edu.ucsb.cs156.happiercows.utilities
