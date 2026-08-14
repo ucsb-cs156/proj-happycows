@@ -26,6 +26,7 @@ import { hasRole, useCurrentUser } from "main/utils/currentUser";
 import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
+import AdminFarmerActivityPage from "main/pages/AdminFarmerActivityPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import AdminEditAnnouncementsPage from "main/pages/AdminEditAnnouncementsPage";
@@ -53,6 +54,10 @@ function App() {
       <Route
         path="/admin/play/:gameId/user/:userId"
         element={<AdminViewPlayPage />}
+      />
+      <Route
+        path="/admin/farmeractivity/:gameId/user/:userId"
+        element={<AdminFarmerActivityPage />}
       />
       <Route
         path="/admin/announcements/:gameId"

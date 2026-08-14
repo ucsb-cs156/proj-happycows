@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -217,5 +218,66 @@ public class CourseAccessServiceTests {
         List<Long> courseIds = courseAccessService.getCourseIdsForUser(user);
 
         assertEquals(0, courseIds.size());
+    }
+
+    @Test
+    public void findMatchingStudentForCourseLinkedGame_returns_empty_when_game_has_no_course() {
+        User user = User.builder().email("student@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(null).build();
+
+        assertEquals(
+                Optional.empty(),
+                courseAccessService.findMatchingStudentForCourseLinkedGame(user, game));
+    }
+
+    @Test
+    public void findMatchingStudentForCourseLinkedGame_returns_matching_student() {
+        User user = User.builder().email("student@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
+
+        Student student = Student.builder().id(42L).email("student@ucsb.edu").courseId(5L).build();
+        List<Student> students = new ArrayList<>();
+        students.add(student);
+
+        when(studentRepository.findByCourseId(5L)).thenReturn(students);
+
+        assertEquals(
+                Optional.of(student),
+                courseAccessService.findMatchingStudentForCourseLinkedGame(user, game));
+    }
+
+    @Test
+    public void findMatchingStudentForCourseLinkedGame_matches_umail_domain_canonically() {
+        // See issue #278: a roster row with the @umail.ucsb.edu form must
+        // still match a student logging in with the canonical @ucsb.edu form.
+        User user = User.builder().email("student@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
+
+        Student student =
+                Student.builder().id(42L).email("student@umail.ucsb.edu").courseId(5L).build();
+        List<Student> students = new ArrayList<>();
+        students.add(student);
+
+        when(studentRepository.findByCourseId(5L)).thenReturn(students);
+
+        assertEquals(
+                Optional.of(student),
+                courseAccessService.findMatchingStudentForCourseLinkedGame(user, game));
+    }
+
+    @Test
+    public void findMatchingStudentForCourseLinkedGame_returns_empty_when_no_student_matches() {
+        User user = User.builder().email("outsider@ucsb.edu").admin(false).build();
+        Game game = Game.builder().id(1L).courseId(5L).build();
+
+        Student student = Student.builder().id(42L).email("someone-else@ucsb.edu").courseId(5L).build();
+        List<Student> students = new ArrayList<>();
+        students.add(student);
+
+        when(studentRepository.findByCourseId(5L)).thenReturn(students);
+
+        assertEquals(
+                Optional.empty(),
+                courseAccessService.findMatchingStudentForCourseLinkedGame(user, game));
     }
 }

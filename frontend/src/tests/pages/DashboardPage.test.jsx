@@ -157,6 +157,44 @@ describe("DashboardPage as admin", () => {
     expect(within(stdDevCard).getByText("1.5")).toBeInTheDocument();
   });
 
+  test("hides the leaderboard's Activity column when the game is not linked to a course", async () => {
+    // baseGamePlus.game has no courseId
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByRole("heading", { name: /test game 7/i });
+
+    expect(
+      screen.queryByTestId("LeaderboardTable-header-Activity"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("shows the leaderboard's Activity column when the game is linked to a course", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: { ...baseGamePlus.game, courseId: 5 },
+    });
+    axiosMock.onGet("/api/farmer/game/all").reply(200, [
+      {
+        userId: 1,
+        gameId: 7,
+        username: "student1",
+        totalWealth: 100,
+        numOfCows: 1,
+        cowHealth: 100,
+        cowsBought: 1,
+        cowsSold: 0,
+        cowDeaths: 0,
+        student: true,
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    expect(
+      await screen.findByTestId("LeaderboardTable-header-Activity"),
+    ).toBeInTheDocument();
+  });
+
   test("shows a loading message before the game data has loaded", async () => {
     let resolvePlus;
     const plusPromise = new Promise((resolve) => {

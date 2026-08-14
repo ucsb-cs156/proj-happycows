@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, CardGroup, Button } from "react-bootstrap";
 import { useParams } from "react-router";
 
@@ -64,6 +64,32 @@ export default function PlayPage() {
       },
     },
   );
+  // Stryker restore all
+
+  // Records a play-page-view activity row (see issue #291). The backend
+  // silently no-ops unless this game is linked to a course and the current
+  // user's email matches a student on that course's roster, so it's safe to
+  // fire on every navigation here without checking eligibility client-side.
+  // Only PlayPage does this - AdminViewPlayPage (an admin emulating a
+  // farmer's view) must not count as a visit.
+  // Stryker disable all: a background tracking call with no observable UI
+  // outcome to assert on.
+  const objectToAxiosParamsPageView = () => ({
+    url: "/api/farmeractivity/pageview",
+    method: "POST",
+    params: {
+      gameId: gameId,
+    },
+  });
+
+  const mutationPageView = useBackendMutation(objectToAxiosParamsPageView);
+
+  useEffect(() => {
+    if (gameId) {
+      mutationPageView.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameId]);
   // Stryker restore all
 
   const gamePlusExists = !(typeof gamePlus == "undefined");

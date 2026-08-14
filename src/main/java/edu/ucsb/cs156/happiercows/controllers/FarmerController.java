@@ -15,13 +15,19 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
 import edu.ucsb.cs156.happiercows.errors.GameHiddenException;
 import edu.ucsb.cs156.happiercows.errors.NotEnrolledInCourseAssociatedWithGameException;
+import edu.ucsb.cs156.happiercows.models.FarmerWithStudentStatus;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
+import edu.ucsb.cs156.happiercows.services.FarmerActivityService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,6 +52,9 @@ public class FarmerController extends ApiController {
 
   @Autowired
   private CourseAccessService courseAccessService;
+
+  @Autowired
+  private FarmerActivityService farmerActivityService;
 
   @Operation(summary = "Get a specific user game (admin only)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -110,6 +119,9 @@ public class FarmerController extends ApiController {
         }
         farmerRepository.save(farmer);
 
+        farmerActivityService.recordActivityIfStudentMatch(
+            u, game, farmer, FarmerActivity.ACTIVITY_TYPE_BUY, numCows);
+
         String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
     }
@@ -148,6 +160,9 @@ public class FarmerController extends ApiController {
         }
         farmerRepository.save(farmer);
 
+        farmerActivityService.recordActivityIfStudentMatch(
+            u, game, farmer, FarmerActivity.ACTIVITY_TYPE_SELL, numCows);
+
         String body = mapper.writeValueAsString(farmer);
         return ResponseEntity.ok().body(body);
     }
@@ -157,13 +172,32 @@ public class FarmerController extends ApiController {
     @Operation(summary = "Get all user game for a specific game")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/game/all")
-    public  ResponseEntity<String> getFarmersByGameId(
-        @Parameter(name="gameId") @RequestParam Long gameId) throws JsonProcessingException {
-      Iterable<Farmer> uc = farmerRepository.findByGameId(gameId);
-      
-   
-    String body = mapper.writeValueAsString(uc);
-    return ResponseEntity.ok().body(body);
+    public List<FarmerWithStudentStatus> getFarmersByGameId(
+        @Parameter(name="gameId") @RequestParam Long gameId) {
+
+      Game game = gameRepository.findById(gameId)
+          .orElseThrow(() -> new EntityNotFoundException("Game", gameId));
+
+      List<FarmerWithStudentStatus> result = new ArrayList<>();
+      for (Farmer farmer : farmerRepository.findByGameId(gameId)) {
+        boolean isStudent = courseAccessService
+            .findMatchingStudentForCourseLinkedGame(farmer.getUser(), game)
+            .isPresent();
+
+        result.add(FarmerWithStudentStatus.builder()
+            .userId(farmer.getUserId())
+            .gameId(farmer.getGameId())
+            .username(farmer.getUsername())
+            .totalWealth(farmer.getTotalWealth())
+            .numOfCows(farmer.getNumOfCows())
+            .cowHealth(farmer.getCowHealth())
+            .cowsBought(farmer.getCowsBought())
+            .cowsSold(farmer.getCowsSold())
+            .cowDeaths(farmer.getCowDeaths())
+            .student(isStudent)
+            .build());
+      }
+      return result;
   }
 
   private void ensureUserCanAccessCourseLinkedGame(User user, Game game) {

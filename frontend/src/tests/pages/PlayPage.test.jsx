@@ -100,6 +100,8 @@ describe("PlayPage tests", () => {
 
     axiosMock.onPut("/api/farmer/sell").reply(200, farmerResponse.body);
     axiosMock.onPut("/api/farmer/buy").reply(200, farmerResponse.body);
+
+    axiosMock.onPost("/api/farmeractivity/pageview").reply(200);
   };
 
   const renderPage = () => {
@@ -141,6 +143,29 @@ describe("PlayPage tests", () => {
         "This game has been hidden by the site administrator.",
       ),
     ).not.toBeInTheDocument();
+  });
+
+  test("records a page-view activity for this game on navigation", async () => {
+    renderPage();
+
+    await waitFor(() => {
+      expect(
+        axiosMock.history.post.some(
+          (call) => call.url === "/api/farmeractivity/pageview",
+        ),
+      ).toBe(true);
+    });
+
+    const pageViewCall = axiosMock.history.post.find(
+      (call) => call.url === "/api/farmeractivity/pageview",
+    );
+    expect(pageViewCall.params).toEqual({ gameId: 1 });
+
+    // Fires exactly once for this navigation, not once per render.
+    const pageViewCalls = axiosMock.history.post.filter(
+      (call) => call.url === "/api/farmeractivity/pageview",
+    );
+    expect(pageViewCalls.length).toBe(1);
   });
 
   test("cannot join hidden game", async () => {

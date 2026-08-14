@@ -237,4 +237,93 @@ describe("LeaderboardTable tests", () => {
 
     fireEvent.click(link);
   });
+
+  test("Activity column is hidden when isAdminView is false", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+            isAdminView={false}
+            isCourseLinkedGame={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.queryByText("Activity")).not.toBeInTheDocument();
+  });
+
+  test("Activity column is hidden when isCourseLinkedGame is false, even for an admin", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardFixtures.fiveFarmerLB}
+            isAdminView={true}
+            isCourseLinkedGame={false}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.queryByText("Activity")).not.toBeInTheDocument();
+  });
+
+  test("Activity column shows a button linking to the correct URL for a student farmer", () => {
+    const leaderboardUsers = [
+      { ...leaderboardFixtures.fiveFarmerLB[0], student: true },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardUsers}
+            isAdminView={true}
+            isCourseLinkedGame={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByTestId("LeaderboardTable-header-Activity"),
+    ).toHaveTextContent("Activity");
+
+    const activityLink = screen.getByTestId(
+      "LeaderboardTable-cell-row-0-col-Activity-button",
+    );
+    expect(activityLink).toHaveAttribute(
+      "href",
+      "/admin/farmeractivity/1/user/1",
+    );
+  });
+
+  test('Activity column shows "Not a student" for a non-student farmer', () => {
+    const leaderboardUsers = [
+      { ...leaderboardFixtures.fiveFarmerLB[0], student: false },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <LeaderboardTable
+            leaderboardUsers={leaderboardUsers}
+            isAdminView={true}
+            isCourseLinkedGame={true}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByTestId(
+        "LeaderboardTable-cell-row-0-col-Activity-not-a-student",
+      ),
+    ).toHaveTextContent("Not a student");
+    expect(
+      screen.queryByTestId("LeaderboardTable-cell-row-0-col-Activity-button"),
+    ).not.toBeInTheDocument();
+  });
 });
