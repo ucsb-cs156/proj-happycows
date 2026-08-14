@@ -329,6 +329,38 @@ describe("FarmerActivityTable tests", () => {
       ).toHaveTextContent("");
     });
 
+    test("sorts by Farmer Name using the farmer's username", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, gameActivity);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+        ).toBeInTheDocument();
+      });
+
+      // Before sorting, the mock data (and therefore DOM order) is
+      // farmerjoe, then farmerjane.
+      const namesBeforeSort = screen
+        .getAllByTestId(/-col-Farmer Name$/)
+        .map((cell) => cell.textContent);
+      expect(namesBeforeSort).toEqual(["farmerjoe", "farmerjane"]);
+
+      const header = screen.getByTestId(`${testId}-header-Farmer Name`);
+      fireEvent.click(header);
+
+      // Ascending sort by username puts farmerjane first.
+      await waitFor(() => {
+        const namesAfterSort = screen
+          .getAllByTestId(/-col-Farmer Name$/)
+          .map((cell) => cell.textContent);
+        expect(namesAfterSort).toEqual(["farmerjane", "farmerjoe"]);
+      });
+    });
+
     test("does not show a Farmer Name column when userId is given", async () => {
       axiosMock
         .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })

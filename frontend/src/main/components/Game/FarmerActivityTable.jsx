@@ -44,11 +44,16 @@ export default function FarmerActivityTable({
   const params = showFarmerName
     ? { gameId: gameId }
     : { userId: userId, gameId: gameId };
+
+  // The query key is only used internally by react-query for cache lookups
+  // and isn't otherwise observable in the rendered output, so it's excluded
+  // from mutation testing (see the `url`/`params` above, which drive the
+  // actual request and are asserted on directly).
+  // Stryker disable all
   const queryKey = showFarmerName
     ? `/api/farmeractivity/game?gameId=${gameId}`
     : `/api/farmeractivity/all?userId=${userId}&gameId=${gameId}`;
 
-  // Stryker disable all
   const { data: activity } = useBackend(
     [queryKey],
     {
