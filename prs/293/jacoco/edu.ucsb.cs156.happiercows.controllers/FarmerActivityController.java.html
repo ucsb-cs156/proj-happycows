@@ -57,7 +57,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 <span class="fc" id="L58">    Optional&lt;Farmer&gt; farmer = farmerRepository.findByGameIdAndUserId(gameId, user.getId());</span>
 <span class="fc" id="L59">    farmer.ifPresent(f -&gt; farmerActivityService.recordActivityIfStudentMatch(</span>
-        user, game, f, FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW, 0));
+<span class="fc" id="L60">        user, game, f, FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW, f.getNumOfCows()));</span>
 <span class="fc" id="L61">  }</span>
 
   @Operation(summary = &quot;Get a farmer's activity history (admin only), reverse chronological&quot;)
