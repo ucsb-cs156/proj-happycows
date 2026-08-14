@@ -4,10 +4,13 @@ import java.util.List;
 
 import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.entities.Game;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FarmerActivityRepository extends CrudRepository<FarmerActivity, Long> {
     List<FarmerActivity> findByFarmerOrderByTimestampDesc(Farmer farmer);
+
+    List<FarmerActivity> findByFarmer_GameOrderByTimestampDesc(Game game);
 }
