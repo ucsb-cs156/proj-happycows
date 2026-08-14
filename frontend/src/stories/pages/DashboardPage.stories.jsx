@@ -1,18 +1,25 @@
 import React from "react";
+import { Route, Routes } from "react-router";
 import DashboardPage from "main/pages/DashboardPage";
 
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import timeSeriesFixtures from "fixtures/timeSeriesFixtures";
 
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 
 export default {
   title: "pages/DashboardPage",
   component: DashboardPage,
 };
 
-const Template = () => <DashboardPage />;
+const dashboardPath = "/admin/dashboard/1";
+
+const Template = () => (
+  <Routes location={dashboardPath}>
+    <Route path="/admin/dashboard/:id" element={<DashboardPage />} />
+  </Routes>
+);
 
 export const AdminView = Template.bind({});
 
@@ -156,6 +163,26 @@ StudentViewNotAuthorized.parameters = {
         },
         { status: 200 },
       );
+    }),
+  ],
+};
+
+export const Loading = Template.bind({});
+
+Loading.parameters = {
+  msw: [
+    http.get("/api/currentUser", () => {
+      return HttpResponse.json(apiCurrentUserFixtures.adminUser, {
+        status: 200,
+      });
+    }),
+    http.get("/api/systemInfo", () => {
+      return HttpResponse.json(systemInfoFixtures.showingNeither, {
+        status: 200,
+      });
+    }),
+    http.get("/api/game/plus", async () => {
+      await delay("infinite");
     }),
   ],
 };
