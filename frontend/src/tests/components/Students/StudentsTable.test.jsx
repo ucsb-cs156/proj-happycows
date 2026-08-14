@@ -58,6 +58,7 @@ describe("StudentsTable tests", () => {
     axiosMock.resetHistory();
     mockToast.mockClear();
     mockUseBackendMutation.mockClear();
+    localStorage.clear();
   });
 
   const renderTable = (students, currentUser, props = {}) => {
@@ -383,16 +384,19 @@ describe("StudentsTable tests", () => {
     lastLoginDateTime: null,
   }));
 
-  test("renders a Page Size selector defaulting to 20", () => {
+  test("renders a Page Size selector defaulting to 100", () => {
     renderTable(manyStudents, currentUserFixtures.userOnly);
 
     const selector = screen.getByTestId(`${testId}-page-size-selector`);
     expect(selector).toBeInTheDocument();
-    expect(selector).toHaveValue("20");
+    expect(selector).toHaveValue("100");
   });
 
   test("with more students than the page size, pagination is shown and only a page's worth of rows render", () => {
     renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    fireEvent.change(selector, { target: { value: "20" } });
 
     expect(
       screen.getByTestId(`${testId}-current-page-button`),
@@ -405,19 +409,44 @@ describe("StudentsTable tests", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("selecting a larger page size shows all rows and hides pagination", async () => {
+  test("selecting a page size larger than the number of students shows all rows and hides pagination", async () => {
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    expect(
+      screen.queryByTestId(`${testId}-current-page-button`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testId}-cell-row-24-col-id`),
+    ).toBeInTheDocument();
+  });
+
+  test("selecting a page size stores it in localStorage under 'default-page-size'", async () => {
     renderTable(manyStudents, currentUserFixtures.userOnly);
 
     const selector = screen.getByTestId(`${testId}-page-size-selector`);
     fireEvent.change(selector, { target: { value: "50" } });
 
     await waitFor(() => {
-      expect(
-        screen.queryByTestId(`${testId}-current-page-button`),
-      ).not.toBeInTheDocument();
+      expect(localStorage.getItem("default-page-size")).toBe("50");
     });
-    expect(
-      screen.getByTestId(`${testId}-cell-row-24-col-id`),
-    ).toBeInTheDocument();
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("default-page-size", "20");
+
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("20");
+  });
+
+  test("falls back to 100 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("default-page-size", "37");
+
+    renderTable(manyStudents, currentUserFixtures.userOnly);
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("100");
+    expect(localStorage.getItem("default-page-size")).toBe("100");
   });
 });

@@ -13,6 +13,19 @@ import {
 import { hasRole } from "main/utils/currentUser";
 import { toast } from "react-toastify";
 
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
+const DEFAULT_PAGE_SIZE = 100;
+const PAGE_SIZE_STORAGE_KEY = "default-page-size";
+
+const getInitialPageSize = () => {
+  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
+  if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
+    return storedValue;
+  }
+  localStorage.setItem(PAGE_SIZE_STORAGE_KEY, DEFAULT_PAGE_SIZE);
+  return DEFAULT_PAGE_SIZE;
+};
+
 export default function StudentsTable({
   students,
   currentUser,
@@ -23,7 +36,12 @@ export default function StudentsTable({
   const [cellToDelete, setCellToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(getInitialPageSize);
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, newPageSize);
+  };
 
   const queryKey = [`/api/student/course/${courseId}`];
 
@@ -160,7 +178,8 @@ export default function StudentsTable({
     <>
       <PageSizeSelector
         value={pageSize}
-        onChange={setPageSize}
+        onChange={handlePageSizeChange}
+        options={PAGE_SIZE_OPTIONS}
         testid={`${testid}-page-size-selector`}
       />
       <OurTable
