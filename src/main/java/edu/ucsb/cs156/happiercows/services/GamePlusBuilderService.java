@@ -23,6 +23,9 @@ public class GamePlusBuilderService {
     @Autowired
     FarmerRepository farmerRepository;
 
+    @Autowired
+    AverageCowHealthService averageCowHealthService;
+
     public GamePlus toGamePlus(Game c) {
         Optional<Integer> numCows = gameRepository.getNumCows(c.getId());
         Optional<Integer> numUsers = gameRepository.getNumUsers(c.getId());
@@ -66,6 +69,7 @@ public class GamePlusBuilderService {
                 .minimumCowsPerFarmer(minimumCowsPerFarmer)
                 .maximumCowsPerFarmer(maximumCowsPerFarmer)
                 .standardDeviationCowsPerFarmer(standardDeviationCowsPerFarmer)
+                .averageCowHealth(numCows.orElse(0) > 0 ? averageCowHealthService.getAverageCowHealth(c.getId()) : null)
                 .build();
     }
 

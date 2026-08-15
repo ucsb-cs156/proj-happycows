@@ -40,6 +40,19 @@ const numericFieldOrBlank = (gamePlus, field) => {
   return formatOneDecimal(gamePlus?.[field]);
 };
 
+const getPercentageOfCarryingCapacity = (totalCows, effectiveCapacity) => {
+  const numericTotalCows = Number(totalCows);
+  const numericEffectiveCapacity = Number(effectiveCapacity);
+  if (
+    Number.isNaN(numericTotalCows) ||
+    Number.isNaN(numericEffectiveCapacity) ||
+    !numericEffectiveCapacity
+  ) {
+    return "--";
+  }
+  return `${((numericTotalCows / numericEffectiveCapacity) * 100).toFixed(2)}%`;
+};
+
 export {
   fieldOrBlank,
   getGameName,
@@ -49,4 +62,5 @@ export {
   getDaysActive,
   formatOneDecimal,
   numericFieldOrBlank,
+  getPercentageOfCarryingCapacity,
 };
