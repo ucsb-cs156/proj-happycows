@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "011-Add-Capacity-Per-User-To-Reports",
+        "author": "copilot",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "reports",
+                  "columnName": "capacity_per_user"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "reports",
+              "columns": [
+                {
+                  "column": {
+                    "name": "capacity_per_user",
+                    "type": "INT",
+                    "defaultValue": "0"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
