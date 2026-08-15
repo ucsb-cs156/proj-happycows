@@ -184,5 +184,18 @@ Loading.parameters = {
     http.get("/api/game/plus", async () => {
       await delay("infinite");
     }),
+    http.get("/api/game/numcows", () => {
+      return HttpResponse.json([1, 2, 3, 5, 10, 15, 20], {
+        status: 200,
+      });
+    }),
+    http.get("/api/game/timeseries", () => {
+      return HttpResponse.json(timeSeriesFixtures.timeSeriesBigExample, {
+        status: 200,
+      });
+    }),
+    http.get("/api/farmer/game/all", () => {
+      return HttpResponse.json([], { status: 200 });
+    }),
   ],
 };

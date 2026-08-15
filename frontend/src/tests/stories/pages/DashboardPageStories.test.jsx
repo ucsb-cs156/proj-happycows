@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import { setupServer } from "msw/node";
 import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import timeSeriesFixtures from "fixtures/timeSeriesFixtures";
@@ -103,5 +104,31 @@ describe("DashboardPage stories", () => {
   test("StudentView and StudentViewNotAuthorized stories are defined", () => {
     expect(StudentViewStory.parameters.msw).toBeTruthy();
     expect(StudentViewNotAuthorizedStory.parameters.msw).toBeTruthy();
+  });
+
+  describe.each([
+    ["AdminView", AdminViewStory],
+    ["StudentView", StudentViewStory],
+    ["StudentViewNotAuthorized", StudentViewNotAuthorizedStory],
+    ["Loading", LoadingStory],
+  ])("%s story's own MSW handlers", (name, Story) => {
+    test("cover every API request the page makes (no unhandled requests)", async () => {
+      const server = setupServer(...Story.parameters.msw);
+      server.listen({ onUnhandledRequest: "error" });
+
+      try {
+        renderStory(Story);
+
+        // Wait for the page to settle into either its loaded or loading state
+        // so that every enabled useBackend request has had a chance to fire.
+        await waitFor(() => {
+          expect(
+            screen.getByText(/Loading\.\.\.|You're not authorized|Dashboard/),
+          ).toBeInTheDocument();
+        });
+      } finally {
+        server.close();
+      }
+    });
   });
 });
