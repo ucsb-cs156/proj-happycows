@@ -169,11 +169,11 @@ describe("DashboardPage as admin", () => {
       .closest(".card");
     expect(within(capacityTotalCowsCard).getByText("11")).toBeInTheDocument();
 
-    const effCapCard = screen.getByText("Eff Cap").closest(".card");
+    const effCapCard = screen.getByText("Effective Capacity").closest(".card");
     expect(within(effCapCard).getByText("20")).toBeInTheDocument();
 
     const percentageCard = screen
-      .getByText("Percentage of Carrying Capacity")
+      .getByText("% Effective Capacity")
       .closest(".card");
     expect(within(percentageCard).getByText("55.00%")).toBeInTheDocument();
 

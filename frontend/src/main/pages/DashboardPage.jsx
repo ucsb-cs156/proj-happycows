@@ -381,7 +381,7 @@ export default function DashboardPage() {
               <Col>
                 <Card className="mb-3">
                   <Card.Body>
-                    <Card.Title>Eff Cap</Card.Title>
+                    <Card.Title>Effective Capacity</Card.Title>
                     <Card.Text>{effectiveCapacity}</Card.Text>
                   </Card.Body>
                 </Card>
@@ -390,7 +390,7 @@ export default function DashboardPage() {
               <Col>
                 <Card className="mb-3">
                   <Card.Body>
-                    <Card.Title>Percentage of Carrying Capacity</Card.Title>
+                    <Card.Title>% Effective Capacity</Card.Title>
                     <Card.Text>{percentageOfCarryingCapacity}</Card.Text>
                   </Card.Body>
                 </Card>
