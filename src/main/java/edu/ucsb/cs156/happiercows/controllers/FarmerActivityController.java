@@ -73,4 +73,18 @@ public class FarmerActivityController extends ApiController {
 
     return farmerActivityRepository.findByFarmerOrderByTimestampDesc(farmer);
   }
+
+  @Operation(
+      summary =
+          "Get all farmers' activity history for a game (admin only), reverse chronological")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @GetMapping("/game")
+  public List<FarmerActivity> getActivityForGame(
+      @Parameter(name = "gameId") @RequestParam Long gameId) {
+
+    Game game = gameRepository.findById(gameId)
+        .orElseThrow(() -> new EntityNotFoundException("Game", gameId));
+
+    return farmerActivityRepository.findByFarmer_GameOrderByTimestampDesc(game);
+  }
 }

@@ -240,6 +240,16 @@ export default function AdminGameCard({ commonItem, currentUser }) {
             >
               Dashboard
             </Button>
+            {game.courseId != null && (
+              <Button
+                variant="info"
+                size="sm"
+                href={`/admin/gameactivity/${game.id}`}
+                data-testid={`AdminGameCard-Activity-${game.id}`}
+              >
+                Activity
+              </Button>
+            )}
           </div>
         </Card.Body>
       </Card>

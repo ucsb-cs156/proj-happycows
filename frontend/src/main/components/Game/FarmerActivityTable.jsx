@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router";
 import OurTable from "main/components/OurTable";
 import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { useBackend } from "main/utils/useBackend";
@@ -34,22 +35,53 @@ export default function FarmerActivityTable({
 }) {
   const [pageSize, setPageSize] = useState(10);
 
+  // When userId isn't given, this table shows activity for the whole game
+  // (see AdminGameActivityPage) rather than for a single farmer.
+  const showFarmerName = userId === undefined;
+  const url = showFarmerName
+    ? "/api/farmeractivity/game"
+    : "/api/farmeractivity/all";
+  const params = showFarmerName
+    ? { gameId: gameId }
+    : { userId: userId, gameId: gameId };
+
+  // The query key is only used internally by react-query for cache lookups
+  // and isn't otherwise observable in the rendered output, so it's excluded
+  // from mutation testing (see the `url`/`params` above, which drive the
+  // actual request and are asserted on directly).
   // Stryker disable all
+  const queryKey = showFarmerName
+    ? `/api/farmeractivity/game?gameId=${gameId}`
+    : `/api/farmeractivity/all?userId=${userId}&gameId=${gameId}`;
+
   const { data: activity } = useBackend(
-    [`/api/farmeractivity/all?userId=${userId}&gameId=${gameId}`],
+    [queryKey],
     {
       method: "GET",
-      url: "/api/farmeractivity/all",
-      params: {
-        userId: userId,
-        gameId: gameId,
-      },
+      url: url,
+      params: params,
     },
     [],
   );
   // Stryker restore all
 
   const columns = [
+    ...(showFarmerName
+      ? [
+          {
+            Header: "Farmer Name",
+            accessor: (row) => row.farmer?.username,
+            Cell: ({ row }) => {
+              const farmer = row.original.farmer;
+              if (!farmer) {
+                return "";
+              }
+              const farmerUrl = `/admin/farmeractivity/${farmer.gameId}/user/${farmer.userId}`;
+              return <Link to={farmerUrl}>{farmer.username}</Link>;
+            },
+          },
+        ]
+      : []),
     {
       Header: "Timestamp",
       accessor: "timestamp",

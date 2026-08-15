@@ -27,6 +27,7 @@ import PlayPage from "main/pages/PlayPage";
 import NotFoundPage from "main/pages/NotFoundPage";
 import AdminViewPlayPage from "main/pages/AdminViewPlayPage";
 import AdminFarmerActivityPage from "main/pages/AdminFarmerActivityPage";
+import AdminGameActivityPage from "main/pages/AdminGameActivityPage";
 import AdminAnnouncementsPage from "main/pages/AdminAnnouncementsPage";
 import AdminCreateAnnouncementsPage from "main/pages/AdminCreateAnnouncementsPage";
 import AdminEditAnnouncementsPage from "main/pages/AdminEditAnnouncementsPage";
@@ -58,6 +59,10 @@ function App() {
       <Route
         path="/admin/farmeractivity/:gameId/user/:userId"
         element={<AdminFarmerActivityPage />}
+      />
+      <Route
+        path="/admin/gameactivity/:gameId"
+        element={<AdminGameActivityPage />}
       />
       <Route
         path="/admin/announcements/:gameId"

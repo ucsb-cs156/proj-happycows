@@ -159,4 +159,52 @@ public class FarmerActivityControllerTests extends ControllerTestCase {
         mockMvc.perform(get("/api/farmeractivity/all?userId=2&gameId=1"))
                 .andExpect(status().isForbidden());
     }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_can_get_activity_for_a_game() throws Exception {
+        Farmer farmer = getTestFarmer();
+        FarmerActivity a1 = FarmerActivity.builder()
+                .id(1L).farmer(farmer).studentId(42L)
+                .timestamp(LocalDateTime.parse("2024-01-15T10:15:30"))
+                .activityType(FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW).numCows(0).build();
+        FarmerActivity a2 = FarmerActivity.builder()
+                .id(2L).farmer(farmer).studentId(42L)
+                .timestamp(LocalDateTime.parse("2024-01-15T10:20:00"))
+                .activityType(FarmerActivity.ACTIVITY_TYPE_BUY).numCows(3).build();
+        List<FarmerActivity> expected = List.of(a2, a1);
+
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.of(testGame));
+        when(farmerActivityRepository.findByFarmer_GameOrderByTimestampDesc(testGame)).thenReturn(expected);
+
+        MvcResult response = mockMvc.perform(get("/api/farmeractivity/game?gameId=1"))
+                .andExpect(status().isOk()).andReturn();
+
+        verify(farmerActivityRepository, times(1)).findByFarmer_GameOrderByTimestampDesc(testGame);
+
+        String expectedJson = mapper.writeValueAsString(expected);
+        String responseString = response.getResponse().getContentAsString();
+        assertEquals(expectedJson, responseString);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void admin_get_activity_for_nonexistent_game_returns_404() throws Exception {
+        when(gameRepository.findById(eq(1L))).thenReturn(Optional.empty());
+
+        MvcResult response = mockMvc.perform(get("/api/farmeractivity/game?gameId=1"))
+                .andExpect(status().is(404)).andReturn();
+
+        String expectedString = "{\"message\":\"Game with id 1 not found\",\"type\":\"EntityNotFoundException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void non_admin_cannot_get_activity_for_a_game() throws Exception {
+        mockMvc.perform(get("/api/farmeractivity/game?gameId=1"))
+                .andExpect(status().isForbidden());
+    }
 }

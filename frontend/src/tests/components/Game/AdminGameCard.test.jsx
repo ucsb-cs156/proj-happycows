@@ -884,4 +884,50 @@ describe("AdminGameCard tests", () => {
 
     expect(dashboardButton).toHaveTextContent("Dashboard");
   });
+
+  test("activity button does not render for a game with no courseId", () => {
+    const queryClient = new QueryClient();
+    const commonItem = gamePlusFixtures.threeGamePlus[0];
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminGameCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(screen.queryByText("Activity")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("AdminGameCard-Activity-1"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("activity button renders with correct href and testid for a game linked to a course", () => {
+    const queryClient = new QueryClient();
+    const commonItem = {
+      ...gamePlusFixtures.threeGamePlus[0],
+      game: { ...gamePlusFixtures.threeGamePlus[0].game, courseId: 7 },
+    };
+    const currentUser = currentUserFixtures.adminUser;
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <AdminGameCard commonItem={commonItem} currentUser={currentUser} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const activityButton = screen.getByText("Activity");
+
+    expect(activityButton).toBeInTheDocument();
+    expect(activityButton).toHaveAttribute("href", "/admin/gameactivity/1");
+
+    const testIdElement = screen.getByTestId("AdminGameCard-Activity-1");
+    expect(testIdElement).toBe(activityButton);
+
+    expect(activityButton).toHaveTextContent("Activity");
+  });
 });

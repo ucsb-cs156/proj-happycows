@@ -15,6 +15,7 @@ Before declaring that you are finished with a PR:
 * write more tests when you see that mvn test jacoco:report reports less than 100% test coverage.
 * write more tests when mvn pitest:mutationCoverage has less than 100% coverage.
 * write more tests when npx stryker run reports surviving mutants.
+* **monitor the status of all GitHub Actions workflows triggered by your commits until they finish, and ensure every one of them passes.** Your work is NOT complete just because you finished editing files and pushed a commit - use the GitHub tooling available to you (e.g. `actions_list`/`list_workflow_runs` and `get_job_logs`) to check the workflow runs for your branch/PR, and if any workflow fails (including but not limited to mutation testing, formatting, linting, or coverage checks), investigate the failure logs and fix the underlying issue, then re-check the workflow runs after pushing the fix. Repeat until all workflows pass.
 
 ### Prerequisites and Environment Setup
 

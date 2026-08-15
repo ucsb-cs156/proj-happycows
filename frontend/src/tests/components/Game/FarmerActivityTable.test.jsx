@@ -247,4 +247,134 @@ describe("FarmerActivityTable tests", () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe("game-wide activity (no userId)", () => {
+    const gameActivity = [
+      {
+        id: 3,
+        studentId: 42,
+        timestamp: "2024-01-15T10:20:00",
+        activityType: 1,
+        numCows: 3,
+        farmer: { userId: 2, gameId: 1, username: "farmerjoe" },
+      },
+      {
+        id: 1,
+        studentId: 43,
+        timestamp: "2024-01-15T10:00:00",
+        activityType: 0,
+        numCows: 0,
+        farmer: { userId: 5, gameId: 1, username: "farmerjane" },
+      },
+    ];
+
+    test("fetches from the game-wide endpoint when no userId is given", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, gameActivity);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-activityType`),
+        ).toBeInTheDocument();
+      });
+
+      expect(axiosMock.history.get[0].url).toEqual("/api/farmeractivity/game");
+      expect(axiosMock.history.get[0].params).toEqual({ gameId: 1 });
+    });
+
+    test("shows a Farmer Name column with a link to that farmer's activity page", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, gameActivity);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+        ).toBeInTheDocument();
+      });
+
+      const link = screen.getByText("farmerjoe");
+      expect(link).toBeInTheDocument();
+      expect(link.closest("a")).toHaveAttribute(
+        "href",
+        "/admin/farmeractivity/1/user/2",
+      );
+
+      expect(screen.getByText("farmerjane").closest("a")).toHaveAttribute(
+        "href",
+        "/admin/farmeractivity/1/user/5",
+      );
+    });
+
+    test("renders an empty Farmer Name cell when a record has no farmer", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, [{ ...gameActivity[0], farmer: null }]);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+        ).toBeInTheDocument();
+      });
+
+      expect(
+        screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+      ).toHaveTextContent("");
+    });
+
+    test("sorts by Farmer Name using the farmer's username", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/game", { params: { gameId: 1 } })
+        .reply(200, gameActivity);
+
+      renderTable({ userId: undefined });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-Farmer Name`),
+        ).toBeInTheDocument();
+      });
+
+      // Before sorting, the mock data (and therefore DOM order) is
+      // farmerjoe, then farmerjane.
+      const namesBeforeSort = screen
+        .getAllByTestId(/-col-Farmer Name$/)
+        .map((cell) => cell.textContent);
+      expect(namesBeforeSort).toEqual(["farmerjoe", "farmerjane"]);
+
+      const header = screen.getByTestId(`${testId}-header-Farmer Name`);
+      fireEvent.click(header);
+
+      // Ascending sort by username puts farmerjane first.
+      await waitFor(() => {
+        const namesAfterSort = screen
+          .getAllByTestId(/-col-Farmer Name$/)
+          .map((cell) => cell.textContent);
+        expect(namesAfterSort).toEqual(["farmerjane", "farmerjoe"]);
+      });
+    });
+
+    test("does not show a Farmer Name column when userId is given", async () => {
+      axiosMock
+        .onGet("/api/farmeractivity/all", { params: { userId: 2, gameId: 1 } })
+        .reply(200, activity);
+
+      renderTable();
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(`${testId}-cell-row-0-col-activityType`),
+        ).toBeInTheDocument();
+      });
+
+      expect(screen.queryByText("Farmer Name")).not.toBeInTheDocument();
+    });
+  });
 });
