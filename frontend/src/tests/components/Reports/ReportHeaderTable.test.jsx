@@ -110,5 +110,17 @@ describe("ReportHeaderTable tests", () => {
     expect(screen.getAllByText("5")[0]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("10")[0]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("0.1")[0]).toHaveStyle("text-align: right;");
+
+    const testId = "ReportHeaderTable";
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-capacityPerUser`)
+        .querySelector("div"),
+    ).toHaveStyle("text-align: right;");
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-effectiveCapacity`)
+        .querySelector("div"),
+    ).toHaveStyle("text-align: right;");
   });
 });
