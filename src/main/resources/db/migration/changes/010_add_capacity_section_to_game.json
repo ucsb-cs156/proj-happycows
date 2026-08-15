@@ -28,7 +28,7 @@
                   "column": {
                     "name": "show_capacity_section",
                     "type": "BOOLEAN",
-                    "defaultValue": "true"
+                    "defaultValue": "false"
                   }
                 }
               ]
