@@ -20,6 +20,7 @@ afterAll(() => server.close());
 const allSectionTestIds = [
   "DashboardPage-OverviewSection",
   "DashboardPage-CowsPerFarmerSection",
+  "DashboardPage-CapacitySection",
   "DashboardPage-HistogramSection",
   "DashboardPage-TrendsSection",
   "DashboardPage-HealthSection",
@@ -91,6 +92,9 @@ describe("DashboardPage stories", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId("DashboardPage-CowsPerFarmerSection"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId("DashboardPage-CapacitySection"),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId("DashboardPage-HistogramSection"),

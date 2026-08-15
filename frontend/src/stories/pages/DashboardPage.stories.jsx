@@ -40,6 +40,7 @@ const baseGame = {
   showLeaderboard: true,
   showOverviewSection: true,
   showCowsPerFarmerSection: true,
+  showCapacitySection: true,
   showHistogramSection: true,
   showTrendsSection: true,
   showHealthSection: true,
@@ -50,11 +51,13 @@ const baseGame = {
 const baseGamePlus = {
   totalUsers: 7,
   totalCows: 55,
+  effectiveCapacity: 70,
   averageCowsPerFarmer: 7.86,
   medianCowsPerFarmer: 7,
   minimumCowsPerFarmer: 1,
   maximumCowsPerFarmer: 20,
   standardDeviationCowsPerFarmer: 6.23,
+  averageCowHealth: 82.4,
 };
 
 const populatedMswHandlers = (game) => [
@@ -132,6 +135,7 @@ StudentViewSomeSectionsShown.parameters = {
       ...baseGame,
       id: 3,
       showCowsPerFarmerSection: false,
+      showCapacitySection: false,
       showHistogramSection: false,
       showTrendsSection: false,
       showHealthSection: false,

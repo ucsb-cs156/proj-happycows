@@ -427,6 +427,7 @@ public class GameController extends ApiController {
         game.setShowLeaderboard(params.isShowLeaderboard());
         game.setShowOverviewSection(params.isShowOverviewSection());
         game.setShowCowsPerFarmerSection(params.isShowCowsPerFarmerSection());
+        game.setShowCapacitySection(params.isShowCapacitySection());
         game.setShowHistogramSection(params.isShowHistogramSection());
         game.setShowTrendsSection(params.isShowTrendsSection());
         game.setShowHealthSection(params.isShowHealthSection());

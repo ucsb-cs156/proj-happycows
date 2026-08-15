@@ -121,5 +121,6 @@ public class GameIT {
         assertFalse(saved.isShowHealthSection());
         assertFalse(saved.isShowTotalCowsSection());
         assertFalse(saved.isShowFarmerLeaderboardSection());
+        assertFalse(saved.isShowCapacitySection());
     }
 }

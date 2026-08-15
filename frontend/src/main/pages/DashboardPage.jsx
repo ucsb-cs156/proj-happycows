@@ -17,6 +17,7 @@ import {
   getStartingDate,
   getDaysActive,
   numericFieldOrBlank,
+  getPercentageOfCarryingCapacity,
 } from "main/utils/dashboardUtils";
 
 export default function DashboardPage() {
@@ -56,6 +57,7 @@ export default function DashboardPage() {
   const showDashboardToStudents = game?.showLeaderboard === true;
   const showOverviewSection = game?.showOverviewSection !== false;
   const showCowsPerFarmerSection = game?.showCowsPerFarmerSection !== false;
+  const showCapacitySection = game?.showCapacitySection !== false;
   const showHistogramSection = game?.showHistogramSection !== false;
   const showTrendsSection = game?.showTrendsSection !== false;
   const showHealthSection = game?.showHealthSection !== false;
@@ -134,6 +136,7 @@ export default function DashboardPage() {
       showLeaderboard: showDashboardToStudents,
       showOverviewSection: showOverviewSection,
       showCowsPerFarmerSection: showCowsPerFarmerSection,
+      showCapacitySection: showCapacitySection,
       showHistogramSection: showHistogramSection,
       showTrendsSection: showTrendsSection,
       showHealthSection: showHealthSection,
@@ -172,6 +175,13 @@ export default function DashboardPage() {
   const standardDeviationCowsPerFarmer = numericFieldOrBlank(
     gamePlus,
     "standardDeviationCowsPerFarmer",
+  );
+
+  const effectiveCapacity = fieldOrBlank(gamePlus, "effectiveCapacity");
+  const averageCowHealth = numericFieldOrBlank(gamePlus, "averageCowHealth");
+  const percentageOfCarryingCapacity = getPercentageOfCarryingCapacity(
+    gamePlus?.totalCows,
+    gamePlus?.effectiveCapacity,
   );
 
   if (!gamePlus) {
@@ -343,6 +353,63 @@ export default function DashboardPage() {
                   <Card.Body>
                     <Card.Title>StdDev</Card.Title>
                     <Card.Text>{standardDeviationCowsPerFarmer}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Capacity"
+            visible={showCapacitySection}
+            isAdminView={isAdminView}
+            onToggleVisible={(v) =>
+              updateDashboardSetting("showCapacitySection", v)
+            }
+            testid="DashboardPage-CapacitySection"
+          >
+            <Row>
+              <Col>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title>Total Cows</Card.Title>
+                    <Card.Text>{totalCows}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              <Col>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title>Effective Capacity</Card.Title>
+                    <Card.Text>{effectiveCapacity}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              <Col>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title>% Effective Capacity</Card.Title>
+                    <Card.Text>{percentageOfCarryingCapacity}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              <Col>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title>Avg Cow Health</Card.Title>
+                    <Card.Text>{averageCowHealth}</Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+
+              <Col>
+                <Card className="mb-3">
+                  <Card.Body>
+                    <Card.Title>Avg Cows/Farmer</Card.Title>
+                    <Card.Text>{averageCowsPerFarmer}</Card.Text>
                   </Card.Body>
                 </Card>
               </Col>

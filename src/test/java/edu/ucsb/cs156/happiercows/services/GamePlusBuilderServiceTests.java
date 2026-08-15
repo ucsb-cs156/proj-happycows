@@ -38,6 +38,9 @@ public class GamePlusBuilderServiceTests {
     @MockitoBean
     FarmerRepository farmerRepository;
 
+    @MockitoBean
+    AverageCowHealthService averageCowHealthService;
+
     @Autowired
     GamePlusBuilderService gamePlusBuilderService;
 
@@ -66,12 +69,14 @@ public class GamePlusBuilderServiceTests {
             .minimumCowsPerFarmer(10)
             .maximumCowsPerFarmer(100)
             .standardDeviationCowsPerFarmer(31.622776601683793)
+            .averageCowHealth(85.5)
             .build();
 
     @Test
     void test_toGamePlus() {
         when(gameRepository.getNumCows(17L)).thenReturn(Optional.of(200));
         when(gameRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
+        when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(85.5);
         when(farmerRepository.findByGameId(17L)).thenReturn(List.of(
                 Farmer.builder().numOfCows(10).build(),
                 Farmer.builder().numOfCows(20).build(),
@@ -118,6 +123,7 @@ public class GamePlusBuilderServiceTests {
     void test_convertToGamePlus() {
         when(gameRepository.getNumCows(17L)).thenReturn(Optional.of(200));
         when(gameRepository.getNumUsers(17L)).thenReturn(Optional.of(5));
+        when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(85.5);
         when(farmerRepository.findByGameId(17L)).thenReturn(List.of(
                 Farmer.builder().numOfCows(10).build(),
                 Farmer.builder().numOfCows(20).build(),
@@ -145,6 +151,7 @@ public class GamePlusBuilderServiceTests {
         Assertions.assertNull(gamePlus.getMinimumCowsPerFarmer());
         Assertions.assertNull(gamePlus.getMaximumCowsPerFarmer());
         Assertions.assertNull(gamePlus.getStandardDeviationCowsPerFarmer());
+        Assertions.assertNull(gamePlus.getAverageCowHealth());
     }
 
 }
