@@ -23,62 +23,66 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
     @Autowired
     FarmerRepository farmerRepository;
 
+    @Autowired
+    AverageCowHealthService averageCowHealthService;
+
     public GamePlus toGamePlus(Game c) {
-<span class="fc" id="L27">        Optional&lt;Integer&gt; numCows = gameRepository.getNumCows(c.getId());</span>
-<span class="fc" id="L28">        Optional&lt;Integer&gt; numUsers = gameRepository.getNumUsers(c.getId());</span>
-<span class="fc" id="L29">        List&lt;Integer&gt; cowsPerFarmer = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L30">        farmerRepository.findByGameId(c.getId())</span>
-<span class="fc" id="L31">                .forEach((uc) -&gt; cowsPerFarmer.add(uc.getNumOfCows()));</span>
+<span class="fc" id="L30">        Optional&lt;Integer&gt; numCows = gameRepository.getNumCows(c.getId());</span>
+<span class="fc" id="L31">        Optional&lt;Integer&gt; numUsers = gameRepository.getNumUsers(c.getId());</span>
+<span class="fc" id="L32">        List&lt;Integer&gt; cowsPerFarmer = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L33">        farmerRepository.findByGameId(c.getId())</span>
+<span class="fc" id="L34">                .forEach((uc) -&gt; cowsPerFarmer.add(uc.getNumOfCows()));</span>
 
-<span class="fc" id="L33">        cowsPerFarmer.sort(Comparator.naturalOrder());</span>
-<span class="fc" id="L34">        Double averageCowsPerFarmer = null;</span>
-<span class="fc" id="L35">        Double medianCowsPerFarmer = null;</span>
-<span class="fc" id="L36">        Integer minimumCowsPerFarmer = null;</span>
-<span class="fc" id="L37">        Integer maximumCowsPerFarmer = null;</span>
-<span class="fc" id="L38">        Double standardDeviationCowsPerFarmer = null;</span>
+<span class="fc" id="L36">        cowsPerFarmer.sort(Comparator.naturalOrder());</span>
+<span class="fc" id="L37">        Double averageCowsPerFarmer = null;</span>
+<span class="fc" id="L38">        Double medianCowsPerFarmer = null;</span>
+<span class="fc" id="L39">        Integer minimumCowsPerFarmer = null;</span>
+<span class="fc" id="L40">        Integer maximumCowsPerFarmer = null;</span>
+<span class="fc" id="L41">        Double standardDeviationCowsPerFarmer = null;</span>
 
-<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (!cowsPerFarmer.isEmpty()) {</span>
-<span class="fc" id="L41">            int count = cowsPerFarmer.size();</span>
-<span class="fc" id="L42">            double sum = cowsPerFarmer.stream().mapToDouble(Integer::doubleValue).sum();</span>
-<span class="fc" id="L43">            averageCowsPerFarmer = sum / count;</span>
-<span class="fc" id="L44">            minimumCowsPerFarmer = cowsPerFarmer.get(0);</span>
-<span class="fc" id="L45">            maximumCowsPerFarmer = cowsPerFarmer.get(count - 1);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (!cowsPerFarmer.isEmpty()) {</span>
+<span class="fc" id="L44">            int count = cowsPerFarmer.size();</span>
+<span class="fc" id="L45">            double sum = cowsPerFarmer.stream().mapToDouble(Integer::doubleValue).sum();</span>
+<span class="fc" id="L46">            averageCowsPerFarmer = sum / count;</span>
+<span class="fc" id="L47">            minimumCowsPerFarmer = cowsPerFarmer.get(0);</span>
+<span class="fc" id="L48">            maximumCowsPerFarmer = cowsPerFarmer.get(count - 1);</span>
 
-<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (count % 2 == 1) {</span>
-<span class="fc" id="L48">                medianCowsPerFarmer = cowsPerFarmer.get(count / 2).doubleValue();</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            if (count % 2 == 1) {</span>
+<span class="fc" id="L51">                medianCowsPerFarmer = cowsPerFarmer.get(count / 2).doubleValue();</span>
             } else {
-<span class="fc" id="L50">                medianCowsPerFarmer = (cowsPerFarmer.get((count / 2) - 1) + cowsPerFarmer.get(count / 2)) / 2.0;</span>
+<span class="fc" id="L53">                medianCowsPerFarmer = (cowsPerFarmer.get((count / 2) - 1) + cowsPerFarmer.get(count / 2)) / 2.0;</span>
             }
 
-<span class="fc" id="L53">            final double averageForVariance = averageCowsPerFarmer;</span>
-<span class="fc" id="L54">            double variance = cowsPerFarmer.stream()</span>
-<span class="fc" id="L55">                    .mapToDouble((value) -&gt; Math.pow(value - averageForVariance, 2))</span>
-<span class="fc" id="L56">                    .sum() / count;</span>
-<span class="fc" id="L57">            standardDeviationCowsPerFarmer = Math.sqrt(variance);</span>
+<span class="fc" id="L56">            final double averageForVariance = averageCowsPerFarmer;</span>
+<span class="fc" id="L57">            double variance = cowsPerFarmer.stream()</span>
+<span class="fc" id="L58">                    .mapToDouble((value) -&gt; Math.pow(value - averageForVariance, 2))</span>
+<span class="fc" id="L59">                    .sum() / count;</span>
+<span class="fc" id="L60">            standardDeviationCowsPerFarmer = Math.sqrt(variance);</span>
         }
 
-<span class="fc" id="L60">        return GamePlus.builder()</span>
-<span class="fc" id="L61">                .game(c)</span>
-<span class="fc" id="L62">                .totalCows(numCows.orElse(0))</span>
-<span class="fc" id="L63">                .totalUsers(numUsers.orElse(0))</span>
-<span class="fc" id="L64">                .averageCowsPerFarmer(averageCowsPerFarmer)</span>
-<span class="fc" id="L65">                .medianCowsPerFarmer(medianCowsPerFarmer)</span>
-<span class="fc" id="L66">                .minimumCowsPerFarmer(minimumCowsPerFarmer)</span>
-<span class="fc" id="L67">                .maximumCowsPerFarmer(maximumCowsPerFarmer)</span>
-<span class="fc" id="L68">                .standardDeviationCowsPerFarmer(standardDeviationCowsPerFarmer)</span>
-<span class="fc" id="L69">                .build();</span>
+<span class="fc" id="L63">        return GamePlus.builder()</span>
+<span class="fc" id="L64">                .game(c)</span>
+<span class="fc" id="L65">                .totalCows(numCows.orElse(0))</span>
+<span class="fc" id="L66">                .totalUsers(numUsers.orElse(0))</span>
+<span class="fc" id="L67">                .averageCowsPerFarmer(averageCowsPerFarmer)</span>
+<span class="fc" id="L68">                .medianCowsPerFarmer(medianCowsPerFarmer)</span>
+<span class="fc" id="L69">                .minimumCowsPerFarmer(minimumCowsPerFarmer)</span>
+<span class="fc" id="L70">                .maximumCowsPerFarmer(maximumCowsPerFarmer)</span>
+<span class="fc" id="L71">                .standardDeviationCowsPerFarmer(standardDeviationCowsPerFarmer)</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                .averageCowHealth(numCows.orElse(0) &gt; 0 ? averageCowHealthService.getAverageCowHealth(c.getId()) : null)</span>
+<span class="fc" id="L73">                .build();</span>
     }
 
 
     public Iterable&lt;GamePlus&gt; convertToGamePlus(Iterable&lt;Game&gt; iteOfGame) {
-<span class="fc" id="L74">        List&lt;Game&gt; gameList = new ArrayList&lt;Game&gt;();</span>
-<span class="fc" id="L75">        iteOfGame.forEach(gameList::add);</span>
+<span class="fc" id="L78">        List&lt;Game&gt; gameList = new ArrayList&lt;Game&gt;();</span>
+<span class="fc" id="L79">        iteOfGame.forEach(gameList::add);</span>
 
-<span class="fc" id="L77">        List&lt;GamePlus&gt; gamePlusList = gameList.stream().map((c) -&gt; toGamePlus(c)).collect(Collectors.toList());</span>
+<span class="fc" id="L81">        List&lt;GamePlus&gt; gamePlusList = gameList.stream().map((c) -&gt; toGamePlus(c)).collect(Collectors.toList());</span>
 
-<span class="fc" id="L79">        ArrayList&lt;GamePlus&gt; gamePlusArrayList = new ArrayList&lt;GamePlus&gt;(gamePlusList);</span>
+<span class="fc" id="L83">        ArrayList&lt;GamePlus&gt; gamePlusArrayList = new ArrayList&lt;GamePlus&gt;(gamePlusList);</span>
 
-<span class="fc" id="L81">        return gamePlusArrayList;</span>
+<span class="fc" id="L85">        return gamePlusArrayList;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

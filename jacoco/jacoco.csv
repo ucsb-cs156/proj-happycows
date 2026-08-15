@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-happycows,edu.ucsb.cs156.happiercows.services,GamePlusBuilderService,0,200,0,4,0,41,0,8,0,6
+happycows,edu.ucsb.cs156.happiercows.services,GamePlusBuilderService,0,217,0,6,0,42,0,9,0,6
 happycows,edu.ucsb.cs156.happiercows.services,FarmerActivityService,0,41,0,2,0,15,0,4,0,3
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
@@ -62,7 +62,7 @@ happycows,edu.ucsb.cs156.happiercows.entities,Game,0,43,0,6,0,6,0,6,0,3
 happycows,edu.ucsb.cs156.happiercows.controllers,CourseController,0,115,0,0,0,24,0,11,0,11
 happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,0,282,0,22,0,59,0,22,0,11
 happycows,edu.ucsb.cs156.happiercows.controllers,FarmerController,0,395,0,14,0,78,0,22,0,15
-happycows,edu.ucsb.cs156.happiercows.controllers,GameController,0,840,0,48,0,194,0,50,0,26
+happycows,edu.ucsb.cs156.happiercows.controllers,GameController,0,844,0,48,0,195,0,50,0,26
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,123,0,8,0,26,0,14,0,10
 happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,166,0,0,0,25,0,10,0,10
 happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,24,0,0,0,7,0,3,0,3

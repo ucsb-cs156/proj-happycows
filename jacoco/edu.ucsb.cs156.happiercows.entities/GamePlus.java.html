@@ -23,11 +23,12 @@ public class GamePlus {
     private Integer minimumCowsPerFarmer;
     private Integer maximumCowsPerFarmer;
     private Double standardDeviationCowsPerFarmer;
+    private Double averageCowHealth;
 
 
     @JsonGetter(&quot;effectiveCapacity&quot;)
     public int getEffectiveCapacity() {
-<span class="fc" id="L30">        return Math.max(game.getCapacityPerUser() * totalUsers, game.getCarryingCapacity());</span>
+<span class="fc" id="L31">        return Math.max(game.getCapacityPerUser() * totalUsers, game.getCarryingCapacity());</span>
     }
 
 
