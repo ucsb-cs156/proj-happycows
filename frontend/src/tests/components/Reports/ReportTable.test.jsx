@@ -1,6 +1,8 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
+import axios from "axios";
+import AxiosMockAdapter from "axios-mock-adapter";
 import ReportTable from "main/components/Reports/ReportTable";
 import reportFixtures from "fixtures/reportFixtures";
 import { vi } from "vitest";
@@ -18,6 +20,12 @@ describe("ReportTable tests", () => {
   const testId = "ReportTable";
 
   const queryClient = new QueryClient();
+  const axiosMock = new AxiosMockAdapter(axios);
+
+  beforeEach(() => {
+    axiosMock.reset();
+    axiosMock.resetHistory();
+  });
 
   test("Has the expected column headers and content", () => {
     // act
@@ -145,5 +153,188 @@ describe("ReportTable tests", () => {
     expect(screen.getAllByText("1")[2]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("1")[3]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("3")[0]).toHaveStyle("text-align: right;");
+  });
+
+  test("Renders Delete Report and Purge Older Reports buttons", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Delete Report-button`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Purge Older Reports-button`),
+    ).toBeInTheDocument();
+  });
+
+  test("Delete Report button opens modal and confirming deletes the report", async () => {
+    axiosMock.onDelete("/api/reports").reply(200, {
+      message: "Report with id 1 deleted",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete Report-button`,
+    );
+    fireEvent.click(deleteButton);
+
+    const confirmButton = await screen.findByTestId(
+      `${testId}-DeleteModal-Delete`,
+    );
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+    expect(axiosMock.history.delete[0].url).toBe("/api/reports");
+    expect(axiosMock.history.delete[0].params).toEqual({ reportId: 1 });
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
+  test("Cancelling the Delete Report modal does not delete the report", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete Report-button`,
+    );
+    fireEvent.click(deleteButton);
+
+    const cancelButton = await screen.findByTestId(
+      `${testId}-DeleteModal-Cancel`,
+    );
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(axiosMock.history.delete.length).toBe(0);
+  });
+
+  test("Purge Older Reports button opens modal and confirming purges older reports", async () => {
+    axiosMock.onDelete("/api/reports/purge").reply(200, {
+      message: "Purged 2 report(s) older than report with id 1",
+    });
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Purge Older Reports-button`,
+    );
+    fireEvent.click(purgeButton);
+
+    const confirmButton = await screen.findByTestId(
+      `${testId}-PurgeModal-Purge`,
+    );
+    fireEvent.click(confirmButton);
+
+    await waitFor(() => expect(axiosMock.history.delete.length).toBe(1));
+    expect(axiosMock.history.delete[0].url).toBe("/api/reports/purge");
+    expect(axiosMock.history.delete[0].params).toEqual({ reportId: 1 });
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+  });
+
+  test("Cancelling the Purge Older Reports modal does not purge reports", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Purge Older Reports-button`,
+    );
+    fireEvent.click(purgeButton);
+
+    const cancelButton = await screen.findByTestId(
+      `${testId}-PurgeModal-Cancel`,
+    );
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(axiosMock.history.delete.length).toBe(0);
+  });
+
+  test("Closing the Delete Report modal via the X button cancels the deletion", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const deleteButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Delete Report-button`,
+    );
+    fireEvent.click(deleteButton);
+
+    await screen.findByTestId(`${testId}-DeleteModal`);
+    const closeButtons = screen.getAllByLabelText("Close");
+    fireEvent.click(closeButtons[0]);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(axiosMock.history.delete.length).toBe(0);
+  });
+
+  test("Closing the Purge Older Reports modal via the X button cancels the purge", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const purgeButton = screen.getByTestId(
+      `${testId}-cell-row-0-col-Purge Older Reports-button`,
+    );
+    fireEvent.click(purgeButton);
+
+    await screen.findByTestId(`${testId}-PurgeModal`);
+    const closeButtons = screen.getAllByLabelText("Close");
+    fireEvent.click(closeButtons[0]);
+
+    await waitFor(() => {
+      expect(document.body).not.toHaveClass("modal-open");
+    });
+
+    expect(axiosMock.history.delete.length).toBe(0);
   });
 });
