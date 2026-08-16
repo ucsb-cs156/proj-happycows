@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameStatsService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">GameStatsService.java</span></div><h1>GameStatsService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
+import edu.ucsb.cs156.happiercows.repositories.GameRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
+
+@Service(&quot;GameStatsService&quot;)
+<span class="fc" id="L13">public class GameStatsService {</span>
+
+    @Autowired
+    GameStatsRepository gameStatsRepository;
+
+    @Autowired
+    GameRepository gameRepository;
+
+    @Autowired
+    FarmerRepository farmerRepository;
+
+    @Autowired
+    private AverageCowHealthService averageCowHealthService;
+
+    public GameStats createGameStats(Long gameId) {
+
+<span class="fc" id="L29">        Game game = gameRepository.findById(gameId)</span>
+<span class="fc" id="L30">            .orElseThrow(() -&gt; new IllegalArgumentException(String.format(&quot;Game with id %d not found&quot;, gameId)));</span>
+
+<span class="fc" id="L32">        double avgHealth = averageCowHealthService.getAverageCowHealth(gameId);</span>
+<span class="fc" id="L33">        int totalNumCows = averageCowHealthService.getTotalNumCows(gameId);</span>
+<span class="fc" id="L34">        int numUsers = gameRepository.getNumUsers(gameId).orElse(0);</span>
+<span class="fc" id="L35">        int effectiveCapacity = Math.max(game.getCapacityPerUser() * numUsers, game.getCarryingCapacity());</span>
+
+<span class="fc" id="L37">        GameStats stats = GameStats.builder()</span>
+<span class="fc" id="L38">                .gameId(gameId)</span>
+<span class="fc" id="L39">                .numCows(totalNumCows)</span>
+<span class="fc" id="L40">                .avgHealth(avgHealth)</span>
+<span class="fc" id="L41">                .effectiveCapacity(effectiveCapacity)</span>
+<span class="fc" id="L42">                .build();</span>
+
+<span class="fc" id="L44">        return stats;</span>
+    }
+
+    public GameStats createAndSaveGameStats(Long gameId) {
+        
+<span class="fc" id="L49">        GameStats stats = createGameStats(gameId);</span>
+<span class="fc" id="L50">        gameStatsRepository.save(stats);</span>
+
+<span class="fc" id="L52">        return stats;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
