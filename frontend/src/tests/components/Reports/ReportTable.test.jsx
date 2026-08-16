@@ -24,10 +24,31 @@ describe("ReportTable tests", () => {
   });
 
   test("sorts by Create Date descending by default", () => {
+    // Use a fixture where numeric id order and createDate order diverge,
+    // so a mutation that stops sorting by "createDate" specifically
+    // (e.g. by breaking the sort column id) is detected.
+    const reportsWithDivergentIdOrder = [
+      {
+        ...reportFixtures.threeReports[0],
+        id: 10,
+        createDate: "2023-01-01T00:00:00.000+00:00",
+      },
+      {
+        ...reportFixtures.threeReports[1],
+        id: 1,
+        createDate: "2023-06-01T00:00:00.000+00:00",
+      },
+      {
+        ...reportFixtures.threeReports[2],
+        id: 5,
+        createDate: "2023-03-01T00:00:00.000+00:00",
+      },
+    ];
+
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
-          <ReportTable reports={reportFixtures.threeReports} />
+          <ReportTable reports={reportsWithDivergentIdOrder} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -38,9 +59,9 @@ describe("ReportTable tests", () => {
     const renderedDates = createDateCells.map((cell) => cell.textContent);
 
     expect(renderedDates).toEqual([
-      "2023-08-07T01:12:54.765+00:00",
-      "2023-08-07T01:12:09.088+00:00",
-      "2023-08-07T01:11:47.197+00:00",
+      "2023-06-01T00:00:00.000+00:00",
+      "2023-03-01T00:00:00.000+00:00",
+      "2023-01-01T00:00:00.000+00:00",
     ]);
   });
 
