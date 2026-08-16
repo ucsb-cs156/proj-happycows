@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import ReportLineTable from "main/components/Reports/ReportLineTable";
@@ -6,6 +6,10 @@ import reportLineFixtures from "fixtures/reportLineFixtures";
 
 describe("ReportLineTable tests", () => {
   const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   test("Has the expected column headers and content", () => {
     render(
@@ -89,16 +93,82 @@ describe("ReportLineTable tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(screen.getAllByText("$9,745.00")[0]).toHaveStyle(
-      "text-align: right;",
+    const testId = "ReportLineTable";
+    const rightJustifiedColumns = [
+      "totalWealth",
+      "numOfCows",
+      "avgCowHealth",
+      "cowsBought",
+      "cowsSold",
+      "cowDeaths",
+      "createDate",
+    ];
+
+    rightJustifiedColumns.forEach((column) => {
+      const cell = screen.getByTestId(`${testId}-cell-row-0-col-${column}`);
+      expect(cell.firstChild).toHaveStyle("text-align: right;");
+    });
+  });
+
+  test("defaults to a page size of 20 when nothing is stored in localStorage", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportLineTable reportLines={reportLineFixtures.twoReportLines} />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-    expect(screen.getAllByText("3")[0]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("100")[0]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("3")[1]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("0")[0]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("0")[1]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("2023-08-07T01:12:54.767+00:00")[0]).toHaveStyle(
-      "text-align: right;",
+
+    const selector = screen.getByTestId("ReportLineTable-page-size-selector");
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("report-line-page-size")).toBe("20");
+  });
+
+  test("selecting a page size stores it in localStorage under 'report-line-page-size'", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportLineTable reportLines={reportLineFixtures.twoReportLines} />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
+
+    const selector = screen.getByTestId("ReportLineTable-page-size-selector");
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("report-line-page-size")).toBe("50");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("report-line-page-size", "100");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportLineTable reportLines={reportLineFixtures.twoReportLines} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("ReportLineTable-page-size-selector");
+    expect(selector).toHaveValue("100");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("report-line-page-size", "37");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportLineTable reportLines={reportLineFixtures.twoReportLines} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId("ReportLineTable-page-size-selector");
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("report-line-page-size")).toBe("20");
   });
 });
