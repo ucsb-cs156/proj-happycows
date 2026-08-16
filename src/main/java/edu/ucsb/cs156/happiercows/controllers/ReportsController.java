@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.helpers.ReportCSVHelper;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
@@ -26,6 +27,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -103,6 +105,42 @@ public class ReportsController extends ApiController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/csv"))
                 .body(isr);
+    }
+
+    @Operation(summary = "Delete a report, along with all of its detail rows")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteReport(
+            @Parameter(name = "reportId") @RequestParam Long reportId) {
+
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new EntityNotFoundException(Report.class, reportId));
+
+        reportLineRepository.deleteAllByReportId(reportId);
+        reportRepository.delete(report);
+
+        return genericMessage("Report with id %s deleted".formatted(reportId));
+    }
+
+    @Operation(summary = "Purge all reports (and their detail rows) that are older than a given report, for the same game")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/purge")
+    public Object purgeOlderReports(
+            @Parameter(name = "reportId") @RequestParam Long reportId) {
+
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new EntityNotFoundException(Report.class, reportId));
+
+        Iterable<Report> olderReports = reportRepository.findAllByGameIdAndIdLessThan(report.getGameId(), reportId);
+
+        int count = 0;
+        for (Report olderReport : olderReports) {
+            reportLineRepository.deleteAllByReportId(olderReport.getId());
+            reportRepository.delete(olderReport);
+            count++;
+        }
+
+        return genericMessage("Purged %d report(s) older than report with id %s".formatted(count, reportId));
     }
 
 }

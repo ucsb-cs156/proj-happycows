@@ -10,4 +10,5 @@ import org.springframework.data.domain.Sort;
 public interface ReportRepository extends CrudRepository<Report, Long> {
     Iterable<Report> findAllByGameId(Long gameId);
     Iterable<Report> findAll(Sort sort);
+    Iterable<Report> findAllByGameIdAndIdLessThan(Long gameId, Long id);
 }
