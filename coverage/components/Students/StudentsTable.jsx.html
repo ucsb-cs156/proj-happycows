@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>153/153</span>
+                <span class='fraction'>146/146</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>18/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>153/153</span>
+                <span class='fraction'>146/146</span>
             </div>
         
             
@@ -250,16 +250,8 @@
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a>
-<a name='L195'></a><a href='#L195'>195</a>
-<a name='L196'></a><a href='#L196'>196</a>
-<a name='L197'></a><a href='#L197'>197</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -279,15 +271,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
@@ -298,11 +281,10 @@
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">82x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">82x</span>
+<span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">82x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -461,6 +443,7 @@ import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import StudentsForm from "main/components/Students/StudentsForm";
 import PageSizeSelector from "main/components/Utils/PageSizeSelector";
+import usePageSize from "main/utils/usePageSize";
 import { useBackendMutation } from "main/utils/useBackend";
 import { formatTime } from "main/utils/dateUtils";
 import {
@@ -474,15 +457,6 @@ const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
 const DEFAULT_PAGE_SIZE = 100;
 const PAGE_SIZE_STORAGE_KEY = "default-page-size";
 &nbsp;
-const getInitialPageSize = () =&gt; {
-  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
-  if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
-    return storedValue;
-  }
-  localStorage.setItem(PAGE_SIZE_STORAGE_KEY, DEFAULT_PAGE_SIZE);
-  return DEFAULT_PAGE_SIZE;
-};
-&nbsp;
 export default function StudentsTable({
   students,
   currentUser,
@@ -493,12 +467,11 @@ export default function StudentsTable({
   const [cellToDelete, setCellToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
-  const [pageSize, setPageSize] = useState(getInitialPageSize);
-&nbsp;
-  const handlePageSizeChange = (newPageSize) =&gt; {
-    setPageSize(newPageSize);
-    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, newPageSize);
-  };
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
 &nbsp;
   const queryKey = [`/api/student/course/${courseId}`];
 &nbsp;
@@ -658,7 +631,7 @@ export default function StudentsTable({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-16T01:37:59.630Z
+                at 2026-08-16T04:35:41.438Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
