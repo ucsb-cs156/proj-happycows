@@ -1,8 +1,20 @@
 import OurTable from "main/components/OurTable";
+import PageSizeSelector from "main/components/Utils/PageSizeSelector";
+import usePageSize from "main/utils/usePageSize";
 import { formatter } from "./ReportFormatterUtil";
+
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
+const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE_STORAGE_KEY = "report-line-page-size";
 
 // should take in a players list from a game
 export default function ReportLineTable({ reportLines }) {
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
+
   const columns = [
     {
       Header: "userId",
@@ -69,5 +81,20 @@ export default function ReportLineTable({ reportLines }) {
 
   const testid = "ReportLineTable";
 
-  return <OurTable data={reportLines} columns={columns} testid={testid} />;
+  return (
+    <>
+      <PageSizeSelector
+        value={pageSize}
+        onChange={handlePageSizeChange}
+        options={PAGE_SIZE_OPTIONS}
+        testid={`${testid}-page-size-selector`}
+      />
+      <OurTable
+        data={reportLines}
+        columns={columns}
+        testid={testid}
+        pageSize={pageSize}
+      />
+    </>
+  );
 }
