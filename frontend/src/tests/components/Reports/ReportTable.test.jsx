@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { MemoryRouter } from "react-router";
 import ReportTable from "main/components/Reports/ReportTable";
@@ -18,6 +18,93 @@ describe("ReportTable tests", () => {
   const testId = "ReportTable";
 
   const queryClient = new QueryClient();
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  test("sorts by Create Date descending by default", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const createDateCells = screen.getAllByTestId(
+      /ReportTable-cell-row-\d+-col-createDate/,
+    );
+    const renderedDates = createDateCells.map((cell) => cell.textContent);
+
+    expect(renderedDates).toEqual([
+      "2023-08-07T01:12:54.765+00:00",
+      "2023-08-07T01:12:09.088+00:00",
+      "2023-08-07T01:11:47.197+00:00",
+    ]);
+  });
+
+  test("renders a Page Size selector defaulting to 20", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toBeInTheDocument();
+    expect(selector).toHaveValue("20");
+  });
+
+  test("selecting a page size stores it in localStorage under 'reports-page-size'", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("reports-page-size")).toBe("50");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("reports-page-size", "100");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("100");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("reports-page-size", "37");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("reports-page-size")).toBe("20");
+  });
 
   test("Has the expected column headers and content", () => {
     // act
@@ -143,7 +230,7 @@ describe("ReportTable tests", () => {
     );
 
     expect(screen.getAllByText("1")[2]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("1")[3]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("3")[0]).toHaveStyle("text-align: right;");
+    expect(screen.getAllByText("1")[4]).toHaveStyle("text-align: right;");
+    expect(screen.getAllByText("3")[1]).toHaveStyle("text-align: right;");
   });
 });

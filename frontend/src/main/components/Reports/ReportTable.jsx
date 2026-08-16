@@ -83,5 +83,24 @@ export default function ReportTable({
       ButtonColumn("View Report", "secondary", reportCallback, testid),
     );
   }
-  return <OurTable data={reports} columns={columns} testid={testid} />;
+
+  const sortBy = [{ id: "createDate", desc: true }];
+
+  return (
+    <>
+      <PageSizeSelector
+        value={pageSize}
+        onChange={handlePageSizeChange}
+        options={PAGE_SIZE_OPTIONS}
+        testid={`${testid}-page-size-selector`}
+      />
+      <OurTable
+        data={reports}
+        columns={columns}
+        testid={testid}
+        pageSize={pageSize}
+        initialState={{ sortBy }}
+      />
+    </>
+  );
 }
