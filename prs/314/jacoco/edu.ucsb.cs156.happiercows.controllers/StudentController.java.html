@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">StudentController.java</span></div><h1>StudentController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.helpers.StudentCsvFormat;
+import edu.ucsb.cs156.happiercows.models.CsvUploadResult;
+import edu.ucsb.cs156.happiercows.models.StudentDTO;
+import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
+import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+<span class="fc" id="L36">@Slf4j</span>
+@Tag(name = &quot;Student&quot;)
+@RequestMapping(&quot;/api/student&quot;)
+@RestController
+<span class="fc" id="L40">public class StudentController extends ApiController {</span>
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Operation(summary = &quot;List all roster students&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;Student&gt; allStudents() {
+<span class="fc" id="L51">        return studentRepository.findAll();</span>
+    }
+
+    @Operation(summary = &quot;List the roster students for a single course, including each student's last login (null if the student has never logged in)&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/course/{courseId}&quot;)
+    public Iterable&lt;StudentWithLastLogin&gt; studentsForCourse(
+            @Parameter(name = &quot;courseId&quot;) @PathVariable Long courseId) {
+<span class="fc" id="L59">        List&lt;StudentWithLastLogin&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Student student : studentRepository.findByCourseId(courseId)) {</span>
+<span class="fc" id="L61">            Optional&lt;User&gt; user = userRepository.findByEmail(student.getEmail());</span>
+<span class="fc" id="L62">            LocalDateTime lastLoginDateTime = user</span>
+<span class="fc" id="L63">                    .map(u -&gt; LocalDateTime.ofInstant(u.getLastOnline(), ZoneId.systemDefault()))</span>
+<span class="fc" id="L64">                    .orElse(null);</span>
+
+<span class="fc" id="L66">            result.add(StudentWithLastLogin.builder()</span>
+<span class="fc" id="L67">                    .id(student.getId())</span>
+<span class="fc" id="L68">                    .lastName(student.getLastName())</span>
+<span class="fc" id="L69">                    .firstMiddleName(student.getFirstMiddleName())</span>
+<span class="fc" id="L70">                    .email(student.getEmail())</span>
+<span class="fc" id="L71">                    .perm(student.getPerm())</span>
+<span class="fc" id="L72">                    .courseId(student.getCourseId())</span>
+<span class="fc" id="L73">                    .lastLoginDateTime(lastLoginDateTime)</span>
+<span class="fc" id="L74">                    .build());</span>
+<span class="fc" id="L75">        }</span>
+<span class="fc" id="L76">        return result;</span>
+    }
+
+    @Operation(summary = &quot;Get a roster student by id&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/{id}&quot;)
+    public Student getStudentById(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
+<span class="fc" id="L84">        return studentRepository.findById(id)</span>
+<span class="fc" id="L85">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+    }
+
+    @Operation(summary = &quot;Add a roster student to a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;&quot;)
+    public Student postStudent(
+            @Parameter(name = &quot;student&quot;) @RequestBody StudentDTO studentDTO) {
+<span class="fc" id="L93">        return studentRepository.save(studentDTO.toStudent());</span>
+    }
+
+    @Operation(summary = &quot;Update a single roster student&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;/{id}&quot;)
+    public Student updateStudent(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id, @RequestBody StudentDTO studentDTO) {
+<span class="fc" id="L101">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L102">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+
+<span class="fc" id="L104">        student.setLastName(studentDTO.getLastName());</span>
+<span class="fc" id="L105">        student.setFirstMiddleName(studentDTO.getFirstMiddleName());</span>
+<span class="fc" id="L106">        student.setEmail(CanonicalFormConverter.convertToValidEmail(studentDTO.getEmail()));</span>
+<span class="fc" id="L107">        student.setPerm(studentDTO.getPerm());</span>
+<span class="fc" id="L108">        student.setCourseId(studentDTO.getCourseId());</span>
+
+<span class="fc" id="L110">        studentRepository.save(student);</span>
+
+<span class="fc" id="L112">        return student;</span>
+    }
+
+    @Operation(summary = &quot;Remove a roster student from a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;/{id}&quot;)
+    public Object deleteStudent(
+            @Parameter(name = &quot;id&quot;) @PathVariable Long id) {
+<span class="fc" id="L120">        Student student = studentRepository.findById(id)</span>
+<span class="fc" id="L121">                .orElseThrow(() -&gt; new EntityNotFoundException(Student.class, id));</span>
+
+<span class="fc" id="L123">        studentRepository.delete(student);</span>
+<span class="fc" id="L124">        return genericMessage(&quot;Student with id %s deleted&quot;.formatted(id));</span>
+    }
+
+    /**
+     * Bulk-adds roster students to a course from an uploaded CSV file. The
+     * CSV's header row is used to auto-detect which school's roster export
+     * format it is (see {@link StudentCsvFormat}); rows whose email is
+     * already on the course roster are skipped rather than duplicated.
+     *
+     * @param courseId the course to add the students to
+     * @param file the uploaded CSV file
+     * @return a summary of how many students were created, and which emails
+     *         were skipped as already-on-roster
+     */
+    @Operation(summary = &quot;Upload a CSV file of roster students for a course&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(value = &quot;/upload/csv&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CsvUploadResult uploadStudentsCsv(
+            @Parameter(name = &quot;courseId&quot;) @RequestParam Long courseId,
+            @Parameter(name = &quot;file&quot;) @RequestParam(&quot;file&quot;) MultipartFile file) throws IOException {
+
+        List&lt;CSVRecord&gt; records;
+<span class="fc" id="L146">        try (CSVParser parser = CSVFormat.DEFAULT.parse(</span>
+<span class="fc" id="L147">                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {</span>
+<span class="fc" id="L148">            records = parser.getRecords();</span>
+        }
+
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (records.isEmpty()) {</span>
+<span class="fc" id="L152">            throw new IllegalArgumentException(&quot;CSV file is empty&quot;);</span>
+        }
+
+<span class="fc" id="L155">        Iterator&lt;CSVRecord&gt; rows = records.iterator();</span>
+
+<span class="fc" id="L157">        List&lt;String&gt; headerValues = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">        for (String value : rows.next()) {</span>
+<span class="fc" id="L159">            headerValues.add(value);</span>
+<span class="fc" id="L160">        }</span>
+
+<span class="fc" id="L162">        StudentCsvFormat format = StudentCsvFormat.detect(headerValues);</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">        if (format == null) {</span>
+<span class="fc" id="L164">            throw new IllegalArgumentException(&quot;Unrecognized CSV header format&quot;);</span>
+        }
+
+<span class="fc" id="L167">        int created = 0;</span>
+<span class="fc" id="L168">        List&lt;String&gt; skippedEmails = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L170" title="All 2 branches covered.">        while (rows.hasNext()) {</span>
+<span class="fc" id="L171">            CSVRecord row = rows.next();</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">            if (row.size() != format.getHeaders().size()) {</span>
+<span class="fc" id="L173">                throw new IllegalArgumentException(</span>
+<span class="fc" id="L174">                        &quot;Row %d does not have the expected number of columns&quot;.formatted(row.getRecordNumber()));</span>
+            }
+
+<span class="fc" id="L177">            Student student = format.toStudent(row, courseId);</span>
+
+<span class="fc bfc" id="L179" title="All 2 branches covered.">            if (studentRepository.findByCourseIdAndEmail(courseId, student.getEmail()).iterator().hasNext()) {</span>
+<span class="fc" id="L180">                skippedEmails.add(student.getEmail());</span>
+<span class="fc" id="L181">                continue;</span>
+            }
+
+<span class="fc" id="L184">            studentRepository.save(student);</span>
+<span class="fc" id="L185">            created++;</span>
+<span class="fc" id="L186">        }</span>
+
+<span class="fc" id="L188">        return CsvUploadResult.builder()</span>
+<span class="fc" id="L189">                .created(created)</span>
+<span class="fc" id="L190">                .skippedEmails(skippedEmails)</span>
+<span class="fc" id="L191">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
