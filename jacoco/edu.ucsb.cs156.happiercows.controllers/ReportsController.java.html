@@ -2,6 +2,7 @@
 
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.helpers.ReportCSVHelper;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
@@ -26,6 +27,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = &quot;Reports&quot;)
 @RequestMapping(&quot;/api/reports&quot;)
 @RestController
-<span class="fc" id="L37">public class ReportsController extends ApiController {</span>
+<span class="fc" id="L40">public class ReportsController extends ApiController {</span>
 
     @Autowired
     GameRepository gameRepository;
@@ -52,11 +55,11 @@ import org.springframework.web.bind.annotation.RestController;
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;&quot;)
     public Iterable&lt;Report&gt; allReports() {
-<span class="fc" id="L55">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
-<span class="fc" id="L56">                Sort.by(List.of(</span>
+<span class="fc" id="L58">        Iterable&lt;Report&gt; reports = reportRepository.findAll(</span>
+<span class="fc" id="L59">                Sort.by(List.of(</span>
                         new Order(Sort.Direction.ASC, &quot;gameId&quot;),
                         new Order(Sort.Direction.DESC, &quot;id&quot;))));
-<span class="fc" id="L59">        return reports;</span>
+<span class="fc" id="L62">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report headers for a given report&quot;)
@@ -64,8 +67,8 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/byReportId&quot;)
     public Optional&lt;Report&gt; findByReportId(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
-<span class="fc" id="L67">        Optional&lt;Report&gt; reports = reportRepository.findById(reportId);</span>
-<span class="fc" id="L68">        return reports;</span>
+<span class="fc" id="L70">        Optional&lt;Report&gt; reports = reportRepository.findById(reportId);</span>
+<span class="fc" id="L71">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report headers for a given user game&quot;)
@@ -73,8 +76,8 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/headers&quot;)
     public Iterable&lt;Report&gt; allReportsByGameId(
             @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
-<span class="fc" id="L76">        Iterable&lt;Report&gt; reports = reportRepository.findAllByGameId(gameId);</span>
-<span class="fc" id="L77">        return reports;</span>
+<span class="fc" id="L79">        Iterable&lt;Report&gt; reports = reportRepository.findAllByGameId(gameId);</span>
+<span class="fc" id="L80">        return reports;</span>
     }
 
     @Operation(summary = &quot;Get report lines for a report id&quot;)
@@ -82,8 +85,8 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(&quot;/lines&quot;)
     public Iterable&lt;ReportLine&gt; allLinesByReportId(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
-<span class="fc" id="L85">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
-<span class="fc" id="L86">        return reportLines;</span>
+<span class="fc" id="L88">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
+<span class="fc" id="L89">        return reportLines;</span>
     }
 
     @Operation(summary = &quot;Get report lines for a report id and user game id&quot;)
@@ -92,17 +95,62 @@ import org.springframework.web.bind.annotation.RestController;
     public ResponseEntity&lt;Resource&gt; getLinesCSV(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) throws IOException {
 
-<span class="fc" id="L95">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
+<span class="fc" id="L98">        Iterable&lt;ReportLine&gt; reportLines = reportLineRepository.findAllByReportId(reportId);</span>
 
-<span class="fc" id="L97">        String filename = String.format(&quot;report%05d.csv&quot;,reportId);</span>
+<span class="fc" id="L100">        String filename = String.format(&quot;report%05d.csv&quot;,reportId);</span>
 
-<span class="fc" id="L99">        ByteArrayInputStream bais = ReportCSVHelper.toCSV(reportLines);</span>
-<span class="fc" id="L100">        InputStreamResource isr = new InputStreamResource(bais);</span>
+<span class="fc" id="L102">        ByteArrayInputStream bais = ReportCSVHelper.toCSV(reportLines);</span>
+<span class="fc" id="L103">        InputStreamResource isr = new InputStreamResource(bais);</span>
 
-<span class="fc" id="L102">        return ResponseEntity.ok()</span>
-<span class="fc" id="L103">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=&quot; + filename)</span>
-<span class="fc" id="L104">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;))</span>
-<span class="fc" id="L105">                .body(isr);</span>
+<span class="fc" id="L105">        return ResponseEntity.ok()</span>
+<span class="fc" id="L106">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=&quot; + filename)</span>
+<span class="fc" id="L107">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;))</span>
+<span class="fc" id="L108">                .body(isr);</span>
+    }
+
+    // Spring Data's derived deleteAllByReportId query (unlike save()/delete())
+    // requires an active transaction to run; without @Transactional here this
+    // throws TransactionRequiredException, since open-in-view is disabled and
+    // each repository call would otherwise get its own short-lived context.
+    @Operation(summary = &quot;Delete a report, along with all of its detail rows&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    @Transactional
+    public Object deleteReport(
+            @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
+
+<span class="fc" id="L122">        Report report = reportRepository.findById(reportId)</span>
+<span class="fc" id="L123">                .orElseThrow(() -&gt; new EntityNotFoundException(Report.class, reportId));</span>
+
+<span class="fc" id="L125">        reportLineRepository.deleteAllByReportId(reportId);</span>
+<span class="fc" id="L126">        reportRepository.delete(report);</span>
+
+<span class="fc" id="L128">        return genericMessage(&quot;Report with id %s deleted&quot;.formatted(reportId));</span>
+    }
+
+    // &quot;Older&quot; means an earlier createDate than the given report - not a lower
+    // id, and not scoped to the given report's game. See the comment on
+    // deleteReport above re: why @Transactional is required.
+    @Operation(summary = &quot;Purge all reports (and their detail rows) with an earlier creation date than a given report&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;/purge&quot;)
+    @Transactional
+    public Object purgeOlderReports(
+            @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
+
+<span class="fc" id="L141">        Report report = reportRepository.findById(reportId)</span>
+<span class="fc" id="L142">                .orElseThrow(() -&gt; new EntityNotFoundException(Report.class, reportId));</span>
+
+<span class="fc" id="L144">        Iterable&lt;Report&gt; olderReports = reportRepository.findAllByCreateDateLessThan(report.getCreateDate());</span>
+
+<span class="fc" id="L146">        int count = 0;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (Report olderReport : olderReports) {</span>
+<span class="fc" id="L148">            reportLineRepository.deleteAllByReportId(olderReport.getId());</span>
+<span class="fc" id="L149">            reportRepository.delete(olderReport);</span>
+<span class="fc" id="L150">            count++;</span>
+<span class="fc" id="L151">        }</span>
+
+<span class="fc" id="L153">        return genericMessage(&quot;Purged %d report(s) older than report with id %s&quot;.formatted(count, reportId));</span>
     }
 
 }
