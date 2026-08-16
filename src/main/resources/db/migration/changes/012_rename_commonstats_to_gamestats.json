@@ -1,0 +1,63 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "012-rename-commonstats-table-to-gamestats",
+        "author": "pc",
+        "comment": "Rename the commonstats table to gamestats (see issue #307): a row in this table represents a periodic snapshot of a game's stats.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "tableExists": {
+              "tableName": "commonstats"
+            }
+          }
+        ],
+        "changes": [
+          {
+            "renameTable": {
+              "oldTableName": "commonstats",
+              "newTableName": "gamestats"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "changeSet": {
+        "id": "012-add-effective-capacity-to-gamestats",
+        "author": "pc",
+        "comment": "Add effectiveCapacity to gamestats (see issue #307), so the resource utilization at the time of each snapshot can be compared against numCows.",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "gamestats",
+                  "columnName": "effective_capacity"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "gamestats",
+              "columns": [
+                {
+                  "column": {
+                    "name": "effective_capacity",
+                    "type": "INT",
+                    "defaultValue": "0"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

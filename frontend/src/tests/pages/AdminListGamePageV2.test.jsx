@@ -79,7 +79,7 @@ describe("AdminListGamePageV2 tests", () => {
     const downloadAll = screen.getByRole("button", {
       name: "Download All Stats",
     });
-    expect(downloadAll).toHaveAttribute("href", "/api/commonstats/downloadAll");
+    expect(downloadAll).toHaveAttribute("href", "/api/gamestats/downloadAll");
     expect(downloadAll).toHaveStyle("border-radius: 30px");
     expect(downloadAll).toHaveStyle("padding: 10px 20px");
   });

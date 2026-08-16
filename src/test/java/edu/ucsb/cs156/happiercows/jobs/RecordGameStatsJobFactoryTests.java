@@ -11,30 +11,30 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
-import edu.ucsb.cs156.happiercows.services.CommonStatsService;
+import edu.ucsb.cs156.happiercows.services.GameStatsService;
 
-@RestClientTest(RecordCommonStatsJobFactory.class)
+@RestClientTest(RecordGameStatsJobFactory.class)
 
-public class RecordCommonStatsJobFactoryTests extends JobTestCase {
+public class RecordGameStatsJobFactoryTests extends JobTestCase {
 
     @MockBean
-    CommonStatsService commonStatsService;
+    GameStatsService gameStatsService;
 
     @MockBean
     GameRepository gameRepository;
 
     @Autowired
-    RecordCommonStatsJobFactory RecordCommonStatsJobFactory;
+    RecordGameStatsJobFactory RecordGameStatsJobFactory;
 
     @Test
     void test_create() throws Exception {
 
         // Act
-        RecordCommonStatsJob recordCommonStatsJob = (RecordCommonStatsJob) RecordCommonStatsJobFactory.create();
+        RecordGameStatsJob recordGameStatsJob = (RecordGameStatsJob) RecordGameStatsJobFactory.create();
 
         // Assert
-        assertEquals(gameRepository,recordCommonStatsJob.getGameRepository());
-        assertEquals(commonStatsService,recordCommonStatsJob.getCommonStatsService());
+        assertEquals(gameRepository,recordGameStatsJob.getGameRepository());
+        assertEquals(gameStatsService,recordGameStatsJob.getGameStatsService());
 
     }
 }

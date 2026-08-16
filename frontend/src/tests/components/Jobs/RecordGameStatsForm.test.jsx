@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter as Router } from "react-router";
-import RecordCommonStatsForm from "main/components/Jobs/RecordCommonStatsForm";
+import RecordGameStatsForm from "main/components/Jobs/RecordGameStatsForm";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { vi } from "vitest";
 
@@ -13,13 +13,13 @@ vi.mock("react-router", async () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-describe("RecordCommonStatsForm tests", () => {
+describe("RecordGameStatsForm tests", () => {
   //Test 1: Component renders without crashing
   it("renders the fallback text correctlyl", async () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
@@ -27,7 +27,7 @@ describe("RecordCommonStatsForm tests", () => {
       screen.getByText(/Record statistics for all games/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByTestId("RecordCommonStatsForm-Submit-Button"),
+      screen.getByTestId("RecordGameStatsForm-Submit-Button"),
     ).toBeInTheDocument();
   });
   //Test 2: Submit button is present and clickable
@@ -36,12 +36,12 @@ describe("RecordCommonStatsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm submitAction={submitAction} />
+          <RecordGameStatsForm submitAction={submitAction} />
         </Router>
       </QueryClientProvider>,
     );
     const submitButton = screen.getByTestId(
-      "RecordCommonStatsForm-Submit-Button",
+      "RecordGameStatsForm-Submit-Button",
     );
     fireEvent.click(submitButton);
     await waitFor(() => {
@@ -54,12 +54,12 @@ describe("RecordCommonStatsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
     const submitButton = screen.getByTestId(
-      "RecordCommonStatsForm-Submit-Button",
+      "RecordGameStatsForm-Submit-Button",
     );
     expect(submitButton).toBeInTheDocument();
     fireEvent.click(submitButton);
@@ -73,7 +73,7 @@ describe("RecordCommonStatsForm tests", () => {
     const { container } = render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm testid={customTestId} />
+          <RecordGameStatsForm testid={customTestId} />
         </Router>
       </QueryClientProvider>,
     );
@@ -87,12 +87,12 @@ describe("RecordCommonStatsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
     const submitButton = screen.getByTestId(
-      "RecordCommonStatsForm-Submit-Button",
+      "RecordGameStatsForm-Submit-Button",
     );
     expect(submitButton).toHaveTextContent("Record Stats");
   });
@@ -102,7 +102,7 @@ describe("RecordCommonStatsForm tests", () => {
     render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
@@ -110,7 +110,7 @@ describe("RecordCommonStatsForm tests", () => {
       screen.getByText(/Record statistics for all games/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/This will create a CommonStats/i),
+      screen.getByText(/This will create a GameStats/i),
     ).toBeInTheDocument();
   });
 
@@ -119,7 +119,7 @@ describe("RecordCommonStatsForm tests", () => {
     const { container } = render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
@@ -133,27 +133,25 @@ describe("RecordCommonStatsForm tests", () => {
     const { container } = render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
     const submitButton = container.querySelector(
-      'button[data-testid="RecordCommonStatsForm-Submit-Button"]',
+      'button[data-testid="RecordGameStatsForm-Submit-Button"]',
     );
     expect(submitButton).toHaveAttribute("type", "submit");
   });
-  //Test 9: Default testid is "RecordCommonStatsForm"
-  it("default testid is RecordCommonStatsForm", async () => {
+  //Test 9: Default testid is "RecordGameStatsForm"
+  it("default testid is RecordGameStatsForm", async () => {
     const { container } = render(
       <QueryClientProvider client={new QueryClient()}>
         <Router>
-          <RecordCommonStatsForm />
+          <RecordGameStatsForm />
         </Router>
       </QueryClientProvider>,
     );
-    const form = container.querySelector(
-      '[data-testid="RecordCommonStatsForm"]',
-    );
+    const form = container.querySelector('[data-testid="RecordGameStatsForm"]');
     expect(form).toBeInTheDocument();
     expect(form.tagName).toBe("FORM");
   });

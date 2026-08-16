@@ -39,13 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.GamePlus;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.models.CreateGameParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
@@ -69,7 +69,7 @@ public class GameControllerTests extends ControllerTestCase {
     GamePlusBuilderService gamePlusBuilderService;
 
     @MockBean
-    CommonStatsRepository commonStatsRepository;
+    GameStatsRepository gameStatsRepository;
 
     @MockBean
     CourseAccessService courseAccessService;
@@ -1916,26 +1916,26 @@ public class GameControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void getGameTimeSeries_user_ok_multiple_stats() throws Exception {
-        CommonStats earlier = CommonStats.builder()
+        GameStats earlier = GameStats.builder()
                 .gameId(9L)
                 .numCows(10)
                 .avgHealth(80.5)
                 .createDate(Instant.parse("2024-01-01T00:00:00Z"))
                 .build();
 
-        CommonStats later = CommonStats.builder()
+        GameStats later = GameStats.builder()
                 .gameId(9L)
                 .numCows(12)
                 .avgHealth(75.0)
                 .createDate(Instant.parse("2024-01-02T00:00:00Z"))
                 .build();
 
-        when(commonStatsRepository.findAllByGameId(eq(9L))).thenReturn(List.of(later, earlier));
+        when(gameStatsRepository.findAllByGameId(eq(9L))).thenReturn(List.of(later, earlier));
 
         MvcResult response = mockMvc.perform(get("/api/game/timeseries?commonId=9"))
                 .andExpect(status().isOk()).andReturn();
 
-        verify(commonStatsRepository, times(1)).findAllByGameId(eq(9L));
+        verify(gameStatsRepository, times(1)).findAllByGameId(eq(9L));
 
         String responseString = response.getResponse().getContentAsString();
         List<Map<String, Object>> actual = objectMapper.readValue(responseString, new TypeReference<List<Map<String, Object>>>() {});
@@ -1961,7 +1961,7 @@ public class GameControllerTests extends ControllerTestCase {
     @WithMockUser(roles = {"USER"})
     @Test
     public void getGameTimeSeries_user_ok() throws Exception {
-        when(commonStatsRepository.findAllByGameId(eq(9L))).thenReturn(new ArrayList<>());
+        when(gameStatsRepository.findAllByGameId(eq(9L))).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/api/game/timeseries?commonId=9"))
                 .andExpect(status().isOk()).andReturn();
