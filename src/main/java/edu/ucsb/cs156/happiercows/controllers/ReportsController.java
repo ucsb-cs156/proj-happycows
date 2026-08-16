@@ -128,8 +128,10 @@ public class ReportsController extends ApiController {
         return genericMessage("Report with id %s deleted".formatted(reportId));
     }
 
-    // See the comment on deleteReport above re: why @Transactional is required.
-    @Operation(summary = "Purge all reports (and their detail rows) that are older than a given report, for the same game")
+    // "Older" means an earlier createDate than the given report - not a lower
+    // id, and not scoped to the given report's game. See the comment on
+    // deleteReport above re: why @Transactional is required.
+    @Operation(summary = "Purge all reports (and their detail rows) with an earlier creation date than a given report")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/purge")
     @Transactional
@@ -139,7 +141,7 @@ public class ReportsController extends ApiController {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException(Report.class, reportId));
 
-        Iterable<Report> olderReports = reportRepository.findAllByGameIdAndIdLessThan(report.getGameId(), reportId);
+        Iterable<Report> olderReports = reportRepository.findAllByCreateDateLessThan(report.getCreateDate());
 
         int count = 0;
         for (Report olderReport : olderReports) {

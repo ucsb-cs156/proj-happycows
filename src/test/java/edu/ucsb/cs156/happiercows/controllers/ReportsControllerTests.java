@@ -26,6 +26,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -110,6 +111,7 @@ public class ReportsControllerTests extends ControllerTestCase {
                         .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
                         .numCows(123)
                         .numUsers(1)
+                        .createDate(new Date(1000000000000L))
                         .build();
 
         ReportLine expectedReportLine = ReportLine.builder()
@@ -247,11 +249,15 @@ public class ReportsControllerTests extends ControllerTestCase {
         @WithMockUser(roles = { "ADMIN" })
         @Test
         public void admin_can_purge_older_reports() throws Exception {
-                Report olderReport1 = Report.builder().id(430L).gameId(17L).build();
-                Report olderReport2 = Report.builder().id(431L).gameId(17L).build();
+                // "Older" means an earlier createDate, with no regard to gameId - these
+                // two reports belong to a completely different game than
+                // expectedReportHeader, and are still purged because their createDate
+                // is earlier.
+                Report olderReport1 = Report.builder().id(430L).gameId(99L).build();
+                Report olderReport2 = Report.builder().id(431L).gameId(99L).build();
 
                 when(reportRepository.findById(eq(432L))).thenReturn(Optional.of(expectedReportHeader));
-                when(reportRepository.findAllByGameIdAndIdLessThan(eq(17L), eq(432L)))
+                when(reportRepository.findAllByCreateDateLessThan(eq(expectedReportHeader.getCreateDate())))
                                 .thenReturn(List.of(olderReport1, olderReport2));
 
                 MvcResult response = mockMvc
@@ -259,7 +265,8 @@ public class ReportsControllerTests extends ControllerTestCase {
                                 .andExpect(status().isOk()).andReturn();
 
                 verify(reportRepository, times(1)).findById(eq(432L));
-                verify(reportRepository, times(1)).findAllByGameIdAndIdLessThan(eq(17L), eq(432L));
+                verify(reportRepository, times(1))
+                                .findAllByCreateDateLessThan(eq(expectedReportHeader.getCreateDate()));
                 verify(reportLineRepository, times(1)).deleteAllByReportId(eq(430L));
                 verify(reportLineRepository, times(1)).deleteAllByReportId(eq(431L));
                 verify(reportRepository, times(1)).delete(eq(olderReport1));
