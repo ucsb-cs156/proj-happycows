@@ -41,8 +41,22 @@ export default function ReportHeaderTable({ report }) {
       accessor: (row, _rowIndex) => String(row.showLeaderboard), // hack needed for boolean values to show up
     },
     {
-      Header: "Capacity",
+      Header: "Cap/User",
+      accessor: "capacityPerUser",
+      Cell: (props) => {
+        return <div style={{ textAlign: "right" }}>{props.value}</div>;
+      },
+    },
+    {
+      Header: "Carry Cap",
       accessor: "carryingCapacity",
+      Cell: (props) => {
+        return <div style={{ textAlign: "right" }}>{props.value}</div>;
+      },
+    },
+    {
+      Header: "Eff Cap",
+      accessor: "effectiveCapacity",
       Cell: (props) => {
         return <div style={{ textAlign: "right" }}>{props.value}</div>;
       },

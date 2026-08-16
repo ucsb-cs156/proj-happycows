@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +33,7 @@ public class Report {
     private double startingBalance;
     private LocalDateTime startingDate;
     private boolean showLeaderboard;
+    private int capacityPerUser;
     private int carryingCapacity;
     private double degradationRate;
 
@@ -46,5 +49,11 @@ public class Report {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
     private Date createDate;
+
+    @Transient
+    @JsonGetter("effectiveCapacity")
+    public int getEffectiveCapacity() {
+        return Math.max(capacityPerUser * numUsers, carryingCapacity);
+    }
 
 }

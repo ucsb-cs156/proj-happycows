@@ -22,7 +22,9 @@ describe("ReportHeaderTable tests", () => {
       "startingBalance",
       "startingDate",
       "showLeaderboard",
+      "capacityPerUser",
       "carryingCapacity",
+      "effectiveCapacity",
       "degradationRate",
       "belowCapacityHealthUpdateStrategy",
       "aboveCapacityHealthUpdateStrategy",
@@ -33,7 +35,9 @@ describe("ReportHeaderTable tests", () => {
       "Start Bal",
       "Start Date",
       "Leaderboard",
-      "Capacity",
+      "Cap/User",
+      "Carry Cap",
+      "Eff Cap",
       "Degrad Rate",
       "BelowCap",
       "AboveCap",
@@ -67,7 +71,13 @@ describe("ReportHeaderTable tests", () => {
       screen.getByTestId(`${testId}-cell-row-0-col-showLeaderboard`),
     ).toHaveTextContent("true");
     expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-capacityPerUser`),
+    ).toHaveTextContent("1");
+    expect(
       screen.getByTestId(`${testId}-cell-row-0-col-carryingCapacity`),
+    ).toHaveTextContent("10");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-effectiveCapacity`),
     ).toHaveTextContent("10");
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-degradationRate`),
@@ -100,5 +110,17 @@ describe("ReportHeaderTable tests", () => {
     expect(screen.getAllByText("5")[0]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("10")[0]).toHaveStyle("text-align: right;");
     expect(screen.getAllByText("0.1")[0]).toHaveStyle("text-align: right;");
+
+    const testId = "ReportHeaderTable";
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-capacityPerUser`)
+        .querySelector("div"),
+    ).toHaveStyle("text-align: right;");
+    expect(
+      screen
+        .getByTestId(`${testId}-cell-row-0-col-effectiveCapacity`)
+        .querySelector("div"),
+    ).toHaveStyle("text-align: right;");
   });
 });

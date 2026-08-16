@@ -53,6 +53,7 @@ public class ReportService {
                 .startingBalance(game.getStartingBalance())
                 .startingDate(game.getStartingDate())
                 .showLeaderboard(game.isShowLeaderboard())
+                .capacityPerUser(game.getCapacityPerUser())
                 .carryingCapacity(game.getCarryingCapacity())
                 .degradationRate(game.getDegradationRate())
                 .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())
