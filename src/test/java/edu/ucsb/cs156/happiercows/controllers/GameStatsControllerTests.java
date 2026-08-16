@@ -3,20 +3,20 @@ package edu.ucsb.cs156.happiercows.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ucsb.cs156.happiercows.ControllerTestCase;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
-import edu.ucsb.cs156.happiercows.services.CommonStatsService;
+import edu.ucsb.cs156.happiercows.services.GameStatsService;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
 import edu.ucsb.cs156.happiercows.testconfig.TestConfig;
@@ -43,8 +43,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = CommonStatsController.class)
-public class CommonStatsControllerTests extends ControllerTestCase {
+@WebMvcTest(controllers = GameStatsController.class)
+public class GameStatsControllerTests extends ControllerTestCase {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -59,7 +59,7 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     FarmerRepository farmerRepository;   
 
     @MockBean
-    CommonStatsRepository commonStatsRepository;    
+    GameStatsRepository gameStatsRepository;    
 
     @MockBean
     AverageCowHealthService averageCowHealthService;
@@ -80,35 +80,37 @@ public class CommonStatsControllerTests extends ControllerTestCase {
         .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
         .build();
 
-    CommonStats expectedStats1 = CommonStats
+    GameStats expectedStats1 = GameStats
         .builder()
         .gameId(17L)
         .numCows(20)
         .avgHealth(10)
+        .effectiveCapacity(100)
         .createDate(Instant.parse("2004-03-11T08:00:00Z"))
         .build();
 
-    CommonStats expectedStats2 = CommonStats
+    GameStats expectedStats2 = GameStats
         .builder()
         .gameId(42L)
         .numCows(120)
         .avgHealth(20)
+        .effectiveCapacity(200)
         .createDate(Instant.parse("2004-03-27T08:00:00Z"))
         .build();
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
-    public void get_all_common_stats() throws Exception {
-        Iterable<CommonStats> expectedStats = List.of(expectedStats1, expectedStats2);
-        when(commonStatsRepository.findAll()).thenReturn(expectedStats);
+    public void get_all_game_stats() throws Exception {
+        Iterable<GameStats> expectedStats = List.of(expectedStats1, expectedStats2);
+        when(gameStatsRepository.findAll()).thenReturn(expectedStats);
 
-        MvcResult response = mockMvc.perform(get("/api/commonstats")).andDo(print())
+        MvcResult response = mockMvc.perform(get("/api/gamestats")).andDo(print())
         .andExpect(status().isOk()).andReturn();
 
-        verify(commonStatsRepository, times(1)).findAll();
+        verify(gameStatsRepository, times(1)).findAll();
 
         String responseString = response.getResponse().getContentAsString();
-                List<CommonStats> actualStats = objectMapper.readValue(responseString, new TypeReference<List<CommonStats>>() {
+                List<GameStats> actualStats = objectMapper.readValue(responseString, new TypeReference<List<GameStats>>() {
                 });
                 assertEquals(expectedStats, actualStats);
 
@@ -117,16 +119,16 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void get_stats_by_gameId() throws Exception {
-        Iterable<CommonStats> expectedStats = List.of(expectedStats1);
-        when(commonStatsRepository.findAllByGameId(17L)).thenReturn(expectedStats);
+        Iterable<GameStats> expectedStats = List.of(expectedStats1);
+        when(gameStatsRepository.findAllByGameId(17L)).thenReturn(expectedStats);
 
-        MvcResult response = mockMvc.perform(get("/api/commonstats/game?gameId=17")).andDo(print())
+        MvcResult response = mockMvc.perform(get("/api/gamestats/game?gameId=17")).andDo(print())
         .andExpect(status().isOk()).andReturn();
 
-        verify(commonStatsRepository, times(1)).findAllByGameId(17L);
+        verify(gameStatsRepository, times(1)).findAllByGameId(17L);
 
         String responseString = response.getResponse().getContentAsString();
-                List<CommonStats> actualStats = objectMapper.readValue(responseString, new TypeReference<List<CommonStats>>() {
+                List<GameStats> actualStats = objectMapper.readValue(responseString, new TypeReference<List<GameStats>>() {
                 });
                 assertEquals(expectedStats, actualStats);
     }
@@ -134,41 +136,41 @@ public class CommonStatsControllerTests extends ControllerTestCase {
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void test_get_csv() throws Exception {
-            when(commonStatsRepository.findAllByGameId(17L)).thenReturn(List.of(expectedStats1));
+            when(gameStatsRepository.findAllByGameId(17L)).thenReturn(List.of(expectedStats1));
             
-            MvcResult response = mockMvc.perform(get("/api/commonstats/download?gameId=17")).andDo(print())
+            MvcResult response = mockMvc.perform(get("/api/gamestats/download?gameId=17")).andDo(print())
                             .andExpect(status().isOk()).andReturn();
 
-            verify(commonStatsRepository, times(1)).findAllByGameId(eq(17L));
+            verify(gameStatsRepository, times(1)).findAllByGameId(eq(17L));
             String responseString = response.getResponse().getContentAsString();
 
             assertEquals("application/csv", response.getResponse().getContentType());
 
-            String expected = 
-                    "id,gameId,numCows,avgHealth,createDate\r\n" +
-                    "0,17,20,10.0,2004-03-11 00:00:00\r\n";
-                                        
+            String expected =
+                    "id,gameId,numCows,avgHealth,effectiveCapacity,createDate\r\n" +
+                    "0,17,20,10.0,100,2004-03-11 00:00:00\r\n";
+
             assertEquals(expected, responseString);
     }
 
     @WithMockUser(roles = { "ADMIN" })
     @Test
     public void test_get_all_csv() throws Exception {
-            when(commonStatsRepository.findAll()).thenReturn(List.of(expectedStats1, expectedStats2));
+            when(gameStatsRepository.findAll()).thenReturn(List.of(expectedStats1, expectedStats2));
             
-            MvcResult response = mockMvc.perform(get("/api/commonstats/downloadAll")).andDo(print())
+            MvcResult response = mockMvc.perform(get("/api/gamestats/downloadAll")).andDo(print())
                             .andExpect(status().isOk()).andReturn();
 
-            verify(commonStatsRepository, times(1)).findAll();
+            verify(gameStatsRepository, times(1)).findAll();
             String responseString = response.getResponse().getContentAsString();
 
             assertEquals("application/csv", response.getResponse().getContentType());
 
-            String expected = 
-                    "id,gameId,numCows,avgHealth,createDate\r\n" +
-                    "0,17,20,10.0,2004-03-11 00:00:00\r\n" +
-                    "0,42,120,20.0,2004-03-27 00:00:00\r\n";
-                                        
+            String expected =
+                    "id,gameId,numCows,avgHealth,effectiveCapacity,createDate\r\n" +
+                    "0,17,20,10.0,100,2004-03-11 00:00:00\r\n" +
+                    "0,42,120,20.0,200,2004-03-27 00:00:00\r\n";
+
             assertEquals(expected, responseString);
     }
 

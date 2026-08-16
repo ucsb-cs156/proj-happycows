@@ -14,7 +14,7 @@ import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
-import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJobFactory;
+import edu.ucsb.cs156.happiercows.jobs.RecordGameStatsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.SetCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJobFactoryInd;
@@ -65,7 +65,7 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @MockBean UpdateCowHealthJobFactoryInd updateCowHealthJobFactoryInd;
 
-  @MockBean RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+  @MockBean RecordGameStatsJobFactory recordGameStatsJobFactory;
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
@@ -326,14 +326,14 @@ public class JobsControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"ADMIN"})
   @Test
-  public void admin_can_launch_record_common_stats_job() throws Exception {
+  public void admin_can_launch_record_game_stats_job() throws Exception {
     Job job = Job.builder().id(1L).status("started").build();
     when(jobService.runAsJob(any())).thenReturn(job);
 
     // act
     MvcResult response =
         mockMvc
-            .perform(post("/api/jobs/launch/recordcommonstats").with(csrf()))
+            .perform(post("/api/jobs/launch/recordgamestats").with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 

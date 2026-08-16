@@ -33,7 +33,7 @@ public class ScheduledJobsTests extends JobTestCase {
     MilkTheCowsJobFactory milkTheCowsJobFactory;
 
     @MockBean
-    RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+    RecordGameStatsJobFactory recordGameStatsJobFactory;
 
     @Autowired
     private ScheduledJobs scheduledJobs;
@@ -86,24 +86,24 @@ public class ScheduledJobsTests extends JobTestCase {
     }
 
     @Test
-    void test_runRecordCommonStatsJobBasedOnCron() throws Exception {
+    void test_runRecordGameStatsJobBasedOnCron() throws Exception {
 
         // Arrange
 
         Job job = Job.builder().build();
         MockJobContextConsumer mockJob = new MockJobContextConsumer();
 
-       when(recordCommonStatsJobFactory.create()).thenReturn(mockJob);
+       when(recordGameStatsJobFactory.create()).thenReturn(mockJob);
        when(jobService.runAsJob(any())).thenReturn(job);
 
         // Act
 
-        scheduledJobs.runRecordCommonStatsJobBasedOnCron();
+        scheduledJobs.runRecordGameStatsJobBasedOnCron();
 
         // Assert
 
         verify(jobService, times(1)).runAsJob(mockJob);
-        verify(recordCommonStatsJobFactory, times(1)).create();
+        verify(recordGameStatsJobFactory, times(1)).create();
 
     }
 

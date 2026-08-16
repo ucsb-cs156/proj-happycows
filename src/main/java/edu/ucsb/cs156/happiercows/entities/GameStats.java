@@ -15,8 +15,8 @@ import lombok.Builder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity(name = "commonstats")
-public class CommonStats {
+@Entity(name = "gamestats")
+public class GameStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -24,7 +24,8 @@ public class CommonStats {
     private long gameId;
     private int numCows;
     private double avgHealth;
-    
+    private int effectiveCapacity;
+
     @CreationTimestamp
     @Column(name = "create_date")
     private Instant createDate;

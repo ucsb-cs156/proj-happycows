@@ -8,11 +8,11 @@ import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
 
-public class CommonStatsCSVHelperTests {
+public class GameStatsCSVHelperTests {
 
     @Test
     void private_constructor_is_inaccessible_by_default_but_covered_via_reflection() throws Exception {
-        Constructor<CommonStatsCSVHelper> constructor = CommonStatsCSVHelper.class.getDeclaredConstructor();
+        Constructor<GameStatsCSVHelper> constructor = GameStatsCSVHelper.class.getDeclaredConstructor();
 
         assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 

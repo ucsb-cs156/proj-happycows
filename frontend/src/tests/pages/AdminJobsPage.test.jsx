@@ -388,7 +388,7 @@ describe("AdminJobsPage tests", () => {
     });
   });
 
-  test("user can submit record common stats job", async () => {
+  test("user can submit record game stats job", async () => {
     render(
       <QueryClientProvider client={queryClient}>
         <MemoryRouter>
@@ -397,14 +397,14 @@ describe("AdminJobsPage tests", () => {
       </QueryClientProvider>,
     );
 
-    expect(await screen.findByText("Record Common Stats")).toBeInTheDocument();
+    expect(await screen.findByText("Record Game Stats")).toBeInTheDocument();
 
-    const recordCommonStatsButton = screen.getByText("Record Common Stats");
-    expect(recordCommonStatsButton).toBeInTheDocument();
-    recordCommonStatsButton.click();
+    const recordGameStatsButton = screen.getByText("Record Game Stats");
+    expect(recordGameStatsButton).toBeInTheDocument();
+    recordGameStatsButton.click();
 
     const submitButton = await screen.findByTestId(
-      "RecordCommonStatsForm-Submit-Button",
+      "RecordGameStatsForm-Submit-Button",
     );
     expect(submitButton).toBeInTheDocument();
     submitButton.click();
@@ -412,11 +412,9 @@ describe("AdminJobsPage tests", () => {
     await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
 
     expect(axiosMock.history.post[0].url).toBe(
-      "/api/jobs/launch/recordcommonstats",
+      "/api/jobs/launch/recordgamestats",
     );
 
-    expect(mockToast).toHaveBeenCalledWith(
-      "Submitted Job: Record Common Stats",
-    );
+    expect(mockToast).toHaveBeenCalledWith("Submitted Job: Record Game Stats");
   });
 });

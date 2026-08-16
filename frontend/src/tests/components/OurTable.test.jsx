@@ -103,7 +103,7 @@ describe("OurTable tests", () => {
     HrefButtonColumn(
       "Stats CSV",
       "success",
-      "/api/commonstats/download?gameId=",
+      "/api/gamestats/download?gameId=",
       "testId",
     ),
   ];
@@ -125,10 +125,7 @@ describe("OurTable tests", () => {
     const button = await screen.findByTestId(
       "testId-cell-row-0-col-Stats CSV-button",
     );
-    expect(button).toHaveAttribute(
-      "href",
-      "/api/commonstats/download?gameId=7",
-    );
+    expect(button).toHaveAttribute("href", "/api/gamestats/download?gameId=7");
   });
 
   test("table is centered by default", async () => {
