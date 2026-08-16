@@ -3,7 +3,7 @@ happycows,edu.ucsb.cs156.happiercows.services,GamePlusBuilderService,0,217,0,6,0
 happycows,edu.ucsb.cs156.happiercows.services,FarmerActivityService,0,41,0,2,0,15,0,4,0,3
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
-happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,152,0,2,0,39,0,6,0,5
+happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,155,0,2,0,40,0,6,0,5
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoServiceImpl,0,64,0,4,0,18,0,6,0,4
 happycows,edu.ucsb.cs156.happiercows.services,CommonStatsService,0,56,0,0,0,14,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.services,CourseAccessService,0,124,0,26,0,29,0,17,0,4
@@ -55,6 +55,7 @@ happycows,edu.ucsb.cs156.happiercows.errors,NoCowsException,0,4,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,CourseAccessDeniedException,0,11,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.errors,EntityNotFoundException,0,63,0,0,0,11,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.errors,GameHiddenException,0,11,0,0,0,2,0,1,0,1
+happycows,edu.ucsb.cs156.happiercows.entities,Report,0,9,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,GamePlus,0,12,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,Farmer,0,15,0,0,0,5,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1

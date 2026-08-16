@@ -53,34 +53,35 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L53">                .startingBalance(game.getStartingBalance())</span>
 <span class="fc" id="L54">                .startingDate(game.getStartingDate())</span>
 <span class="fc" id="L55">                .showLeaderboard(game.isShowLeaderboard())</span>
-<span class="fc" id="L56">                .carryingCapacity(game.getCarryingCapacity())</span>
-<span class="fc" id="L57">                .degradationRate(game.getDegradationRate())</span>
-<span class="fc" id="L58">                .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L59">                .aboveCapacityHealthUpdateStrategy(game.getAboveCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L60">                .numUsers(gameRepository.getNumUsers(gameId).orElse(0))</span>
-<span class="fc" id="L61">                .numCows(gameRepository.getNumCows(gameId).orElse(0))</span>
+<span class="fc" id="L56">                .capacityPerUser(game.getCapacityPerUser())</span>
+<span class="fc" id="L57">                .carryingCapacity(game.getCarryingCapacity())</span>
+<span class="fc" id="L58">                .degradationRate(game.getDegradationRate())</span>
+<span class="fc" id="L59">                .belowCapacityHealthUpdateStrategy(game.getBelowCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L60">                .aboveCapacityHealthUpdateStrategy(game.getAboveCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L61">                .numUsers(gameRepository.getNumUsers(gameId).orElse(0))</span>
+<span class="fc" id="L62">                .numCows(gameRepository.getNumCows(gameId).orElse(0))</span>
 
-<span class="fc" id="L63">                .build();</span>
+<span class="fc" id="L64">                .build();</span>
 
-<span class="fc" id="L65">        reportRepository.save(report);</span>
-<span class="fc" id="L66">        return report;</span>
+<span class="fc" id="L66">        reportRepository.save(report);</span>
+<span class="fc" id="L67">        return report;</span>
     }
 
     public ReportLine createAndSaveReportLine(Report report, Farmer farmer) {
-<span class="fc" id="L70">        ReportLine reportLine = ReportLine.builder()</span>
-<span class="fc" id="L71">                .reportId(report.getId())</span>
-<span class="fc" id="L72">                .userId(farmer.getUser().getId())</span>
-<span class="fc" id="L73">                .username(farmer.getUsername())</span>
-<span class="fc" id="L74">                .totalWealth(farmer.getTotalWealth())</span>
-<span class="fc" id="L75">                .numOfCows(farmer.getNumOfCows())</span>
-<span class="fc" id="L76">                .avgCowHealth(farmer.getCowHealth())</span>
-<span class="fc" id="L77">                .cowsBought(farmer.getCowsBought())</span>
-<span class="fc" id="L78">                .cowsSold(farmer.getCowsSold())</span>
-<span class="fc" id="L79">                .cowDeaths(farmer.getCowDeaths())</span>
-<span class="fc" id="L80">                .build();</span>
+<span class="fc" id="L71">        ReportLine reportLine = ReportLine.builder()</span>
+<span class="fc" id="L72">                .reportId(report.getId())</span>
+<span class="fc" id="L73">                .userId(farmer.getUser().getId())</span>
+<span class="fc" id="L74">                .username(farmer.getUsername())</span>
+<span class="fc" id="L75">                .totalWealth(farmer.getTotalWealth())</span>
+<span class="fc" id="L76">                .numOfCows(farmer.getNumOfCows())</span>
+<span class="fc" id="L77">                .avgCowHealth(farmer.getCowHealth())</span>
+<span class="fc" id="L78">                .cowsBought(farmer.getCowsBought())</span>
+<span class="fc" id="L79">                .cowsSold(farmer.getCowsSold())</span>
+<span class="fc" id="L80">                .cowDeaths(farmer.getCowDeaths())</span>
+<span class="fc" id="L81">                .build();</span>
 
-<span class="fc" id="L82">        reportLineRepository.save(reportLine);</span>
-<span class="fc" id="L83">        return reportLine;</span>
+<span class="fc" id="L83">        reportLineRepository.save(reportLine);</span>
+<span class="fc" id="L84">        return reportLine;</span>
     }
 
 }
