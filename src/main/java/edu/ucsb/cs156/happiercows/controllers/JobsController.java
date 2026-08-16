@@ -6,8 +6,8 @@ import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGame;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
-import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJob;
-import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJobFactory;
+import edu.ucsb.cs156.happiercows.jobs.RecordGameStatsJob;
+import edu.ucsb.cs156.happiercows.jobs.RecordGameStatsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.SetCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
 import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJobFactory;
@@ -50,7 +50,7 @@ public class JobsController extends ApiController {
 
   @Autowired UpdateCowHealthJobFactoryInd updateCowHealthJobFactoryInd;
 
-  @Autowired RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+  @Autowired RecordGameStatsJobFactory recordGameStatsJobFactory;
 
   @Operation(summary = "Launch Test Job (click fail if you want to test exception handling)")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -140,11 +140,11 @@ public class JobsController extends ApiController {
 
   @Operation(summary = "Launch Job to Record the Stats of all Game")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PostMapping("/launch/recordcommonstats")
-  public Job recordCommonStats() {
+  @PostMapping("/launch/recordgamestats")
+  public Job recordGameStats() {
 
-    RecordCommonStatsJob recordCommonStatsJob =
-        (RecordCommonStatsJob) recordCommonStatsJobFactory.create();
-    return jobService.runAsJob(recordCommonStatsJob);
+    RecordGameStatsJob recordGameStatsJob =
+        (RecordGameStatsJob) recordGameStatsJobFactory.create();
+    return jobService.runAsJob(recordGameStatsJob);
   }
 }

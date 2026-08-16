@@ -18,17 +18,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.ucsb.cs156.happiercows.entities.Game;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
 
 @ExtendWith(SpringExtension.class)
-@Import(CommonStatsService.class)
+@Import(GameStatsService.class)
 @ContextConfiguration
-public class CommonStatsServiceTests {
+public class GameStatsServiceTests {
     
     @MockBean
     UserRepository userRepository;
@@ -40,13 +40,13 @@ public class CommonStatsServiceTests {
     FarmerRepository farmerRepository;   
 
     @MockBean
-    CommonStatsRepository commonStatsRepository;    
+    GameStatsRepository gameStatsRepository;    
 
     @MockBean
     AverageCowHealthService averageCowHealthService;
 
     @Autowired
-    CommonStatsService commonStatsService;
+    GameStatsService gameStatsService;
 
     private Game game = Game
         .builder()
@@ -57,24 +57,27 @@ public class CommonStatsServiceTests {
         .startingBalance(300)
         .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
         .showLeaderboard(true)
+        .capacityPerUser(20)
         .carryingCapacity(100)
         .degradationRate(0.01)
         .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
         .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
         .build();
 
-    CommonStats expectedStats1 = CommonStats
+    GameStats expectedStats1 = GameStats
         .builder()
         .gameId(17L)
         .numCows(20)
         .avgHealth(10)
+        .effectiveCapacity(100)
         .build();
 
-    CommonStats expectedStats2 = CommonStats
+    GameStats expectedStats2 = GameStats
         .builder()
         .gameId(17L)
         .numCows(120)
         .avgHealth(20)
+        .effectiveCapacity(200)
         .build();
 
 
@@ -83,15 +86,16 @@ public class CommonStatsServiceTests {
         // arrange
 
         when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(gameRepository.getNumUsers(17L)).thenReturn(Optional.of(1));
         when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(10.0);
         when(averageCowHealthService.getTotalNumCows(17L)).thenReturn(20);
 
         // act
 
-        CommonStats stats = commonStatsService.createAndSaveCommonStats(17L);
+        GameStats stats = gameStatsService.createAndSaveGameStats(17L);
 
         // assert
-        verify(commonStatsRepository).save(eq(expectedStats1));
+        verify(gameStatsRepository).save(eq(expectedStats1));
         assertEquals(expectedStats1, stats);
     }
 
@@ -100,16 +104,34 @@ public class CommonStatsServiceTests {
         // arrange
 
         when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(gameRepository.getNumUsers(17L)).thenReturn(Optional.of(10));
         when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(20.0);
         when(averageCowHealthService.getTotalNumCows(17L)).thenReturn(120);
 
         // act
 
-        CommonStats stats = commonStatsService.createAndSaveCommonStats(17L);
+        GameStats stats = gameStatsService.createAndSaveGameStats(17L);
 
         // assert
-        verify(commonStatsRepository).save(eq(expectedStats2));
+        verify(gameStatsRepository).save(eq(expectedStats2));
         assertEquals(expectedStats2, stats);
+    }
+
+    @Test
+    void test_effectiveCapacity_defaults_numUsers_to_zero_when_getNumUsers_is_empty() {
+        // arrange
+
+        when(gameRepository.findById(17L)).thenReturn(Optional.of(game));
+        when(gameRepository.getNumUsers(17L)).thenReturn(Optional.empty());
+        when(averageCowHealthService.getAverageCowHealth(17L)).thenReturn(10.0);
+        when(averageCowHealthService.getTotalNumCows(17L)).thenReturn(20);
+
+        // act
+
+        GameStats stats = gameStatsService.createAndSaveGameStats(17L);
+
+        // assert: capacityPerUser * 0 = 0, so carryingCapacity (100) wins
+        assertEquals(100, stats.getEffectiveCapacity());
     }
 
     @Test
@@ -117,7 +139,7 @@ public class CommonStatsServiceTests {
         when(gameRepository.findById(1L)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            commonStatsService.createAndSaveCommonStats(1L);
+            gameStatsService.createAndSaveGameStats(1L);
         });
     }
 }

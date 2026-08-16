@@ -2,7 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.User;
@@ -12,7 +12,7 @@ import edu.ucsb.cs156.happiercows.models.CreateGameParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
@@ -57,7 +57,7 @@ public class GameController extends ApiController {
     GamePlusBuilderService gamePlusBuilderService;
 
     @Autowired
-    CommonStatsRepository commonStatsRepository;
+    GameStatsRepository gameStatsRepository;
 
     @Autowired
     CourseAccessService courseAccessService;
@@ -456,9 +456,9 @@ public class GameController extends ApiController {
     @GetMapping("/timeseries")
     public ResponseEntity<List<Map<String, Object>>> getGameTimeSeries(
             @Parameter(name="commonId") @RequestParam Long commonId) {
-        Iterable<CommonStats> commonStats = commonStatsRepository.findAllByGameId(commonId);
-        List<CommonStats> sortedStats = StreamSupport.stream(commonStats.spliterator(), false)
-                .sorted(Comparator.comparing(CommonStats::getCreateDate))
+        Iterable<GameStats> gameStats = gameStatsRepository.findAllByGameId(commonId);
+        List<GameStats> sortedStats = StreamSupport.stream(gameStats.spliterator(), false)
+                .sorted(Comparator.comparing(GameStats::getCreateDate))
                 .collect(Collectors.toList());
 
         List<Map<String, Object>> healthValues = sortedStats.stream()

@@ -629,7 +629,7 @@ describe("AdminGameCard tests", () => {
     const statsCSVButton = screen.getByTestId("AdminGameCard-StatsCSV-1");
     expect(statsCSVButton).toHaveAttribute(
       "href",
-      "/api/commonstats/download?gameId=1",
+      "/api/gamestats/download?gameId=1",
     );
   });
 

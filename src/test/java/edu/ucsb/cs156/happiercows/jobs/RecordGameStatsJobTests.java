@@ -18,22 +18,22 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.JobTestCase;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.services.AverageCowHealthService;
-import edu.ucsb.cs156.happiercows.services.CommonStatsService;
+import edu.ucsb.cs156.happiercows.services.GameStatsService;
 import edu.ucsb.cs156.jobs.services.JobContext;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
-public class RecordCommonStatsJobTests extends JobTestCase {
+public class RecordGameStatsJobTests extends JobTestCase {
 
     @MockBean
     AverageCowHealthService averageCowHealthService;
 
     @MockBean
-    CommonStatsService commonStatsService;
+    GameStatsService gameStatsService;
 
     @MockBean
     GameRepository gameRepository;
@@ -47,29 +47,29 @@ public class RecordCommonStatsJobTests extends JobTestCase {
                 .startingDate(LocalDateTime.now().minusDays(5))
                 .lastDate(LocalDateTime.now().plusDays(5))
                 .build();
-        CommonStats commonStats = CommonStats.builder().id(17L).build();
+        GameStats gameStats = GameStats.builder().id(17L).build();
         
         Job jobStarted = Job.builder().build();
         JobContext ctx = new JobContext(null, jobStarted);
       
         when(gameRepository.findAll()).thenReturn(Arrays.asList(game));      
-        when(commonStatsService.createAndSaveCommonStats(17L)).thenReturn(commonStats);
+        when(gameStatsService.createAndSaveGameStats(17L)).thenReturn(gameStats);
 
         // Act
-        RecordCommonStatsJob recordCommonStatsJob = 
-                new RecordCommonStatsJob(commonStatsService, gameRepository);
-        recordCommonStatsJob.accept(ctx);
+        RecordGameStatsJob recordGameStatsJob = 
+                new RecordGameStatsJob(gameStatsService, gameRepository);
+        recordGameStatsJob.accept(ctx);
 
         // Assert
 
         verify(gameRepository).findAll();
-        verify(commonStatsService).createAndSaveCommonStats(17L);
+        verify(gameStatsService).createAndSaveGameStats(17L);
         
         String expected = """
-            Starting record common stats job...
+            Starting record game stats job...
             Starting Game id=17 (CS156)...
-            CommonStats 17 for game id=17 (CS156) finished.
-            Record common stats job done!""";
+            GameStats 17 for game id=17 (CS156) finished.
+            Record game stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }
 
@@ -88,17 +88,17 @@ public class RecordCommonStatsJobTests extends JobTestCase {
         when(gameRepository.findAll()).thenReturn(Arrays.asList(game));
 
         // Act
-        RecordCommonStatsJob recordCommonStatsJob =
-                new RecordCommonStatsJob(commonStatsService, gameRepository);
-        recordCommonStatsJob.accept(ctx);
+        RecordGameStatsJob recordGameStatsJob =
+                new RecordGameStatsJob(gameStatsService, gameRepository);
+        recordGameStatsJob.accept(ctx);
 
         // Assert
-        verify(commonStatsService, never()).createAndSaveCommonStats(anyLong());
+        verify(gameStatsService, never()).createAndSaveGameStats(anyLong());
 
         String expected = """
-            Starting record common stats job...
+            Starting record game stats job...
             Skipping Game id=17 (CS156) because the game is not in progress
-            Record common stats job done!""";
+            Record game stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }
 
@@ -111,17 +111,17 @@ public class RecordCommonStatsJobTests extends JobTestCase {
         when(gameRepository.findAll()).thenReturn(new ArrayList<>());
 
         // Act
-        RecordCommonStatsJob recordCommonStatsJob = 
-                new RecordCommonStatsJob(commonStatsService, gameRepository);
-        recordCommonStatsJob.accept(ctx);
+        RecordGameStatsJob recordGameStatsJob = 
+                new RecordGameStatsJob(gameStatsService, gameRepository);
+        recordGameStatsJob.accept(ctx);
 
         // Assert
 
         verify(gameRepository).findAll();
         
         String expected = """
-            Starting record common stats job...
-            Record common stats job done!""";
+            Starting record game stats job...
+            Record game stats job done!""";
         assertEquals(expected, jobStarted.getLog());
     }
     

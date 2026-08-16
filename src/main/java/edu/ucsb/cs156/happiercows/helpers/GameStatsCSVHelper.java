@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 
 /*
  * This code is based on 
@@ -19,9 +19,9 @@ import edu.ucsb.cs156.happiercows.entities.CommonStats;
  * with an instructor report.
  */
 
-public class CommonStatsCSVHelper {
+public class GameStatsCSVHelper {
 
-  private CommonStatsCSVHelper() {}
+  private GameStatsCSVHelper() {}
 
   /**
    * This method is a hack to avoid a pitest issue; it isn't possible to 
@@ -37,7 +37,7 @@ public class CommonStatsCSVHelper {
     out.close();
   }
   
-  public static ByteArrayInputStream toCSV(Iterable<CommonStats> stats) throws IOException {
+  public static ByteArrayInputStream toCSV(Iterable<GameStats> stats) throws IOException {
     final CSVFormat format = CSVFormat.DEFAULT;
 
     List<String> headers = Arrays.asList(
@@ -45,6 +45,7 @@ public class CommonStatsCSVHelper {
         "gameId",
         "numCows",
         "avgHealth",
+        "effectiveCapacity",
         "createDate");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -53,12 +54,13 @@ public class CommonStatsCSVHelper {
     csvPrinter.printRecord(headers);
     ZoneId pst = ZoneId.of("America/Los_Angeles");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(pst);
-    for (CommonStats line : stats) {
+    for (GameStats line : stats) {
       List<String> data = Arrays.asList(
           String.valueOf(line.getId()),
           String.valueOf(line.getGameId()),
           String.valueOf(line.getNumCows()),
           String.valueOf(line.getAvgHealth()),
+          String.valueOf(line.getEffectiveCapacity()),
           formatter.format(line.getCreateDate()));
       csvPrinter.printRecord(data);
     }

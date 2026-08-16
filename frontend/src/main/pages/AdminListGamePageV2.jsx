@@ -81,7 +81,7 @@ export default function AdminListGamePageV2() {
           </Col>
           <Col md={3} style={DownloadButtonStyle}>
             <Button
-              href="/api/commonstats/downloadAll"
+              href="/api/gamestats/downloadAll"
               variant="outline-success"
               style={{ borderRadius: "30px", padding: "10px 20px" }}
             >

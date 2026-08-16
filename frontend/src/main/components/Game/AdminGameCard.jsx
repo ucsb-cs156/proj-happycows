@@ -211,7 +211,7 @@ export default function AdminGameCard({ commonItem, currentUser }) {
             <Button
               variant="success"
               size="sm"
-              href={`/api/commonstats/download?gameId=${game.id}`}
+              href={`/api/gamestats/download?gameId=${game.id}`}
               data-testid={`AdminGameCard-StatsCSV-${game.id}`}
             >
               Stats CSV
