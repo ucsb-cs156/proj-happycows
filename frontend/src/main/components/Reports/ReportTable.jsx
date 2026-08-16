@@ -127,7 +127,6 @@ export default function ReportTable({
     );
     columns.push({
       Header: "Delete Report",
-      id: "Delete Report",
       Cell: ({ cell }) => (
         <OverlayTrigger
           placement="top"
@@ -141,7 +140,7 @@ export default function ReportTable({
           <Button
             variant="danger"
             onClick={() => deleteCallback(cell)}
-            data-testid={`${testid}-cell-row-${cell.row.index}-col-Delete Report-button`}
+            data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-button`}
           >
             Delete Report
           </Button>
@@ -150,7 +149,6 @@ export default function ReportTable({
     });
     columns.push({
       Header: "Purge Older Reports",
-      id: "Purge Older Reports",
       Cell: ({ cell }) => (
         <OverlayTrigger
           placement="top"
@@ -163,7 +161,7 @@ export default function ReportTable({
           <Button
             variant="warning"
             onClick={() => purgeCallback(cell)}
-            data-testid={`${testid}-cell-row-${cell.row.index}-col-Purge Older Reports-button`}
+            data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}-button`}
           >
             Purge Older Reports
           </Button>

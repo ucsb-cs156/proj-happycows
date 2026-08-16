@@ -5,6 +5,7 @@ import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
 import ReportTable from "main/components/Reports/ReportTable";
 import reportFixtures from "fixtures/reportFixtures";
+import { onDeleteSuccess } from "main/utils/reportUtils";
 import { vi } from "vitest";
 
 const mockNavigate = vi.fn();
@@ -15,6 +16,21 @@ vi.mock("react-router", async () => ({
   }),
   useNavigate: () => mockNavigate,
 }));
+
+const { mockUseBackendMutation } = vi.hoisted(() => {
+  return { mockUseBackendMutation: vi.fn() };
+});
+
+vi.mock("main/utils/useBackend", async (importOriginal) => {
+  const actual = await importOriginal();
+  mockUseBackendMutation.mockImplementation((...args) =>
+    actual.useBackendMutation(...args),
+  );
+  return {
+    ...actual,
+    useBackendMutation: (...args) => mockUseBackendMutation(...args),
+  };
+});
 
 describe("ReportTable tests", () => {
   const testId = "ReportTable";
@@ -29,6 +45,10 @@ describe("ReportTable tests", () => {
 
   beforeEach(() => {
     localStorage.clear();
+  });
+
+  beforeEach(() => {
+    mockUseBackendMutation.mockClear();
   });
 
   test("sorts by Create Date descending by default", () => {
@@ -278,6 +298,45 @@ describe("ReportTable tests", () => {
     expect(
       screen.getByTestId(`${testId}-cell-row-0-col-Purge Older Reports-button`),
     ).toBeInTheDocument();
+  });
+
+  test("Renders the Delete Report and Purge Older Reports column headers", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const headers = screen
+      .getAllByRole("columnheader")
+      .map((header) => header.textContent);
+
+    expect(headers).toContain("Delete Report");
+    expect(headers).toContain("Purge Older Reports");
+  });
+
+  test("configures the delete and purge mutations to invalidate the reports query and call onDeleteSuccess", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(mockUseBackendMutation).toHaveBeenCalledTimes(2);
+
+    expect(mockUseBackendMutation.mock.calls[0][1]).toEqual({
+      onSuccess: onDeleteSuccess,
+    });
+    expect(mockUseBackendMutation.mock.calls[0][2]).toEqual(["/api/reports"]);
+
+    expect(mockUseBackendMutation.mock.calls[1][1]).toEqual({
+      onSuccess: onDeleteSuccess,
+    });
+    expect(mockUseBackendMutation.mock.calls[1][2]).toEqual(["/api/reports"]);
   });
 
   test("Delete Report button opens modal and confirming deletes the report", async () => {
