@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommonStatsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">CommonStatsController.java</span></div><h1>CommonStatsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameStatsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">GameStatsController.java</span></div><h1>GameStatsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
 
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
-import edu.ucsb.cs156.happiercows.helpers.CommonStatsCSVHelper;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
+import edu.ucsb.cs156.happiercows.helpers.GameStatsCSVHelper;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,10 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = &quot;CommonStats&quot;)
-@RequestMapping(&quot;/api/commonstats&quot;)
+@Tag(name = &quot;GameStats&quot;)
+@RequestMapping(&quot;/api/gamestats&quot;)
 @RestController
-<span class="fc" id="L31">public class CommonStatsController {</span>
+<span class="fc" id="L31">public class GameStatsController {</span>
 
     @Autowired
     GameRepository gameRepository;
@@ -37,21 +37,21 @@ import org.springframework.web.bind.annotation.RestController;
     FarmerRepository farmerRepository;
 
     @Autowired
-    CommonStatsRepository commonStatsRepository;
+    GameStatsRepository gameStatsRepository;
 
-    @Operation(summary = &quot;Get all common stats&quot;)
+    @Operation(summary = &quot;Get all game stats&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;&quot;)
-    public Iterable&lt;CommonStats&gt; allCommonStats() {
-<span class="fc" id="L46">        return commonStatsRepository.findAll();</span>
+    public Iterable&lt;GameStats&gt; allGameStats() {
+<span class="fc" id="L46">        return gameStatsRepository.findAll();</span>
     }
 
     @Operation(summary = &quot;Get all stats for a game&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/game&quot;)
-    public Iterable&lt;CommonStats&gt; allCommonStatsForGame(
+    public Iterable&lt;GameStats&gt; allGameStatsForGame(
             @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) {
-<span class="fc" id="L54">        return commonStatsRepository.findAllByGameId(gameId);</span>
+<span class="fc" id="L54">        return gameStatsRepository.findAllByGameId(gameId);</span>
     }
 
     @Operation(summary = &quot;Get all stats for a game as csv&quot;)
@@ -60,11 +60,11 @@ import org.springframework.web.bind.annotation.RestController;
     public ResponseEntity&lt;Resource&gt; getCSV(
             @Parameter(name = &quot;gameId&quot;) @RequestParam Long gameId) throws IOException {
 
-<span class="fc" id="L63">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByGameId(gameId);</span>
+<span class="fc" id="L63">        Iterable&lt;GameStats&gt; gameStats = gameStatsRepository.findAllByGameId(gameId);</span>
                 
 <span class="fc" id="L65">        String filename = String.format(&quot;stats%05d.csv&quot;,gameId);</span>
 
-<span class="fc" id="L67">        ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);</span>
+<span class="fc" id="L67">        ByteArrayInputStream bais = GameStatsCSVHelper.toCSV(gameStats);</span>
 <span class="fc" id="L68">        InputStreamResource isr = new InputStreamResource(bais);</span>
 
 <span class="fc" id="L70">        return ResponseEntity.ok()</span>
@@ -77,11 +77,11 @@ import org.springframework.web.bind.annotation.RestController;
     @GetMapping(value = &quot;/downloadAll&quot;)
     public ResponseEntity&lt;Resource&gt; getAllCSV() throws IOException {
 
-<span class="fc" id="L80">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAll();</span>
+<span class="fc" id="L80">        Iterable&lt;GameStats&gt; gameStats = gameStatsRepository.findAll();</span>
                 
-<span class="fc" id="L82">        String filename = String.format(&quot;CommonStats.csv&quot;);</span>
+<span class="fc" id="L82">        String filename = String.format(&quot;GameStats.csv&quot;);</span>
 
-<span class="fc" id="L84">        ByteArrayInputStream bais = CommonStatsCSVHelper.toCSV(commonStats);</span>
+<span class="fc" id="L84">        ByteArrayInputStream bais = GameStatsCSVHelper.toCSV(gameStats);</span>
 <span class="fc" id="L85">        InputStreamResource isr = new InputStreamResource(bais);</span>
 
 <span class="fc" id="L87">        return ResponseEntity.ok()</span>

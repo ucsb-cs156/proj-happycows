@@ -6,8 +6,8 @@ import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGame;
 import edu.ucsb.cs156.happiercows.jobs.InstructorReportJobSingleGameFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.MilkTheCowsJobFactoryInd;
-import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJob;
-import edu.ucsb.cs156.happiercows.jobs.RecordCommonStatsJobFactory;
+import edu.ucsb.cs156.happiercows.jobs.RecordGameStatsJob;
+import edu.ucsb.cs156.happiercows.jobs.RecordGameStatsJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.SetCowHealthJobFactory;
 import edu.ucsb.cs156.happiercows.jobs.TestJob;
 import edu.ucsb.cs156.happiercows.jobs.UpdateCowHealthJobFactory;
@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Autowired UpdateCowHealthJobFactoryInd updateCowHealthJobFactoryInd;
 
-  @Autowired RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+  @Autowired RecordGameStatsJobFactory recordGameStatsJobFactory;
 
   @Operation(summary = &quot;Launch Test Job (click fail if you want to test exception handling)&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
@@ -140,12 +140,12 @@ import org.springframework.web.bind.annotation.RestController;
 
   @Operation(summary = &quot;Launch Job to Record the Stats of all Game&quot;)
   @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
-  @PostMapping(&quot;/launch/recordcommonstats&quot;)
-  public Job recordCommonStats() {
+  @PostMapping(&quot;/launch/recordgamestats&quot;)
+  public Job recordGameStats() {
 
-<span class="fc" id="L146">    RecordCommonStatsJob recordCommonStatsJob =</span>
-<span class="fc" id="L147">        (RecordCommonStatsJob) recordCommonStatsJobFactory.create();</span>
-<span class="fc" id="L148">    return jobService.runAsJob(recordCommonStatsJob);</span>
+<span class="fc" id="L146">    RecordGameStatsJob recordGameStatsJob =</span>
+<span class="fc" id="L147">        (RecordGameStatsJob) recordGameStatsJobFactory.create();</span>
+<span class="fc" id="L148">    return jobService.runAsJob(recordGameStatsJob);</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

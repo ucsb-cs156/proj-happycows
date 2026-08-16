@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
    MilkTheCowsJobFactory milkTheCowsJobFactory;
 
    @Autowired
-   RecordCommonStatsJobFactory recordCommonStatsJobFactory;
+   RecordGameStatsJobFactory recordGameStatsJobFactory;
    
    @Scheduled(cron = &quot;${app.updateCowHealth.cron}&quot;, zone = &quot;${spring.jackson.time-zone}&quot;)
    public void runUpdateCowHealthJobBasedOnCron() {
@@ -57,14 +57,14 @@ import lombok.extern.slf4j.Slf4j;
 <span class="fc" id="L57">      log.info(&quot;runMilkTheCowsJobBasedOnCron: launched job&quot;);</span>
 <span class="fc" id="L58">   }</span>
 
-   @Scheduled(cron = &quot;${app.recordCommonStats.cron}&quot;, zone = &quot;${spring.jackson.time-zone}&quot;)
-   public void runRecordCommonStatsJobBasedOnCron() {
-<span class="fc" id="L62">      log.info(&quot;runRecordCommonStatsJobBasedOnCron: running&quot;);</span>
+   @Scheduled(cron = &quot;${app.recordGameStats.cron}&quot;, zone = &quot;${spring.jackson.time-zone}&quot;)
+   public void runRecordGameStatsJobBasedOnCron() {
+<span class="fc" id="L62">      log.info(&quot;runRecordGameStatsJobBasedOnCron: running&quot;);</span>
 
-<span class="fc" id="L64">      JobContextConsumer recordCommonStatsJob = recordCommonStatsJobFactory.create();</span>
-<span class="fc" id="L65">      jobService.runAsJob(recordCommonStatsJob);</span>
+<span class="fc" id="L64">      JobContextConsumer recordGameStatsJob = recordGameStatsJobFactory.create();</span>
+<span class="fc" id="L65">      jobService.runAsJob(recordGameStatsJob);</span>
 
-<span class="fc" id="L67">      log.info(&quot;runRecordCommonStatsJobBasedOnCron: launched job&quot;);</span>
+<span class="fc" id="L67">      log.info(&quot;runRecordGameStatsJobBasedOnCron: launched job&quot;);</span>
 <span class="fc" id="L68">   }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

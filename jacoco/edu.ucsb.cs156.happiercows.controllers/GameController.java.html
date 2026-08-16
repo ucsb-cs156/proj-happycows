@@ -2,7 +2,7 @@
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ucsb.cs156.happiercows.entities.CommonStats;
+import edu.ucsb.cs156.happiercows.entities.GameStats;
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.entities.GamePlus;
 import edu.ucsb.cs156.happiercows.entities.User;
@@ -12,7 +12,7 @@ import edu.ucsb.cs156.happiercows.models.CreateGameParams;
 import edu.ucsb.cs156.happiercows.models.DashboardSettingsParams;
 import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
 import edu.ucsb.cs156.happiercows.errors.CourseAccessDeniedException;
-import edu.ucsb.cs156.happiercows.repositories.CommonStatsRepository;
+import edu.ucsb.cs156.happiercows.repositories.GameStatsRepository;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.services.CourseAccessService;
@@ -57,7 +57,7 @@ import java.util.stream.StreamSupport;
     GamePlusBuilderService gamePlusBuilderService;
 
     @Autowired
-    CommonStatsRepository commonStatsRepository;
+    GameStatsRepository gameStatsRepository;
 
     @Autowired
     CourseAccessService courseAccessService;
@@ -456,9 +456,9 @@ import java.util.stream.StreamSupport;
     @GetMapping(&quot;/timeseries&quot;)
     public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getGameTimeSeries(
             @Parameter(name=&quot;commonId&quot;) @RequestParam Long commonId) {
-<span class="fc" id="L459">        Iterable&lt;CommonStats&gt; commonStats = commonStatsRepository.findAllByGameId(commonId);</span>
-<span class="fc" id="L460">        List&lt;CommonStats&gt; sortedStats = StreamSupport.stream(commonStats.spliterator(), false)</span>
-<span class="fc" id="L461">                .sorted(Comparator.comparing(CommonStats::getCreateDate))</span>
+<span class="fc" id="L459">        Iterable&lt;GameStats&gt; gameStats = gameStatsRepository.findAllByGameId(commonId);</span>
+<span class="fc" id="L460">        List&lt;GameStats&gt; sortedStats = StreamSupport.stream(gameStats.spliterator(), false)</span>
+<span class="fc" id="L461">                .sorted(Comparator.comparing(GameStats::getCreateDate))</span>
 <span class="fc" id="L462">                .collect(Collectors.toList());</span>
 
 <span class="fc" id="L464">        List&lt;Map&lt;String, Object&gt;&gt; healthValues = sortedStats.stream()</span>
