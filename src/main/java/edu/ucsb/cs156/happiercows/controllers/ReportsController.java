@@ -2,6 +2,7 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Report;
 import edu.ucsb.cs156.happiercows.entities.ReportLine;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.helpers.ReportCSVHelper;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ReportLineRepository;
@@ -26,6 +27,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -103,6 +106,51 @@ public class ReportsController extends ApiController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
                 .contentType(MediaType.parseMediaType("application/csv"))
                 .body(isr);
+    }
+
+    // Spring Data's derived deleteAllByReportId query (unlike save()/delete())
+    // requires an active transaction to run; without @Transactional here this
+    // throws TransactionRequiredException, since open-in-view is disabled and
+    // each repository call would otherwise get its own short-lived context.
+    @Operation(summary = "Delete a report, along with all of its detail rows")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    @Transactional
+    public Object deleteReport(
+            @Parameter(name = "reportId") @RequestParam Long reportId) {
+
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new EntityNotFoundException(Report.class, reportId));
+
+        reportLineRepository.deleteAllByReportId(reportId);
+        reportRepository.delete(report);
+
+        return genericMessage("Report with id %s deleted".formatted(reportId));
+    }
+
+    // "Older" means an earlier createDate than the given report - not a lower
+    // id, and not scoped to the given report's game. See the comment on
+    // deleteReport above re: why @Transactional is required.
+    @Operation(summary = "Purge all reports (and their detail rows) with an earlier creation date than a given report")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/purge")
+    @Transactional
+    public Object purgeOlderReports(
+            @Parameter(name = "reportId") @RequestParam Long reportId) {
+
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new EntityNotFoundException(Report.class, reportId));
+
+        Iterable<Report> olderReports = reportRepository.findAllByCreateDateLessThan(report.getCreateDate());
+
+        int count = 0;
+        for (Report olderReport : olderReports) {
+            reportLineRepository.deleteAllByReportId(olderReport.getId());
+            reportRepository.delete(olderReport);
+            count++;
+        }
+
+        return genericMessage("Purged %d report(s) older than report with id %s".formatted(count, reportId));
     }
 
 }

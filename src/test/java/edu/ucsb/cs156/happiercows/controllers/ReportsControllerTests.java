@@ -26,16 +26,20 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(controllers = ReportsController.class)
 public class ReportsControllerTests extends ControllerTestCase {
@@ -107,6 +111,7 @@ public class ReportsControllerTests extends ControllerTestCase {
                         .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
                         .numCows(123)
                         .numUsers(1)
+                        .createDate(new Date(1000000000000L))
                         .build();
 
         ReportLine expectedReportLine = ReportLine.builder()
@@ -210,5 +215,79 @@ public class ReportsControllerTests extends ControllerTestCase {
                 assertEquals(expected, responseString);
         }
 
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_can_delete_a_report() throws Exception {
+                when(reportRepository.findById(eq(432L))).thenReturn(Optional.of(expectedReportHeader));
+
+                MvcResult response = mockMvc
+                                .perform(delete("/api/reports?reportId=432").with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                verify(reportRepository, times(1)).findById(eq(432L));
+                verify(reportLineRepository, times(1)).deleteAllByReportId(eq(432L));
+                verify(reportRepository, times(1)).delete(eq(expectedReportHeader));
+
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Report with id 432 deleted", json.get("message"));
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_tries_to_delete_non_existant_report_and_gets_right_error_message() throws Exception {
+                when(reportRepository.findById(eq(432L))).thenReturn(Optional.empty());
+
+                MvcResult response = mockMvc
+                                .perform(delete("/api/reports?reportId=432").with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                verify(reportRepository, times(1)).findById(eq(432L));
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Report with id 432 not found", json.get("message"));
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_can_purge_older_reports() throws Exception {
+                // "Older" means an earlier createDate, with no regard to gameId - these
+                // two reports belong to a completely different game than
+                // expectedReportHeader, and are still purged because their createDate
+                // is earlier.
+                Report olderReport1 = Report.builder().id(430L).gameId(99L).build();
+                Report olderReport2 = Report.builder().id(431L).gameId(99L).build();
+
+                when(reportRepository.findById(eq(432L))).thenReturn(Optional.of(expectedReportHeader));
+                when(reportRepository.findAllByCreateDateLessThan(eq(expectedReportHeader.getCreateDate())))
+                                .thenReturn(List.of(olderReport1, olderReport2));
+
+                MvcResult response = mockMvc
+                                .perform(delete("/api/reports/purge?reportId=432").with(csrf()))
+                                .andExpect(status().isOk()).andReturn();
+
+                verify(reportRepository, times(1)).findById(eq(432L));
+                verify(reportRepository, times(1))
+                                .findAllByCreateDateLessThan(eq(expectedReportHeader.getCreateDate()));
+                verify(reportLineRepository, times(1)).deleteAllByReportId(eq(430L));
+                verify(reportLineRepository, times(1)).deleteAllByReportId(eq(431L));
+                verify(reportRepository, times(1)).delete(eq(olderReport1));
+                verify(reportRepository, times(1)).delete(eq(olderReport2));
+
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Purged 2 report(s) older than report with id 432", json.get("message"));
+        }
+
+        @WithMockUser(roles = { "ADMIN" })
+        @Test
+        public void admin_tries_to_purge_non_existant_report_and_gets_right_error_message() throws Exception {
+                when(reportRepository.findById(eq(432L))).thenReturn(Optional.empty());
+
+                MvcResult response = mockMvc
+                                .perform(delete("/api/reports/purge?reportId=432").with(csrf()))
+                                .andExpect(status().isNotFound()).andReturn();
+
+                verify(reportRepository, times(1)).findById(eq(432L));
+                Map<String, Object> json = responseToJson(response);
+                assertEquals("Report with id 432 not found", json.get("message"));
+        }
 
 }
