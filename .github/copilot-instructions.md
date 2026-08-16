@@ -196,3 +196,12 @@ The repository has extensive GitHub Actions workflows:
 - Mutation testing: `.github/workflows/13-backend-incremental-pitest.yml`
 
 Always ensure your changes pass all CI checks by running equivalent local commands before committing.
+
+### Mandatory CI/CD Monitoring
+
+Whenever you are assigned an issue or asked to make changes in this repository, you must monitor the status of all GitHub Actions workflows triggered by your commits, and you must NOT stop working until every one of them is green (passing). This applies for the entire duration of your work on the task:
+
+- After pushing any commit, check the status of all triggered workflow runs (e.g. via `actions_list`/`list_workflow_runs` and `get_job_logs`).
+- If any workflow fails (including but not limited to unit tests, integration tests, mutation testing, formatting, or linting), investigate the failure logs and fix the underlying issue.
+- Re-check the workflow runs after pushing a fix, and repeat this process until all workflows pass.
+- Do not consider the task complete while any workflow is failing or still in progress.
