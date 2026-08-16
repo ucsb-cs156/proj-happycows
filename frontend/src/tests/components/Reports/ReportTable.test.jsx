@@ -27,6 +27,114 @@ describe("ReportTable tests", () => {
     axiosMock.resetHistory();
   });
 
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  test("sorts by Create Date descending by default", () => {
+    // Use a fixture where numeric id order and createDate order diverge,
+    // so a mutation that stops sorting by "createDate" specifically
+    // (e.g. by breaking the sort column id) is detected.
+    const reportsWithDivergentIdOrder = [
+      {
+        ...reportFixtures.threeReports[0],
+        id: 10,
+        createDate: "2023-01-01T00:00:00.000+00:00",
+      },
+      {
+        ...reportFixtures.threeReports[1],
+        id: 1,
+        createDate: "2023-06-01T00:00:00.000+00:00",
+      },
+      {
+        ...reportFixtures.threeReports[2],
+        id: 5,
+        createDate: "2023-03-01T00:00:00.000+00:00",
+      },
+    ];
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportsWithDivergentIdOrder} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const createDateCells = screen.getAllByTestId(
+      /ReportTable-cell-row-\d+-col-createDate/,
+    );
+    const renderedDates = createDateCells.map((cell) => cell.textContent);
+
+    expect(renderedDates).toEqual([
+      "2023-06-01T00:00:00.000+00:00",
+      "2023-03-01T00:00:00.000+00:00",
+      "2023-01-01T00:00:00.000+00:00",
+    ]);
+  });
+
+  test("renders a Page Size selector defaulting to 20", () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toBeInTheDocument();
+    expect(selector).toHaveValue("20");
+  });
+
+  test("selecting a page size stores it in localStorage under 'reports-page-size'", async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("reports-page-size")).toBe("50");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("reports-page-size", "100");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("100");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("reports-page-size", "37");
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <ReportTable reports={reportFixtures.threeReports} />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    const selector = screen.getByTestId(`${testId}-page-size-selector`);
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("reports-page-size")).toBe("20");
+  });
+
   test("Has the expected column headers and content", () => {
     // act
 
@@ -151,8 +259,8 @@ describe("ReportTable tests", () => {
     );
 
     expect(screen.getAllByText("1")[2]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("1")[3]).toHaveStyle("text-align: right;");
-    expect(screen.getAllByText("3")[0]).toHaveStyle("text-align: right;");
+    expect(screen.getAllByText("1")[4]).toHaveStyle("text-align: right;");
+    expect(screen.getAllByText("3")[1]).toHaveStyle("text-align: right;");
   });
 
   test("Renders Delete Report and Purge Older Reports buttons", () => {

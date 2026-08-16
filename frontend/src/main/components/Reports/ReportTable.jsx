@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
+import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { useNavigate } from "react-router";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
@@ -8,6 +9,19 @@ import {
   cellToAxiosParamsPurgeReports,
   onDeleteSuccess,
 } from "main/utils/reportUtils";
+
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
+const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE_STORAGE_KEY = "reports-page-size";
+
+const getInitialPageSize = () => {
+  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
+  if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
+    return storedValue;
+  }
+  localStorage.setItem(PAGE_SIZE_STORAGE_KEY, DEFAULT_PAGE_SIZE);
+  return DEFAULT_PAGE_SIZE;
+};
 
 // should take in a players list from a game
 export default function ReportTable({
@@ -23,6 +37,12 @@ export default function ReportTable({
   const [showPurgeModal, setShowPurgeModal] = useState(false);
   const [cellToDelete, setCellToDelete] = useState(null);
   const [cellToPurge, setCellToPurge] = useState(null);
+  const [pageSize, setPageSize] = useState(getInitialPageSize);
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, newPageSize);
+  };
 
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDeleteReport,
@@ -152,9 +172,23 @@ export default function ReportTable({
     });
   }
 
+  const sortBy = [{ id: "createDate", desc: true }];
+
   return (
     <>
-      <OurTable data={reports} columns={columns} testid={testid} />
+      <PageSizeSelector
+        value={pageSize}
+        onChange={handlePageSizeChange}
+        options={PAGE_SIZE_OPTIONS}
+        testid={`${testid}-page-size-selector`}
+      />
+      <OurTable
+        data={reports}
+        columns={columns}
+        testid={testid}
+        pageSize={pageSize}
+        initialState={{ sortBy }}
+      />
       <Modal
         data-testid={`${testid}-DeleteModal`}
         show={showDeleteModal}
