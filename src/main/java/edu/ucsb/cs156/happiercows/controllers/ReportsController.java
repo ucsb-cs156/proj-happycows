@@ -27,6 +27,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,9 +108,14 @@ public class ReportsController extends ApiController {
                 .body(isr);
     }
 
+    // Spring Data's derived deleteAllByReportId query (unlike save()/delete())
+    // requires an active transaction to run; without @Transactional here this
+    // throws TransactionRequiredException, since open-in-view is disabled and
+    // each repository call would otherwise get its own short-lived context.
     @Operation(summary = "Delete a report, along with all of its detail rows")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
+    @Transactional
     public Object deleteReport(
             @Parameter(name = "reportId") @RequestParam Long reportId) {
 
@@ -122,9 +128,11 @@ public class ReportsController extends ApiController {
         return genericMessage("Report with id %s deleted".formatted(reportId));
     }
 
+    // See the comment on deleteReport above re: why @Transactional is required.
     @Operation(summary = "Purge all reports (and their detail rows) that are older than a given report, for the same game")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/purge")
+    @Transactional
     public Object purgeOlderReports(
             @Parameter(name = "reportId") @RequestParam Long reportId) {
 
