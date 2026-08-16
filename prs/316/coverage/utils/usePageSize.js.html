@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for pages/AdminReportsPage.jsx</title>
+    <title>Code coverage report for utils/usePageSize.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">pages</a> AdminReportsPage.jsx</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">utils</a> usePageSize.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>25/25</span>
             </div>
         
             
@@ -86,51 +86,69 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">112x</span>
+<span class="cline-any cline-yes">112x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">278x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">278x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">278x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from "react";
-import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
-import { useBackend } from "main/utils/useBackend";
-import ReportTable from "main/components/Reports/ReportTable";
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-yes">278x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useState } from "react";
 &nbsp;
-export default function AdminReportsPage() {
-  // Stryker disable  all
-  const {
-    data: reports,
-    error: _error,
-    status: _status,
-  } = useBackend(["/api/reports"], { method: "GET", url: "/api/reports" }, []);
-  // Stryker restore all
+// Reusable hook that manages a page size value, persisting the selection to
+// localStorage under `storageKey` so that it is remembered across visits to
+// the same table. If the stored value is missing or not one of `options`,
+// `defaultPageSize` is used (and localStorage is updated to match).
+export default function usePageSize({
+  storageKey,
+  options = [20, 50, 100, 200, 500],
+  defaultPageSize = 20,
+}) {
+  const getInitialPageSize = () =&gt; {
+    const storedValue = parseInt(localStorage.getItem(storageKey), 10);
+    if (options.includes(storedValue)) {
+      return storedValue;
+    }
+    localStorage.setItem(storageKey, defaultPageSize);
+    return defaultPageSize;
+  };
 &nbsp;
-  return (
-    &lt;BasicLayout&gt;
-      &lt;div className="pt-2"&gt;
-        &lt;h1&gt;Instructor Reports&lt;/h1&gt;
-        &lt;ReportTable reports={reports} /&gt;
-      &lt;/div&gt;
-    &lt;/BasicLayout&gt;
-  );
+  const [pageSize, setPageSize] = useState(getInitialPageSize);
+&nbsp;
+  const handlePageSizeChange = (newPageSize) =&gt; {
+    setPageSize(newPageSize);
+    localStorage.setItem(storageKey, newPageSize);
+  };
+&nbsp;
+  return [pageSize, handlePageSizeChange];
 }
 &nbsp;</pre></td></tr></table></pre>
 

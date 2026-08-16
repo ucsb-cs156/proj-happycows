@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>183/183</span>
+                <span class='fraction'>176/176</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>21/21</span>
-            </div>
-        
-            
-            <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
-                <span class="quiet">Functions</span>
                 <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>15/15</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>183/183</span>
+                <span class='fraction'>176/176</span>
             </div>
         
             
@@ -306,15 +306,8 @@
 <a name='L241'></a><a href='#L241'>241</a>
 <a name='L242'></a><a href='#L242'>242</a>
 <a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a>
-<a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a>
-<a name='L248'></a><a href='#L248'>248</a>
-<a name='L249'></a><a href='#L249'>249</a>
-<a name='L250'></a><a href='#L250'>250</a>
-<a name='L251'></a><a href='#L251'>251</a>
-<a name='L252'></a><a href='#L252'>252</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L244'></a><a href='#L244'>244</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -331,15 +324,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-yes">40x</span>
@@ -353,12 +337,12 @@
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-yes">40x</span>
-<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">40x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">40x</span>
+<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-yes">40x</span>
@@ -569,6 +553,7 @@
 import { Button, Modal, OverlayTrigger, Tooltip } from "react-bootstrap";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import PageSizeSelector from "main/components/Utils/PageSizeSelector";
+import usePageSize from "main/utils/usePageSize";
 import { useNavigate } from "react-router";
 import { useBackendMutation } from "main/utils/useBackend";
 import {
@@ -580,15 +565,6 @@ import {
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
 const DEFAULT_PAGE_SIZE = 20;
 const PAGE_SIZE_STORAGE_KEY = "reports-page-size";
-&nbsp;
-const getInitialPageSize = () =&gt; {
-  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
-  if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
-    return storedValue;
-  }
-  localStorage.setItem(PAGE_SIZE_STORAGE_KEY, DEFAULT_PAGE_SIZE);
-  return DEFAULT_PAGE_SIZE;
-};
 &nbsp;
 // should take in a players list from a game
 export default function ReportTable({
@@ -604,12 +580,12 @@ export default function ReportTable({
   const [showPurgeModal, setShowPurgeModal] = useState(false);
   const [cellToDelete, setCellToDelete] = useState(null);
   const [cellToPurge, setCellToPurge] = useState(null);
-  const [pageSize, setPageSize] = useState(getInitialPageSize);
 &nbsp;
-  const handlePageSizeChange = (newPageSize) =&gt; {
-    setPageSize(newPageSize);
-    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, newPageSize);
-  };
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
 &nbsp;
   const deleteMutation = useBackendMutation(
     cellToAxiosParamsDeleteReport,
@@ -823,7 +799,7 @@ export default function ReportTable({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-08-16T02:30:28.743Z
+                at 2026-08-16T18:44:23.195Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
