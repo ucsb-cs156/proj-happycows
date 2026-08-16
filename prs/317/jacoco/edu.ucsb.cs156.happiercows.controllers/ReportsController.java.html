@@ -128,27 +128,29 @@ import org.springframework.web.bind.annotation.RestController;
 <span class="fc" id="L128">        return genericMessage(&quot;Report with id %s deleted&quot;.formatted(reportId));</span>
     }
 
-    // See the comment on deleteReport above re: why @Transactional is required.
-    @Operation(summary = &quot;Purge all reports (and their detail rows) that are older than a given report, for the same game&quot;)
+    // &quot;Older&quot; means an earlier createDate than the given report - not a lower
+    // id, and not scoped to the given report's game. See the comment on
+    // deleteReport above re: why @Transactional is required.
+    @Operation(summary = &quot;Purge all reports (and their detail rows) with an earlier creation date than a given report&quot;)
     @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
     @DeleteMapping(&quot;/purge&quot;)
     @Transactional
     public Object purgeOlderReports(
             @Parameter(name = &quot;reportId&quot;) @RequestParam Long reportId) {
 
-<span class="fc" id="L139">        Report report = reportRepository.findById(reportId)</span>
-<span class="fc" id="L140">                .orElseThrow(() -&gt; new EntityNotFoundException(Report.class, reportId));</span>
+<span class="fc" id="L141">        Report report = reportRepository.findById(reportId)</span>
+<span class="fc" id="L142">                .orElseThrow(() -&gt; new EntityNotFoundException(Report.class, reportId));</span>
 
-<span class="fc" id="L142">        Iterable&lt;Report&gt; olderReports = reportRepository.findAllByGameIdAndIdLessThan(report.getGameId(), reportId);</span>
+<span class="fc" id="L144">        Iterable&lt;Report&gt; olderReports = reportRepository.findAllByCreateDateLessThan(report.getCreateDate());</span>
 
-<span class="fc" id="L144">        int count = 0;</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">        for (Report olderReport : olderReports) {</span>
-<span class="fc" id="L146">            reportLineRepository.deleteAllByReportId(olderReport.getId());</span>
-<span class="fc" id="L147">            reportRepository.delete(olderReport);</span>
-<span class="fc" id="L148">            count++;</span>
-<span class="fc" id="L149">        }</span>
+<span class="fc" id="L146">        int count = 0;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        for (Report olderReport : olderReports) {</span>
+<span class="fc" id="L148">            reportLineRepository.deleteAllByReportId(olderReport.getId());</span>
+<span class="fc" id="L149">            reportRepository.delete(olderReport);</span>
+<span class="fc" id="L150">            count++;</span>
+<span class="fc" id="L151">        }</span>
 
-<span class="fc" id="L151">        return genericMessage(&quot;Purged %d report(s) older than report with id %s&quot;.formatted(count, reportId));</span>
+<span class="fc" id="L153">        return genericMessage(&quot;Purged %d report(s) older than report with id %s&quot;.formatted(count, reportId));</span>
     }
 
 }
