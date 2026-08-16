@@ -6,9 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Sort;
 
+import java.util.Date;
+
 @Repository
 public interface ReportRepository extends CrudRepository<Report, Long> {
     Iterable<Report> findAllByGameId(Long gameId);
     Iterable<Report> findAll(Sort sort);
-    Iterable<Report> findAllByGameIdAndIdLessThan(Long gameId, Long id);
+    Iterable<Report> findAllByCreateDateLessThan(Date createDate);
 }

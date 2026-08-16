@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
 import StudentsForm from "main/components/Students/StudentsForm";
 import PageSizeSelector from "main/components/Utils/PageSizeSelector";
+import usePageSize from "main/utils/usePageSize";
 import { useBackendMutation } from "main/utils/useBackend";
 import { formatTime } from "main/utils/dateUtils";
 import {
@@ -17,15 +18,6 @@ const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
 const DEFAULT_PAGE_SIZE = 100;
 const PAGE_SIZE_STORAGE_KEY = "default-page-size";
 
-const getInitialPageSize = () => {
-  const storedValue = parseInt(localStorage.getItem(PAGE_SIZE_STORAGE_KEY), 10);
-  if (PAGE_SIZE_OPTIONS.includes(storedValue)) {
-    return storedValue;
-  }
-  localStorage.setItem(PAGE_SIZE_STORAGE_KEY, DEFAULT_PAGE_SIZE);
-  return DEFAULT_PAGE_SIZE;
-};
-
 export default function StudentsTable({
   students,
   currentUser,
@@ -36,12 +28,11 @@ export default function StudentsTable({
   const [cellToDelete, setCellToDelete] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [studentToEdit, setStudentToEdit] = useState(null);
-  const [pageSize, setPageSize] = useState(getInitialPageSize);
-
-  const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
-    localStorage.setItem(PAGE_SIZE_STORAGE_KEY, newPageSize);
-  };
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
 
   const queryKey = [`/api/student/course/${courseId}`];
 
