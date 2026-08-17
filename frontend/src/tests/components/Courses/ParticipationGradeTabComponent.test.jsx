@@ -599,6 +599,18 @@ describe("ParticipationGradeTabComponent tests", () => {
       await screen.findByTestId(`${testid}-table-cell-row-0-col-perm`),
     ).toHaveTextContent("1111111");
     expect(
+      screen.getByTestId(`${testid}-table-cell-row-0-col-lastName`),
+    ).toHaveTextContent("Gaucho");
+    expect(
+      screen.getByTestId(`${testid}-table-cell-row-0-col-firstMiddleName`),
+    ).toHaveTextContent("Chris");
+    expect(
+      screen.getByTestId(`${testid}-table-cell-row-0-col-daysInteracted`),
+    ).toHaveTextContent("3");
+    expect(
+      screen.getByTestId(`${testid}-table-cell-row-0-col-totalPointsEarned`),
+    ).toHaveTextContent("84");
+    expect(
       screen.getByTestId(
         `${testid}-table-cell-row-0-col-interactedAtLeastOnce`,
       ),
