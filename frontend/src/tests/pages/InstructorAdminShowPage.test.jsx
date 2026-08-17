@@ -92,6 +92,23 @@ describe("InstructorAdminShowPage tests", () => {
     });
   });
 
+  test("Participation Grade tab renders the form", async () => {
+    render(
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <InstructorAdminShowPage />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+
+    expect(
+      await screen.findByTestId("ParticipationGradeTabComponent"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("ParticipationGradeTabComponent-preview-button"),
+    ).toBeInTheDocument();
+  });
+
   test("renders a default title while the course is loading", async () => {
     axiosMock.onGet("/api/course/1").timeout();
 
