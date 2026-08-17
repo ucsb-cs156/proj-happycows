@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ParticipationGradeService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">ParticipationGradeService.java</span></div><h1>ParticipationGradeService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.ucsb.cs156.happiercows.entities.Course;
+import edu.ucsb.cs156.happiercows.entities.FarmerActivity;
+import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import edu.ucsb.cs156.happiercows.models.ParticipationGrade;
+import edu.ucsb.cs156.happiercows.models.ParticipationGradeParams;
+import edu.ucsb.cs156.happiercows.repositories.CourseRepository;
+import edu.ucsb.cs156.happiercows.repositories.FarmerActivityRepository;
+import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+
+// See issue #292. &quot;Interacted&quot; (criteria 1 and 2) is any FarmerActivity row
+// in the date range, regardless of type. &quot;Owned a cow&quot; (criterion 3) is
+// deliberately NOT &quot;was there ever a BUY/SELL row&quot; - it's redefined as
+// &quot;checked in on the farm while owning at least one cow&quot;, i.e. a
+// PLAY_PAGE_VIEW row (the only activity type whose numCows field is a
+// snapshot of the farmer's total herd, rather than a transaction delta)
+// with numCows &gt;= 1. This sidesteps needing the Profit table (whose
+// timestamps aren't in Pacific time - see issue #318) and naturally
+// excludes cows that died before ever being checked on.
+@Service
+<span class="fc" id="L35">public class ParticipationGradeService {</span>
+
+    @Autowired
+    CourseRepository courseRepository;
+
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    FarmerActivityRepository farmerActivityRepository;
+
+    public List&lt;ParticipationGrade&gt; computeGrades(ParticipationGradeParams params) {
+<span class="fc" id="L47">        validate(params);</span>
+
+<span class="fc" id="L49">        courseRepository.findById(params.getCourseId())</span>
+<span class="fc" id="L50">                .orElseThrow(() -&gt; new EntityNotFoundException(Course.class, params.getCourseId()));</span>
+
+<span class="fc" id="L52">        List&lt;Student&gt; students = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L53">        studentRepository.findByCourseId(params.getCourseId()).forEach(students::add);</span>
+
+<span class="fc" id="L55">        List&lt;Long&gt; studentIds = students.stream().map(Student::getId).collect(Collectors.toList());</span>
+
+<span class="fc" id="L57">        LocalDateTime startInclusive = params.getStartDate().atStartOfDay();</span>
+<span class="fc" id="L58">        LocalDateTime endExclusive = params.getEndDate().plusDays(1).atStartOfDay();</span>
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        List&lt;FarmerActivity&gt; activities = studentIds.isEmpty()</span>
+<span class="fc" id="L61">                ? List.of()</span>
+<span class="fc" id="L62">                : farmerActivityRepository.findByStudentIdInAndTimestampGreaterThanEqualAndTimestampLessThan(</span>
+                        studentIds, startInclusive, endExclusive);
+
+<span class="fc" id="L65">        Map&lt;Long, List&lt;FarmerActivity&gt;&gt; activitiesByStudentId = activities.stream()</span>
+<span class="fc" id="L66">                .collect(Collectors.groupingBy(FarmerActivity::getStudentId));</span>
+
+<span class="fc" id="L68">        return students.stream()</span>
+<span class="fc" id="L69">                .map(student -&gt; computeGradeForStudent(</span>
+<span class="fc" id="L70">                        student, activitiesByStudentId.getOrDefault(student.getId(), List.of()), params))</span>
+<span class="fc" id="L71">                .collect(Collectors.toList());</span>
+    }
+
+    private void validate(ParticipationGradeParams params) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (params.getEndDate().isBefore(params.getStartDate())) {</span>
+<span class="fc" id="L76">            throw new IllegalArgumentException(&quot;endDate must not be before startDate&quot;);</span>
+        }
+
+<span class="fc" id="L79">        int totalWeight = params.getCriterion1Weight() + params.getCriterion2Weight() + params.getCriterion3Weight();</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (totalWeight != 100) {</span>
+<span class="fc" id="L81">            throw new IllegalArgumentException(</span>
+<span class="fc" id="L82">                    &quot;criterion weights must sum to 100, but sum to %d&quot;.formatted(totalWeight));</span>
+        }
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (params.getCriterion2Weight() &gt; 0) {</span>
+<span class="fc" id="L86">            int daysInPeriod = daysInPeriod(params);</span>
+<span class="fc bfc" id="L87" title="All 4 branches covered.">            if (params.getCriterion2MinDays() &lt; 1 || params.getCriterion2MinDays() &gt; daysInPeriod) {</span>
+<span class="fc" id="L88">                throw new IllegalArgumentException(</span>
+                        &quot;criterion2MinDays must be between 1 and %d (the number of days in the period)&quot;
+<span class="fc" id="L90">                                .formatted(daysInPeriod));</span>
+            }
+        }
+<span class="fc" id="L93">    }</span>
+
+    private int daysInPeriod(ParticipationGradeParams params) {
+<span class="fc" id="L96">        return (int) (ChronoUnit.DAYS.between(params.getStartDate(), params.getEndDate()) + 1);</span>
+    }
+
+    private ParticipationGrade computeGradeForStudent(
+            Student student, List&lt;FarmerActivity&gt; activities, ParticipationGradeParams params) {
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        boolean interactedAtLeastOnce = !activities.isEmpty();</span>
+
+<span class="fc" id="L104">        Set&lt;LocalDate&gt; daysWithActivity = activities.stream()</span>
+<span class="fc" id="L105">                .map(activity -&gt; activity.getTimestamp().toLocalDate())</span>
+<span class="fc" id="L106">                .collect(Collectors.toSet());</span>
+<span class="fc" id="L107">        int daysInteracted = daysWithActivity.size();</span>
+
+<span class="fc" id="L109">        boolean ownedAndCheckedInOnACow = activities.stream()</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">                .anyMatch(activity -&gt; activity.getActivityType() == FarmerActivity.ACTIVITY_TYPE_PLAY_PAGE_VIEW</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                        &amp;&amp; activity.getNumCows() &gt;= 1);</span>
+
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        double criterion1Percent = params.getCriterion1Weight() == 0</span>
+<span class="fc" id="L114">                ? 0</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">                : (interactedAtLeastOnce ? params.getCriterion1Weight() : 0);</span>
+
+        double criterion2Percent;
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (params.getCriterion2Weight() == 0) {</span>
+<span class="fc" id="L119">            criterion2Percent = 0;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        } else if (params.isCriterion2PartialCredit()) {</span>
+<span class="fc" id="L121">            double fraction = Math.min(1.0, (double) daysInteracted / params.getCriterion2MinDays());</span>
+<span class="fc" id="L122">            criterion2Percent = fraction * params.getCriterion2Weight();</span>
+<span class="fc" id="L123">        } else {</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            criterion2Percent = daysInteracted &gt;= params.getCriterion2MinDays() ? params.getCriterion2Weight() : 0;</span>
+        }
+
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        double criterion3Percent = params.getCriterion3Weight() == 0</span>
+<span class="fc" id="L128">                ? 0</span>
+<span class="fc bfc" id="L129" title="All 2 branches covered.">                : (ownedAndCheckedInOnACow ? params.getCriterion3Weight() : 0);</span>
+
+<span class="fc" id="L131">        double criterion1Points = pointsFor(criterion1Percent, params.getTotalPoints());</span>
+<span class="fc" id="L132">        double criterion2Points = pointsFor(criterion2Percent, params.getTotalPoints());</span>
+<span class="fc" id="L133">        double criterion3Points = pointsFor(criterion3Percent, params.getTotalPoints());</span>
+
+<span class="fc" id="L135">        return ParticipationGrade.builder()</span>
+<span class="fc" id="L136">                .studentId(student.getId())</span>
+<span class="fc" id="L137">                .perm(student.getPerm())</span>
+<span class="fc" id="L138">                .lastName(student.getLastName())</span>
+<span class="fc" id="L139">                .firstMiddleName(student.getFirstMiddleName())</span>
+<span class="fc" id="L140">                .interactedAtLeastOnce(interactedAtLeastOnce)</span>
+<span class="fc" id="L141">                .daysInteracted(daysInteracted)</span>
+<span class="fc" id="L142">                .ownedAndCheckedInOnACow(ownedAndCheckedInOnACow)</span>
+<span class="fc" id="L143">                .criterion1PointsEarned(criterion1Points)</span>
+<span class="fc" id="L144">                .criterion2PointsEarned(criterion2Points)</span>
+<span class="fc" id="L145">                .criterion3PointsEarned(criterion3Points)</span>
+<span class="fc" id="L146">                .totalPointsEarned(round(criterion1Points + criterion2Points + criterion3Points))</span>
+<span class="fc" id="L147">                .build();</span>
+    }
+
+    private double pointsFor(double percent, double totalPoints) {
+<span class="fc" id="L151">        return round(percent / 100.0 * totalPoints);</span>
+    }
+
+    private double round(double value) {
+<span class="fc" id="L155">        return Math.round(value * 100.0) / 100.0;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
