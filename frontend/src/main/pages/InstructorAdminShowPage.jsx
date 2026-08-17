@@ -5,6 +5,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import BasicLayout from "main/layouts/BasicLayout/BasicLayout";
 import StudentsTabComponent from "main/components/Students/StudentsTabComponent";
 import StaffTabComponent from "main/components/Staff/StaffTabComponent";
+import ParticipationGradeTabComponent from "main/components/Courses/ParticipationGradeTabComponent";
 import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 
@@ -34,6 +35,9 @@ export default function InstructorAdminShowPage() {
           </Tab>
           <Tab eventKey="staff" title="Staff">
             <StaffTabComponent courseId={id} currentUser={currentUser} />
+          </Tab>
+          <Tab eventKey="participation" title="Participation Grade">
+            <ParticipationGradeTabComponent courseId={id} />
           </Tab>
         </Tabs>
       </div>
