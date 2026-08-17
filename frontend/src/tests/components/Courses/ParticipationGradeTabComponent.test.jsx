@@ -57,9 +57,28 @@ describe("ParticipationGradeTabComponent tests", () => {
     expect(screen.getByTestId(`${testid}-totalWeight`)).toHaveTextContent(
       "100%",
     );
-    expect(screen.getByTestId(`${testid}-totalWeight`)).not.toHaveTextContent(
-      "must equal",
-    );
+    expect(screen.getByText("Grade Items")).toBeInTheDocument();
+    expect(screen.getByTestId(`${testid}-gradeItemsTable`)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "These need to add up to 100%. Use 0% for any items you want to exclude.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Total Percentage (should be 100%)"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Weight")).toBeInTheDocument();
+    expect(screen.getByText("Item Explanation")).toBeInTheDocument();
+    expect(screen.getByText("Adjustments")).toBeInTheDocument();
+    expect(screen.getByText("Interacted at least once")).toBeInTheDocument();
+    expect(
+      screen.getByText("Owned & checked in on a living cow"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Interacted on at least n days"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("n days required")).toBeInTheDocument();
+    expect(screen.getByText("Partial credit:")).toBeInTheDocument();
 
     // No field should start out flagged invalid.
     [
@@ -150,7 +169,7 @@ describe("ParticipationGradeTabComponent tests", () => {
     });
 
     expect(screen.getByTestId(`${testid}-totalWeight`)).toHaveTextContent(
-      "110% (must equal 100%)",
+      "110%",
     );
   });
 
@@ -167,8 +186,22 @@ describe("ParticipationGradeTabComponent tests", () => {
     // criterion1 and criterion3 cleared (treated as 0) + criterion2's
     // default of 40 = 40%
     expect(screen.getByTestId(`${testid}-totalWeight`)).toHaveTextContent(
-      "40% (must equal 100%)",
+      "40%",
     );
+  });
+
+  test("shows a tooltip explaining partial credit on hover", async () => {
+    renderComponent();
+
+    fireEvent.mouseOver(
+      screen.getByTestId(`${testid}-criterion2PartialCredit`),
+    );
+
+    expect(
+      await screen.findByText(
+        "Assign pro-rated partial credit if student participated on at least one day, fewer than n days",
+      ),
+    ).toBeInTheDocument();
   });
 
   test("shows an error when start date is left empty", async () => {

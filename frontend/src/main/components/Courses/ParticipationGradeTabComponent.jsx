@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Form,
+  OverlayTrigger,
+  Row,
+  Table,
+  Tooltip,
+} from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -168,150 +176,171 @@ export default function ParticipationGradeTabComponent({
           </Col>
         </Row>
 
-        <Row>
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="criterion1Weight">
-                Interacted at least once (% weight)
-              </Form.Label>
-              <Form.Control
-                id="criterion1Weight"
-                type="number"
-                data-testid={`${testid}-criterion1Weight`}
-                isInvalid={!!errors.criterion1Weight}
-                {...register("criterion1Weight", {
-                  valueAsNumber: true,
-                  required: true,
-                  min: { value: 0, message: "Weight must be 0-100" },
-                  max: { value: 100, message: "Weight must be 0-100" },
-                })}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.criterion1Weight?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="criterion3Weight">
-                Owned &amp; checked in on a cow (% weight)
-              </Form.Label>
-              <Form.Control
-                id="criterion3Weight"
-                type="number"
-                data-testid={`${testid}-criterion3Weight`}
-                isInvalid={!!errors.criterion3Weight}
-                {...register("criterion3Weight", {
-                  valueAsNumber: true,
-                  required: true,
-                  min: { value: 0, message: "Weight must be 0-100" },
-                  max: { value: 100, message: "Weight must be 0-100" },
-                  validate: {
-                    sumsTo100: (v) => {
-                      const sum =
-                        Number(getValues("criterion1Weight") || 0) +
-                        Number(getValues("criterion2Weight") || 0) +
-                        Number(v || 0);
-                      return (
-                        sum === 100 ||
-                        "The three weights must sum to 100 (currently " +
-                          sum +
-                          ")"
-                      );
-                    },
-                  },
-                })}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.criterion3Weight?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group className="mb-3">
-              <Form.Label>Total weight</Form.Label>
-              <div data-testid={`${testid}-totalWeight`}>
-                {totalWeight}% {totalWeight !== 100 && "(must equal 100%)"}
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
+        <h5>Grade Items</h5>
+        <p>
+          These need to add up to 100%. Use 0% for any items you want to
+          exclude.
+        </p>
 
-        <Row>
-          <Col md={3}>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="criterion2Weight">
-                Interacted on at least n days (% weight)
-              </Form.Label>
-              <Form.Control
-                id="criterion2Weight"
-                type="number"
-                data-testid={`${testid}-criterion2Weight`}
-                isInvalid={!!errors.criterion2Weight}
-                {...register("criterion2Weight", {
-                  valueAsNumber: true,
-                  required: true,
-                  min: { value: 0, message: "Weight must be 0-100" },
-                  max: { value: 100, message: "Weight must be 0-100" },
-                })}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.criterion2Weight?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={3}>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="criterion2MinDays">
-                n (days required)
-              </Form.Label>
-              <Form.Control
-                id="criterion2MinDays"
-                type="number"
-                data-testid={`${testid}-criterion2MinDays`}
-                isInvalid={!!errors.criterion2MinDays}
-                {...register("criterion2MinDays", {
-                  valueAsNumber: true,
-                  required: true,
-                  validate: {
-                    inRange: (v) => {
-                      if (Number(getValues("criterion2Weight")) === 0) {
-                        return true;
-                      }
-                      const max = daysInPeriod(
-                        getValues("startDate"),
-                        getValues("endDate"),
-                      );
-                      if (max === null) {
-                        return true;
-                      }
-                      return (
-                        (v >= 1 && v <= max) ||
-                        `n must be between 1 and ${max} (the number of days in the period)`
-                      );
+        <Table bordered responsive data-testid={`${testid}-gradeItemsTable`}>
+          <thead>
+            <tr>
+              <th>Weight</th>
+              <th>Item Explanation</th>
+              <th>Adjustments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <Form.Control
+                  id="criterion1Weight"
+                  type="number"
+                  aria-label="Interacted at least once (% weight)"
+                  data-testid={`${testid}-criterion1Weight`}
+                  isInvalid={!!errors.criterion1Weight}
+                  {...register("criterion1Weight", {
+                    valueAsNumber: true,
+                    required: true,
+                    min: { value: 0, message: "Weight must be 0-100" },
+                    max: { value: 100, message: "Weight must be 0-100" },
+                  })}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.criterion1Weight?.message}
+                </Form.Control.Feedback>
+              </td>
+              <td>Interacted at least once</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <Form.Control
+                  id="criterion3Weight"
+                  type="number"
+                  aria-label="Owned & checked in on a living cow (% weight)"
+                  data-testid={`${testid}-criterion3Weight`}
+                  isInvalid={!!errors.criterion3Weight}
+                  {...register("criterion3Weight", {
+                    valueAsNumber: true,
+                    required: true,
+                    min: { value: 0, message: "Weight must be 0-100" },
+                    max: { value: 100, message: "Weight must be 0-100" },
+                    validate: {
+                      sumsTo100: (v) => {
+                        const sum =
+                          Number(getValues("criterion1Weight") || 0) +
+                          Number(getValues("criterion2Weight") || 0) +
+                          Number(v || 0);
+                        return (
+                          sum === 100 ||
+                          "The three weights must sum to 100 (currently " +
+                            sum +
+                            ")"
+                        );
+                      },
                     },
-                  },
-                })}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.criterion2MinDays?.message}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group className="mb-3">
-              <Form.Label htmlFor="criterion2PartialCredit">
-                Assign partial credit based on number of interactions
-              </Form.Label>
-              <Form.Check
-                type="switch"
-                id="criterion2PartialCredit"
-                data-testid={`${testid}-criterion2PartialCredit`}
-                {...register("criterion2PartialCredit")}
-              />
-            </Form.Group>
-          </Col>
-        </Row>
+                  })}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.criterion3Weight?.message}
+                </Form.Control.Feedback>
+              </td>
+              <td>Owned &amp; checked in on a living cow</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>
+                <Form.Control
+                  id="criterion2Weight"
+                  type="number"
+                  aria-label="Interacted on at least n days (% weight)"
+                  data-testid={`${testid}-criterion2Weight`}
+                  isInvalid={!!errors.criterion2Weight}
+                  {...register("criterion2Weight", {
+                    valueAsNumber: true,
+                    required: true,
+                    min: { value: 0, message: "Weight must be 0-100" },
+                    max: { value: 100, message: "Weight must be 0-100" },
+                  })}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.criterion2Weight?.message}
+                </Form.Control.Feedback>
+              </td>
+              <td>Interacted on at least n days</td>
+              <td>
+                <div className="mb-2">
+                  <Form.Label htmlFor="criterion2MinDays" className="me-2">
+                    n days required
+                  </Form.Label>
+                  <Form.Control
+                    id="criterion2MinDays"
+                    type="number"
+                    className="d-inline-block w-auto"
+                    data-testid={`${testid}-criterion2MinDays`}
+                    isInvalid={!!errors.criterion2MinDays}
+                    {...register("criterion2MinDays", {
+                      valueAsNumber: true,
+                      required: true,
+                      validate: {
+                        inRange: (v) => {
+                          if (Number(getValues("criterion2Weight")) === 0) {
+                            return true;
+                          }
+                          const max = daysInPeriod(
+                            getValues("startDate"),
+                            getValues("endDate"),
+                          );
+                          if (max === null) {
+                            return true;
+                          }
+                          return (
+                            (v >= 1 && v <= max) ||
+                            `n must be between 1 and ${max} (the number of days in the period)`
+                          );
+                        },
+                      },
+                    })}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.criterion2MinDays?.message}
+                  </Form.Control.Feedback>
+                </div>
+                <div>
+                  <Form.Label
+                    htmlFor="criterion2PartialCredit"
+                    className="me-2"
+                  >
+                    Partial credit:
+                  </Form.Label>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={
+                      <Tooltip>
+                        Assign pro-rated partial credit if student participated
+                        on at least one day, fewer than n days
+                      </Tooltip>
+                    }
+                  >
+                    <Form.Check
+                      type="switch"
+                      id="criterion2PartialCredit"
+                      className="d-inline-block"
+                      data-testid={`${testid}-criterion2PartialCredit`}
+                      {...register("criterion2PartialCredit")}
+                    />
+                  </OverlayTrigger>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td data-testid={`${testid}-totalWeight`}>{totalWeight}%</td>
+              <td>Total Percentage (should be 100%)</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </Table>
 
         {period !== null && (
           <p data-testid={`${testid}-daysInPeriod`}>
