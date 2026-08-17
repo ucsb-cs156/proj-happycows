@@ -598,6 +598,29 @@ describe("ParticipationGradeTabComponent tests", () => {
     expect(
       await screen.findByTestId(`${testid}-table-cell-row-0-col-perm`),
     ).toHaveTextContent("1111111");
+
+    expect(screen.getByTestId(`${testid}-table-header-perm`)).toHaveTextContent(
+      "Perm",
+    );
+    expect(
+      screen.getByTestId(`${testid}-table-header-lastName`),
+    ).toHaveTextContent("Last Name");
+    expect(
+      screen.getByTestId(`${testid}-table-header-firstMiddleName`),
+    ).toHaveTextContent("First/Middle Name");
+    expect(
+      screen.getByTestId(`${testid}-table-header-interactedAtLeastOnce`),
+    ).toHaveTextContent("Interacted");
+    expect(
+      screen.getByTestId(`${testid}-table-header-daysInteracted`),
+    ).toHaveTextContent("Days Interacted");
+    expect(
+      screen.getByTestId(`${testid}-table-header-ownedAndCheckedInOnACow`),
+    ).toHaveTextContent("Owned & Checked In On a Cow");
+    expect(
+      screen.getByTestId(`${testid}-table-header-totalPointsEarned`),
+    ).toHaveTextContent("Points Earned");
+
     expect(
       screen.getByTestId(`${testid}-table-cell-row-0-col-lastName`),
     ).toHaveTextContent("Gaucho");
