@@ -12,7 +12,13 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import OurTable from "main/components/OurTable";
+import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { useBackendMutation } from "main/utils/useBackend";
+import usePageSize from "main/utils/usePageSize";
+
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
+const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE_STORAGE_KEY = "participation-grade-page-size";
 
 const DEFAULT_VALUES = {
   startDate: "",
@@ -71,6 +77,12 @@ export default function ParticipationGradeTabComponent({
 
   const [grades, setGrades] = useState(null);
   const [downloadParams, setDownloadParams] = useState(null);
+
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
 
   const criterion1Weight = watch("criterion1Weight");
   const criterion2Weight = watch("criterion2Weight");
@@ -370,7 +382,20 @@ export default function ParticipationGradeTabComponent({
       </Form>
 
       {grades && (
-        <OurTable data={grades} columns={columns} testid={`${testid}-table`} />
+        <>
+          <PageSizeSelector
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            options={PAGE_SIZE_OPTIONS}
+            testid={`${testid}-table-page-size-selector`}
+          />
+          <OurTable
+            data={grades}
+            columns={columns}
+            testid={`${testid}-table`}
+            pageSize={pageSize}
+          />
+        </>
       )}
     </div>
   );
