@@ -23,6 +23,7 @@ describe("ParticipationGradeTabComponent tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     mockToast.mockClear();
+    localStorage.clear();
   });
 
   const renderComponent = () =>
@@ -46,6 +47,8 @@ describe("ParticipationGradeTabComponent tests", () => {
   test("renders the form with the expected default weights", () => {
     renderComponent();
 
+    expect(screen.getByTestId(`${testid}-startDate`)).toHaveValue("");
+    expect(screen.getByTestId(`${testid}-endDate`)).toHaveValue("");
     expect(screen.getByTestId(`${testid}-criterion1Weight`)).toHaveValue(40);
     expect(screen.getByTestId(`${testid}-criterion2Weight`)).toHaveValue(40);
     expect(screen.getByTestId(`${testid}-criterion2MinDays`)).toHaveValue(5);
@@ -104,6 +107,9 @@ describe("ParticipationGradeTabComponent tests", () => {
     ).not.toBeInTheDocument();
     expect(
       screen.queryByTestId(`${testid}-download-button`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testid}-table-page-size-selector`),
     ).not.toBeInTheDocument();
   });
 
@@ -655,6 +661,111 @@ describe("ParticipationGradeTabComponent tests", () => {
     ).toHaveTextContent("No");
 
     expect(mockToast).toHaveBeenCalledWith("Computed grades for 2 student(s).");
+  });
+
+  const manyGrades = Array.from({ length: 25 }, (_, i) => ({
+    studentId: i + 1,
+    perm: `100000${i}`,
+    lastName: `Last${i + 1}`,
+    firstMiddleName: `First${i + 1}`,
+    interactedAtLeastOnce: true,
+    daysInteracted: 1,
+    ownedAndCheckedInOnACow: true,
+    criterion1PointsEarned: 40,
+    criterion2PointsEarned: 40,
+    criterion3PointsEarned: 20,
+    totalPointsEarned: 100,
+  }));
+
+  test("renders a Page Size selector defaulting to 20 after a preview", async () => {
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    const selector = await screen.findByTestId(
+      `${testid}-table-page-size-selector`,
+    );
+    expect(selector).toHaveValue("20");
+  });
+
+  test("with more grades than the page size, pagination is shown and only a page's worth of rows render", async () => {
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    expect(
+      await screen.findByTestId(`${testid}-table-current-page-button`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testid}-table-cell-row-0-col-perm`),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`${testid}-table-cell-row-20-col-perm`),
+    ).not.toBeInTheDocument();
+  });
+
+  test("selecting a page size larger than the number of grades shows all rows and hides pagination", async () => {
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    const selector = await screen.findByTestId(
+      `${testid}-table-page-size-selector`,
+    );
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    expect(
+      screen.queryByTestId(`${testid}-table-current-page-button`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId(`${testid}-table-cell-row-24-col-perm`),
+    ).toBeInTheDocument();
+  });
+
+  test("selecting a page size stores it in localStorage under 'participation-grade-page-size'", async () => {
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    const selector = await screen.findByTestId(
+      `${testid}-table-page-size-selector`,
+    );
+    fireEvent.change(selector, { target: { value: "100" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("participation-grade-page-size")).toBe("100");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", async () => {
+    localStorage.setItem("participation-grade-page-size", "50");
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    const selector = await screen.findByTestId(
+      `${testid}-table-page-size-selector`,
+    );
+    expect(selector).toHaveValue("50");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored page size is not a valid option", async () => {
+    localStorage.setItem("participation-grade-page-size", "37");
+    axiosMock.onGet("/api/participationgrade/compute").reply(200, manyGrades);
+    renderComponent();
+    fillDates("2026-01-01", "2026-01-10");
+    fireEvent.click(screen.getByTestId(`${testid}-preview-button`));
+
+    const selector = await screen.findByTestId(
+      `${testid}-table-page-size-selector`,
+    );
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("participation-grade-page-size")).toBe("20");
   });
 
   test("shows a Download CSV button with a matching query string only after a successful preview", async () => {
