@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import OurTable, { ButtonColumn } from "main/components/OurTable";
+import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { formatTime } from "main/utils/dateUtils";
 import { useRestoreUser, useSuspendUser } from "main/utils/users";
+import usePageSize from "main/utils/usePageSize";
 import { Button, Modal } from "react-bootstrap";
+
+const PAGE_SIZE_OPTIONS = [20, 50, 100, 200, 500];
+const DEFAULT_PAGE_SIZE = 20;
+const PAGE_SIZE_STORAGE_KEY = "users-page-size";
 
 export default function UsersTable({ users }) {
   const { mutate: suspendUser } = useSuspendUser();
@@ -10,6 +16,12 @@ export default function UsersTable({ users }) {
   const [showSuspendModal, setShowSuspendModal] = useState(false);
   const [showRestoreModal, setShowRestoreModal] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
+
+  const [pageSize, handlePageSizeChange] = usePageSize({
+    storageKey: PAGE_SIZE_STORAGE_KEY,
+    options: PAGE_SIZE_OPTIONS,
+    defaultPageSize: DEFAULT_PAGE_SIZE,
+  });
 
   const suspendCallback = async (cell) => {
     setSelectedCell(cell);
@@ -107,7 +119,18 @@ export default function UsersTable({ users }) {
 
   return (
     <>
-      <OurTable data={users} columns={columns} testid={"UsersTable"} />
+      <PageSizeSelector
+        value={pageSize}
+        onChange={handlePageSizeChange}
+        options={PAGE_SIZE_OPTIONS}
+        testid={"UsersTable-page-size-selector"}
+      />
+      <OurTable
+        data={users}
+        columns={columns}
+        testid={"UsersTable"}
+        pageSize={pageSize}
+      />
       {suspendModal}
       {restoreModal}
     </>

@@ -12,6 +12,10 @@ vi.mock("main/utils/users", async () => ({
 }));
 
 describe("UserTable tests", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   test("renders without crashing for empty table", () => {
     render(<UsersTable users={[]} />);
   });
@@ -119,6 +123,78 @@ describe("UserTable tests", () => {
     await waitFor(() => {
       expect(getVisibleIdOrder()).toEqual(["2", "1", "3"]);
     });
+  });
+
+  const manyUsers = Array.from({ length: 25 }, (_, i) => ({
+    ...usersFixtures.threeUsers[0],
+    id: i + 1,
+    email: `user${i + 1}@ucsb.edu`,
+  }));
+
+  test("renders a Page Size selector defaulting to 20", () => {
+    render(<UsersTable users={manyUsers} />);
+
+    const selector = screen.getByTestId("UsersTable-page-size-selector");
+    expect(selector).toBeInTheDocument();
+    expect(selector).toHaveValue("20");
+  });
+
+  test("with more users than the page size, pagination is shown and only a page's worth of rows render", () => {
+    render(<UsersTable users={manyUsers} />);
+
+    expect(
+      screen.getByTestId("UsersTable-current-page-button"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("UsersTable-cell-row-0-col-id"),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("UsersTable-cell-row-20-col-id"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("selecting a page size larger than the number of users shows all rows and hides pagination", () => {
+    render(<UsersTable users={manyUsers} />);
+
+    const selector = screen.getByTestId("UsersTable-page-size-selector");
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    expect(
+      screen.queryByTestId("UsersTable-current-page-button"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId("UsersTable-cell-row-24-col-id"),
+    ).toBeInTheDocument();
+  });
+
+  test("selecting a page size stores it in localStorage under 'users-page-size'", async () => {
+    render(<UsersTable users={manyUsers} />);
+
+    const selector = screen.getByTestId("UsersTable-page-size-selector");
+    fireEvent.change(selector, { target: { value: "50" } });
+
+    await waitFor(() => {
+      expect(localStorage.getItem("users-page-size")).toBe("50");
+    });
+  });
+
+  test("uses the page size stored in localStorage when it is a valid option", () => {
+    localStorage.setItem("users-page-size", "50");
+
+    render(<UsersTable users={manyUsers} />);
+
+    const selector = screen.getByTestId("UsersTable-page-size-selector");
+    expect(selector).toHaveValue("50");
+  });
+
+  test("falls back to 20 and updates localStorage when the stored value is not a valid option", () => {
+    localStorage.setItem("users-page-size", "37");
+
+    render(<UsersTable users={manyUsers} />);
+
+    const selector = screen.getByTestId("UsersTable-page-size-selector");
+    expect(selector).toHaveValue("20");
+    expect(localStorage.getItem("users-page-size")).toBe("20");
   });
 });
 
