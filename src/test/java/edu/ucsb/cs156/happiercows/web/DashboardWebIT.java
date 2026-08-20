@@ -54,6 +54,8 @@ public class DashboardWebIT extends WebTestCase {
                 .hasText("Hidden from Students");
         assertThat(page.locator("label[for='DashboardPage-TotalCowsSection-visible-switch']"))
                 .hasText("Hidden from Students");
+        assertThat(page.locator("label[for='DashboardPage-CapacityOverTimeSection-visible-switch']"))
+                .hasText("Hidden from Students");
         assertThat(page.locator("label[for='DashboardPage-LeaderboardSection-visible-switch']"))
                 .hasText("Hidden from Students");
     }
