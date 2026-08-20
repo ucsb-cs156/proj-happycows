@@ -66,6 +66,7 @@ const baseGamePlus = {
     showTrendsSection: true,
     showHealthSection: true,
     showTotalCowsSection: true,
+    showCapacityOverTimeSection: true,
     showFarmerLeaderboardSection: true,
   },
   totalUsers: 4,
@@ -132,6 +133,9 @@ describe("DashboardPage as admin", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("DashboardPage-TotalCowsSection"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("DashboardPage-CapacityOverTimeSection"),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("DashboardPage-LeaderboardSection"),
@@ -396,6 +400,7 @@ describe("DashboardPage as admin", () => {
     ["TrendsSection", "showTrendsSection"],
     ["HealthSection", "showHealthSection"],
     ["TotalCowsSection", "showTotalCowsSection"],
+    ["CapacityOverTimeSection", "showCapacityOverTimeSection"],
     ["LeaderboardSection", "showFarmerLeaderboardSection"],
   ])(
     "toggling the %s visibility switch calls the dashboardSettings endpoint and updates the switch",
@@ -594,6 +599,23 @@ describe("DashboardPage as student", () => {
     await screen.findByTestId("DashboardPage-OverviewSection");
     expect(
       screen.queryByTestId("DashboardPage-TotalCowsSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the capacity over time section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
+        showCapacityOverTimeSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-CapacityOverTimeSection"),
     ).not.toBeInTheDocument();
   });
 

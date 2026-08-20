@@ -62,6 +62,8 @@ export default function DashboardPage() {
   const showTrendsSection = game?.showTrendsSection !== false;
   const showHealthSection = game?.showHealthSection !== false;
   const showTotalCowsSection = game?.showTotalCowsSection !== false;
+  const showCapacityOverTimeSection =
+    game?.showCapacityOverTimeSection !== false;
   const showFarmerLeaderboardSection =
     game?.showFarmerLeaderboardSection !== false;
 
@@ -96,7 +98,8 @@ export default function DashboardPage() {
         (isAdminView ||
           showTrendsSection ||
           showHealthSection ||
-          showTotalCowsSection),
+          showTotalCowsSection ||
+          showCapacityOverTimeSection),
     },
   );
   // Stryker restore all
@@ -141,6 +144,7 @@ export default function DashboardPage() {
       showTrendsSection: showTrendsSection,
       showHealthSection: showHealthSection,
       showTotalCowsSection: showTotalCowsSection,
+      showCapacityOverTimeSection: showCapacityOverTimeSection,
       showFarmerLeaderboardSection: showFarmerLeaderboardSection,
       [field]: value,
     });
@@ -475,6 +479,22 @@ export default function DashboardPage() {
               data={timeSeriesData}
               selectors="Total Cows"
               testid="DashboardPage-TotalCowsSection-time-series"
+            />
+          </DashboardSectionCard>
+
+          <DashboardSectionCard
+            title="Capacity, Cows, and Health Over Time"
+            visible={showCapacityOverTimeSection}
+            isAdminView={isAdminView}
+            onToggleVisible={(v) =>
+              updateDashboardSetting("showCapacityOverTimeSection", v)
+            }
+            testid="DashboardPage-CapacityOverTimeSection"
+          >
+            <TimeSeries
+              data={timeSeriesData}
+              selectors={["Effective Capacity", "Total Cows", "Health"]}
+              testid="DashboardPage-CapacityOverTimeSection-time-series"
             />
           </DashboardSectionCard>
 

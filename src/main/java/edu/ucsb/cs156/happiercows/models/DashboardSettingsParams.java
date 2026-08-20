@@ -18,5 +18,6 @@ public class DashboardSettingsParams {
     private boolean showTrendsSection;
     private boolean showHealthSection;
     private boolean showTotalCowsSection;
+    private boolean showCapacityOverTimeSection;
     private boolean showFarmerLeaderboardSection;
 }

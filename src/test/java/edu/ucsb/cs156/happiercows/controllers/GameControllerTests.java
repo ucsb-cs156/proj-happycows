@@ -1812,6 +1812,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .showTrendsSection(false)
                 .showHealthSection(true)
                 .showTotalCowsSection(false)
+                .showCapacityOverTimeSection(true)
                 .showFarmerLeaderboardSection(true)
                 .build();
 
@@ -1826,6 +1827,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .showTrendsSection(true)
                 .showHealthSection(false)
                 .showTotalCowsSection(true)
+                .showCapacityOverTimeSection(false)
                 .showFarmerLeaderboardSection(false)
                 .build();
 
@@ -1838,6 +1840,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .showTrendsSection(true)
                 .showHealthSection(false)
                 .showTotalCowsSection(true)
+                .showCapacityOverTimeSection(false)
                 .showFarmerLeaderboardSection(false)
                 .build();
 
@@ -1873,6 +1876,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .showTrendsSection(true)
                 .showHealthSection(true)
                 .showTotalCowsSection(true)
+                .showCapacityOverTimeSection(true)
                 .showFarmerLeaderboardSection(true)
                 .build();
 
@@ -1920,6 +1924,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .gameId(9L)
                 .numCows(10)
                 .avgHealth(80.5)
+                .effectiveCapacity(15)
                 .createDate(Instant.parse("2024-01-01T00:00:00Z"))
                 .build();
 
@@ -1927,6 +1932,7 @@ public class GameControllerTests extends ControllerTestCase {
                 .gameId(9L)
                 .numCows(12)
                 .avgHealth(75.0)
+                .effectiveCapacity(18)
                 .createDate(Instant.parse("2024-01-02T00:00:00Z"))
                 .build();
 
@@ -1953,7 +1959,13 @@ public class GameControllerTests extends ControllerTestCase {
                         "color", "#FF8042",
                         "values", List.of(
                                 Map.of("date", "2024-01-01T00:00:00Z", "value", 10),
-                                Map.of("date", "2024-01-02T00:00:00Z", "value", 12))));
+                                Map.of("date", "2024-01-02T00:00:00Z", "value", 12))),
+                Map.of(
+                        "name", "Effective Capacity",
+                        "color", "#00C49F",
+                        "values", List.of(
+                                Map.of("date", "2024-01-01T00:00:00Z", "value", 15),
+                                Map.of("date", "2024-01-02T00:00:00Z", "value", 18))));
 
         assertEquals(expected, actual);
     }
