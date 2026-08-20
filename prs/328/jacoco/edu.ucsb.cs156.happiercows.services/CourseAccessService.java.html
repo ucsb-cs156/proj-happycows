@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseAccessService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.services</a> &gt; <span class="el_source">CourseAccessService.java</span></div><h1>CourseAccessService.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.services;
+
+import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.Staff;
+import edu.ucsb.cs156.happiercows.entities.Student;
+import edu.ucsb.cs156.happiercows.entities.User;
+import edu.ucsb.cs156.happiercows.repositories.StaffRepository;
+import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
+import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Determines whether a user has access to a course-linked Game, based on
+ * whether their email appears on the roster (as a Student or Staff member)
+ * of the course the Game is linked to. See issue #251.
+ */
+@Service
+<span class="fc" id="L23">public class CourseAccessService {</span>
+
+    @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
+    private StaffRepository staffRepository;
+
+    /**
+     * A user is eligible for a course-linked game if they are an admin, or
+     * if their email appears on the course's roster of students or staff.
+     * A game with no course (courseId == null) is open to everyone.
+     */
+    public boolean isEligibleForGame(User user, Game game) {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (game.getCourseId() == null) {</span>
+<span class="fc" id="L38">            return true;</span>
+        }
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (user.isAdmin()) {</span>
+<span class="fc" id="L41">            return true;</span>
+        }
+<span class="fc" id="L43">        return getCourseIdsForUser(user).contains(game.getCourseId());</span>
+    }
+
+    /**
+     * Returns the distinct list of course ids for which this user's email
+     * appears on the roster as a student or as staff.
+     *
+     * &lt;p&gt;Roster emails are compared to the user's email using
+     * {@link CanonicalFormConverter#areEquivalentEmails}, not exact string
+     * equality, so that a roster row uploaded with a stale/non-canonical
+     * email (e.g. an old {@code @umail.ucsb.edu} entry that predates this
+     * fix, or one that slips in from a school whose export format isn't
+     * fully normalized) still matches a student logging in with the
+     * canonical form of the same address. See issue #278.
+     */
+    public List&lt;Long&gt; getCourseIdsForUser(User user) {
+<span class="fc" id="L59">        List&lt;Long&gt; courseIds = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L60">        String email = user.getEmail();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        for (Student student : studentRepository.findAll()) {</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            if (student.getCourseId() != null</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                    &amp;&amp; !courseIds.contains(student.getCourseId())</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                    &amp;&amp; CanonicalFormConverter.areEquivalentEmails(student.getEmail(), email)) {</span>
+<span class="fc" id="L66">                courseIds.add(student.getCourseId());</span>
+            }
+<span class="fc" id="L68">        }</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (Staff staff : staffRepository.findAll()) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            if (staff.getCourseId() != null</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">                    &amp;&amp; !courseIds.contains(staff.getCourseId())</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                    &amp;&amp; CanonicalFormConverter.areEquivalentEmails(staff.getEmail(), email)) {</span>
+<span class="fc" id="L74">                courseIds.add(staff.getCourseId());</span>
+            }
+<span class="fc" id="L76">        }</span>
+
+<span class="fc" id="L78">        return courseIds;</span>
+    }
+
+    /**
+     * Returns the Student roster row that corresponds to this user, for the
+     * course linked to the given game - but only if the game is actually
+     * linked to a course. Used to decide whether a FarmerActivity row should
+     * be recorded for a play-page view or a buy/sell action: activity is
+     * only tracked for course-linked games, and only for users whose email
+     * matches a student on that course's roster (see issue #291), using the
+     * same canonical-email-matching rule as {@link #getCourseIdsForUser}.
+     */
+    public Optional&lt;Student&gt; findMatchingStudentForCourseLinkedGame(User user, Game game) {
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (game.getCourseId() == null) {</span>
+<span class="fc" id="L92">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L95">        String email = user.getEmail();</span>
+
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for (Student student : studentRepository.findByCourseId(game.getCourseId())) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            if (CanonicalFormConverter.areEquivalentEmails(student.getEmail(), email)) {</span>
+<span class="fc" id="L99">                return Optional.of(student);</span>
+            }
+<span class="fc" id="L101">        }</span>
+
+<span class="fc" id="L103">        return Optional.empty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
