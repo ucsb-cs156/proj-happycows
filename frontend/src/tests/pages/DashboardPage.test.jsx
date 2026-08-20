@@ -619,6 +619,49 @@ describe("DashboardPage as student", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("the capacity over time section offers selectors for Effective Capacity, Total Cows, and Health", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+      {
+        name: "Effective Capacity",
+        color: "#00C49F",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 20 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    const selectors = await screen.findByTestId(
+      "DashboardPage-CapacityOverTimeSection-time-series-selectors",
+    );
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-effective-capacity-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-total-cows-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-health-wrapper",
+      ),
+    ).toBeInTheDocument();
+  });
+
   test("hides the overview section when the instructor has marked it not visible", async () => {
     axiosMock.onGet("/api/game/plus").reply(200, {
       ...baseGamePlus,
