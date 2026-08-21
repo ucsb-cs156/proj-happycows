@@ -70,6 +70,9 @@ public class GameStatsServiceTests {
         .numCows(20)
         .avgHealth(10)
         .effectiveCapacity(100)
+        .numFarmers(1)
+        .capacityPerUser(20)
+        .carryingCapacity(100)
         .build();
 
     GameStats expectedStats2 = GameStats
@@ -78,6 +81,9 @@ public class GameStatsServiceTests {
         .numCows(120)
         .avgHealth(20)
         .effectiveCapacity(200)
+        .numFarmers(10)
+        .capacityPerUser(20)
+        .carryingCapacity(100)
         .build();
 
 
