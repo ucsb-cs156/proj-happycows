@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ParticipationGradeController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">ParticipationGradeController.java</span></div><h1>ParticipationGradeController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.helpers.ParticipationGradeCSVHelper;
+import edu.ucsb.cs156.happiercows.models.ParticipationGrade;
+import edu.ucsb.cs156.happiercows.models.ParticipationGradeParams;
+import edu.ucsb.cs156.happiercows.services.ParticipationGradeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = &quot;ParticipationGrade&quot;)
+@RequestMapping(&quot;/api/participationgrade&quot;)
+@RestController
+<span class="fc" id="L33">public class ParticipationGradeController extends ApiController {</span>
+
+    @Autowired
+    ParticipationGradeService participationGradeService;
+
+    @Operation(summary = &quot;Compute participation grades for a course's roster over a date range&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/compute&quot;)
+    public List&lt;ParticipationGrade&gt; compute(
+            @Parameter(name = &quot;courseId&quot;) @RequestParam Long courseId,
+            @Parameter(name = &quot;startDate&quot;) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @Parameter(name = &quot;endDate&quot;) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @Parameter(name = &quot;criterion1Weight&quot;) @RequestParam int criterion1Weight,
+            @Parameter(name = &quot;criterion2Weight&quot;) @RequestParam int criterion2Weight,
+            @Parameter(name = &quot;criterion2MinDays&quot;) @RequestParam int criterion2MinDays,
+            @Parameter(name = &quot;criterion2PartialCredit&quot;) @RequestParam boolean criterion2PartialCredit,
+            @Parameter(name = &quot;criterion3Weight&quot;) @RequestParam int criterion3Weight,
+            @Parameter(name = &quot;totalPoints&quot;) @RequestParam double totalPoints) {
+
+<span class="fc" id="L52">        ParticipationGradeParams params = toParams(courseId, startDate, endDate, criterion1Weight,</span>
+                criterion2Weight, criterion2MinDays, criterion2PartialCredit, criterion3Weight, totalPoints);
+
+<span class="fc" id="L55">        return participationGradeService.computeGrades(params);</span>
+    }
+
+    @Operation(summary = &quot;Download computed participation grades for a course's roster as a csv&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/download&quot;)
+    public ResponseEntity&lt;Resource&gt; download(
+            @Parameter(name = &quot;courseId&quot;) @RequestParam Long courseId,
+            @Parameter(name = &quot;startDate&quot;) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @Parameter(name = &quot;endDate&quot;) @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @Parameter(name = &quot;criterion1Weight&quot;) @RequestParam int criterion1Weight,
+            @Parameter(name = &quot;criterion2Weight&quot;) @RequestParam int criterion2Weight,
+            @Parameter(name = &quot;criterion2MinDays&quot;) @RequestParam int criterion2MinDays,
+            @Parameter(name = &quot;criterion2PartialCredit&quot;) @RequestParam boolean criterion2PartialCredit,
+            @Parameter(name = &quot;criterion3Weight&quot;) @RequestParam int criterion3Weight,
+            @Parameter(name = &quot;totalPoints&quot;) @RequestParam double totalPoints) throws IOException {
+
+<span class="fc" id="L72">        ParticipationGradeParams params = toParams(courseId, startDate, endDate, criterion1Weight,</span>
+                criterion2Weight, criterion2MinDays, criterion2PartialCredit, criterion3Weight, totalPoints);
+
+<span class="fc" id="L75">        List&lt;ParticipationGrade&gt; grades = participationGradeService.computeGrades(params);</span>
+
+<span class="fc" id="L77">        String filename = String.format(&quot;participationGrades%05d.csv&quot;, courseId);</span>
+
+<span class="fc" id="L79">        ByteArrayInputStream bais = ParticipationGradeCSVHelper.toCSV(grades);</span>
+<span class="fc" id="L80">        InputStreamResource isr = new InputStreamResource(bais);</span>
+
+<span class="fc" id="L82">        return ResponseEntity.ok()</span>
+<span class="fc" id="L83">                .header(HttpHeaders.CONTENT_DISPOSITION, &quot;attachment; filename=&quot; + filename)</span>
+<span class="fc" id="L84">                .contentType(MediaType.parseMediaType(&quot;application/csv&quot;)).body(isr);</span>
+    }
+
+    private ParticipationGradeParams toParams(Long courseId, LocalDate startDate, LocalDate endDate,
+            int criterion1Weight, int criterion2Weight, int criterion2MinDays, boolean criterion2PartialCredit,
+            int criterion3Weight, double totalPoints) {
+<span class="fc" id="L90">        return ParticipationGradeParams.builder()</span>
+<span class="fc" id="L91">                .courseId(courseId)</span>
+<span class="fc" id="L92">                .startDate(startDate)</span>
+<span class="fc" id="L93">                .endDate(endDate)</span>
+<span class="fc" id="L94">                .criterion1Weight(criterion1Weight)</span>
+<span class="fc" id="L95">                .criterion2Weight(criterion2Weight)</span>
+<span class="fc" id="L96">                .criterion2MinDays(criterion2MinDays)</span>
+<span class="fc" id="L97">                .criterion2PartialCredit(criterion2PartialCredit)</span>
+<span class="fc" id="L98">                .criterion3Weight(criterion3Weight)</span>
+<span class="fc" id="L99">                .totalPoints(totalPoints)</span>
+<span class="fc" id="L100">                .build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>

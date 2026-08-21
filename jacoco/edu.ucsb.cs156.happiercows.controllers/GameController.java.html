@@ -432,11 +432,12 @@ import java.util.stream.StreamSupport;
 <span class="fc" id="L432">        game.setShowTrendsSection(params.isShowTrendsSection());</span>
 <span class="fc" id="L433">        game.setShowHealthSection(params.isShowHealthSection());</span>
 <span class="fc" id="L434">        game.setShowTotalCowsSection(params.isShowTotalCowsSection());</span>
-<span class="fc" id="L435">        game.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());</span>
+<span class="fc" id="L435">        game.setShowCapacityOverTimeSection(params.isShowCapacityOverTimeSection());</span>
+<span class="fc" id="L436">        game.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());</span>
 
-<span class="fc" id="L437">        Game saved = gameRepository.save(game);</span>
+<span class="fc" id="L438">        Game saved = gameRepository.save(game);</span>
 
-<span class="fc" id="L439">        return ResponseEntity.ok().body(saved);</span>
+<span class="fc" id="L440">        return ResponseEntity.ok().body(saved);</span>
     }
 
     @Operation(summary = &quot;Get the number of cows for each farmer in a game&quot;)
@@ -444,11 +445,11 @@ import java.util.stream.StreamSupport;
     @GetMapping(&quot;/numcows&quot;)
     public ResponseEntity&lt;List&lt;Integer&gt;&gt; getNumCowsForGameId(
             @Parameter(name=&quot;gameId&quot;) @RequestParam Long gameId) {
-<span class="fc" id="L447">        Iterable&lt;Farmer&gt; farmerList = farmerRepository.findByGameId(gameId);</span>
-<span class="fc" id="L448">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(farmerList.spliterator(), false)</span>
-<span class="fc" id="L449">                .map(Farmer::getNumOfCows)</span>
-<span class="fc" id="L450">                .collect(Collectors.toList());</span>
-<span class="fc" id="L451">        return ResponseEntity.ok().body(numCowsList);</span>
+<span class="fc" id="L448">        Iterable&lt;Farmer&gt; farmerList = farmerRepository.findByGameId(gameId);</span>
+<span class="fc" id="L449">        List&lt;Integer&gt; numCowsList = StreamSupport.stream(farmerList.spliterator(), false)</span>
+<span class="fc" id="L450">                .map(Farmer::getNumOfCows)</span>
+<span class="fc" id="L451">                .collect(Collectors.toList());</span>
+<span class="fc" id="L452">        return ResponseEntity.ok().body(numCowsList);</span>
     }
 
     @Operation(summary = &quot;Get timeseries stats for a game&quot;)
@@ -456,35 +457,45 @@ import java.util.stream.StreamSupport;
     @GetMapping(&quot;/timeseries&quot;)
     public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getGameTimeSeries(
             @Parameter(name=&quot;commonId&quot;) @RequestParam Long commonId) {
-<span class="fc" id="L459">        Iterable&lt;GameStats&gt; gameStats = gameStatsRepository.findAllByGameId(commonId);</span>
-<span class="fc" id="L460">        List&lt;GameStats&gt; sortedStats = StreamSupport.stream(gameStats.spliterator(), false)</span>
-<span class="fc" id="L461">                .sorted(Comparator.comparing(GameStats::getCreateDate))</span>
-<span class="fc" id="L462">                .collect(Collectors.toList());</span>
+<span class="fc" id="L460">        Iterable&lt;GameStats&gt; gameStats = gameStatsRepository.findAllByGameId(commonId);</span>
+<span class="fc" id="L461">        List&lt;GameStats&gt; sortedStats = StreamSupport.stream(gameStats.spliterator(), false)</span>
+<span class="fc" id="L462">                .sorted(Comparator.comparing(GameStats::getCreateDate))</span>
+<span class="fc" id="L463">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L464">        List&lt;Map&lt;String, Object&gt;&gt; healthValues = sortedStats.stream()</span>
-<span class="fc" id="L465">                .map(stat -&gt; Map.&lt;String, Object&gt;of(</span>
-<span class="fc" id="L466">                        &quot;date&quot;, stat.getCreateDate().toString(),</span>
-<span class="fc" id="L467">                        &quot;value&quot;, stat.getAvgHealth()))</span>
-<span class="fc" id="L468">                .collect(Collectors.toList());</span>
+<span class="fc" id="L465">        List&lt;Map&lt;String, Object&gt;&gt; healthValues = sortedStats.stream()</span>
+<span class="fc" id="L466">                .map(stat -&gt; Map.&lt;String, Object&gt;of(</span>
+<span class="fc" id="L467">                        &quot;date&quot;, stat.getCreateDate().toString(),</span>
+<span class="fc" id="L468">                        &quot;value&quot;, stat.getAvgHealth()))</span>
+<span class="fc" id="L469">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L470">        List&lt;Map&lt;String, Object&gt;&gt; totalCowsValues = sortedStats.stream()</span>
-<span class="fc" id="L471">                .map(stat -&gt; Map.&lt;String, Object&gt;of(</span>
-<span class="fc" id="L472">                        &quot;date&quot;, stat.getCreateDate().toString(),</span>
-<span class="fc" id="L473">                        &quot;value&quot;, stat.getNumCows()))</span>
-<span class="fc" id="L474">                .collect(Collectors.toList());</span>
+<span class="fc" id="L471">        List&lt;Map&lt;String, Object&gt;&gt; totalCowsValues = sortedStats.stream()</span>
+<span class="fc" id="L472">                .map(stat -&gt; Map.&lt;String, Object&gt;of(</span>
+<span class="fc" id="L473">                        &quot;date&quot;, stat.getCreateDate().toString(),</span>
+<span class="fc" id="L474">                        &quot;value&quot;, stat.getNumCows()))</span>
+<span class="fc" id="L475">                .collect(Collectors.toList());</span>
 
-<span class="fc" id="L476">        List&lt;Map&lt;String, Object&gt;&gt; timeSeries = List.of(</span>
-<span class="fc" id="L477">                Map.of(</span>
+<span class="fc" id="L477">        List&lt;Map&lt;String, Object&gt;&gt; effectiveCapacityValues = sortedStats.stream()</span>
+<span class="fc" id="L478">                .map(stat -&gt; Map.&lt;String, Object&gt;of(</span>
+<span class="fc" id="L479">                        &quot;date&quot;, stat.getCreateDate().toString(),</span>
+<span class="fc" id="L480">                        &quot;value&quot;, stat.getEffectiveCapacity()))</span>
+<span class="fc" id="L481">                .collect(Collectors.toList());</span>
+
+<span class="fc" id="L483">        List&lt;Map&lt;String, Object&gt;&gt; timeSeries = List.of(</span>
+<span class="fc" id="L484">                Map.of(</span>
                         &quot;name&quot;, &quot;Health&quot;,
                         &quot;color&quot;, &quot;#0088FE&quot;,
-<span class="fc" id="L480">                        &quot;percentage&quot;, true,</span>
+<span class="fc" id="L487">                        &quot;percentage&quot;, true,</span>
                         &quot;values&quot;, healthValues),
-<span class="fc" id="L482">                Map.of(</span>
+<span class="fc" id="L489">                Map.of(</span>
                         &quot;name&quot;, &quot;Total Cows&quot;,
                         &quot;color&quot;, &quot;#FF8042&quot;,
-                        &quot;values&quot;, totalCowsValues));
+                        &quot;values&quot;, totalCowsValues),
+<span class="fc" id="L493">                Map.of(</span>
+                        &quot;name&quot;, &quot;Effective Capacity&quot;,
+                        &quot;color&quot;, &quot;#00C49F&quot;,
+                        &quot;values&quot;, effectiveCapacityValues));
 
-<span class="fc" id="L487">        return ResponseEntity.ok().body(timeSeries);</span>
+<span class="fc" id="L498">        return ResponseEntity.ok().body(timeSeries);</span>
     }
 
     
