@@ -662,6 +662,109 @@ describe("DashboardPage as student", () => {
     ).toBeInTheDocument();
   });
 
+  test("the trends over time section only offers selectors for Health and Total Cows, not Effective Capacity", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+      {
+        name: "Effective Capacity",
+        color: "#00C49F",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 20 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    const selectors = await screen.findByTestId(
+      "DashboardPage-TrendsSection-time-series-selectors",
+    );
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-health-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-total-cows-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).queryByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-effective-capacity-wrapper",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("the health over time section shows only Health, with no selector checkboxes", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-HealthSection-time-series");
+    expect(
+      screen.queryByTestId("DashboardPage-HealthSection-time-series-selectors"),
+    ).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId("DashboardPage-HealthSection-time-series"),
+      ).queryByText("Total Cows"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("the total cows over time section shows only Total Cows, with no selector checkboxes", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-TotalCowsSection-time-series");
+    expect(
+      screen.queryByTestId(
+        "DashboardPage-TotalCowsSection-time-series-selectors",
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId("DashboardPage-TotalCowsSection-time-series"),
+      ).queryByText("Health"),
+    ).not.toBeInTheDocument();
+  });
+
   test("hides the overview section when the instructor has marked it not visible", async () => {
     axiosMock.onGet("/api/game/plus").reply(200, {
       ...baseGamePlus,

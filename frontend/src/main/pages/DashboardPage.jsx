@@ -447,7 +447,11 @@ export default function DashboardPage() {
             }
             testid="DashboardPage-TrendsSection"
           >
-            <TimeSeries data={timeSeriesData} selectors="all" />
+            <TimeSeries
+              data={timeSeriesData}
+              selectors={["Health", "Total Cows"]}
+              testid="DashboardPage-TrendsSection-time-series"
+            />
           </DashboardSectionCard>
 
           <DashboardSectionCard
@@ -483,7 +487,7 @@ export default function DashboardPage() {
           </DashboardSectionCard>
 
           <DashboardSectionCard
-            title="Capacity, Cows, and Health Over Time"
+            title="Trends Over Time plus Capacity"
             visible={showCapacityOverTimeSection}
             isAdminView={isAdminView}
             onToggleVisible={(v) =>
@@ -493,7 +497,7 @@ export default function DashboardPage() {
           >
             <TimeSeries
               data={timeSeriesData}
-              selectors={["Effective Capacity", "Total Cows", "Health"]}
+              selectors={["Health", "Total Cows", "Effective Capacity"]}
               testid="DashboardPage-CapacityOverTimeSection-time-series"
             />
           </DashboardSectionCard>

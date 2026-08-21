@@ -65,11 +65,14 @@ export default function TimeSeries({
     [selectorNames, seriesByName],
   );
 
-  const visibleData = data.filter(
-    (series) =>
-      !selectorNames.includes(series.name) ||
-      selectedSeriesNames.includes(series.name),
-  );
+  const visibleData =
+    selectorNames.length === 0
+      ? data
+      : data.filter(
+          (series) =>
+            selectorNames.includes(series.name) &&
+            selectedSeriesNames.includes(series.name),
+        );
 
   const normalizedData = normalizeSeriesData(visibleData);
   const showPercentageAxis = hasPercentageSeries(visibleData);
@@ -77,7 +80,7 @@ export default function TimeSeries({
   const { minValue, maxValue } = getGlobalValueRange(visibleData);
   const hasStandardScale = minValue !== null && maxValue !== null;
   const selectorControls =
-    selectorSeries.length > 0 ? (
+    selectorSeries.length > 1 ? (
       <div
         className="d-flex justify-content-center flex-wrap gap-3 mt-3"
         aria-label="Time series selectors"
