@@ -45,6 +45,7 @@ const baseGame = {
   showTrendsSection: true,
   showHealthSection: true,
   showTotalCowsSection: true,
+  showCapacityOverTimeSection: true,
   showFarmerLeaderboardSection: true,
 };
 
@@ -140,6 +141,7 @@ StudentViewSomeSectionsShown.parameters = {
       showTrendsSection: false,
       showHealthSection: false,
       showTotalCowsSection: false,
+      showCapacityOverTimeSection: false,
     }),
   ],
 };

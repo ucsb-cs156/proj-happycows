@@ -432,6 +432,7 @@ public class GameController extends ApiController {
         game.setShowTrendsSection(params.isShowTrendsSection());
         game.setShowHealthSection(params.isShowHealthSection());
         game.setShowTotalCowsSection(params.isShowTotalCowsSection());
+        game.setShowCapacityOverTimeSection(params.isShowCapacityOverTimeSection());
         game.setShowFarmerLeaderboardSection(params.isShowFarmerLeaderboardSection());
 
         Game saved = gameRepository.save(game);
@@ -473,6 +474,12 @@ public class GameController extends ApiController {
                         "value", stat.getNumCows()))
                 .collect(Collectors.toList());
 
+        List<Map<String, Object>> effectiveCapacityValues = sortedStats.stream()
+                .map(stat -> Map.<String, Object>of(
+                        "date", stat.getCreateDate().toString(),
+                        "value", stat.getEffectiveCapacity()))
+                .collect(Collectors.toList());
+
         List<Map<String, Object>> timeSeries = List.of(
                 Map.of(
                         "name", "Health",
@@ -482,7 +489,11 @@ public class GameController extends ApiController {
                 Map.of(
                         "name", "Total Cows",
                         "color", "#FF8042",
-                        "values", totalCowsValues));
+                        "values", totalCowsValues),
+                Map.of(
+                        "name", "Effective Capacity",
+                        "color", "#00C49F",
+                        "values", effectiveCapacityValues));
 
         return ResponseEntity.ok().body(timeSeries);
     }

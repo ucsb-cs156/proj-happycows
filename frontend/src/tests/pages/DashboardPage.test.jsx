@@ -66,6 +66,7 @@ const baseGamePlus = {
     showTrendsSection: true,
     showHealthSection: true,
     showTotalCowsSection: true,
+    showCapacityOverTimeSection: true,
     showFarmerLeaderboardSection: true,
   },
   totalUsers: 4,
@@ -132,6 +133,9 @@ describe("DashboardPage as admin", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("DashboardPage-TotalCowsSection"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("DashboardPage-CapacityOverTimeSection"),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId("DashboardPage-LeaderboardSection"),
@@ -396,6 +400,7 @@ describe("DashboardPage as admin", () => {
     ["TrendsSection", "showTrendsSection"],
     ["HealthSection", "showHealthSection"],
     ["TotalCowsSection", "showTotalCowsSection"],
+    ["CapacityOverTimeSection", "showCapacityOverTimeSection"],
     ["LeaderboardSection", "showFarmerLeaderboardSection"],
   ])(
     "toggling the %s visibility switch calls the dashboardSettings endpoint and updates the switch",
@@ -594,6 +599,169 @@ describe("DashboardPage as student", () => {
     await screen.findByTestId("DashboardPage-OverviewSection");
     expect(
       screen.queryByTestId("DashboardPage-TotalCowsSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("hides the capacity over time section when the instructor has marked it not visible", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, {
+      ...baseGamePlus,
+      game: {
+        ...baseGamePlus.game,
+        showCapacityOverTimeSection: false,
+      },
+    });
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-OverviewSection");
+    expect(
+      screen.queryByTestId("DashboardPage-CapacityOverTimeSection"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("the capacity over time section offers selectors for Effective Capacity, Total Cows, and Health", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+      {
+        name: "Effective Capacity",
+        color: "#00C49F",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 20 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    const selectors = await screen.findByTestId(
+      "DashboardPage-CapacityOverTimeSection-time-series-selectors",
+    );
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-effective-capacity-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-total-cows-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-CapacityOverTimeSection-time-series-selector-health-wrapper",
+      ),
+    ).toBeInTheDocument();
+  });
+
+  test("the trends over time section only offers selectors for Health and Total Cows, not Effective Capacity", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+      {
+        name: "Effective Capacity",
+        color: "#00C49F",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 20 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    const selectors = await screen.findByTestId(
+      "DashboardPage-TrendsSection-time-series-selectors",
+    );
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-health-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).getByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-total-cows-wrapper",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      within(selectors).queryByTestId(
+        "DashboardPage-TrendsSection-time-series-selector-effective-capacity-wrapper",
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  test("the health over time section shows only Health, with no selector checkboxes", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-HealthSection-time-series");
+    expect(
+      screen.queryByTestId("DashboardPage-HealthSection-time-series-selectors"),
+    ).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId("DashboardPage-HealthSection-time-series"),
+      ).queryByText("Total Cows"),
+    ).not.toBeInTheDocument();
+  });
+
+  test("the total cows over time section shows only Total Cows, with no selector checkboxes", async () => {
+    axiosMock.onGet("/api/game/plus").reply(200, baseGamePlus);
+    axiosMock.onGet("/api/game/timeseries").reply(200, [
+      {
+        name: "Health",
+        color: "#0088FE",
+        percentage: true,
+        values: [{ date: "2025-01-01T00:00:00Z", value: 90 }],
+      },
+      {
+        name: "Total Cows",
+        color: "#FF8042",
+        values: [{ date: "2025-01-01T00:00:00Z", value: 10 }],
+      },
+    ]);
+
+    renderWithRoute("/dashboard/7");
+
+    await screen.findByTestId("DashboardPage-TotalCowsSection-time-series");
+    expect(
+      screen.queryByTestId(
+        "DashboardPage-TotalCowsSection-time-series-selectors",
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId("DashboardPage-TotalCowsSection-time-series"),
+      ).queryByText("Health"),
     ).not.toBeInTheDocument();
   });
 

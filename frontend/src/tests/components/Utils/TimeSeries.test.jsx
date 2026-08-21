@@ -169,32 +169,23 @@ describe("TimeSeries component", () => {
     ).toBeInTheDocument();
   });
 
-  test("supports a single selector name string", () => {
+  test("supports a single selector name string, showing only that series and no checkbox", () => {
     const { container } = render(
       <TimeSeries data={sampleSeries} selectors="Wealth" />,
     );
 
-    const selectors = screen.getByTestId("time-series-selectors");
-    expect(
-      screen.getByTestId("time-series").compareDocumentPosition(selectors),
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-    expect(selectors).toBeInTheDocument();
-    expect(
-      screen.getByRole("checkbox", { name: "Wealth" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("checkbox", { name: "Population" }),
-    ).not.toBeInTheDocument();
-    expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
-      2,
-    );
-
-    fireEvent.click(screen.getByRole("checkbox", { name: "Wealth" }));
     expect(screen.getByTestId("time-series")).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("time-series-selectors"),
+    ).not.toBeInTheDocument();
+    expect(screen.getByText("Wealth")).toBeInTheDocument();
+    expect(screen.queryByText("Population")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("checkbox", { name: "Wealth" }),
+    ).not.toBeInTheDocument();
     expect(container.querySelectorAll("path.recharts-line-curve")).toHaveLength(
       1,
     );
-    expect(screen.queryByText("No data to display")).not.toBeInTheDocument();
   });
 
   test("matches checkbox label colors to the series colors", () => {

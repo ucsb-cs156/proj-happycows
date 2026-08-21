@@ -1,0 +1,41 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "013-Add-Capacity-Over-Time-Section-To-Game",
+        "author": "copilot",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "game",
+                  "columnName": "show_capacity_over_time_section"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "game",
+              "columns": [
+                {
+                  "column": {
+                    "name": "show_capacity_over_time_section",
+                    "type": "BOOLEAN",
+                    "defaultValue": "false"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
