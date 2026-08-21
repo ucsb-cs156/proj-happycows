@@ -46,6 +46,9 @@ public class GameStatsCSVHelper {
         "numCows",
         "avgHealth",
         "effectiveCapacity",
+        "numFarmers",
+        "capacityPerUser",
+        "carryingCapacity",
         "createDate");
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -61,6 +64,9 @@ public class GameStatsCSVHelper {
           String.valueOf(line.getNumCows()),
           String.valueOf(line.getAvgHealth()),
           String.valueOf(line.getEffectiveCapacity()),
+          String.valueOf(line.getNumFarmers()),
+          String.valueOf(line.getCapacityPerUser()),
+          String.valueOf(line.getCarryingCapacity()),
           formatter.format(line.getCreateDate()));
       csvPrinter.printRecord(data);
     }

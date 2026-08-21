@@ -25,6 +25,9 @@ public class GameStats {
     private int numCows;
     private double avgHealth;
     private int effectiveCapacity;
+    private int numFarmers;
+    private int capacityPerUser;
+    private int carryingCapacity;
 
     @CreationTimestamp
     @Column(name = "create_date")

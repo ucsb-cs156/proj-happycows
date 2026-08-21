@@ -1,0 +1,54 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "014-add-effective-capacity-components-to-gamestats",
+        "author": "pc",
+        "comment": "Add numFarmers, capacityPerUser, and carryingCapacity to gamestats (see issue #331), so admins can explain changes over time in effectiveCapacity, which is computed as max(numFarmers * capacityPerUser, carryingCapacity).",
+        "preConditions": [
+          { "onFail": "MARK_RAN" },
+          {
+            "not": [
+              {
+                "columnExists": {
+                  "tableName": "gamestats",
+                  "columnName": "num_farmers"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "addColumn": {
+              "tableName": "gamestats",
+              "columns": [
+                {
+                  "column": {
+                    "name": "num_farmers",
+                    "type": "INT",
+                    "defaultValue": "0"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "capacity_per_user",
+                    "type": "INT",
+                    "defaultValue": "0"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "carrying_capacity",
+                    "type": "INT",
+                    "defaultValue": "0"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
