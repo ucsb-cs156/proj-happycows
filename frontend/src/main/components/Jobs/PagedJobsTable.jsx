@@ -85,6 +85,7 @@ const PagedJobsTable = () => {
     },
     {
       Header: "Cancel",
+      // Stryker disable next-line StringLiteral : react-table falls back to the Header when id is empty, so the mutant is equivalent
       id: "Cancel",
       Cell: ({ cell }) =>
         CANCELLABLE_STATUSES.includes(cell.row.original.status) ? (
@@ -103,6 +104,7 @@ const PagedJobsTable = () => {
       // preview (the most recent lines); the full log lives in job_logs and
       // is served by GET /api/jobs/logs/{id}.
       Header: "Log",
+      // Stryker disable next-line StringLiteral : react-table falls back to the Header when id is empty, so the mutant is equivalent
       id: "Log",
       Cell: ({ cell }) => (
         <>
