@@ -1,0 +1,24 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "015-complete-jobs-log-backfill",
+        "author": "pc",
+        "comment": "lib-jobs v0.2.0+ backfill (2/2): move the staged log text into job_logs, one row per job (per-line timestamps were never preserved by the old single-column design, so a historical job's full log becomes a single job_logs row), then drop the staging column. Must run after the lib-jobs library changeset has created job_logs and dropped jobs.log, so it lives in this separate directory and is included explicitly from changelog-master.json after that library include, rather than being swept up by the includeAll of db/migration/changes/ like every other app-owned changeset.",
+        "changes": [
+          {
+            "sql": {
+              "sql": "INSERT INTO job_logs (job_id, message, created_at) SELECT id, log_backfill, COALESCE(updated_at, created_at) FROM jobs WHERE log_backfill IS NOT NULL AND log_backfill <> ''"
+            }
+          },
+          {
+            "dropColumn": {
+              "tableName": "jobs",
+              "columnName": "log_backfill"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

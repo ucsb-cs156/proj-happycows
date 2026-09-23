@@ -5,6 +5,17 @@ import PagedJobsTable from "main/components/Jobs/PagedJobsTable";
 import pagedJobsFixtures from "fixtures/pagedJobsFixtures";
 import axios from "axios";
 import AxiosMockAdapter from "axios-mock-adapter";
+import { vi } from "vitest";
+
+const mockToast = vi.fn();
+vi.mock("react-toastify", async () => {
+  const originalModule = await vi.importActual("react-toastify");
+  return {
+    __esModule: true,
+    ...originalModule,
+    toast: (x) => mockToast(x),
+  };
+});
 
 describe("PagedJobsTable tests", () => {
   const queryClient = new QueryClient();
@@ -17,7 +28,32 @@ describe("PagedJobsTable tests", () => {
     axiosMock.reset();
     axiosMock.resetHistory();
     queryClient.clear();
+    mockToast.mockClear();
   });
+
+  const pageWithOneJob = (job) => ({
+    ...pagedJobsFixtures.emptyPage,
+    content: [
+      {
+        createdAt: "2023-08-08T12:14:00.041855-07:00",
+        updatedAt: "2023-08-08T12:14:00.211631-07:00",
+        ...job,
+      },
+    ],
+    totalPages: 1,
+    totalElements: 1,
+    numberOfElements: 1,
+    empty: false,
+  });
+
+  const renderTable = () =>
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <PagedJobsTable />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
 
   test("renders correct content", async () => {
     // arrange
@@ -36,8 +72,22 @@ describe("PagedJobsTable tests", () => {
     );
 
     // assert
-    const expectedHeaders = ["id", "Created", "Updated", "Status", "Log"];
-    const expectedFields = ["id", "Created", "Updated", "status", "Log"];
+    const expectedHeaders = [
+      "id",
+      "Created",
+      "Updated",
+      "Status",
+      "Cancel",
+      "Log",
+    ];
+    const expectedFields = [
+      "id",
+      "Created",
+      "Updated",
+      "status",
+      "Cancel",
+      "Log",
+    ];
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
@@ -76,6 +126,16 @@ describe("PagedJobsTable tests", () => {
     ).toHaveTextContent(
       `Updating cow health...Game Blue, degradationRate: 0.1, carryingCapacity: 10User: Phill Conrad, numCows: 3, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0User: Phillip Conrad, numCows: 7, cowHealth: 100.0 old cow health: 100.0, new cow health: 100.0Game Red, degradationRate: 0.1, carryingCapacity: 2User: Phill Conrad, numCows: 10, cowHealth: 54.40000000000016 old cow health: 54.40000000000016, new cow health: 53.600000000000165Cow health has been updated!`,
     );
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Log-link`),
+    ).toHaveAttribute("href", "/admin/jobs/logs/120");
+    expect(
+      screen.getByTestId(`${testId}-cell-row-0-col-Log-link`),
+    ).toHaveTextContent("See entire log");
+    // a complete job cannot be cancelled
+    expect(
+      screen.queryByTestId(`${testId}-cell-row-0-col-Cancel-button`),
+    ).not.toBeInTheDocument();
 
     expect(
       screen.getByTestId(`${testId}-header-id-sort-carets`),
@@ -181,8 +241,22 @@ describe("PagedJobsTable tests", () => {
     );
 
     // assert
-    const expectedHeaders = ["id", "Created", "Updated", "Status", "Log"];
-    const expectedFields = ["id", "Created", "Updated", "status", "Log"];
+    const expectedHeaders = [
+      "id",
+      "Created",
+      "Updated",
+      "Status",
+      "Cancel",
+      "Log",
+    ];
+    const expectedFields = [
+      "id",
+      "Created",
+      "Updated",
+      "status",
+      "Cancel",
+      "Log",
+    ];
 
     expectedHeaders.forEach((headerText) => {
       const header = screen.getByText(headerText);
@@ -247,5 +321,71 @@ describe("PagedJobsTable tests", () => {
     });
     expect(previousButton).toBeEnabled();
     expect(nextButton).toBeDisabled();
+  });
+
+  test.each(["queued", "running"])(
+    "shows a Cancel button for a %s job",
+    async (status) => {
+      axiosMock
+        .onGet("/api/jobs/paginated")
+        .reply(200, pageWithOneJob({ id: 5, status, log: "" }));
+
+      renderTable();
+
+      expect(
+        await screen.findByTestId(`${testId}-cell-row-0-col-Cancel-button`),
+      ).toHaveTextContent("Cancel");
+    },
+  );
+
+  test.each(["complete", "error", "cancelling", "cancelled", "interrupted"])(
+    "does not show a Cancel button for a %s job",
+    async (status) => {
+      axiosMock
+        .onGet("/api/jobs/paginated")
+        .reply(200, pageWithOneJob({ id: 5, status, log: "" }));
+
+      renderTable();
+
+      await screen.findByTestId(`${testId}-cell-row-0-col-id`);
+      expect(
+        screen.queryByTestId(`${testId}-cell-row-0-col-Cancel-button`),
+      ).not.toBeInTheDocument();
+    },
+  );
+
+  test("clicking Cancel posts to the cancel endpoint and toasts", async () => {
+    axiosMock
+      .onGet("/api/jobs/paginated")
+      .reply(200, pageWithOneJob({ id: 5, status: "running", log: "" }));
+    axiosMock
+      .onPost("/api/jobs/5/cancel")
+      .reply(200, { id: 5, status: "cancelling" });
+
+    renderTable();
+
+    const cancelButton = await screen.findByTestId(
+      `${testId}-cell-row-0-col-Cancel-button`,
+    );
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => expect(axiosMock.history.post.length).toBe(1));
+    expect(axiosMock.history.post[0].url).toBe("/api/jobs/5/cancel");
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith("Cancellation requested."),
+    );
+  });
+
+  test("a job with no log preview still gets a link to the full log", async () => {
+    axiosMock
+      .onGet("/api/jobs/paginated")
+      .reply(200, pageWithOneJob({ id: 5, status: "queued", log: null }));
+
+    renderTable();
+
+    expect(
+      await screen.findByTestId(`${testId}-cell-row-0-col-Log-link`),
+    ).toHaveAttribute("href", "/admin/jobs/logs/5");
+    expect(screen.getByTestId("plaintext-empty")).toBeInTheDocument();
   });
 });
