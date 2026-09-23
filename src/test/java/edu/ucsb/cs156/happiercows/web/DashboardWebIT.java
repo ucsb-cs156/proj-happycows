@@ -30,6 +30,12 @@ public class DashboardWebIT extends WebTestCase {
         page.getByTestId("GameForm-name").fill("Web Test Game For Dashboard Defaults");
         page.getByTestId("GameForm-Submit-Button").click();
 
+        // A successful create redirects to the home page, which remounts the navbar.
+        // Wait for the redirect to finish before opening the Admin dropdown; otherwise
+        // the dropdown can be opened on the create page and then closed by the
+        // navigation, so the "List Games" link never becomes visible.
+        assertThat(page.getByTestId("gameCard-name-1")).hasText("Web Test Game For Dashboard Defaults");
+
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
         page.getByRole(
                         AriaRole.LINK,
