@@ -98,6 +98,12 @@ public class GameWebIT extends WebTestCase {
 
         page.getByTestId("GameForm-Submit-Button").click();
 
+        // A successful create redirects to the home page, which remounts the navbar.
+        // Wait for the redirect to finish before opening the Admin dropdown; otherwise
+        // the dropdown can be opened on the create page and then closed by the
+        // navigation, so the "List Games" link never becomes visible.
+        assertThat(page.getByTestId("gameCard-name-1")).hasText("Web Test Game 2");
+
         // move to the list game page to verify that the information is there
 
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Admin")).click();
