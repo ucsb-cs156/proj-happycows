@@ -182,7 +182,7 @@ After making changes, always test these user workflows:
 ### Important Files
 
 - **`.env.SAMPLE`**: Template for environment variables (copy to `.env`)
-- **`.java-version`**: Specifies Java 17 requirement
+- **`.java-version`**: Specifies the required Java version (currently 25)
 - **`pom.xml`**: Maven configuration with Spring Boot dependencies
 - **`frontend/package.json`**: npm configuration with React dependencies
 - **`Dockerfile`**: Production deployment configuration

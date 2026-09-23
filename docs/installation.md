@@ -1,5 +1,5 @@
 # Setup
-1. Be sure to be using java 21.0.6-librca, otherwise, you may hit compiling issues with the jvm. Run with `sdk use java 21.0.6-librca`
+1. Be sure to be using Java 25 (e.g. `sdk install java 25.0.4-tem` then `sdk use java 25.0.4-tem`), otherwise you may hit compiling issues with the jvm.
 2. In the [env sample](https://github.com/ucsb-cs156/proj-happycows/blob/main/.env.SAMPLE), set each environment variable up:
 - `ADMIN_EMAILS=<check slack or ask teaching team>`
 - `GOOGLE_CLIENT_ID=<google client id>`   (see [here](https://ucsb-cs156.github.io/topics/oauth/oauth_google_setup.html) for how to set it up)
