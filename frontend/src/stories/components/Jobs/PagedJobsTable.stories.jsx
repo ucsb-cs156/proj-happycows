@@ -29,7 +29,7 @@ SixJobs.args = {
 
 SixJobs.parameters = {
   msw: [
-    http.get("/api/jobs/all/pageable", () => {
+    http.get("/api/jobs/paginated", () => {
       return HttpResponse.json(
         {
           content: jobsFixtures.sixJobs,

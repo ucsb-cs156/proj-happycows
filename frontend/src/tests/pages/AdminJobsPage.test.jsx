@@ -35,7 +35,7 @@ describe("AdminJobsPage tests", () => {
       .onGet("/api/currentUser")
       .reply(200, apiCurrentUserFixtures.adminUser);
     axiosMock
-      .onGet("/api/jobs/all/pageable")
+      .onGet("/api/jobs/paginated")
       .reply(200, pagedJobsFixtures.onePage);
 
     // see: https://ucsb-cs156.github.io/topics/testing/testing_jest.html#hiding-the-wall-of-red

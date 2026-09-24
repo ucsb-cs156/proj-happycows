@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AdminUsersPage from "main/pages/AdminUsersPage";
 import AdminJobsPage from "main/pages/AdminJobsPage";
+import AdminJobLogPage from "main/pages/AdminJobLogPage";
 import AdminCreateGamePage from "main/pages/AdminCreateGamePage";
 import AdminViewReportPage from "main/pages/AdminViewReportPage";
 import AdminCoursesIndexPage from "main/pages/AdminCoursesIndexPage";
@@ -41,6 +42,7 @@ function App() {
     <>
       <Route path="/admin/users" element={<AdminUsersPage />} />
       <Route path="/admin/jobs" element={<AdminJobsPage />} />
+      <Route path="/admin/jobs/logs/:id" element={<AdminJobLogPage />} />
       <Route path="/admin/reports" element={<AdminReportsPage />} />
       <Route path="/admin/report/:reportId" element={<AdminViewReportPage />} />
       <Route path="/admin/creategame" element={<AdminCreateGamePage />} />
