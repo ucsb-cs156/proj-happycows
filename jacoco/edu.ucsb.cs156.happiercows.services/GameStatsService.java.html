@@ -39,17 +39,20 @@ import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 <span class="fc" id="L39">                .numCows(totalNumCows)</span>
 <span class="fc" id="L40">                .avgHealth(avgHealth)</span>
 <span class="fc" id="L41">                .effectiveCapacity(effectiveCapacity)</span>
-<span class="fc" id="L42">                .build();</span>
+<span class="fc" id="L42">                .numFarmers(numUsers)</span>
+<span class="fc" id="L43">                .capacityPerUser(game.getCapacityPerUser())</span>
+<span class="fc" id="L44">                .carryingCapacity(game.getCarryingCapacity())</span>
+<span class="fc" id="L45">                .build();</span>
 
-<span class="fc" id="L44">        return stats;</span>
+<span class="fc" id="L47">        return stats;</span>
     }
 
     public GameStats createAndSaveGameStats(Long gameId) {
         
-<span class="fc" id="L49">        GameStats stats = createGameStats(gameId);</span>
-<span class="fc" id="L50">        gameStatsRepository.save(stats);</span>
+<span class="fc" id="L52">        GameStats stats = createGameStats(gameId);</span>
+<span class="fc" id="L53">        gameStatsRepository.save(stats);</span>
 
-<span class="fc" id="L52">        return stats;</span>
+<span class="fc" id="L55">        return stats;</span>
     }
 
 }

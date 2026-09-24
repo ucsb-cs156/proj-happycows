@@ -46,27 +46,33 @@ public class GameStatsCSVHelper {
         &quot;numCows&quot;,
         &quot;avgHealth&quot;,
         &quot;effectiveCapacity&quot;,
+        &quot;numFarmers&quot;,
+        &quot;capacityPerUser&quot;,
+        &quot;carryingCapacity&quot;,
         &quot;createDate&quot;);
 
-<span class="fc" id="L51">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
-<span class="fc" id="L52">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
+<span class="fc" id="L54">    ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L55">    CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);</span>
 
-<span class="fc" id="L54">    csvPrinter.printRecord(headers);</span>
-<span class="fc" id="L55">    ZoneId pst = ZoneId.of(&quot;America/Los_Angeles&quot;);</span>
-<span class="fc" id="L56">    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;).withZone(pst);</span>
-<span class="fc bfc" id="L57" title="All 2 branches covered.">    for (GameStats line : stats) {</span>
-<span class="fc" id="L58">      List&lt;String&gt; data = Arrays.asList(</span>
-<span class="fc" id="L59">          String.valueOf(line.getId()),</span>
-<span class="fc" id="L60">          String.valueOf(line.getGameId()),</span>
-<span class="fc" id="L61">          String.valueOf(line.getNumCows()),</span>
-<span class="fc" id="L62">          String.valueOf(line.getAvgHealth()),</span>
-<span class="fc" id="L63">          String.valueOf(line.getEffectiveCapacity()),</span>
-<span class="fc" id="L64">          formatter.format(line.getCreateDate()));</span>
-<span class="fc" id="L65">      csvPrinter.printRecord(data);</span>
-<span class="fc" id="L66">    }</span>
+<span class="fc" id="L57">    csvPrinter.printRecord(headers);</span>
+<span class="fc" id="L58">    ZoneId pst = ZoneId.of(&quot;America/Los_Angeles&quot;);</span>
+<span class="fc" id="L59">    DateTimeFormatter formatter = DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm:ss&quot;).withZone(pst);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    for (GameStats line : stats) {</span>
+<span class="fc" id="L61">      List&lt;String&gt; data = Arrays.asList(</span>
+<span class="fc" id="L62">          String.valueOf(line.getId()),</span>
+<span class="fc" id="L63">          String.valueOf(line.getGameId()),</span>
+<span class="fc" id="L64">          String.valueOf(line.getNumCows()),</span>
+<span class="fc" id="L65">          String.valueOf(line.getAvgHealth()),</span>
+<span class="fc" id="L66">          String.valueOf(line.getEffectiveCapacity()),</span>
+<span class="fc" id="L67">          String.valueOf(line.getNumFarmers()),</span>
+<span class="fc" id="L68">          String.valueOf(line.getCapacityPerUser()),</span>
+<span class="fc" id="L69">          String.valueOf(line.getCarryingCapacity()),</span>
+<span class="fc" id="L70">          formatter.format(line.getCreateDate()));</span>
+<span class="fc" id="L71">      csvPrinter.printRecord(data);</span>
+<span class="fc" id="L72">    }</span>
 
-<span class="fc" id="L68">    flush_and_close_noPitest(out, csvPrinter);</span>
-<span class="fc" id="L69">    return new ByteArrayInputStream(out.toByteArray());</span>
+<span class="fc" id="L74">    flush_and_close_noPitest(out, csvPrinter);</span>
+<span class="fc" id="L75">    return new ByteArrayInputStream(out.toByteArray());</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
