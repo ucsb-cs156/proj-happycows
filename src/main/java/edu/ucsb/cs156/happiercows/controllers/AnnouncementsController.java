@@ -24,8 +24,8 @@ import edu.ucsb.cs156.happiercows.entities.Farmer;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 
 import org.springframework.security.core.Authentication;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 
 
@@ -38,7 +38,6 @@ import java.util.Optional;
 public class AnnouncementsController extends ApiController{
 
     private static final int ANNOUNCEMENT_TEXT_MAX_LENGTH = 255;
-    private static final ZoneId ANNOUNCEMENTS_TIME_ZONE = ZoneId.of("America/Los_Angeles");
 
     @Autowired
     private AnnouncementRepository announcementRepository;
@@ -75,7 +74,7 @@ public class AnnouncementsController extends ApiController{
 
         if (startDate == null) { 
             log.info("Start date not specified. Defaulting to current date.");
-            startDate = LocalDateTime.now(); 
+            startDate = LocalDateTime.now(PacificTimeUtils.ZONE);
         }
 
         if (announcementText.isBlank()) {
@@ -206,7 +205,7 @@ public class AnnouncementsController extends ApiController{
 
         if (startDate == null) {
             log.info("Start date not specified. Defaulting to current date.");
-            startDate = LocalDateTime.now();
+            startDate = LocalDateTime.now(PacificTimeUtils.ZONE);
         }
 
         if (endDate != null && startDate.isAfter(endDate)) {
@@ -255,7 +254,7 @@ public class AnnouncementsController extends ApiController{
     }
 
     private Date toDate(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ANNOUNCEMENTS_TIME_ZONE).toInstant());
+        return Date.from(localDateTime.atZone(PacificTimeUtils.ZONE).toInstant());
     }
 
 

@@ -3,7 +3,7 @@ import OurTable from "main/components/OurTable";
 import { Button } from "react-bootstrap";
 import { useBackend } from "main/utils/useBackend";
 import { useParams } from "react-router";
-import { timestampToDate } from "main/utils/dateUtils";
+import { formatPacificDate } from "main/utils/dateUtils";
 
 const PagedProfitsTable = () => {
   const testId = "PagedProfitsTable";
@@ -64,7 +64,7 @@ const PagedProfitsTable = () => {
     {
       Header: "Date",
       accessor: "timestamp",
-      Cell: ({ value }) => timestampToDate(value),
+      Cell: ({ value }) => formatPacificDate(value),
       width: 200,
     },
     {

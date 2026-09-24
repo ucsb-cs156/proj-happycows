@@ -10,6 +10,7 @@ import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +60,7 @@ public class StudentController extends ApiController {
         for (Student student : studentRepository.findByCourseId(courseId)) {
             Optional<User> user = userRepository.findByEmail(student.getEmail());
             LocalDateTime lastLoginDateTime = user
-                    .map(u -> LocalDateTime.ofInstant(u.getLastOnline(), ZoneId.systemDefault()))
+                    .map(u -> LocalDateTime.ofInstant(u.getLastOnline(), PacificTimeUtils.ZONE))
                     .orElse(null);
 
             result.add(StudentWithLastLogin.builder()

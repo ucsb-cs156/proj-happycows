@@ -4,13 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import edu.ucsb.cs156.happiercows.entities.GameStats;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 
 /*
  * This code is based on 
@@ -52,8 +52,8 @@ public class GameStatsCSVHelper {
     CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);
 
     csvPrinter.printRecord(headers);
-    ZoneId pst = ZoneId.of("America/Los_Angeles");
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(pst);
+    DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(PacificTimeUtils.ZONE);
     for (GameStats line : stats) {
       List<String> data = Arrays.asList(
           String.valueOf(line.getId()),
