@@ -86,6 +86,9 @@ public class GameStatsControllerTests extends ControllerTestCase {
         .numCows(20)
         .avgHealth(10)
         .effectiveCapacity(100)
+        .numFarmers(5)
+        .capacityPerUser(20)
+        .carryingCapacity(100)
         .createDate(Instant.parse("2004-03-11T08:00:00Z"))
         .build();
 
@@ -95,6 +98,9 @@ public class GameStatsControllerTests extends ControllerTestCase {
         .numCows(120)
         .avgHealth(20)
         .effectiveCapacity(200)
+        .numFarmers(10)
+        .capacityPerUser(20)
+        .carryingCapacity(100)
         .createDate(Instant.parse("2004-03-27T08:00:00Z"))
         .build();
 
@@ -147,8 +153,8 @@ public class GameStatsControllerTests extends ControllerTestCase {
             assertEquals("application/csv", response.getResponse().getContentType());
 
             String expected =
-                    "id,gameId,numCows,avgHealth,effectiveCapacity,createDate\r\n" +
-                    "0,17,20,10.0,100,2004-03-11 00:00:00\r\n";
+                    "id,gameId,numCows,avgHealth,effectiveCapacity,numFarmers,capacityPerUser,carryingCapacity,createDate\r\n" +
+                    "0,17,20,10.0,100,5,20,100,2004-03-11 00:00:00\r\n";
 
             assertEquals(expected, responseString);
     }
@@ -167,9 +173,9 @@ public class GameStatsControllerTests extends ControllerTestCase {
             assertEquals("application/csv", response.getResponse().getContentType());
 
             String expected =
-                    "id,gameId,numCows,avgHealth,effectiveCapacity,createDate\r\n" +
-                    "0,17,20,10.0,100,2004-03-11 00:00:00\r\n" +
-                    "0,42,120,20.0,200,2004-03-27 00:00:00\r\n";
+                    "id,gameId,numCows,avgHealth,effectiveCapacity,numFarmers,capacityPerUser,carryingCapacity,createDate\r\n" +
+                    "0,17,20,10.0,100,5,20,100,2004-03-11 00:00:00\r\n" +
+                    "0,42,120,20.0,200,10,20,100,2004-03-27 00:00:00\r\n";
 
             assertEquals(expected, responseString);
     }

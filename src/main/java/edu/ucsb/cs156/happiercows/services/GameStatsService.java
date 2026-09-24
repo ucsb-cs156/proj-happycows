@@ -39,6 +39,9 @@ public class GameStatsService {
                 .numCows(totalNumCows)
                 .avgHealth(avgHealth)
                 .effectiveCapacity(effectiveCapacity)
+                .numFarmers(numUsers)
+                .capacityPerUser(game.getCapacityPerUser())
+                .carryingCapacity(game.getCarryingCapacity())
                 .build();
 
         return stats;
