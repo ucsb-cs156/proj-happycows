@@ -3,30 +3,13 @@ import { Link } from "react-router";
 import OurTable from "main/components/OurTable";
 import PageSizeSelector from "main/components/Utils/PageSizeSelector";
 import { useBackend } from "main/utils/useBackend";
+import { formatPacificTimestamp } from "main/utils/dateUtils";
 
 const ACTIVITY_TYPE_LABELS = {
   0: "Viewed Play Page",
   1: "Bought Cows",
   2: "Sold Cows",
 };
-
-// The backend stores/serializes this as a naive "YYYY-MM-DDTHH:mm:ss"
-// LocalDateTime that's already in Pacific time (see FarmerActivityService).
-// Format its digits directly rather than going through `new Date(...)`: a
-// date-time string with no timezone offset is parsed by JS using the
-// *viewing browser's* local timezone, which would silently show the wrong
-// time for anyone not physically in the Pacific timezone. See issue #291.
-function formatPacificTimestamp(dateTimeString) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(dateTimeString);
-  if (!match) {
-    return "";
-  }
-  const [, year, month, day, hour24Str, minute] = match;
-  const hour24 = Number(hour24Str);
-  const period = hour24 >= 12 ? "PM" : "AM";
-  const hour12 = ((hour24 + 11) % 12) + 1;
-  return `${month}/${day}/${year}, ${hour12}:${minute} ${period}`;
-}
 
 export default function FarmerActivityTable({
   gameId,

@@ -10,6 +10,7 @@ import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
 import edu.ucsb.cs156.happiercows.repositories.FarmerRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import edu.ucsb.cs156.jobs.services.JobContextConsumer;
 import lombok.AllArgsConstructor;
@@ -75,7 +76,7 @@ public class MilkTheCowsJob implements JobContextConsumer {
         Profit profit = Profit.builder()
                 .farmer(farmer)
                 .amount(profitAmount)
-                .timestamp(LocalDateTime.now())
+                .timestamp(LocalDateTime.now(PacificTimeUtils.ZONE))
                 .numCows(farmer.getNumOfCows())
                 .avgCowHealth(farmer.getCowHealth())
                 .build();
