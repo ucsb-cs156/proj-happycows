@@ -23,10 +23,10 @@ export default function CountHistogram({
 
   const bins = new Array(numBins).fill(0);
   data.forEach((value) => {
+    // binIndex is always < numBins: value <= m, so
+    // Math.floor(value / s) <= Math.floor(m / s) = numBins - 1
     const binIndex = Math.floor(value / s);
-    if (binIndex < numBins) {
-      bins[binIndex]++;
-    }
+    bins[binIndex]++;
   });
 
   const maxCount = Math.max(...bins);

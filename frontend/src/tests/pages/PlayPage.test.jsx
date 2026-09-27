@@ -8,11 +8,10 @@ import { apiCurrentUserFixtures } from "fixtures/currentUserFixtures";
 import { systemInfoFixtures } from "fixtures/systemInfoFixtures";
 import { vi } from "vitest";
 
+let mockParams = { gameId: 1 };
 vi.mock("react-router", async () => ({
   ...(await vi.importActual("react-router")),
-  useParams: () => ({
-    gameId: 1,
-  }),
+  useParams: () => mockParams,
 }));
 
 const mockToast = vi.fn();
@@ -124,6 +123,7 @@ describe("PlayPage tests", () => {
     });
 
     currentAnnouncements = [];
+    mockParams = { gameId: 1 };
     setupDefaultMocks();
   });
 
@@ -166,6 +166,23 @@ describe("PlayPage tests", () => {
       (call) => call.url === "/api/farmeractivity/pageview",
     );
     expect(pageViewCalls.length).toBe(1);
+  });
+
+  test("does not record a page-view activity when gameId is missing", async () => {
+    mockParams = {};
+    renderPage();
+
+    await waitFor(() => {
+      expect(
+        axiosMock.history.get.some((call) => call.url === "/api/currentUser"),
+      ).toBe(true);
+    });
+
+    expect(
+      axiosMock.history.post.some(
+        (call) => call.url === "/api/farmeractivity/pageview",
+      ),
+    ).toBe(false);
   });
 
   test("cannot join hidden game", async () => {

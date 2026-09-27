@@ -24,7 +24,7 @@ export default defineConfig([
     files: ["src/**/*.{js,jsx}"],
     extends: [
       js.configs.recommended,
-      reactHooks.configs["recommended-latest"],
+      reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
       reactPlugin.configs.flat.recommended,
     ],
@@ -51,6 +51,13 @@ export default defineConfig([
       "react/prop-types": "off",
       "react/react-in-jsx-scope": "off",
       "react/no-unescaped-entities": "off",
+      // eslint-plugin-react-hooks 7 adds React Compiler rules that flag
+      // pre-existing patterns in this codebase; turned off rather than
+      // refactoring in a dependency-update PR (same decision as proj-courses).
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/incompatible-library": "off",
+      "react-hooks/purity": "off",
+      "react-hooks/immutability": "off",
     },
   },
   {

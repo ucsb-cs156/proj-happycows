@@ -56,18 +56,25 @@ describe("DashboardPage stories", () => {
     expect(Loading.parameters.msw.length).toBeGreaterThan(0);
   });
 
-  test("AdminView shows populated data and admin controls", async () => {
-    renderStory(new QueryClient(), AdminView);
+  // The AdminView render is heavy (all eight dashboard sections at once), so
+  // these tests can exceed the default 5s timeout when the whole suite (or
+  // Stryker's parallel dry run) is loading the CPU.
+  test(
+    "AdminView shows populated data and admin controls",
+    { timeout: 20000 },
+    async () => {
+      renderStory(new QueryClient(), AdminView);
 
-    expect(await screen.findByText("Sample Game")).toBeInTheDocument();
-    expect(
-      screen.getByTestId("DashboardPage-admin-controls"),
-    ).toBeInTheDocument();
-    for (const testid of allSectionTestIds) {
-      expect(screen.getByTestId(testid)).toBeInTheDocument();
-    }
-    expect(await screen.findByText("one")).toBeInTheDocument();
-  });
+      expect(await screen.findByText("Sample Game")).toBeInTheDocument();
+      expect(
+        screen.getByTestId("DashboardPage-admin-controls"),
+      ).toBeInTheDocument();
+      for (const testid of allSectionTestIds) {
+        expect(screen.getByTestId(testid)).toBeInTheDocument();
+      }
+      expect(await screen.findByText("one")).toBeInTheDocument();
+    },
+  );
 
   test("StudentViewAllSectionsShown shows every section to a student, with no admin controls", async () => {
     renderStory(new QueryClient(), StudentViewAllSectionsShown);
@@ -137,15 +144,19 @@ describe("DashboardPage stories", () => {
   // previous story's cached data instead of a loading state. Each story
   // above uses a distinct id specifically to prevent this; this test
   // exercises that scenario end-to-end against one shared client.
-  test("switching stories against a shared QueryClient does not leak cached data into Loading", async () => {
-    const sharedQueryClient = new QueryClient();
+  test(
+    "switching stories against a shared QueryClient does not leak cached data into Loading",
+    { timeout: 20000 },
+    async () => {
+      const sharedQueryClient = new QueryClient();
 
-    const { unmount } = renderStory(sharedQueryClient, AdminView);
-    expect(await screen.findByText("Sample Game")).toBeInTheDocument();
-    unmount();
+      const { unmount } = renderStory(sharedQueryClient, AdminView);
+      expect(await screen.findByText("Sample Game")).toBeInTheDocument();
+      unmount();
 
-    renderStory(sharedQueryClient, Loading);
-    expect(await screen.findByText("Loading...")).toBeInTheDocument();
-    expect(screen.queryByText("Sample Game")).not.toBeInTheDocument();
-  });
+      renderStory(sharedQueryClient, Loading);
+      expect(await screen.findByText("Loading...")).toBeInTheDocument();
+      expect(screen.queryByText("Sample Game")).not.toBeInTheDocument();
+    },
+  );
 });

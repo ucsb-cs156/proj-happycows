@@ -312,8 +312,8 @@ describe("ChatDisplay tests", () => {
       "ChatDisplay-HistoryLink",
     );
     expect(historyLinkContainer).toHaveStyle("text-align: center");
-    expect(historyLinkContainer).toHaveStyle("padding: 0.75rem 0 0.25rem");
-    expect(historyLinkContainer).toHaveStyle("font-size: 0.9rem");
+    expect(historyLinkContainer).toHaveStyle("padding: 12px 0px 4px"); // 0.75rem 0 0.25rem computed by jsdom 30
+    expect(historyLinkContainer).toHaveStyle("font-size: 14.4px"); // 0.9rem computed by jsdom 30
     expect(historyLinkContainer).toHaveStyle("color: #0d6efd");
 
     const link = await screen.findByRole("link", {

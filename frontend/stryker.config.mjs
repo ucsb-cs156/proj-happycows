@@ -20,7 +20,10 @@ const config = {
     break: 100,
   },
   mutator: {
-    excludedMutations: ["Regex"],
+    // CallExpression is new in Stryker 10 (deletes bare call statements);
+    // excluded to keep the same strictness as Stryker 9. See
+    // https://github.com/ucsb-cs156/proj-happycows/issues/342
+    excludedMutations: ["Regex", "CallExpression"],
   },
 };
 export default config;
