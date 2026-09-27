@@ -18,10 +18,15 @@ Places that name the node version in this repo:
 * `engines` section in `frontend/package.json` (also used by Github Actions: the shared workflows in
   `ucsb-cs156/workflows` and the Chromatic workflows call `actions/setup-node` with
   `node-version-file: frontend/package.json`, so no workflow edit is needed)
-* `pom.xml`: the `<nodeVersion>` element appears inline **twice** (the `frontend-maven-plugin`
-  configuration in both the `integration` and `production` profiles)
+* `frontend/.nvmrc` (used by developers running `nvm use`; keep in sync with `engines`)
+* `pom.xml`: the `app.frontend.nodeVersion` property, referenced by the two `frontend-maven-plugin`
+  configurations (`integration` and `production` profiles)
 * `Dockerfile`: the `ENV NODE_VERSION=...` line (unlike some sibling repos, this Dockerfile installs
   node itself via nvm rather than through `frontend-maven-plugin`)
+
+npm 11 (bundled with node 24) warns about dependency install scripts not covered by `allowScripts`;
+review them, then `npm install-scripts approve --all` in `frontend/` and commit the resulting
+`allowScripts` block in `package.json` (here: `@swc/core`, `esbuild`, `fsevents`, `msw`).
 
 Then check `grep -rIn "<old version>" --exclude-dir=node_modules --exclude-dir=target .` for anything else.
 
@@ -42,8 +47,8 @@ full checklist. Findings specific to this repo:
   while resolving the new dependency tree from scratch. Workaround: generate the lockfile with
   npm 11 (`npx -y npm@11 install`) while still on node 22; `npm ci` with npm 10 then works fine.
 * jsdom 30 pulls in `@asamuzakjp/css-color@7`, whose `engines` wants node `^22.22.2 || ^24.15.0`.
-  On the exact `v22.18.0` pinned in `pom.xml`, `npm ci` prints an `EBADENGINE` *warning* (installs
-  and works anyway); the Node 24 bump (#341) makes it go away.
+  On the exact `v22.18.0` previously pinned in `pom.xml`, `npm ci` printed an `EBADENGINE` *warning*
+  (installed and worked anyway); resolved by the Node 24 bump (#341).
 * jsdom 30 computes styles that jsdom 16 reported as declared: `rem`/`vh` resolve to `px`
   (1rem = 16px; viewport is 1024x768, so 50vh = 384px), color keywords resolve to `rgb(...)`, and
   `font-weight: bold` computes to `700` — but `border-radius` keeps its declared value. Several
