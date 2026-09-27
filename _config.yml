@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v041","number":339,"title":"Bump lib-jobs to v0.4.1 (log preview shows when lines were omitted)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/339"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue-342-frontend-deps","number":344,"title":"Modernize frontend dependencies to org baseline (part 1 of 2: 39 audit vulnerabilities → 0)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/344"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v041","number":339,"title":"Bump lib-jobs to v0.4.1 (log preview shows when lines were omitted)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/339"}]
