@@ -17,6 +17,7 @@
     <description>A Simulation Game of the Tragedy of the Commons.</description>
     <properties>
         <java.version>25</java.version>
+        <app.frontend.nodeVersion>v24.21.0</app.frontend.nodeVersion>
         <targetClasses>${targetClasses:edu.ucsb.cs156.*}</targetClasses>
     </properties>
     <dependencies>
@@ -425,7 +426,7 @@
                     <goal>install-node-and-npm</goal>
                     </goals>
                     <configuration>
-                    <nodeVersion>v22.18.0</nodeVersion>
+                    <nodeVersion>${app.frontend.nodeVersion}</nodeVersion>
                     </configuration>
                 </execution>
                 <execution>
@@ -553,7 +554,7 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v22.18.0</nodeVersion>
+                                    <nodeVersion>${app.frontend.nodeVersion}</nodeVersion>
                                 </configuration>
                             </execution>
                             <execution>

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "^22.18.0"
+    "node": "^v24.21.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
@@ -104,5 +104,11 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "allowScripts": {
+    "@swc/core@1.16.2": true,
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "msw@2.15.0": true
   }
 }
