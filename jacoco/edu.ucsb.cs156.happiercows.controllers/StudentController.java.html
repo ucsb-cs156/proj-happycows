@@ -10,6 +10,7 @@ import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.happiercows.utilities.CanonicalFormConverter;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +60,7 @@ import java.util.Optional;
 <span class="fc bfc" id="L60" title="All 2 branches covered.">        for (Student student : studentRepository.findByCourseId(courseId)) {</span>
 <span class="fc" id="L61">            Optional&lt;User&gt; user = userRepository.findByEmail(student.getEmail());</span>
 <span class="fc" id="L62">            LocalDateTime lastLoginDateTime = user</span>
-<span class="fc" id="L63">                    .map(u -&gt; LocalDateTime.ofInstant(u.getLastOnline(), ZoneId.systemDefault()))</span>
+<span class="fc" id="L63">                    .map(u -&gt; LocalDateTime.ofInstant(u.getLastOnline(), PacificTimeUtils.ZONE))</span>
 <span class="fc" id="L64">                    .orElse(null);</span>
 
 <span class="fc" id="L66">            result.add(StudentWithLastLogin.builder()</span>

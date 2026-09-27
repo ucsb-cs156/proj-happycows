@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import edu.ucsb.cs156.jobs.services.JobContext;
 
 /**
@@ -14,10 +15,25 @@ import edu.ucsb.cs156.jobs.services.JobContext;
  * As a side effect, when a game whose end date has passed is encountered,
  * it is automatically hidden (see issue #250).
  */
-<span class="fc" id="L17">public class GameGate {</span>
+<span class="fc" id="L18">public class GameGate {</span>
 
     /**
-     * Determine whether a job should process the given game.
+     * Determine whether a job should process the given game, using the
+     * current Pacific time as &quot;now&quot; - see issue #318 (the JVM's own default
+     * timezone isn't guaranteed to be Pacific).
+     *
+     * @param game the game the job wants to process
+     * @param gameRepository repository used to save the game when it is auto-hidden
+     * @param ctx the job context, for logging
+     * @return true if the game is in progress and the job should proceed
+     */
+    public static boolean shouldProcess(Game game, GameRepository gameRepository, JobContext ctx) {
+<span class="fc" id="L31">        return shouldProcess(game, gameRepository, ctx, LocalDateTime.now(PacificTimeUtils.ZONE));</span>
+    }
+
+    /**
+     * Determine whether a job should process the given game as of the given
+     * instant.
      *
      * If the game is not in progress, a skip message is logged; additionally,
      * if the game has ended and the game is not yet hidden, it is hidden
@@ -26,22 +42,23 @@ import edu.ucsb.cs156.jobs.services.JobContext;
      * @param game the game the job wants to process
      * @param gameRepository repository used to save the game when it is auto-hidden
      * @param ctx the job context, for logging
+     * @param now the current time, as of which to evaluate the game's status
      * @return true if the game is in progress and the job should proceed
      */
-    public static boolean shouldProcess(Game game, GameRepository gameRepository, JobContext ctx) {
-<span class="fc" id="L32">        LocalDateTime now = LocalDateTime.now();</span>
-<span class="fc bfc" id="L33" title="All 2 branches covered.">        if (game.gameInProgress(now)) {</span>
-<span class="fc" id="L34">            return true;</span>
+    public static boolean shouldProcess(
+            Game game, GameRepository gameRepository, JobContext ctx, LocalDateTime now) {
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (game.gameInProgress(now)) {</span>
+<span class="fc" id="L51">            return true;</span>
         }
-<span class="fc" id="L36">        ctx.log(String.format(&quot;Skipping Game id=%d (%s) because the game is not in progress&quot;,</span>
-<span class="fc" id="L37">                game.getId(), game.getName()));</span>
-<span class="fc bfc" id="L38" title="All 4 branches covered.">        if (game.endDateHasPassed(now) &amp;&amp; !game.isHidden()) {</span>
-<span class="fc" id="L39">            game.setHidden(true);</span>
-<span class="fc" id="L40">            gameRepository.save(game);</span>
-<span class="fc" id="L41">            ctx.log(String.format(&quot;Game id=%d (%s) has ended; setting hidden to true&quot;,</span>
-<span class="fc" id="L42">                    game.getId(), game.getName()));</span>
+<span class="fc" id="L53">        ctx.log(String.format(&quot;Skipping Game id=%d (%s) because the game is not in progress&quot;,</span>
+<span class="fc" id="L54">                game.getId(), game.getName()));</span>
+<span class="fc bfc" id="L55" title="All 4 branches covered.">        if (game.endDateHasPassed(now) &amp;&amp; !game.isHidden()) {</span>
+<span class="fc" id="L56">            game.setHidden(true);</span>
+<span class="fc" id="L57">            gameRepository.save(game);</span>
+<span class="fc" id="L58">            ctx.log(String.format(&quot;Game id=%d (%s) has ended; setting hidden to true&quot;,</span>
+<span class="fc" id="L59">                    game.getId(), game.getName()));</span>
         }
-<span class="fc" id="L44">        return false;</span>
+<span class="fc" id="L61">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

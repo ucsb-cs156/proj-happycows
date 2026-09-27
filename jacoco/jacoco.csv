@@ -1,6 +1,6 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 happycows,edu.ucsb.cs156.happiercows.services,GamePlusBuilderService,0,217,0,6,0,42,0,9,0,6
-happycows,edu.ucsb.cs156.happiercows.services,FarmerActivityService,0,41,0,2,0,15,0,4,0,3
+happycows,edu.ucsb.cs156.happiercows.services,FarmerActivityService,0,37,0,2,0,14,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,155,0,2,0,40,0,6,0,5
@@ -22,7 +22,7 @@ happycows,edu.ucsb.cs156.happiercows.models,StaffDTO,0,16,0,0,0,6,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.models,HealthUpdateStrategyList,0,29,0,0,0,12,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.models,StudentDTO,0,19,0,0,0,7,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.models,CourseDTO,0,15,0,0,0,6,0,1,0,1
-happycows,edu.ucsb.cs156.happiercows.helpers,GameStatsCSVHelper,0,157,0,2,0,27,0,3,0,2
+happycows,edu.ucsb.cs156.happiercows.helpers,GameStatsCSVHelper,0,154,0,2,0,27,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.helpers,StudentCsvFormat,0,290,0,14,0,53,0,18,0,11
 happycows,edu.ucsb.cs156.happiercows.helpers,ReportCSVHelper,0,167,0,2,0,27,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.helpers,ParticipationGradeCSVHelper,0,155,0,2,0,26,0,3,0,2
@@ -31,6 +31,7 @@ happycows,edu.ucsb.cs156.happiercows.interceptors,RoleUserInterceptorAppConfig,0
 happycows,edu.ucsb.cs156.happiercows.enums,Features,0,9,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.enums,GameFeatures,0,9,0,0,0,2,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.enums,School,0,70,0,6,0,16,0,6,0,3
+happycows,edu.ucsb.cs156.happiercows.utilities,PacificTimeUtils,0,4,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.utilities,CanonicalFormConverter,0,17,0,0,0,4,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.jobs,TestJob,0,31,0,4,0,10,0,3,0,1
 happycows,edu.ucsb.cs156.happiercows.jobs,SetCowHealthJobFactory,0,32,0,0,0,5,0,3,0,3
@@ -38,8 +39,8 @@ happycows,edu.ucsb.cs156.happiercows.jobs,InstructorReportJobSingleGameFactory,0
 happycows,edu.ucsb.cs156.happiercows.jobs,SetCowHealthJob,0,94,0,6,0,18,0,4,0,1
 happycows,edu.ucsb.cs156.happiercows.jobs,RecordGameStatsJobFactory,0,11,0,0,0,2,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactoryInd,0,17,0,0,0,3,0,2,0,2
-happycows,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,154,0,6,0,40,0,7,0,4
-happycows,edu.ucsb.cs156.happiercows.jobs,GameGate,0,61,0,6,0,12,0,5,0,2
+happycows,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJob,0,155,0,6,0,40,0,7,0,4
+happycows,edu.ucsb.cs156.happiercows.jobs,GameGate,0,66,0,6,0,12,0,6,0,3
 happycows,edu.ucsb.cs156.happiercows.jobs,UpdateCowHealthJob,0,210,0,14,0,40,0,13,0,6
 happycows,edu.ucsb.cs156.happiercows.jobs,RecordGameStatsJob,0,76,0,4,0,12,0,3,0,1
 happycows,edu.ucsb.cs156.happiercows.jobs,MilkTheCowsJobFactory,0,15,0,0,0,2,0,2,0,2
@@ -74,7 +75,7 @@ happycows,edu.ucsb.cs156.happiercows.controllers,ApiController,0,38,0,0,0,12,0,6
 happycows,edu.ucsb.cs156.happiercows.controllers,StaffController,0,272,0,16,0,58,0,20,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,SystemInfoController,0,7,0,0,0,2,0,2,0,2
 happycows,edu.ucsb.cs156.happiercows.controllers,StudentController,0,290,0,14,0,67,0,20,0,13
-happycows,edu.ucsb.cs156.happiercows.controllers,AnnouncementsController,0,413,0,46,0,98,0,36,0,13
+happycows,edu.ucsb.cs156.happiercows.controllers,AnnouncementsController,0,412,0,46,0,97,0,36,0,13
 happycows,edu.ucsb.cs156.happiercows.controllers,ParticipationGradeController,0,92,0,0,0,22,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.controllers,UsersController,0,90,0,0,0,12,0,6,0,6
 happycows,edu.ucsb.cs156.happiercows.controllers,CSRFController,0,5,0,0,0,2,0,2,0,2
