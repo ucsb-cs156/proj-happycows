@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156/proj-happycows
 owner: ucsb-cs156
 repo_name: proj-happycows
-pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue-341-node-24","number":345,"title":"Update frontend Node version to current LTS v24.21.0 (part 2 of 2)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/345"},{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-lib-jobs-v041","number":339,"title":"Bump lib-jobs to v0.4.1 (log preview shows when lines were omitted)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/339"}]
+pull_requests: [{"author":{"id":"MDQ6VXNlcjExMTkwMTc=","is_bot":false,"login":"pconrad","name":"Phill Conrad"},"headRefName":"pc-issue-341-node-24","number":345,"title":"Update frontend Node version to current LTS v24.21.0 (part 2 of 2)","url":"https://github.com/ucsb-cs156/proj-happycows/pull/345"}]
