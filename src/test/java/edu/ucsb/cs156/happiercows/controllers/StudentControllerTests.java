@@ -7,6 +7,7 @@ import edu.ucsb.cs156.happiercows.models.StudentDTO;
 import edu.ucsb.cs156.happiercows.models.StudentWithLastLogin;
 import edu.ucsb.cs156.happiercows.repositories.StudentRepository;
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -186,7 +186,9 @@ public class StudentControllerTests extends ControllerTestCase {
         verify(userRepository, times(1)).findByEmail("sallyferber@ucsb.edu");
         verify(userRepository, times(1)).findByEmail("cristinadiaz@ucsb.edu");
 
-        LocalDateTime expectedLastLogin = LocalDateTime.ofInstant(lastOnline, ZoneId.systemDefault());
+        // Must be converted using Pacific time specifically, not whatever the
+        // JVM's own default timezone happens to be - see issue #318.
+        LocalDateTime expectedLastLogin = LocalDateTime.ofInstant(lastOnline, PacificTimeUtils.ZONE);
         StudentWithLastLogin expected1 = StudentWithLastLogin.builder()
                 .lastName("Ferber")
                 .firstMiddleName("Sally")

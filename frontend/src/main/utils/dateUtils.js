@@ -2,6 +2,42 @@ const padWithZero = (n) => {
   return n < 10 ? "0" + n : n;
 };
 
+// Several backend timestamps (e.g. FarmerActivity.timestamp, Profit.timestamp)
+// are naive "YYYY-MM-DDTHH:mm:ss" LocalDateTimes that are already in Pacific
+// time (see FarmerActivityService/MilkTheCowsJob). Extract their digits
+// directly rather than going through `new Date(...)`: a date-time string
+// with no timezone offset is parsed by JS using the *viewing browser's*
+// local timezone, which would silently show the wrong time (or even the
+// wrong calendar day) for anyone not physically in the Pacific timezone.
+// See issues #291 and #318.
+const parsePacificDateTime = (dateTimeString) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(dateTimeString);
+  if (!match) {
+    return null;
+  }
+  const [, year, month, day, hour24Str, minute] = match;
+  return { year, month, day, hour24: Number(hour24Str), minute };
+};
+
+const formatPacificTimestamp = (dateTimeString) => {
+  const parts = parsePacificDateTime(dateTimeString);
+  if (!parts) {
+    return "";
+  }
+  const { year, month, day, hour24, minute } = parts;
+  const period = hour24 >= 12 ? "PM" : "AM";
+  const hour12 = ((hour24 + 11) % 12) + 1;
+  return `${month}/${day}/${year}, ${hour12}:${minute} ${period}`;
+};
+
+const formatPacificDate = (dateTimeString) => {
+  const parts = parsePacificDateTime(dateTimeString);
+  if (!parts) {
+    return "";
+  }
+  return `${parts.year}-${parts.month}-${parts.day}`;
+};
+
 const timestampToDate = (timestamp) => {
   var date = new Date(timestamp);
   return (
@@ -76,4 +112,10 @@ export function formatTime(timeString) {
   return dateFromEpoch.toLocaleDateString();
 }
 
-export { timestampToDate, padWithZero, daysSinceTimestamp };
+export {
+  timestampToDate,
+  padWithZero,
+  daysSinceTimestamp,
+  formatPacificTimestamp,
+  formatPacificDate,
+};

@@ -4,6 +4,8 @@ import {
   daysSinceTimestamp,
   formatTime,
   formatDateTime,
+  formatPacificTimestamp,
+  formatPacificDate,
 } from "main/utils/dateUtils";
 
 describe("dateUtils tests", () => {
@@ -47,6 +49,59 @@ describe("dateUtils tests", () => {
       expect(formatDateTime("2024-12-12T00:00:00")).toMatch(
         /12\/12\/2024, 12:00 AM/,
       );
+    });
+  });
+
+  describe("formatPacificTimestamp tests", () => {
+    // These strings are naive Pacific LocalDateTimes with no timezone
+    // offset (see FarmerActivityService/MilkTheCowsJob, issues #291/#318) -
+    // formatPacificTimestamp must read their digits directly rather than
+    // via `new Date(...)`, which would reinterpret them using the test
+    // runner's own local timezone instead of Pacific.
+    it("formats a morning (AM) timestamp", () => {
+      expect(formatPacificTimestamp("2024-01-15T10:20:00")).toBe(
+        "01/15/2024, 10:20 AM",
+      );
+    });
+
+    it("formats an afternoon (PM) timestamp", () => {
+      expect(formatPacificTimestamp("2024-01-15T14:05:00")).toBe(
+        "01/15/2024, 2:05 PM",
+      );
+    });
+
+    it("formats midnight as 12:00 AM", () => {
+      expect(formatPacificTimestamp("2024-01-15T00:00:00")).toBe(
+        "01/15/2024, 12:00 AM",
+      );
+    });
+
+    it("formats noon as 12:00 PM", () => {
+      expect(formatPacificTimestamp("2024-01-15T12:00:00")).toBe(
+        "01/15/2024, 12:00 PM",
+      );
+    });
+
+    it("returns an empty string for a null value", () => {
+      expect(formatPacificTimestamp(null)).toBe("");
+    });
+
+    it("returns an empty string for a value that doesn't match the expected format", () => {
+      expect(formatPacificTimestamp("not-a-date")).toBe("");
+    });
+  });
+
+  describe("formatPacificDate tests", () => {
+    it("extracts the date portion from a naive Pacific timestamp", () => {
+      expect(formatPacificDate("2024-01-15T23:45:00")).toBe("2024-01-15");
+    });
+
+    it("returns an empty string for a null value", () => {
+      expect(formatPacificDate(null)).toBe("");
+    });
+
+    it("returns an empty string for a value that doesn't match the expected format", () => {
+      expect(formatPacificDate("not-a-date")).toBe("");
     });
   });
 

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import edu.ucsb.cs156.happiercows.entities.Game;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import edu.ucsb.cs156.jobs.services.JobContext;
 
 /**
@@ -17,7 +18,22 @@ import edu.ucsb.cs156.jobs.services.JobContext;
 public class GameGate {
 
     /**
-     * Determine whether a job should process the given game.
+     * Determine whether a job should process the given game, using the
+     * current Pacific time as "now" - see issue #318 (the JVM's own default
+     * timezone isn't guaranteed to be Pacific).
+     *
+     * @param game the game the job wants to process
+     * @param gameRepository repository used to save the game when it is auto-hidden
+     * @param ctx the job context, for logging
+     * @return true if the game is in progress and the job should proceed
+     */
+    public static boolean shouldProcess(Game game, GameRepository gameRepository, JobContext ctx) {
+        return shouldProcess(game, gameRepository, ctx, LocalDateTime.now(PacificTimeUtils.ZONE));
+    }
+
+    /**
+     * Determine whether a job should process the given game as of the given
+     * instant.
      *
      * If the game is not in progress, a skip message is logged; additionally,
      * if the game has ended and the game is not yet hidden, it is hidden
@@ -26,10 +42,11 @@ public class GameGate {
      * @param game the game the job wants to process
      * @param gameRepository repository used to save the game when it is auto-hidden
      * @param ctx the job context, for logging
+     * @param now the current time, as of which to evaluate the game's status
      * @return true if the game is in progress and the job should proceed
      */
-    public static boolean shouldProcess(Game game, GameRepository gameRepository, JobContext ctx) {
-        LocalDateTime now = LocalDateTime.now();
+    public static boolean shouldProcess(
+            Game game, GameRepository gameRepository, JobContext ctx, LocalDateTime now) {
         if (game.gameInProgress(now)) {
             return true;
         }

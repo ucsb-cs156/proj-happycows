@@ -1,12 +1,15 @@
 package edu.ucsb.cs156.happiercows.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import static org.mockito.ArgumentMatchers.any;
+
+import org.mockito.ArgumentCaptor;
 
 import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import java.util.List;
@@ -150,7 +153,18 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
             .andExpect(status().isOk()).andReturn();
 
         // assert
-        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+        ArgumentCaptor<Announcement> captor = ArgumentCaptor.forClass(Announcement.class);
+        verify(announcementRepository, atLeastOnce()).save(captor.capture());
+
+        // The default startDate must be computed in Pacific time before
+        // being converted to an absolute instant, not in whatever the JVM's
+        // own default timezone happens to be (issue #318) - otherwise
+        // "now, labeled as Pacific" and "now, computed in the JVM's zone
+        // but mislabeled as Pacific" would produce different instants
+        // whenever those two zones disagree (e.g. a UTC-zoned CI runner).
+        long millisFromNow = Math.abs(
+                captor.getValue().getStartDate().getTime() - System.currentTimeMillis());
+        assertTrue(millisFromNow < 10_000);
     }
 
     @WithMockUser(roles = {"USER"})
@@ -663,10 +677,18 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // assert
         verify(announcementRepository, atLeastOnce()).findByAnnouncementId(id);
-        verify(announcementRepository, atLeastOnce()).save(any(Announcement.class));
+        ArgumentCaptor<Announcement> captor = ArgumentCaptor.forClass(Announcement.class);
+        verify(announcementRepository, atLeastOnce()).save(captor.capture());
         String responseString = response.getResponse().getContentAsString();
         String expectedResponseString = mapper.writeValueAsString(announcementObj);
         assertEquals(expectedResponseString, responseString);
+
+        // Same reasoning as userCanPostAnnouncementWithoutStartAndEndTime:
+        // the default startDate must be computed in Pacific time, not
+        // whatever the JVM's own default timezone happens to be (#318).
+        long millisFromNow = Math.abs(
+                captor.getValue().getStartDate().getTime() - System.currentTimeMillis());
+        assertTrue(millisFromNow < 10_000);
     }
 
     @WithMockUser(roles = {"USER"})

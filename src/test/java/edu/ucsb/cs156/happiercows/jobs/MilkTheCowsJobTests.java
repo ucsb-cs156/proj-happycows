@@ -2,8 +2,10 @@ package edu.ucsb.cs156.happiercows.jobs;
 
 import edu.ucsb.cs156.happiercows.JobTestCase;
 import edu.ucsb.cs156.happiercows.entities.Game;
+import edu.ucsb.cs156.happiercows.entities.Profit;
 import edu.ucsb.cs156.happiercows.entities.User;
 import edu.ucsb.cs156.happiercows.entities.Farmer;
+import edu.ucsb.cs156.happiercows.utilities.PacificTimeUtils;
 import edu.ucsb.cs156.jobs.entities.Job;
 import edu.ucsb.cs156.happiercows.repositories.GameRepository;
 import edu.ucsb.cs156.happiercows.repositories.ProfitRepository;
@@ -12,15 +14,18 @@ import edu.ucsb.cs156.happiercows.repositories.UserRepository;
 import edu.ucsb.cs156.jobs.services.JobContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -202,5 +207,15 @@ public class MilkTheCowsJobTests extends JobTestCase {
 
         verify(farmerRepository).save(updatedFarmer);
         assertEquals(expected, jobStarted.getLog());
+
+        // The timestamp must be computed in Pacific time, not whatever the
+        // JVM's own default timezone happens to be (commonly UTC on a
+        // deployed server) - see issue #318.
+        ArgumentCaptor<Profit> profitCaptor = ArgumentCaptor.forClass(Profit.class);
+        verify(profitRepository).save(profitCaptor.capture());
+        LocalDateTime expectedPacificNow = LocalDateTime.now(PacificTimeUtils.ZONE);
+        assertTrue(
+                Duration.between(expectedPacificNow, profitCaptor.getValue().getTimestamp()).abs()
+                        .compareTo(Duration.ofSeconds(10)) < 0);
     }
 }
