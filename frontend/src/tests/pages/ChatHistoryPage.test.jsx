@@ -241,11 +241,11 @@ describe("ChatHistoryPage", () => {
     expect(legendDiv).toBeTruthy();
 
     // wrapper styling
-    expect(legendDiv).toHaveStyle("font-size: 0.9rem");
+    expect(legendDiv).toHaveStyle("font-size: 14.4px"); // 0.9rem computed by jsdom 30
 
     // icon styling
-    expect(iconSpan).toHaveStyle("color: red");
-    expect(iconSpan).toHaveStyle("font-weight: bold");
+    expect(iconSpan).toHaveStyle("color: rgb(255, 0, 0)");
+    expect(iconSpan).toHaveStyle("font-weight: 700"); // bold computed by jsdom 30
 
     // content exists
     expect(legendDiv.textContent).toMatch(/Deleted Message/);
@@ -284,9 +284,9 @@ describe("ChatHistoryPage", () => {
     const hiddenRow = hiddenRoot.closest(".d-flex.align-items-start");
 
     expect(hiddenRow).toHaveStyle("background-color: #fff5f5");
-    expect(hiddenRow).toHaveStyle("border-left: 4px solid red");
+    expect(hiddenRow).toHaveStyle("border-left: 4px solid rgb(255, 0, 0)");
     expect(visibleRow).not.toHaveStyle("background-color: #fff5f5");
-    expect(visibleRow).not.toHaveStyle("border-left: 4px solid red");
+    expect(visibleRow).not.toHaveStyle("border-left: 4px solid rgb(255, 0, 0)");
 
     // inner opacity/italic styling (wrapper div immediately above mock root)
     const hiddenInnerWrapper = hiddenRoot.parentElement;
@@ -306,9 +306,9 @@ describe("ChatHistoryPage", () => {
     ).not.toBeInTheDocument();
 
     // label inline styles must match exactly
-    expect(hiddenLabel).toHaveStyle("color: red");
-    expect(hiddenLabel).toHaveStyle("font-size: 0.8rem");
-    expect(hiddenLabel).toHaveStyle("font-weight: bold");
+    expect(hiddenLabel).toHaveStyle("color: rgb(255, 0, 0)");
+    expect(hiddenLabel).toHaveStyle("font-size: 12.8px"); // 0.8rem computed by jsdom 30
+    expect(hiddenLabel).toHaveStyle("font-weight: 700"); // bold computed by jsdom 30
 
     expect(screen.getByText("[no more messages]")).toBeInTheDocument();
   });
@@ -727,7 +727,7 @@ describe("ChatHistoryPage", () => {
     renderWithProviders();
 
     const container = screen.getByTestId("ChatHistoryPage-message-container");
-    expect(container).toHaveStyle("background-color: white");
+    expect(container).toHaveStyle("background-color: rgb(255, 255, 255)");
     const domContainer = document.querySelector(
       'div[style*="overflow-y: auto"]',
     );
@@ -779,12 +779,12 @@ describe("ChatHistoryPage", () => {
     renderWithProviders();
 
     const container = screen.getByTestId("ChatHistoryPage-message-container");
-    expect(container).toHaveStyle("min-height: 50vh");
-    expect(container).toHaveStyle("max-height: 70vh");
+    expect(container).toHaveStyle("min-height: 384px"); // 50vh of jsdom's 768px viewport
+    expect(container).toHaveStyle("max-height: 537.6px"); // 70vh of jsdom's 768px viewport
     expect(container).toHaveStyle("overflow-y: auto"); // ✅ kills overflowY mutant
     expect(container).toHaveStyle("border: 1px solid #dee2e6");
     expect(container).toHaveStyle("border-radius: 0.5rem");
-    expect(container).toHaveStyle("padding: 1rem");
+    expect(container).toHaveStyle("padding: 16px"); // 1rem computed by jsdom 30
   });
   test("does NOT show empty state when messages exist", () => {
     mockInfiniteQuery({

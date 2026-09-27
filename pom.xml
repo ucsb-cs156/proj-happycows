@@ -476,7 +476,7 @@
                                         <equals arg1="${frontend.dependency.skip}" arg2="true"/>
                                         <uptodate>
                                             <srcfiles dir="${project.basedir}/frontend/src" includes="**/*"/>
-                                            <srcfiles dir="${project.basedir}/frontend" includes="vite.config.js"/>
+                                            <srcfiles dir="${project.basedir}/frontend" includes="vite.config.mjs"/>
                                             <mapper type="merge" to="${project.basedir}/frontend/build"/>
                                         </uptodate>
                                     </and>
@@ -604,7 +604,7 @@
                                                 <equals arg1="${frontend.dependency.skip}" arg2="true"/>
                                                 <uptodate>
                                                     <srcfiles dir="${project.basedir}/frontend/src" includes="**/*"/>
-                                                    <srcfiles dir="${project.basedir}/frontend" includes="vite.config.js"/>
+                                                    <srcfiles dir="${project.basedir}/frontend" includes="vite.config.mjs"/>
                                                     <mapper type="merge" to="${project.basedir}/frontend/build"/>
                                                 </uptodate>
                                             </and>
