@@ -51,6 +51,8 @@ A description of how the game is played and what scheduled actions are run are g
 
 For information on environment variables used in the app, refer to [docs/environment.md](docs/environment.md).
 
+For keycloak-specific setup, see [here](https://ucsb-cs156.github.io/topics/keycloak/qa_deployment_with_keycloak.html#deploying-a-qa-app-with-keycloak)
+
 # Setup before running application
 
 Before running the application for the first time,
