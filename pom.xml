@@ -229,6 +229,7 @@
                         <exclude>**/edu/ucsb/cs156/happiercows/services/CurrentUserServiceImpl.*</exclude>
                         <exclude>**/edu/ucsb/cs156/happiercows/HappierCowsApplication.*</exclude>
                         <exclude>**/edu/ucsb/cs156/happiercows/services/wiremock/*</exclude>
+                        <exclude>**/edu/ucsb/cs156/happiercows/startup/QAProfileEnabler.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -325,6 +326,7 @@
                         <param>edu.ucsb.cs156.happiercows.services.wiremock.WiremockService</param>
                         <param>edu.ucsb.cs156.happiercows.services.wiremock.WiremockServiceDummy</param>
                         <param>edu.ucsb.cs156.happiercows.services.wiremock.WiremockServiceImpl</param>
+                        <param>edu.ucsb.cs156.happiercows.startup.QAProfileEnabler</param>
                     </excludedClasses>
                     <excludedTestClasses>
                         <param>edu.ucsb.cs156.happiercows.web.*</param>
