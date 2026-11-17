@@ -13,6 +13,7 @@ jobs:
         name: Configure Variables
         run: |
           MATCH_DOKKU="$(echo "$GITHUB_REPOSITORY" | grep -Po ".*\K\d{2}")"
+          DOKKU_URL="$(echo "dokku-{1}.cs.ucsb.edu" | sed "s/{1}/${MATCH_DOKKU}/")"
           echo "DOKKU_URL=${DOKKU_URL}" >> "$GITHUB_OUTPUT"
 
   tear-down-app:

@@ -1,4 +1,4 @@
-name: "46-tag-docker-image"
+name: "Tag Docker Image and Build Review App"
 on:
   pull_request:
 
