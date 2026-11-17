@@ -12,7 +12,8 @@ jobs:
       - id: configure-vars
         name: Configure Variables
         run: |
-          echo "DOKKU_URL=${{ vars.DOKKU_URL }}" >> $GITHUB_OUTPUT
+          MATCH_DOKKU="$(echo "$GITHUB_REPOSITORY" | grep -Po ".*\K\d{2}")"
+          echo "DOKKU_URL=${DOKKU_URL}" >> "$GITHUB_OUTPUT"
 
   tear-down-app:
     name: Tear Down Deployment App
