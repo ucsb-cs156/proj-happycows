@@ -7,13 +7,16 @@ on:
 
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-main
+  cancel-in-progress: false
+  queue: max
 
 jobs:
   publish-docker-image:
     name: Publish Docker Image
     runs-on: ubuntu-latest
+    outputs:
+      ghcr-url: ghcr.io/${{ steps.configure-vars.outputs.REPO }}:${{ steps.meta.outputs.version }}
     permissions:
       contents: read
       packages: write
@@ -38,7 +41,7 @@ jobs:
         uses: docker/setup-buildx-action@v4
 
       - name: flatten output for use with GHCR
-        id: configure-url
+        id: configure-vars
         run: echo "REPO=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push Docker images
@@ -49,5 +52,23 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ steps.configure-url.outputs.REPO }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ steps.configure-url.outputs.REPO }}:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ steps.configure-vars.outputs.REPO }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ steps.configure-vars.outputs.REPO }}:buildcache,mode=max
+  deploy:
+    if: ${{ vars.DEPLOY_PROD == 'true' }}
+    permissions:
+      id-token: write
+      actions: read
+      contents: read
+      pull-requests: read
+      deployments: write
+    needs: publish-docker-image
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
+    uses: ucsb-cs156/dokku-review-apps/.github/workflows/deploy-prod-app.yml@main
+    with:
+      docker_image: ${{ needs.publish-docker-image.outputs.ghcr-url }}
+    secrets:
+      PORT: ${{ secrets.PORT || 22 }}
+      SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
